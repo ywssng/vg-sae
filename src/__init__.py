@@ -1,0 +1,78 @@
+"""Variational Garrote sparse regression and VG-SAE research utilities."""
+
+from .data import (
+    RegressionTensors,
+    SyntheticConfig,
+    make_synthetic_regression,
+    make_synthetic_train_test,
+    sample_spike_and_slab,
+)
+from .evaluate import (
+    EvaluationResult,
+    generalization_error,
+    generalization_error_numpy,
+    infer_data_sparsity,
+    selection_error,
+    selection_uncertainty,
+    theoretical_e_sel,
+    theoretical_sigma_sel,
+)
+from .loss import VGLossTerms, energy_term, free_energy_loss, vg_free_energy, vg_loss_terms
+from .model import VGConfig, VariationalGarrote
+from .sae_data import SyntheticSparseCodingConfig, make_synthetic_sparse_coding
+from .sae_loss import VGSAELossTerms, bernoulli_kl_from_lambda, vg_sae_loss_terms
+from .sae_model import (
+    GatedSAE,
+    GatedSAEConfig,
+    L1ReLUSAE,
+    L1SAEConfig,
+    TopKSAE,
+    TopKSAEConfig,
+    VGSAEConfig,
+    VariationalGarroteSAE,
+)
+from .sae_train import SAETrainResult, fit_sae
+from .train import TrainHistory, TrainResult, run_from_config, sweep_gamma, train_vg
+
+__all__ = [
+    "EvaluationResult",
+    "RegressionTensors",
+    "SyntheticConfig",
+    "SyntheticSparseCodingConfig",
+    "GatedSAE",
+    "GatedSAEConfig",
+    "L1ReLUSAE",
+    "L1SAEConfig",
+    "SAETrainResult",
+    "TopKSAE",
+    "TopKSAEConfig",
+    "TrainHistory",
+    "TrainResult",
+    "VGConfig",
+    "VGSAEConfig",
+    "VGSAELossTerms",
+    "VGLossTerms",
+    "VariationalGarrote",
+    "VariationalGarroteSAE",
+    "bernoulli_kl_from_lambda",
+    "energy_term",
+    "fit_sae",
+    "free_energy_loss",
+    "generalization_error",
+    "generalization_error_numpy",
+    "infer_data_sparsity",
+    "make_synthetic_regression",
+    "make_synthetic_sparse_coding",
+    "make_synthetic_train_test",
+    "run_from_config",
+    "sample_spike_and_slab",
+    "selection_error",
+    "selection_uncertainty",
+    "sweep_gamma",
+    "theoretical_e_sel",
+    "theoretical_sigma_sel",
+    "train_vg",
+    "vg_free_energy",
+    "vg_loss_terms",
+    "vg_sae_loss_terms",
+]
