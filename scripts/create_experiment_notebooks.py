@@ -1211,6 +1211,9 @@ def write_notebooks() -> None:
            preserves it; current outputs use `exp07_saelens_v647_six_method/`,
            separate from the preserved four-method legacy artifacts.
         8. `08_synthetic_sparse_coding_vg_sparsity_sweep.ipynb`: VG-SAE-only nonnegative gamma sparsity sweep.
+        9. `09_saelens_synthsaebench_rho_model_comparison.ipynb`: official
+           SynthSAEBench streaming-data comparison using pinned SAELens models and
+           evaluator metrics. This notebook is curated and not regenerated here.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """

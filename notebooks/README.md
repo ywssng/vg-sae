@@ -17,5 +17,10 @@ These notebooks are split by proposal experiment rather than merged into one fil
    preserved four-method legacy run. L1 thresholds are calibrated on the
    training split only, and the full run uses a 100-step dead-feature window.
 8. `08_synthetic_sparse_coding_vg_sparsity_sweep.ipynb`: VG-SAE-only nonnegative gamma sparsity sweep.
+9. `09_saelens_synthsaebench_rho_model_comparison.ipynb`: six-model comparison
+   on the official SynthSAEBench generator. Training uses reproducible fresh
+   activation streams and evaluation uses SAELens' native synthetic metrics;
+   the default FAST mode is an end-to-end smoke run, while full mode is an
+   exploratory sweep rather than the 200M-sample leaderboard protocol.
 
 Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.

@@ -41,13 +41,31 @@ the paper leaves details open.
 - **Entropy ablations:** the variational objective has unit entropy weight.
   `entropy_weight != 1` and `use_entropy_term=False` are explicit ablations,
   not alternative derivations of the same posterior.
-- **SAELens baselines:** implementations are aligned to SAELens v6.47.0 commit
-  `8be14080485952f729ed58d674bcddf9778e0aa4`. All subtract decoder bias before
-  encoding and add it after decoding, use tied encoder/decoder initialization,
-  and enforce the local unit-decoder convention. TopK includes dead-feature
-  AuxK; BatchTopK uses global training selection and learned-threshold inference;
-  JumpReLU uses the rectangular-kernel STE; Gated uses shared weights, a hard
-  gate, and the gate-only auxiliary reconstruction.
+- **SAELens baselines:** SAELens is installed from commit
+  `8be14080485952f729ed58d674bcddf9778e0aa4` (v6.47.0). The project names for
+  TopK, BatchTopK, JumpReLU, and Gated are direct identity aliases of the
+  upstream training classes and configs. The local factory only translates
+  `input_dim`/`n_latents` into upstream `d_in`/`d_sae`; architecture behavior,
+  losses, optimizer steps, and inference state conversion remain upstream.
+- **SAELens VG architecture:** `src.saelens_vg` follows the upstream custom-SAE
+  registry/config/trainer/save boundaries. Public `encode` and dead-feature
+  statistics use hard posterior support; `training_forward_pass.sae_out` and the
+  free-energy loss use the expected code. Their log names are deliberately
+  distinct. Training-time activation/reconstruction intervention hooks are not
+  supported because one upstream pre/post hook cannot unambiguously represent
+  VG's gate probability, expected code, and hard code; ordinary inference hooks
+  remain available.
+- **SAELens activation boundary:** `expected_average_only_in` scaling is the
+  scalar `sqrt(d_in) / mean(||x||_2)` fitted on training activations only, with no
+  centering. A single Arrow cache can be split by cache-row group as a leakage
+  reduction fallback, but separately caching source-dataset train/validation
+  splits is stronger because packed rows need not coincide with documents.
+- **SynthSAEBench notebook:** notebook 09 uses fresh seeded official synthetic
+  activation streams and `eval_sae_on_synthetic_data`. Common hard comparisons
+  use `sae_l0 / d_sae`; VG posterior density and expected reconstruction are
+  separate diagnostics. The benchmark model snapshot is fixed at
+  `b2efd8b919ae46d6d487c73d46db5ee52813621d`. Full mode remains an exploratory
+  sweep rather than the official 200M-training-sample leaderboard protocol.
 - **Experiment 07 controls:** L1's GMM mask threshold is fitted on training
   activations and reused unchanged on held-out data. Dead features use the
   SAELens strict `steps_since_fired > window` boundary; notebook 07 sets the
