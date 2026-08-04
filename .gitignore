@@ -34,6 +34,7 @@ AGENTS.md
 logs/
 outputs/gpt2/
 outputs/checkpoints/
+outputs/.matplotlib/
 *.pt
 *.pth
 *.ckpt

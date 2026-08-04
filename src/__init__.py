@@ -20,30 +20,49 @@ from .evaluate import (
 from .loss import VGLossTerms, energy_term, free_energy_loss, vg_free_energy, vg_loss_terms
 from .model import VGConfig, VariationalGarrote
 from .sae_data import SyntheticSparseCodingConfig, make_synthetic_sparse_coding
-from .sae_loss import VGSAELossTerms, bernoulli_kl_from_lambda, vg_sae_loss_terms
+from .sae_loss import (
+    BaselineSAELossTerms,
+    VGSAELossTerms,
+    bernoulli_kl_from_lambda,
+    sae_loss_terms,
+    vg_sae_loss_terms,
+)
 from .sae_model import (
+    BatchTopKSAE,
+    BatchTopKSAEConfig,
     GatedSAE,
     GatedSAEConfig,
+    JumpReLU,
+    JumpReLUSAE,
+    JumpReLUSAEConfig,
     L1ReLUSAE,
     L1SAEConfig,
+    Step,
     TopKSAE,
     TopKSAEConfig,
     VGSAEConfig,
     VariationalGarroteSAE,
 )
-from .sae_train import SAETrainResult, fit_sae
+from .sae_train import SAETrainResult, build_sae, fit_sae
 from .train import TrainHistory, TrainResult, run_from_config, sweep_gamma, train_vg
 
 __all__ = [
+    "BaselineSAELossTerms",
+    "BatchTopKSAE",
+    "BatchTopKSAEConfig",
     "EvaluationResult",
     "RegressionTensors",
     "SyntheticConfig",
     "SyntheticSparseCodingConfig",
     "GatedSAE",
     "GatedSAEConfig",
+    "JumpReLU",
+    "JumpReLUSAE",
+    "JumpReLUSAEConfig",
     "L1ReLUSAE",
     "L1SAEConfig",
     "SAETrainResult",
+    "Step",
     "TopKSAE",
     "TopKSAEConfig",
     "TrainHistory",
@@ -55,6 +74,7 @@ __all__ = [
     "VariationalGarrote",
     "VariationalGarroteSAE",
     "bernoulli_kl_from_lambda",
+    "build_sae",
     "energy_term",
     "fit_sae",
     "free_energy_loss",
@@ -65,6 +85,7 @@ __all__ = [
     "make_synthetic_sparse_coding",
     "make_synthetic_train_test",
     "run_from_config",
+    "sae_loss_terms",
     "sample_spike_and_slab",
     "selection_error",
     "selection_uncertainty",

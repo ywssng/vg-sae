@@ -106,10 +106,11 @@ The sparsity prior follows the VG paper:
 \begin{equation}
     P(s_{\mu j}) =
     \frac{\exp(-\gamma s_{\mu j})}{1+\exp(-\gamma)},
-    \qquad \gamma \ge 0 .
+    \qquad \gamma \in \mathbb{R} .
 \end{equation}
-Thus larger $\gamma$ penalizes active support variables. Up to constants
-independent of the parameters, the fixed-$\beta$ VG-SAE objective over a
+Thus larger positive $\gamma$ penalizes active support variables, while
+negative $\gamma$ defines a valid dense prior. The normalized fixed-$\beta$
+VG-SAE objective over a
 minibatch $\mathcal{B}$ is
 \begin{equation}
     \mathcal{L}
@@ -118,8 +119,10 @@ minibatch $\mathcal{B}$ is
     \sum_{\mu \in \mathcal{B}}
     \left[
         \beta E_\mu
+        - \frac{d}{2}\log\frac{\beta}{2\pi}
         +
         \gamma \sum_{j=1}^{N} m_{\mu j}
+        + N\log(1+e^{-\gamma})
         -
         \eta \sum_{j=1}^{N} H(m_{\mu j})
     \right],
@@ -149,6 +152,7 @@ which yields the reduced objective
         +
         \gamma
         \sum_{\mu \in \mathcal{B}}\sum_{j=1}^{N}m_{\mu j}
+        + |\mathcal{B}|N\log(1+e^{-\gamma})
         -
         \eta
         \sum_{\mu \in \mathcal{B}}\sum_{j=1}^{N}H(m_{\mu j})
@@ -158,6 +162,49 @@ which yields the reduced objective
 This is the direct vector-output analogue of the VG free energy: the scalar
 sample count $M$ in the paper is replaced by the number of scalar reconstructed
 coordinates $|\mathcal{B}|d$.
+
+We implement three precision modes.  The profiled mode uses
+Eq.~\eqref{eq:vg_sae_reduced}; the fixed mode uses
+Eq.~\eqref{eq:vg_sae_fixed_beta}; and the learned mode parameterizes
+$\beta=\exp(\log\beta)$ and optimizes the same full objective.  In the learned
+mode,
+\begin{equation}
+  \frac{\partial \mathcal{L}}{\partial\log\beta}
+  = \frac{\beta}{|\mathcal{B}|}\sum_{\mu\in\mathcal{B}}E_\mu-\frac{d}{2},
+\end{equation}
+so stationarity recovers the profiled minibatch value.  Entropy weights other
+than one, or disabling entropy, are treated as ablations.
+
+\subsection{SAELens-aligned baselines}
+\label{sec:saelens_baselines}
+
+All baselines follow SAELens v6.47.0 (commit \texttt{8be1408}).  They encode
+$x-b_{\mathrm{dec}}$, add $b_{\mathrm{dec}}$ after decoding, initialize the
+encoder from the decoder transpose, and use unit-norm decoder atoms.  Their
+reconstruction loss is the minibatch mean squared Euclidean norm (SSE), without
+the factor $1/2$ used in the VG energy.
+
+TopK selects the $k$ largest raw encoder preactivations per sample and applies
+ReLU only to the selected values.  Its AuxK loss asks up to $d/2$ dead features
+to reconstruct the detached main-path residual, using the same decoder-norm
+rescaling as the main TopK path and no decoder bias.  BatchTopK instead selects
+$\lfloor k|\mathcal{B}|\rfloor$ positive activations globally during training.
+It maintains a double-precision exponential moving average of the smallest
+strictly positive selected activation and uses that fixed threshold at
+evaluation, making inference independent of evaluation batch composition.
+
+JumpReLU learns a positive per-feature threshold
+$\theta_j=\exp(\log\theta_j)$ and emits
+$h_j=z_j\mathbf{1}[z_j>\theta_j]$.  Threshold gradients use the rectangular
+kernel estimator with bandwidth $0.05$; the sparsity loss is either the
+corresponding step-function $L_0$ estimator or the optional tanh surrogate.
+The Gated SAE shares encoder weights between
+$\pi_{\mathrm{gate}}=W(x-b_{\mathrm{dec}})+b_{\mathrm{gate}}$ and the magnitude
+path $W\exp(r_{\mathrm{mag}})(x-b_{\mathrm{dec}})+b_{\mathrm{mag}}$.  Its code
+is the ReLU magnitude multiplied by the hard gate
+$\mathbf{1}[\pi_{\mathrm{gate}}>0]$; training adds the decoder-norm-weighted
+$L_1$ penalty on $\operatorname{ReLU}(\pi_{\mathrm{gate}})$ and a gate-only
+auxiliary reconstruction SSE.
 
 \subsection{Evaluation metrics}
 \label{sec:vg_sae_metrics}

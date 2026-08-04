@@ -3,27 +3,30 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
+import math
+from typing import Literal, Optional
 
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
 from .model import _dtype_from_value
-
-
-@dataclass
-class SAEConfig:
-    """Shared configuration for small sparse-autoencoder experiments."""
-
-    input_dim: int
-    n_latents: int
-    decoder_bias: bool = True
-    dtype: torch.dtype | str = torch.float32
-
-    @property
-    def torch_dtype(self) -> torch.dtype:
-        return _dtype_from_value(self.dtype)
+from .sae_baselines import (
+    BatchTopKSAE,
+    BatchTopKSAEConfig,
+    GatedSAE,
+    GatedSAEConfig,
+    JumpReLU,
+    JumpReLUSAE,
+    JumpReLUSAEConfig,
+    L1ReLUSAE,
+    L1SAEConfig,
+    SAEConfig,
+    Step,
+    TopKSAE,
+    TopKSAEConfig,
+    UnitNormDecoderMixin,
+)
 
 
 @dataclass
@@ -33,13 +36,14 @@ class VGSAEConfig:
     input_dim: int
     n_latents: int
 
-    # VG objective. ``lambda_sparsity`` is the positive gamma penalty.
+    # VG objective. ``lambda_sparsity`` is the signed gamma sparsity field.
     beta: float = 1.0
     lambda_sparsity: float = 1.0
     use_variance_term: bool = True
     use_entropy_term: bool = True
     entropy_weight: float = 1.0
-    trace_beta: bool = True
+    beta_mode: Literal["profiled", "fixed", "learned"] | None = None
+    trace_beta: bool | None = True
 
     # Architecture.
     decoder_bias: bool = True
@@ -63,46 +67,18 @@ class VGSAEConfig:
             raise ValueError("input_dim must be positive.")
         if self.n_latents <= 0:
             raise ValueError("n_latents must be positive.")
-        if self.beta <= 0.0:
+        if not math.isfinite(self.beta) or self.beta <= 0.0:
             raise ValueError("beta must be positive.")
-        if self.lambda_sparsity < 0.0:
-            raise ValueError("lambda_sparsity/gamma must be non-negative for the Soh prior exp(-gamma s).")
-        if self.entropy_weight < 0.0:
+        if not math.isfinite(self.lambda_sparsity):
+            raise ValueError("lambda_sparsity/gamma must be finite.")
+        if self.beta_mode not in {None, "profiled", "fixed", "learned"}:
+            raise ValueError("beta_mode must be one of: profiled, fixed, learned.")
+        if not math.isfinite(self.entropy_weight) or self.entropy_weight < 0.0:
             raise ValueError("entropy_weight must be non-negative.")
-        if self.loss_eps <= 0.0:
-            raise ValueError("loss_eps must be positive.")
+        if not math.isfinite(self.loss_eps) or self.loss_eps <= 0.0:
+            raise ValueError("loss_eps must be positive and finite.")
         if not (0.0 <= self.inference_threshold <= 1.0):
             raise ValueError("inference_threshold must lie in [0, 1].")
-
-
-@dataclass
-class L1SAEConfig(SAEConfig):
-    l1_coefficient: float = 1.0e-3
-
-
-@dataclass
-class TopKSAEConfig(SAEConfig):
-    k: int = 4
-
-
-@dataclass
-class GatedSAEConfig(SAEConfig):
-    l1_coefficient: float = 1.0e-3
-    gate_bias_init: float = -2.0
-
-
-class UnitNormDecoderMixin:
-    """Mixin for models with decoder weight shaped (input_dim, n_latents)."""
-
-    decoder: nn.Linear
-
-    @torch.no_grad()
-    def normalize_decoder_columns(self) -> None:
-        weight = self.decoder.weight.data
-        weight.div_(weight.norm(dim=0, keepdim=True).clamp_min(1.0e-12))
-
-    def decoder_column_norms(self) -> torch.Tensor:
-        return self.decoder.weight.norm(dim=0)
 
 
 class VariationalGarroteSAE(nn.Module):
@@ -120,7 +96,7 @@ class VariationalGarroteSAE(nn.Module):
 
     def __init__(self, config: VGSAEConfig):
         super().__init__()
-        # config.validate()
+        config.validate()
         self.config = config
 
         d, L, dtype = config.input_dim, config.n_latents, config.torch_dtype
@@ -129,7 +105,29 @@ class VariationalGarroteSAE(nn.Module):
         self.decoder = nn.Linear(L, d, bias=False, dtype=dtype)
         self.pre_bias: Optional[nn.Parameter]
         self.pre_bias = nn.Parameter(torch.zeros(d, dtype=dtype)) if config.decoder_bias else None
+        mode = self._resolve_beta_mode()
+        self.log_beta = (
+            nn.Parameter(torch.tensor(math.log(config.beta), dtype=dtype))
+            if mode == "learned"
+            else None
+        )
         self.reset_parameters()
+
+    def _resolve_beta_mode(
+        self,
+        beta_mode: Literal["profiled", "fixed", "learned"] | None = None,
+        trace_beta: bool | None = None,
+    ) -> Literal["profiled", "fixed", "learned"]:
+        if beta_mode is not None:
+            mode = beta_mode
+        elif self.config.beta_mode is not None:
+            mode = self.config.beta_mode
+        else:
+            trace = self.config.trace_beta if trace_beta is None else trace_beta
+            mode = "profiled" if trace is not False else "fixed"
+        if mode not in {"profiled", "fixed", "learned"}:
+            raise ValueError("beta_mode must be one of: profiled, fixed, learned.")
+        return mode
 
     def reset_parameters(self) -> None:
         cfg = self.config
@@ -230,26 +228,25 @@ class VariationalGarroteSAE(nn.Module):
         lambda_sparsity: Optional[float] = None,
         entropy_weight: Optional[float] = None,
         use_entropy_term: Optional[bool] = None,
+        beta_mode: Literal["profiled", "fixed", "learned"] | None = None,
         trace_beta: Optional[bool] = None,
     ) -> dict[str, torch.Tensor]:
         """Compute the VG-SAE negative variational log posterior.
 
-        Optional keyword arguments override config values for schedules without
-        mutating the dataclass.
+        ``beta`` overrides the constant precision in fixed mode. ``beta_mode``
+        overrides the configured mode; the legacy ``trace_beta`` switch is used
+        only when neither explicit mode is set.
         """
         self._check_input(x)
         cfg = self.config
-        beta_value = cfg.beta if beta is None else float(beta)
         gamma_value = cfg.lambda_sparsity if lambda_sparsity is None else float(lambda_sparsity)
         entropy_coeff = cfg.entropy_weight if entropy_weight is None else float(entropy_weight)
         entropy_on = cfg.use_entropy_term if use_entropy_term is None else bool(use_entropy_term)
-        trace = cfg.trace_beta if trace_beta is None else bool(trace_beta)
+        mode = self._resolve_beta_mode(beta_mode, trace_beta)
 
-        if beta_value <= 0.0:
-            raise ValueError("beta must be positive.")
-        # if gamma_value < 0.0:
-            # raise ValueError("lambda_sparsity/gamma must be non-negative.")
-        if entropy_coeff < 0.0:
+        if not math.isfinite(gamma_value):
+            raise ValueError("lambda_sparsity/gamma must be finite.")
+        if not math.isfinite(entropy_coeff) or entropy_coeff < 0.0:
             raise ValueError("entropy_weight must be non-negative.")
         if not entropy_on:
             entropy_coeff = 0.0
@@ -271,10 +268,11 @@ class VariationalGarroteSAE(nn.Module):
         energy = recon + variance
 
         l0_surrogate = m.sum(dim=1)
-        prior = gamma_value * l0_surrogate
+        prior_normalizer = cfg.n_latents * F.softplus(x.new_tensor(-gamma_value))
+        prior = gamma_value * l0_surrogate + prior_normalizer
         entropy = self.bernoulli_entropy_from_logits(gate_logits, m).sum(dim=1)
 
-        if trace:
+        if mode == "profiled":
             # Gaussian NLL: beta * E_tot - (M/2) log beta.  beta* = M/(2E_tot).
             # Constants independent of parameters are intentionally omitted.
             E_tot = energy.sum().clamp_min(self._positive_eps(energy))
@@ -284,9 +282,24 @@ class VariationalGarroteSAE(nn.Module):
             loss = loss_total / B
             beta_eff = torch.as_tensor(0.5 * M, device=x.device, dtype=x.dtype) / E_tot.detach()
         else:
-            per_sample = beta_value * energy + prior - entropy_coeff * entropy
+            if mode == "learned":
+                if self.log_beta is None:
+                    raise ValueError(
+                        "learned beta mode requires a model configured with beta_mode='learned'."
+                    )
+                if beta is not None:
+                    raise ValueError(
+                        "beta cannot override the trainable precision in learned mode."
+                    )
+                beta_eff = self.log_beta.exp()
+            else:
+                beta_value = cfg.beta if beta is None else float(beta)
+                if not math.isfinite(beta_value) or beta_value <= 0.0:
+                    raise ValueError("beta must be positive and finite.")
+                beta_eff = x.new_tensor(beta_value)
+            gaussian_normalizer = -0.5 * d * torch.log(beta_eff / (2.0 * math.pi))
+            per_sample = beta_eff * energy + gaussian_normalizer + prior - entropy_coeff * entropy
             loss = per_sample.mean()
-            beta_eff = torch.as_tensor(beta_value, device=x.device, dtype=x.dtype)
 
         return {
             "loss": loss,
@@ -315,103 +328,20 @@ class VariationalGarroteSAE(nn.Module):
         return s, a, s * a
 
 
-class L1ReLUSAE(nn.Module, UnitNormDecoderMixin):
-    """Standard ReLU SAE with L1 activation penalty."""
-
-    def __init__(self, config: L1SAEConfig):
-        super().__init__()
-        if config.input_dim <= 0 or config.n_latents <= 0:
-            raise ValueError("input_dim and n_latents must be positive.")
-        self.config = config
-        dtype = config.torch_dtype
-        self.encoder = nn.Linear(config.input_dim, config.n_latents, dtype=dtype)
-        self.decoder = nn.Linear(config.n_latents, config.input_dim, bias=config.decoder_bias, dtype=dtype)
-        self.reset_parameters()
-
-    def reset_parameters(self) -> None:
-        nn.init.kaiming_uniform_(self.encoder.weight, a=5**0.5)
-        nn.init.zeros_(self.encoder.bias)
-        nn.init.normal_(self.decoder.weight, mean=0.0, std=self.config.input_dim ** -0.5)
-        if self.decoder.bias is not None:
-            nn.init.zeros_(self.decoder.bias)
-        self.normalize_decoder_columns()
-
-    def encode(self, x: torch.Tensor) -> torch.Tensor:
-        return F.relu(self.encoder(x))
-
-    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        h = self.encode(x)
-        return {"x_hat": self.decoder(h), "h": h}
-
-
-class TopKSAE(nn.Module, UnitNormDecoderMixin):
-    """TopK SAE with exactly k selected latents per sample."""
-
-    def __init__(self, config: TopKSAEConfig):
-        super().__init__()
-        if config.input_dim <= 0 or config.n_latents <= 0:
-            raise ValueError("input_dim and n_latents must be positive.")
-        if not 0 < config.k <= config.n_latents:
-            raise ValueError("k must satisfy 0 < k <= n_latents.")
-        self.config = config
-        dtype = config.torch_dtype
-        self.encoder = nn.Linear(config.input_dim, config.n_latents, dtype=dtype)
-        self.decoder = nn.Linear(config.n_latents, config.input_dim, bias=config.decoder_bias, dtype=dtype)
-        self.reset_parameters()
-
-    def reset_parameters(self) -> None:
-        nn.init.kaiming_uniform_(self.encoder.weight, a=5**0.5)
-        nn.init.zeros_(self.encoder.bias)
-        nn.init.normal_(self.decoder.weight, mean=0.0, std=self.config.input_dim ** -0.5)
-        if self.decoder.bias is not None:
-            nn.init.zeros_(self.decoder.bias)
-        self.normalize_decoder_columns()
-
-    def encode_with_mask(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        acts = F.relu(self.encoder(x))
-        _, indices = torch.topk(acts, k=self.config.k, dim=1)
-        mask = torch.zeros_like(acts)
-        mask.scatter_(1, indices, 1.0)
-        return mask * acts, mask
-
-    def encode(self, x: torch.Tensor) -> torch.Tensor:
-        h, _ = self.encode_with_mask(x)
-        return h
-
-    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        h, mask = self.encode_with_mask(x)
-        return {"x_hat": self.decoder(h), "h": h, "mask": mask}
-
-
-class GatedSAE(nn.Module, UnitNormDecoderMixin):
-    """Deterministic sigmoid-gated SAE baseline."""
-
-    def __init__(self, config: GatedSAEConfig):
-        super().__init__()
-        if config.input_dim <= 0 or config.n_latents <= 0:
-            raise ValueError("input_dim and n_latents must be positive.")
-        self.config = config
-        dtype = config.torch_dtype
-        self.gate_encoder = nn.Linear(config.input_dim, config.n_latents, dtype=dtype)
-        self.magnitude_encoder = nn.Linear(config.input_dim, config.n_latents, dtype=dtype)
-        self.decoder = nn.Linear(config.n_latents, config.input_dim, bias=config.decoder_bias, dtype=dtype)
-        self.reset_parameters()
-
-    def reset_parameters(self) -> None:
-        nn.init.kaiming_uniform_(self.gate_encoder.weight, a=5**0.5)
-        nn.init.kaiming_uniform_(self.magnitude_encoder.weight, a=5**0.5)
-        nn.init.constant_(self.gate_encoder.bias, float(self.config.gate_bias_init))
-        nn.init.zeros_(self.magnitude_encoder.bias)
-        nn.init.normal_(self.decoder.weight, mean=0.0, std=self.config.input_dim ** -0.5)
-        if self.decoder.bias is not None:
-            nn.init.zeros_(self.decoder.bias)
-        self.normalize_decoder_columns()
-
-    def encode(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        gate = torch.sigmoid(self.gate_encoder(x))
-        magnitude = F.relu(self.magnitude_encoder(x))
-        return gate, gate * magnitude
-
-    def forward(self, x: torch.Tensor) -> dict[str, torch.Tensor]:
-        gate, h = self.encode(x)
-        return {"x_hat": self.decoder(h), "gate": gate, "h": h}
+__all__ = [
+    "BatchTopKSAE",
+    "BatchTopKSAEConfig",
+    "GatedSAE",
+    "GatedSAEConfig",
+    "JumpReLU",
+    "JumpReLUSAE",
+    "JumpReLUSAEConfig",
+    "L1ReLUSAE",
+    "L1SAEConfig",
+    "SAEConfig",
+    "Step",
+    "TopKSAE",
+    "TopKSAEConfig",
+    "VGSAEConfig",
+    "VariationalGarroteSAE",
+]

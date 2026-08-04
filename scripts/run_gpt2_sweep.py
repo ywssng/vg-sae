@@ -43,6 +43,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1.0e-3)
     parser.add_argument("--beta", type=float, default=1.0)
+    parser.add_argument("--beta-mode", choices=("profiled", "fixed", "learned"), default="profiled")
     parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args()
 
@@ -50,7 +51,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     x = load_activation_cache(args.cache)[: args.max_tokens]
-    rows: list[dict[str, float]] = []
+    rows: list[dict[str, float | str]] = []
     for expansion in _int_list(args.expansion_factors):
         width = int(expansion * x.shape[1])
         for lambda_value in _float_list(args.lambdas):
@@ -60,6 +61,7 @@ def main() -> None:
                     n_latents=width,
                     lambda_sparsity=lambda_value,
                     beta=args.beta,
+                    beta_mode=args.beta_mode,
                 )
             )
             fit_sae(
@@ -74,6 +76,8 @@ def main() -> None:
             obs = vg_sae_observables(model, x)
             rows.append(
                 {
+                    "beta_mode": args.beta_mode,
+                    "beta": args.beta,
                     "expansion_factor": float(expansion),
                     "width": float(width),
                     "lambda": float(lambda_value),
@@ -105,8 +109,16 @@ def main() -> None:
 
     plt.figure(figsize=(6, 4))
     for expansion in sorted({int(row["expansion_factor"]) for row in rows}):
-        points = sorted([row for row in rows if int(row["expansion_factor"]) == expansion], key=lambda row: row["lambda"])
-        plt.plot([row["lambda"] for row in points], [row["v_eff"] for row in points], marker="o", label=f"{expansion}x")
+        points = sorted(
+            [row for row in rows if int(row["expansion_factor"]) == expansion],
+            key=lambda row: row["lambda"],
+        )
+        plt.plot(
+            [row["lambda"] for row in points],
+            [row["v_eff"] for row in points],
+            marker="o",
+            label=f"{expansion}x",
+        )
     plt.xlabel("lambda")
     plt.ylabel("V_eff")
     plt.title("GPT-2 L8 VG-SAE recoverability transition")

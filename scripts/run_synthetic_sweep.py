@@ -27,8 +27,12 @@ from src.sae_evaluate import (
     vg_sae_observables,
 )
 from src.sae_model import (
+    BatchTopKSAE,
+    BatchTopKSAEConfig,
     GatedSAE,
     GatedSAEConfig,
+    JumpReLUSAE,
+    JumpReLUSAEConfig,
     L1ReLUSAE,
     L1SAEConfig,
     TopKSAE,
@@ -62,6 +66,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=3.0e-3)
     parser.add_argument("--beta", type=float, default=1.0)
+    parser.add_argument("--beta-mode", choices=("profiled", "fixed", "learned"), default="profiled")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--include-baselines", action="store_true")
     parser.add_argument("--include-no-variance", action="store_true")
@@ -81,6 +86,7 @@ def train_vg_variant(
             n_latents=n_latents,
             lambda_sparsity=lambda_value,
             beta=args.beta,
+            beta_mode=args.beta_mode,
             use_variance_term=use_variance_term,
         )
     )
@@ -96,12 +102,21 @@ def train_vg_variant(
     return model
 
 
-def append_vg_row(rows: list[dict[str, float | str]], model: VariationalGarroteSAE, data, width: int, lambda_value: float, label: str) -> None:
+def append_vg_row(
+    rows: list[dict[str, float | str]],
+    model: VariationalGarroteSAE,
+    data,
+    width: int,
+    lambda_value: float,
+    label: str,
+) -> None:
     obs = vg_sae_observables(model, data.x)
     precision, recall = support_precision_recall(model, data.x, data.support, data.dictionary)
     rows.append(
         {
             "model": label,
+            "beta_mode": str(model.config.beta_mode),
+            "beta": model.config.beta,
             "width": width,
             "lambda": lambda_value,
             "mse": obs.mse,
@@ -112,7 +127,9 @@ def append_vg_row(rows: list[dict[str, float | str]], model: VariationalGarroteS
             "dead_fraction": obs.dead_fraction,
             "interference_energy": obs.interference_energy,
             "variance_energy": obs.variance_energy,
-            "decoder_recovery_cosine": decoder_recovery_cosine(model.decoder.weight, data.dictionary),
+            "decoder_recovery_cosine": decoder_recovery_cosine(
+                model.decoder.weight, data.dictionary
+            ),
             "support_precision": precision,
             "support_recall": recall,
             "amplitude_shrinkage": amplitude_shrinkage(model, data.x, data.z, data.dictionary),
@@ -120,12 +137,17 @@ def append_vg_row(rows: list[dict[str, float | str]], model: VariationalGarroteS
     )
 
 
-def append_baselines(rows: list[dict[str, float | str]], data, width: int, args: argparse.Namespace) -> None:
+def append_baselines(
+    rows: list[dict[str, float | str]], data, width: int, args: argparse.Namespace
+) -> None:
     k = max(1, min(width, round(args.support_density * width)))
+    dimensions = {"input_dim": data.x.shape[1], "n_latents": width}
     baselines = [
-        ("l1", L1ReLUSAE(L1SAEConfig(input_dim=data.x.shape[1], n_latents=width, l1_coefficient=1.0e-3))),
-        ("topk", TopKSAE(TopKSAEConfig(input_dim=data.x.shape[1], n_latents=width, k=k))),
-        ("gated", GatedSAE(GatedSAEConfig(input_dim=data.x.shape[1], n_latents=width, l1_coefficient=1.0e-3))),
+        ("l1", L1ReLUSAE(L1SAEConfig(**dimensions, l1_coefficient=1.0e-3))),
+        ("topk", TopKSAE(TopKSAEConfig(**dimensions, k=k))),
+        ("batchtopk", BatchTopKSAE(BatchTopKSAEConfig(**dimensions, k=float(k)))),
+        ("jumprelu", JumpReLUSAE(JumpReLUSAEConfig(**dimensions))),
+        ("gated", GatedSAE(GatedSAEConfig(**dimensions, l1_coefficient=1.0e-3))),
     ]
     for name, model in baselines:
         result = fit_sae(
@@ -141,6 +163,8 @@ def append_baselines(rows: list[dict[str, float | str]], data, width: int, args:
         rows.append(
             {
                 "model": name,
+                "beta_mode": args.beta_mode,
+                "beta": args.beta,
                 "width": width,
                 "lambda": np.nan,
                 "mse": final.get("reconstruction_mse", np.nan),
@@ -151,7 +175,9 @@ def append_baselines(rows: list[dict[str, float | str]], data, width: int, args:
                 "dead_fraction": np.nan,
                 "interference_energy": np.nan,
                 "variance_energy": np.nan,
-                "decoder_recovery_cosine": decoder_recovery_cosine(model.decoder.weight, data.dictionary),
+                "decoder_recovery_cosine": decoder_recovery_cosine(
+                    model.decoder.weight, data.dictionary
+                ),
                 "support_precision": np.nan,
                 "support_recall": np.nan,
                 "amplitude_shrinkage": np.nan,
@@ -163,8 +189,13 @@ def add_susceptibilities(rows: list[dict[str, float | str]]) -> None:
     for model_name in sorted({row["model"] for row in rows}):
         if not str(model_name).startswith("vg"):
             continue
-        for width in sorted({int(row["width"]) for row in rows if row["model"] == model_name}):
-            idx = [i for i, row in enumerate(rows) if row["model"] == model_name and int(row["width"]) == width]
+        widths = sorted({int(row["width"]) for row in rows if row["model"] == model_name})
+        for width in widths:
+            idx = [
+                i
+                for i, row in enumerate(rows)
+                if row["model"] == model_name and int(row["width"]) == width
+            ]
             lambdas = np.array([float(rows[i]["lambda"]) for i in idx])
             rhos = np.array([float(rows[i]["rho"]) for i in idx])
             chi = susceptibility(lambdas, rhos)
@@ -184,8 +215,16 @@ def write_outputs(rows: list[dict[str, float | str]], output_dir: Path) -> None:
     for model_name in sorted({row["model"] for row in rows if str(row["model"]).startswith("vg")}):
         subset = [row for row in rows if row["model"] == model_name]
         for width in sorted({int(row["width"]) for row in subset}):
-            points = sorted([row for row in subset if int(row["width"]) == width], key=lambda row: float(row["lambda"]))
-            plt.plot([row["lambda"] for row in points], [row["v_eff"] for row in points], marker="o", label=f"{model_name}, N={width}")
+            points = sorted(
+                [row for row in subset if int(row["width"]) == width],
+                key=lambda row: float(row["lambda"]),
+            )
+            plt.plot(
+                [row["lambda"] for row in points],
+                [row["v_eff"] for row in points],
+                marker="o",
+                label=f"{model_name}, N={width}",
+            )
     plt.xlabel("lambda")
     plt.ylabel("V_eff")
     plt.title("VG-SAE gate-variance transition")
@@ -215,7 +254,9 @@ def main() -> None:
             model = train_vg_variant(data.x, width, lambda_value, args, use_variance_term=True)
             append_vg_row(rows, model, data, width, lambda_value, "vg")
             if args.include_no_variance:
-                no_var_model = train_vg_variant(data.x, width, lambda_value, args, use_variance_term=False)
+                no_var_model = train_vg_variant(
+                    data.x, width, lambda_value, args, use_variance_term=False
+                )
                 append_vg_row(rows, no_var_model, data, width, lambda_value, "vg_no_variance")
         if args.include_baselines:
             append_baselines(rows, data, width, args)
