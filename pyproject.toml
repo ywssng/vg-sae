@@ -7,6 +7,7 @@ requires-python = ">=3.14"
 dependencies = [
     "matplotlib>=3.11.1",
     "numpy>=2.5.1",
+    "sae-lens @ git+https://github.com/decoderesearch/SAELens.git@8be14080485952f729ed58d674bcddf9778e0aa4",
     "scipy>=1.18.0",
     "seaborn>=0.13.2",
     "torch>=2.13.0",

@@ -9,3 +9,4 @@ matplotlib>=3.8.0
 transformers>=4.40.0
 datasets>=2.18.0
 einops>=0.7.0
+sae-lens @ git+https://github.com/decoderesearch/SAELens.git@8be14080485952f729ed58d674bcddf9778e0aa4

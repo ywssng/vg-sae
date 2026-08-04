@@ -252,6 +252,10 @@ def synthetic_sparse_coding_notebook() -> dict:
             ),
             code(
                 """
+                def decoder_weight(model):
+                    return model.W_dec.T if hasattr(model, "W_dec") else model.decoder.weight
+
+
                 def run_vg(data, width, lambda_sparsity, use_variance_term=True, label="vg"):
                     model = VariationalGarroteSAE(
                         VGSAEConfig(
@@ -276,7 +280,7 @@ def synthetic_sparse_coding_notebook() -> dict:
                         "dead_fraction": obs.dead_fraction,
                         "interference_energy": obs.interference_energy,
                         "variance_energy": obs.variance_energy,
-                        "decoder_recovery_cosine": decoder_recovery_cosine(model.decoder.weight, data.dictionary),
+                        "decoder_recovery_cosine": decoder_recovery_cosine(decoder_weight(model), data.dictionary),
                         "support_precision": precision,
                         "support_recall": recall,
                         "amplitude_shrinkage": amplitude_shrinkage(model, data.x, data.z, data.dictionary),
@@ -286,8 +290,8 @@ def synthetic_sparse_coding_notebook() -> dict:
                     k = max(1, round(data.support.mean().item() * width))
                     baselines = [
                         ("l1", L1ReLUSAE(L1SAEConfig(input_dim=data.x.shape[1], n_latents=width, l1_coefficient=1e-3))),
-                        ("topk", TopKSAE(TopKSAEConfig(input_dim=data.x.shape[1], n_latents=width, k=k))),
-                        ("gated", GatedSAE(GatedSAEConfig(input_dim=data.x.shape[1], n_latents=width, l1_coefficient=1e-3))),
+                        ("topk", TopKSAE(TopKSAEConfig(d_in=data.x.shape[1], d_sae=width, k=k))),
+                        ("gated", GatedSAE(GatedSAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
                     ]
                     rows = []
                     for name, model in baselines:
@@ -304,7 +308,7 @@ def synthetic_sparse_coding_notebook() -> dict:
                             "dead_fraction": np.nan,
                             "interference_energy": np.nan,
                             "variance_energy": np.nan,
-                            "decoder_recovery_cosine": decoder_recovery_cosine(model.decoder.weight, data.dictionary),
+                            "decoder_recovery_cosine": decoder_recovery_cosine(decoder_weight(model), data.dictionary),
                             "support_precision": np.nan,
                             "support_recall": np.nan,
                             "amplitude_shrinkage": np.nan,

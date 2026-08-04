@@ -1,21 +1,20 @@
-"""Losses for VG-SAE and SAE baselines."""
+"""Loss reporting for VG-SAE, local L1, and official SAELens baselines."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import torch
 import torch.nn.functional as F
 
-from .sae_model import (
-    BatchTopKSAE,
-    GatedSAE,
-    JumpReLUSAE,
-    L1ReLUSAE,
-    Step,
-    TopKSAE,
-    VariationalGarroteSAE,
+from sae_lens.saes.batchtopk_sae import BatchTopKTrainingSAE
+from sae_lens.saes.sae import (
+    TrainCoefficientConfig,
+    TrainingSAE,
+    TrainStepInput,
 )
+
+from .sae_model import L1ReLUSAE, VariationalGarroteSAE
 
 
 @dataclass
@@ -41,6 +40,7 @@ class BaselineSAELossTerms:
     auxiliary_loss: torch.Tensor
     rho: torch.Tensor
     feature_acts: torch.Tensor
+    details: dict[str, torch.Tensor] = field(default_factory=dict)
 
 
 def bernoulli_kl_from_lambda(
@@ -64,15 +64,13 @@ def vg_sae_loss_terms(model: VariationalGarroteSAE, x: torch.Tensor) -> VGSAELos
     output = model.free_energy(x)
     m = output["m"]
     entropy_weight = float(model.config.entropy_weight) if model.config.use_entropy_term else 0.0
-    entropy_loss = -entropy_weight * output["entropy"]
-
     return VGSAELossTerms(
         loss=output["loss"],
         reconstruction_loss=output["recon"],
         reconstruction_mse=2.0 * output["recon"] / float(model.config.input_dim),
         variance_loss=output["variance"],
         prior_loss=output["prior"],
-        entropy_loss=entropy_loss,
+        entropy_loss=-entropy_weight * output["entropy"],
         entropy=output["entropy"],
         beta=output["beta_eff"],
         rho=m.mean(),
@@ -91,89 +89,85 @@ def l1_sae_loss_terms(model: L1ReLUSAE, x: torch.Tensor) -> BaselineSAELossTerms
     return BaselineSAELossTerms(
         loss=reconstruction_loss + sparsity_loss,
         reconstruction_loss=reconstruction_loss,
-        reconstruction_mse=residual_square.mean() / float(model.config.input_dim),
+        reconstruction_mse=reconstruction_loss / float(model.config.input_dim),
         sparsity_loss=sparsity_loss,
         auxiliary_loss=x.new_zeros(()),
-        rho=(h > 0.0).to(x.dtype).mean(),
+        rho=h.gt(0).to(x.dtype).mean(),
         feature_acts=h,
     )
 
 
-def topk_sae_loss_terms(
-    model: TopKSAE,
+def _final_coefficients(model: TrainingSAE) -> dict[str, float]:
+    return {
+        name: float(value.value if isinstance(value, TrainCoefficientConfig) else value)
+        for name, value in model.get_coefficients().items()
+    }
+
+
+def saelens_sae_loss_terms(
+    model: TrainingSAE,
     x: torch.Tensor,
     dead_feature_mask: torch.Tensor | None = None,
+    *,
+    coefficients: dict[str, float] | None = None,
+    n_training_steps: int = 0,
+    update_state: bool = False,
 ) -> BaselineSAELossTerms:
-    output = model(x)
-    residual_square = (x - output["x_hat"]).pow(2).sum(dim=1)
-    reconstruction_loss = residual_square.mean()
-    auxiliary_loss = model.auxiliary_loss(x, output, dead_feature_mask)
-    h = output["h"]
-    return BaselineSAELossTerms(
-        loss=reconstruction_loss + auxiliary_loss,
-        reconstruction_loss=reconstruction_loss,
-        reconstruction_mse=residual_square.mean() / float(model.config.input_dim),
-        sparsity_loss=x.new_zeros(()),
-        auxiliary_loss=auxiliary_loss,
-        rho=(h > 0).to(x).mean(),
-        feature_acts=h,
+    """Expose an official training forward pass through project metric names.
+
+    Read-only BatchTopK reporting deliberately bypasses only its EMA update; its
+    encoding and losses still dispatch to the official architecture methods.
+    """
+
+    step_input = TrainStepInput(
+        sae_in=x,
+        coefficients=coefficients or _final_coefficients(model),
+        dead_neuron_mask=dead_feature_mask,
+        n_training_steps=n_training_steps,
+        is_logging_step=False,
     )
+    if isinstance(model, BatchTopKTrainingSAE) and not update_state:
+        output = TrainingSAE.training_forward_pass(model, step_input)
+    else:
+        output = model.training_forward_pass(step_input)
 
-
-def gated_sae_loss_terms(model: GatedSAE, x: torch.Tensor) -> BaselineSAELossTerms:
-    output = model(x)
-    residual_square = (x - output["x_hat"]).pow(2).sum(dim=1)
-    reconstruction_loss = residual_square.mean()
-    gate_magnitudes = F.relu(output["pi_gate"])
-    sparsity_loss = float(model.config.l1_coefficient) * (
-        gate_magnitudes * model.decoder_column_norms()
-    ).sum(dim=1).mean()
-    gate_hat = model.decode(gate_magnitudes)
-    auxiliary_loss = (x - gate_hat).pow(2).sum(dim=1).mean()
+    feature_acts = (
+        output.feature_acts.to_dense()
+        if output.feature_acts.is_sparse
+        else output.feature_acts
+    )
+    zero = x.new_zeros(())
+    reconstruction_loss = output.losses.get("mse_loss")
+    if reconstruction_loss is None:
+        reconstruction_loss = (output.sae_in - output.sae_out).pow(2).sum(dim=-1).mean()
+        sparsity_loss = zero
+        auxiliary_loss = output.loss - reconstruction_loss
+    else:
+        sparsity_loss = sum(
+            (
+                output.losses[name]
+                for name in ("l0_loss", "l1_loss")
+                if name in output.losses
+            ),
+            zero,
+        )
+        auxiliary_loss = sum(
+            (
+                value
+                for name, value in output.losses.items()
+                if name not in {"mse_loss", "l0_loss", "l1_loss"}
+            ),
+            zero,
+        )
     return BaselineSAELossTerms(
-        loss=reconstruction_loss + sparsity_loss + auxiliary_loss,
+        loss=output.loss,
         reconstruction_loss=reconstruction_loss,
-        reconstruction_mse=residual_square.mean() / float(model.config.input_dim),
+        reconstruction_mse=reconstruction_loss / float(model.cfg.d_in),
         sparsity_loss=sparsity_loss,
         auxiliary_loss=auxiliary_loss,
-        rho=output["mask"].mean(),
-        feature_acts=output["h"],
-    )
-
-
-def jumprelu_sae_loss_terms(
-    model: JumpReLUSAE,
-    x: torch.Tensor,
-    dead_feature_mask: torch.Tensor | None = None,
-) -> BaselineSAELossTerms:
-    output = model(x)
-    residual_square = (x - output["x_hat"]).pow(2).sum(dim=1)
-    reconstruction_loss = residual_square.mean()
-    cfg, h, hidden_pre = model.config, output["h"], output["hidden_pre"]
-    if cfg.jumprelu_sparsity_loss_mode == "step":
-        count = Step.apply(hidden_pre, model.threshold, cfg.jumprelu_bandwidth).sum(dim=1)
-    elif cfg.jumprelu_sparsity_loss_mode == "tanh":
-        count = torch.tanh(
-            cfg.jumprelu_tanh_scale * h * model.decoder_column_norms()
-        ).sum(dim=1)
-    else:  # defensive against a mutated config
-        raise ValueError(f"Invalid sparsity loss mode: {cfg.jumprelu_sparsity_loss_mode}")
-    sparsity_loss = float(cfg.l0_coefficient) * count.mean()
-    auxiliary_loss = x.new_zeros(())
-    if cfg.pre_act_loss_coefficient is not None and dead_feature_mask is not None:
-        dead = dead_feature_mask.to(device=x.device, dtype=x.dtype)
-        pre_act = (
-            F.relu(model.threshold - hidden_pre) * dead * model.decoder_column_norms()
-        ).sum(dim=1).mean()
-        auxiliary_loss = float(cfg.pre_act_loss_coefficient) * pre_act
-    return BaselineSAELossTerms(
-        loss=reconstruction_loss + sparsity_loss + auxiliary_loss,
-        reconstruction_loss=reconstruction_loss,
-        reconstruction_mse=residual_square.mean() / float(cfg.input_dim),
-        sparsity_loss=sparsity_loss,
-        auxiliary_loss=auxiliary_loss,
-        rho=(h > 0).to(x).mean(),
-        feature_acts=h,
+        rho=feature_acts.bool().to(x.dtype).mean(),
+        feature_acts=feature_acts,
+        details={**output.losses, **output.metrics},
     )
 
 
@@ -186,12 +180,6 @@ def sae_loss_terms(
         return vg_sae_loss_terms(model, x)
     if isinstance(model, L1ReLUSAE):
         return l1_sae_loss_terms(model, x)
-    if isinstance(model, BatchTopKSAE):
-        return topk_sae_loss_terms(model, x, dead_feature_mask)
-    if isinstance(model, TopKSAE):
-        return topk_sae_loss_terms(model, x, dead_feature_mask)
-    if isinstance(model, JumpReLUSAE):
-        return jumprelu_sae_loss_terms(model, x, dead_feature_mask)
-    if isinstance(model, GatedSAE):
-        return gated_sae_loss_terms(model, x)
+    if isinstance(model, TrainingSAE):
+        return saelens_sae_loss_terms(model, x, dead_feature_mask)
     raise TypeError(f"Unsupported SAE model type: {type(model).__name__}")

@@ -3,8 +3,10 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from sae_lens import TrainingSAE
 
 import scripts.create_experiment_notebooks as notebook_generator
+from src.sae_baselines import to_inference_sae
 from src.sae_model import (
     BatchTopKSAE,
     GatedSAE,
@@ -73,7 +75,9 @@ def test_notebook_l1_mask_reuses_training_threshold() -> None:
         "JumpReLUSAE": JumpReLUSAE,
         "L1ReLUSAE": L1ReLUSAE,
         "TopKSAE": TopKSAE,
+        "TrainingSAE": TrainingSAE,
         "VariationalGarroteSAE": VariationalGarroteSAE,
+        "to_inference_sae": to_inference_sae,
     }
     exec(compile(helper_source, "notebook-helpers", "exec"), namespace)
     model = L1ReLUSAE(L1SAEConfig(1, 1, decoder_bias=False))

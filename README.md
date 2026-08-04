@@ -12,8 +12,10 @@ gates, nonnegative amplitudes, unit-norm decoder dictionaries, synthetic
 sparse-coding experiments, baseline SAEs, transition diagnostics, and a small
 GPT-2 residual-stream activation pipeline.
 
-The SAE baselines follow SAELens v6.47.0 (`8be1408`): centered/tied linear
-SAEs with L1-ReLU, TopK + AuxK, BatchTopK, JumpReLU, and hard-gated variants.
+SAELens is pinned to v6.47.0 commit `8be1408`. `TopKSAE`, `BatchTopKSAE`,
+`JumpReLUSAE`, and `GatedSAE` are identity aliases of its official training
+classes; their configs, losses, optimizer steps, and inference export are not
+locally reimplemented. L1-ReLU remains the small project-local reference model.
 
 ## Quick Start
 
@@ -81,8 +83,8 @@ supports and negative values intentionally favor dense supports.
 - Generates synthetic data with exact finite-`N` active counts and SNR-calibrated additive noise.
 - Keeps sklearn/scipy imports lazy so core VG code imports without optional baseline dependencies.
 - Includes tests for the paper equations and the implementation choices above.
-- Uses SAELens reconstruction SSE and architecture-specific auxiliary losses for
-  fair TopK, BatchTopK, JumpReLU, and Gated SAE comparisons.
+- Imports the exact pinned SAELens TopK, BatchTopK, JumpReLU, and Gated training
+  implementations and delegates their optimization to the official trainer.
 
 ## Verify
 

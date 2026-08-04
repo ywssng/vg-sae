@@ -145,20 +145,20 @@ def test_vg_sae_trace_beta_counts_vector_observations() -> None:
 
 
 def test_topk_sae_has_exact_active_count_when_pre_topk_activations_are_positive() -> None:
-    model = TopKSAE(TopKSAEConfig(input_dim=3, n_latents=5, k=2))
+    model = TopKSAE(TopKSAEConfig(d_in=3, d_sae=5, k=2))
     with torch.no_grad():
-        model.encoder.weight.zero_()
-        model.encoder.bias.fill_(1.0)
-    h = model(torch.randn(7, 3))["h"]
+        model.W_enc.zero_()
+        model.b_enc.fill_(1.0)
+    h = model.encode(torch.randn(7, 3))
 
     assert torch.all((h > 0.0).sum(dim=1) == 2)
 
 
 def test_topk_sae_reports_actual_activation_density() -> None:
-    model = TopKSAE(TopKSAEConfig(input_dim=3, n_latents=5, k=2))
+    model = TopKSAE(TopKSAEConfig(d_in=3, d_sae=5, k=2))
     with torch.no_grad():
-        model.encoder.weight.zero_()
-        model.encoder.bias.zero_()
+        model.W_enc.zero_()
+        model.b_enc.zero_()
     terms = sae_loss_terms(model, torch.randn(7, 3))
 
     assert torch.allclose(terms.rho, torch.tensor(0.0))
@@ -187,10 +187,10 @@ def test_one_step_training_is_finite_for_vg_sae_and_baselines() -> None:
     models = [
         VariationalGarroteSAE(VGSAEConfig(input_dim=4, n_latents=8, lambda_sparsity=0.5)),
         L1ReLUSAE(L1SAEConfig(input_dim=4, n_latents=8)),
-        TopKSAE(TopKSAEConfig(input_dim=4, n_latents=8, k=2)),
-        BatchTopKSAE(BatchTopKSAEConfig(input_dim=4, n_latents=8, k=2)),
-        JumpReLUSAE(JumpReLUSAEConfig(input_dim=4, n_latents=8)),
-        GatedSAE(GatedSAEConfig(input_dim=4, n_latents=8)),
+        TopKSAE(TopKSAEConfig(d_in=4, d_sae=8, k=2)),
+        BatchTopKSAE(BatchTopKSAEConfig(d_in=4, d_sae=8, k=2)),
+        JumpReLUSAE(JumpReLUSAEConfig(d_in=4, d_sae=8)),
+        GatedSAE(GatedSAEConfig(d_in=4, d_sae=8)),
     ]
 
     for model in models:
@@ -224,6 +224,7 @@ def test_synthetic_sweep_writes_csv_and_figure(tmp_path) -> None:
             "--beta-mode",
             "learned",
             "--include-no-variance",
+            "--include-baselines",
         ],
         check=True,
     )

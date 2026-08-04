@@ -51,6 +51,11 @@ def _int_list(value: str) -> list[int]:
     return [int(part) for part in value.split(",") if part]
 
 
+def _decoder_weight(model):
+    """Return decoder atoms in the project's ``(d_in, d_sae)`` convention."""
+    return model.W_dec.T if hasattr(model, "W_dec") else model.decoder.weight
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Synthetic VG-SAE transition sweep.")
     parser.add_argument("--output-dir", default="outputs/synthetic_sweep")
@@ -141,13 +146,22 @@ def append_baselines(
     rows: list[dict[str, float | str]], data, width: int, args: argparse.Namespace
 ) -> None:
     k = max(1, min(width, round(args.support_density * width)))
-    dimensions = {"input_dim": data.x.shape[1], "n_latents": width}
+    local_dimensions = {"input_dim": data.x.shape[1], "n_latents": width}
+    official_dimensions = {"d_in": data.x.shape[1], "d_sae": width}
     baselines = [
-        ("l1", L1ReLUSAE(L1SAEConfig(**dimensions, l1_coefficient=1.0e-3))),
-        ("topk", TopKSAE(TopKSAEConfig(**dimensions, k=k))),
-        ("batchtopk", BatchTopKSAE(BatchTopKSAEConfig(**dimensions, k=float(k)))),
-        ("jumprelu", JumpReLUSAE(JumpReLUSAEConfig(**dimensions))),
-        ("gated", GatedSAE(GatedSAEConfig(**dimensions, l1_coefficient=1.0e-3))),
+        ("l1", L1ReLUSAE(L1SAEConfig(**local_dimensions, l1_coefficient=1.0e-3))),
+        ("topk", TopKSAE(TopKSAEConfig(**official_dimensions, k=k))),
+        (
+            "batchtopk",
+            BatchTopKSAE(BatchTopKSAEConfig(**official_dimensions, k=float(k))),
+        ),
+        ("jumprelu", JumpReLUSAE(JumpReLUSAEConfig(**official_dimensions))),
+        (
+            "gated",
+            GatedSAE(
+                GatedSAEConfig(**official_dimensions, l1_coefficient=1.0e-3)
+            ),
+        ),
     ]
     for name, model in baselines:
         result = fit_sae(
@@ -176,7 +190,7 @@ def append_baselines(
                 "interference_energy": np.nan,
                 "variance_energy": np.nan,
                 "decoder_recovery_cosine": decoder_recovery_cosine(
-                    model.decoder.weight, data.dictionary
+                    _decoder_weight(model), data.dictionary
                 ),
                 "support_precision": np.nan,
                 "support_recall": np.nan,
