@@ -20,6 +20,7 @@ from .evaluate import (
 from .loss import VGLossTerms, energy_term, free_energy_loss, vg_free_energy, vg_loss_terms
 from .model import VGConfig, VariationalGarrote
 from .sae_data import SyntheticSparseCodingConfig, make_synthetic_sparse_coding
+from .sae_baselines import to_inference_sae
 from .sae_loss import (
     BaselineSAELossTerms,
     VGSAELossTerms,
@@ -44,10 +45,32 @@ from .sae_model import (
     VariationalGarroteSAE,
 )
 from .sae_train import SAETrainResult, build_sae, fit_sae
+from .saelens_data import (
+    ActivationCache,
+    ActivationScale,
+    ActivationSplits,
+    SplitIndices,
+    TensorActivationProvider,
+    as_activation_tensor,
+    load_activation_cache as load_saelens_activation_cache,
+    make_split_indices,
+    split_activations,
+)
+from .saelens_vg import (
+    VGSAE as SAELensVGSAE,
+    VGSAEConfig as SAELensVGSAEConfig,
+    VGSAETrainer,
+    VGTrainingSAE,
+    VGTrainingSAEConfig,
+    register_vg_saes,
+)
 from .train import TrainHistory, TrainResult, run_from_config, sweep_gamma, train_vg
 
 __all__ = [
     "BaselineSAELossTerms",
+    "ActivationCache",
+    "ActivationScale",
+    "ActivationSplits",
     "BatchTopKSAE",
     "BatchTopKSAEConfig",
     "EvaluationResult",
@@ -62,19 +85,27 @@ __all__ = [
     "L1ReLUSAE",
     "L1SAEConfig",
     "SAETrainResult",
+    "SAELensVGSAE",
+    "SAELensVGSAEConfig",
+    "SplitIndices",
     "Step",
     "TopKSAE",
     "TopKSAEConfig",
+    "TensorActivationProvider",
     "TrainHistory",
     "TrainResult",
     "VGConfig",
     "VGSAEConfig",
     "VGSAELossTerms",
+    "VGSAETrainer",
+    "VGTrainingSAE",
+    "VGTrainingSAEConfig",
     "VGLossTerms",
     "VariationalGarrote",
     "VariationalGarroteSAE",
     "bernoulli_kl_from_lambda",
     "build_sae",
+    "as_activation_tensor",
     "energy_term",
     "fit_sae",
     "free_energy_loss",
@@ -84,15 +115,20 @@ __all__ = [
     "make_synthetic_regression",
     "make_synthetic_sparse_coding",
     "make_synthetic_train_test",
+    "make_split_indices",
+    "load_saelens_activation_cache",
+    "register_vg_saes",
     "run_from_config",
     "sae_loss_terms",
     "sample_spike_and_slab",
     "selection_error",
     "selection_uncertainty",
+    "split_activations",
     "sweep_gamma",
     "theoretical_e_sel",
     "theoretical_sigma_sel",
     "train_vg",
+    "to_inference_sae",
     "vg_free_energy",
     "vg_loss_terms",
     "vg_sae_loss_terms",

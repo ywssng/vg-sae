@@ -76,6 +76,19 @@ mode it initializes the trainable positive precision. The sparsity field
 `lambda_sparsity` may be any finite real value: positive values favor sparse
 supports and negative values intentionally favor dense supports.
 
+The SAELens-native VG architecture lives in `src.saelens_vg` and registers the
+architecture name `"vg"` for both training and inference. Use `beta_mode="fixed"`
+or `"learned"` when the experiment must not impose the profiled
+`partial F / partial beta = 0` stationarity condition. Its public SAELens code is
+hard-thresholded for firing metrics, while the training objective reconstructs
+with the variational expected code; the two metric families are named separately.
+
+`src.saelens_data` converts the existing synthetic tensors and local activation
+caches into deterministic SAELens data providers. Normalization is a single
+SAELens-compatible scale fitted on training data only. Arrow activation-cache
+rows can be kept together during splitting and selected token IDs can be removed;
+for Pythia-scale runs, use a bounded cache slice or a native streaming store.
+
 ## What Is Improved
 
 - Uses trainable mask logits with `sigmoid`, avoiding zero gradients at the mask boundary.
