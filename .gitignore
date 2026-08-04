@@ -27,6 +27,9 @@ env/
 # OS metadata
 .DS_Store
 
+# Local agent instructions
+AGENTS.md
+
 # Generated experiment artifacts that can become large
 logs/
 outputs/gpt2/
