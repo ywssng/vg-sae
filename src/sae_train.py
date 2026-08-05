@@ -287,10 +287,9 @@ def build_sae(kind: str, input_dim: int, n_latents: int, **kwargs: Any) -> torch
         return VariationalGarroteSAE(
             VGSAEConfig(input_dim=input_dim, n_latents=n_latents, **kwargs)
         )
-    if normalized in {"l1", "l1-relu", "l1_relu"}:
-        return L1ReLUSAE(L1SAEConfig(input_dim=input_dim, n_latents=n_latents, **kwargs))
-
     dimensions = {"d_in": input_dim, "d_sae": n_latents}
+    if normalized in {"l1", "l1-relu", "l1_relu"}:
+        return L1ReLUSAE(L1SAEConfig(**dimensions, **kwargs))
     if normalized in {"topk", "top-k", "top_k"}:
         return TopKSAE(TopKSAEConfig(**dimensions, **kwargs))
     if normalized in {"batchtopk", "batch-topk", "batch_topk"}:

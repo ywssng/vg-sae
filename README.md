@@ -12,10 +12,10 @@ gates, nonnegative amplitudes, unit-norm decoder dictionaries, synthetic
 sparse-coding experiments, baseline SAEs, transition diagnostics, and a small
 GPT-2 residual-stream activation pipeline.
 
-SAELens is pinned to v6.47.0 commit `8be1408`. `TopKSAE`, `BatchTopKSAE`,
-`JumpReLUSAE`, and `GatedSAE` are identity aliases of its official training
-classes; their configs, losses, optimizer steps, and inference export are not
-locally reimplemented. L1-ReLU remains the small project-local reference model.
+SAELens is pinned to v6.47.0 commit `8be1408`. `L1ReLUSAE`, `TopKSAE`,
+`BatchTopKSAE`, `JumpReLUSAE`, and `GatedSAE` are identity aliases of its
+official training classes; their configs, losses, optimizer steps, and inference
+export are not locally reimplemented.
 
 ## Quick Start
 
@@ -96,8 +96,9 @@ for Pythia-scale runs, use a bounded cache slice or a native streaming store.
 - Generates synthetic data with exact finite-`N` active counts and SNR-calibrated additive noise.
 - Keeps sklearn/scipy imports lazy so core VG code imports without optional baseline dependencies.
 - Includes tests for the paper equations and the implementation choices above.
-- Imports the exact pinned SAELens TopK, BatchTopK, JumpReLU, and Gated training
-  implementations and delegates their optimization to the official trainer.
+- Imports the exact pinned SAELens Standard/L1, TopK, BatchTopK, JumpReLU, and
+  Gated training implementations and delegates optimization to the official
+  trainer.
 
 ## Verify
 

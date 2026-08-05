@@ -178,11 +178,21 @@ than one, or disabling entropy, are treated as ablations.
 \subsection{SAELens-aligned baselines}
 \label{sec:saelens_baselines}
 
-All baselines follow SAELens v6.47.0 (commit \texttt{8be1408}).  They encode
-$x-b_{\mathrm{dec}}$, add $b_{\mathrm{dec}}$ after decoding, initialize the
-encoder from the decoder transpose, and use unit-norm decoder atoms.  Their
+All baselines are the official SAELens v6.47.0 (commit \texttt{8be1408})
+training classes.  Their common path encodes $x-b_{\mathrm{dec}}$, adds
+$b_{\mathrm{dec}}$ after decoding, and initializes the encoder from the decoder
+transpose; decoder-norm handling remains architecture-specific.  Their
 reconstruction loss is the minibatch mean squared Euclidean norm (SSE), without
 the factor $1/2$ used in the VG energy.
+
+The Standard/L1 SAE emits
+$h=\operatorname{ReLU}(W_{\mathrm{enc}}(x-b_{\mathrm{dec}})+b_{\mathrm{enc}})$.
+Its sparsity term is the configured coefficient times the minibatch mean of the
+$\ell_p$ norm of $h_j\lVert d_j\rVert_2$ (with $p=1$ here).  Decoder rows are
+not constrained to unit norm during Standard training.  At inference export,
+the official norm-folding transform moves each nonzero decoder-row norm into
+the corresponding latent scale, producing unit-norm decoder atoms while
+preserving the reconstructed function.
 
 TopK selects the $k$ largest raw encoder preactivations per sample and applies
 ReLU only to the selected values.  Its AuxK loss asks up to $d/2$ dead features

@@ -43,10 +43,18 @@ the paper leaves details open.
   not alternative derivations of the same posterior.
 - **SAELens baselines:** SAELens is installed from commit
   `8be14080485952f729ed58d674bcddf9778e0aa4` (v6.47.0). The project names for
-  TopK, BatchTopK, JumpReLU, and Gated are direct identity aliases of the
-  upstream training classes and configs. The local factory only translates
+  Standard/L1, TopK, BatchTopK, JumpReLU, and Gated are direct identity aliases
+  of the upstream training classes and configs. The local factory only translates
   `input_dim`/`n_latents` into upstream `d_in`/`d_sae`; architecture behavior,
   losses, optimizer steps, and inference state conversion remain upstream.
+  The former local `SAEConfig`, `UnitNormDecoderMixin`, and `CenteredLinearSAE`
+  symbols were removed; direct L1 construction now uses
+  `L1SAEConfig(d_in=..., d_sae=...)`. Omitting L1-specific arguments now uses
+  the upstream defaults (`l1_coefficient=1.0`, `decoder_init_norm=0.1`), rather
+  than the former local coefficient default of `1e-3`; experiment call sites
+  that require `1e-3` set it explicitly. Old local-L1 checkpoints and the old
+  `config`/`encoder`/`decoder`/dict-forward interface are not compatible with
+  the official `cfg`/`W_enc`/`W_dec`/tensor-forward interface.
 - **SAELens VG architecture:** `src.saelens_vg` follows the upstream custom-SAE
   registry/config/trainer/save boundaries. Public `encode` and dead-feature
   statistics use hard posterior support; `training_forward_pass.sae_out` and the

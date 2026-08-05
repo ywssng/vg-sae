@@ -21,11 +21,9 @@ from .sae_baselines import (
     JumpReLUSAEConfig,
     L1ReLUSAE,
     L1SAEConfig,
-    SAEConfig,
     Step,
     TopKSAE,
     TopKSAEConfig,
-    UnitNormDecoderMixin,
 )
 
 
@@ -338,7 +336,6 @@ __all__ = [
     "JumpReLUSAEConfig",
     "L1ReLUSAE",
     "L1SAEConfig",
-    "SAEConfig",
     "Step",
     "TopKSAE",
     "TopKSAEConfig",

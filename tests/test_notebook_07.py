@@ -36,7 +36,8 @@ def test_notebook_07_covers_all_methods_with_one_shared_order() -> None:
     assert 'for method in ["vgsae"' not in source
     assert "BatchTopKSAEConfig" in source and "JumpReLUSAEConfig" in source
     assert "hard_gate_and_positive_magnitude" in source and "sigmoid_gate" not in source
-    assert "exp07_saelens_v647_six_method" in source
+    assert "exp07_saelens_v647_all_official" in source
+    assert "embedded outputs" in source and "pre-migration" in source
     assert "dead_feature_window = 100" in source
     assert "dead_feature_window=dead_feature_window" in source
     assert "plt.subplots(1, 4" in source
@@ -46,14 +47,36 @@ def test_notebook_07_covers_all_methods_with_one_shared_order() -> None:
     for index, cell in enumerate(notebook["cells"]):
         if cell["cell_type"] == "code":
             compile("".join(cell["source"]), f"notebook-cell-{index}", "exec")
-            assert cell.get("execution_count") is None
-            assert not cell.get("outputs")
-def test_bulk_generator_preserves_curated_notebook_07(tmp_path, monkeypatch) -> None:
+
+
+def test_bulk_generator_preserves_curated_notebooks(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(notebook_generator, "NOTEBOOK_DIR", tmp_path)
-    path = tmp_path / "07_synthetic_sparse_coding_rho_model_comparison.ipynb"
-    path.write_text("curated", encoding="utf-8")
+    curated = [
+        tmp_path / "02_synthetic_sparse_coding_transition.ipynb",
+        tmp_path / "07_synthetic_sparse_coding_rho_model_comparison.ipynb",
+    ]
+    for path in curated:
+        path.write_text("curated", encoding="utf-8")
     notebook_generator.write_notebooks()
-    assert path.read_text(encoding="utf-8") == "curated"
+    assert all(path.read_text(encoding="utf-8") == "curated" for path in curated)
+    assert (tmp_path / "README.md").read_text(encoding="utf-8") == Path(
+        "notebooks/README.md"
+    ).read_text(encoding="utf-8")
+
+
+def test_notebook_02_uses_official_l1_and_new_output_directory() -> None:
+    path = Path("notebooks/02_synthetic_sparse_coding_transition.ipynb")
+    notebook = json.loads(path.read_text(encoding="utf-8"))
+    source = _source(notebook)
+
+    assert "L1SAEConfig(d_in=data.x.shape[1], d_sae=width" in source
+    assert "exp02_synthetic_sparse_coding_all_official" in source
+    assert "embedded outputs" in source and "pre-migration" in source
+    assert "official SAELens Standard/L1, TopK, and Gated SAEs" in source
+    assert "deterministic sigmoid-gated SAE" not in source
+    for index, cell in enumerate(notebook["cells"]):
+        if cell["cell_type"] == "code":
+            compile("".join(cell["source"]), f"notebook-02-cell-{index}", "exec")
 
 
 def test_notebook_l1_mask_reuses_training_threshold() -> None:
@@ -80,10 +103,12 @@ def test_notebook_l1_mask_reuses_training_threshold() -> None:
         "to_inference_sae": to_inference_sae,
     }
     exec(compile(helper_source, "notebook-helpers", "exec"), namespace)
-    model = L1ReLUSAE(L1SAEConfig(1, 1, decoder_bias=False))
+    model = L1ReLUSAE(L1SAEConfig(d_in=1, d_sae=1))
     with torch.no_grad():
-        model.encoder.weight.fill_(1.0)
-        model.encoder.bias.zero_()
+        model.W_enc.fill_(1.0)
+        model.W_dec.fill_(1.0)
+        model.b_enc.zero_()
+        model.b_dec.zero_()
     _, mask, info = namespace["latent_values_and_masks"](
         model, torch.tensor([[1.0], [3.0]]), l1_threshold=2.0
     )

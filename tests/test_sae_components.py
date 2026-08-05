@@ -186,7 +186,7 @@ def test_one_step_training_is_finite_for_vg_sae_and_baselines() -> None:
     )
     models = [
         VariationalGarroteSAE(VGSAEConfig(input_dim=4, n_latents=8, lambda_sparsity=0.5)),
-        L1ReLUSAE(L1SAEConfig(input_dim=4, n_latents=8)),
+        L1ReLUSAE(L1SAEConfig(d_in=4, d_sae=8)),
         TopKSAE(TopKSAEConfig(d_in=4, d_sae=8, k=2)),
         BatchTopKSAE(BatchTopKSAEConfig(d_in=4, d_sae=8, k=2)),
         JumpReLUSAE(JumpReLUSAEConfig(d_in=4, d_sae=8)),
@@ -239,3 +239,12 @@ def test_synthetic_sweep_writes_csv_and_figure(tmp_path) -> None:
     assert all(np.isfinite(float(row["mse"])) for row in rows)
     assert {row["beta_mode"] for row in rows} == {"learned"}
     assert {float(row["beta"]) for row in rows} == {1.7}
+    assert {row["model"] for row in rows} == {
+        "vg",
+        "vg_no_variance",
+        "l1",
+        "topk",
+        "batchtopk",
+        "jumprelu",
+        "gated",
+    }

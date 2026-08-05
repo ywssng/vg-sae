@@ -1,4 +1,4 @@
-"""Loss reporting for VG-SAE, local L1, and official SAELens baselines."""
+"""Loss reporting for VG-SAE and official SAELens baselines."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from sae_lens.saes.sae import (
     TrainStepInput,
 )
 
-from .sae_model import L1ReLUSAE, VariationalGarroteSAE
+from .sae_model import VariationalGarroteSAE
 
 
 @dataclass
@@ -75,25 +75,6 @@ def vg_sae_loss_terms(model: VariationalGarroteSAE, x: torch.Tensor) -> VGSAELos
         beta=output["beta_eff"],
         rho=m.mean(),
         v_eff=(m * (1.0 - m)).mean(),
-    )
-
-
-def l1_sae_loss_terms(model: L1ReLUSAE, x: torch.Tensor) -> BaselineSAELossTerms:
-    output = model(x)
-    residual_square = (x - output["x_hat"]).pow(2).sum(dim=1)
-    reconstruction_loss = residual_square.mean()
-    h = output["h"]
-    sparsity_loss = float(model.config.l1_coefficient) * (
-        h.abs() * model.decoder_column_norms()
-    ).sum(dim=1).mean()
-    return BaselineSAELossTerms(
-        loss=reconstruction_loss + sparsity_loss,
-        reconstruction_loss=reconstruction_loss,
-        reconstruction_mse=reconstruction_loss / float(model.config.input_dim),
-        sparsity_loss=sparsity_loss,
-        auxiliary_loss=x.new_zeros(()),
-        rho=h.gt(0).to(x.dtype).mean(),
-        feature_acts=h,
     )
 
 
@@ -178,8 +159,6 @@ def sae_loss_terms(
 ) -> VGSAELossTerms | BaselineSAELossTerms:
     if isinstance(model, VariationalGarroteSAE):
         return vg_sae_loss_terms(model, x)
-    if isinstance(model, L1ReLUSAE):
-        return l1_sae_loss_terms(model, x)
     if isinstance(model, TrainingSAE):
         return saelens_sae_loss_terms(model, x, dead_feature_mask)
     raise TypeError(f"Unsupported SAE model type: {type(model).__name__}")

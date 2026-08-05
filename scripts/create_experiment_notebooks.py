@@ -210,7 +210,9 @@ def synthetic_sparse_coding_notebook() -> dict:
                 """
                 # Experiment 2: Synthetic Sparse-Coding Transition and Baselines
 
-                Proposal target: train VG-SAE on `x = D* z* + noise`, sweep `lambda`, compare against L1-ReLU, TopK, a deterministic sigmoid-gated SAE, and ablate the VG variance term.
+                > Provenance: embedded outputs are pre-migration results from the former local L1 implementation. Rerun all cells to produce the all-official SAELens baseline results in the new output directory.
+
+                Proposal target: train VG-SAE on `x = D* z* + noise`, sweep `lambda`, compare against the official SAELens Standard/L1, TopK, and Gated SAEs, and ablate the VG variance term.
 
                 Logged quantities: MSE, active density, gate entropy, `V_eff`, susceptibility, interference, dead latents, decoder recovery cosine, support precision/recall, and amplitude shrinkage.
                 """
@@ -289,7 +291,7 @@ def synthetic_sparse_coding_notebook() -> dict:
                 def run_baselines(data, width):
                     k = max(1, round(data.support.mean().item() * width))
                     baselines = [
-                        ("l1", L1ReLUSAE(L1SAEConfig(input_dim=data.x.shape[1], n_latents=width, l1_coefficient=1e-3))),
+                        ("l1", L1ReLUSAE(L1SAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
                         ("topk", TopKSAE(TopKSAEConfig(d_in=data.x.shape[1], d_sae=width, k=k))),
                         ("gated", GatedSAE(GatedSAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
                     ]
@@ -339,7 +341,7 @@ def synthetic_sparse_coding_notebook() -> dict:
             ),
             code(
                 """
-                out = OUTPUT_DIR / "exp02_synthetic_sparse_coding"
+                out = OUTPUT_DIR / "exp02_synthetic_sparse_coding_all_official"
                 out.mkdir(parents=True, exist_ok=True)
                 df.to_csv(out / "synthetic_sparse_coding_sweep.csv", index=False)
 
@@ -1182,9 +1184,9 @@ def ioi_notebook() -> dict:
 
 def write_notebooks() -> None:
     NOTEBOOK_DIR.mkdir(parents=True, exist_ok=True)
+    # Notebooks 02 and 07 are curated and intentionally never bulk-regenerated.
     notebooks = {
         "01_non_amortized_vg_sanity_check.ipynb": non_amortized_notebook(),
-        "02_synthetic_sparse_coding_transition.ipynb": synthetic_sparse_coding_notebook(),
         "03_toy_superposition_phase_diagram.ipynb": toy_superposition_notebook(),
         "04_gpt2_small_layer8_residual_stream.ipynb": gpt2_notebook(),
         "05_feature_uncertainty_quality.ipynb": feature_quality_notebook(),
@@ -1201,19 +1203,29 @@ def write_notebooks() -> None:
         These notebooks are split by proposal experiment rather than merged into one file.
 
         1. `01_non_amortized_vg_sanity_check.ipynb`: direct per-sample VG support inference.
-        2. `02_synthetic_sparse_coding_transition.ipynb`: synthetic sparse coding, baselines, and variance-term ablation.
+        2. `02_synthetic_sparse_coding_transition.ipynb`: synthetic sparse coding,
+           all-official SAELens baselines, and variance-term ablation. Embedded outputs
+           predate the L1 migration; reruns write to
+           `outputs/notebooks/exp02_synthetic_sparse_coding_all_official/`.
         3. `03_toy_superposition_phase_diagram.ipynb`: phase diagram over feature-frequency skew and lambda.
         4. `04_gpt2_small_layer8_residual_stream.ipynb`: GPT-2 small layer-8 residual-stream lambda/width sweep.
         5. `05_feature_uncertainty_quality.ipynb`: feature uncertainty versus recovery and seed stability.
         6. `06_ioi_causal_control_case_study.ipynb`: first IOI causal-control patching scaffold.
-        7. `07_synthetic_sparse_coding_rho_model_comparison.ipynb`: manually
-           curated six-way comparison by measured rho_model. The bulk generator
-           preserves it; current outputs use `exp07_saelens_v647_six_method/`,
-           separate from the preserved four-method legacy artifacts.
+        7. `07_synthetic_sparse_coding_rho_model_comparison.ipynb`: six-way VG-SAE,
+           L1-ReLU, TopK, BatchTopK, JumpReLU, and Gated SAE comparison by measured
+           rho_model. The default five-seed/1000-step sweep is a long experiment; use
+           `VGSAE_NOTEBOOK_FAST_DEV_RUN=1` for a smoke run. It writes to
+           `outputs/notebooks/exp07_saelens_v647_all_official/`; embedded outputs and
+           the older `exp07_saelens_v647_six_method/` and
+           `exp07_synthetic_sparse_coding_rho_model_comparison/` artifacts are
+           preserved pre-migration runs. L1 thresholds are calibrated on the
+           training split only, and the full run uses a 100-step dead-feature window.
         8. `08_synthetic_sparse_coding_vg_sparsity_sweep.ipynb`: VG-SAE-only nonnegative gamma sparsity sweep.
-        9. `09_saelens_synthsaebench_rho_model_comparison.ipynb`: official
-           SynthSAEBench streaming-data comparison using pinned SAELens models and
-           evaluator metrics. This notebook is curated and not regenerated here.
+        9. `09_saelens_synthsaebench_rho_model_comparison.ipynb`: six-model comparison
+           on the official SynthSAEBench generator. Training uses reproducible fresh
+           activation streams and evaluation uses SAELens' native synthetic metrics;
+           the default FAST mode is an end-to-end smoke run, while full mode is an
+           exploratory sweep rather than the 200M-sample leaderboard protocol.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """
