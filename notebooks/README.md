@@ -13,13 +13,15 @@ These notebooks are split by proposal experiment rather than merged into one fil
 6. `06_ioi_causal_control_case_study.ipynb`: first IOI causal-control patching scaffold.
 7. `07_synthetic_sparse_coding_rho_model_comparison.ipynb`: six-way VG-SAE,
    L1-ReLU, TopK, BatchTopK, JumpReLU, and Gated SAE comparison by measured
-   rho_model. The default five-seed/1000-step sweep is a long experiment; use
+   rho_model. Full mode is a seed-0/1000-step calibration with paired
+   per-method initialization and empirically calibrated coverage grids; use
    `VGSAE_NOTEBOOK_FAST_DEV_RUN=1` for a smoke run. It writes to
    `outputs/notebooks/exp07_saelens_v647_all_official/`; embedded outputs and
    the older `exp07_saelens_v647_six_method/` and
    `exp07_synthetic_sparse_coding_rho_model_comparison/` artifacts are
-   preserved pre-migration runs. L1 thresholds are calibrated on the
-   training split only, and the full run uses a 100-step dead-feature window.
+   preserved pre-migration runs. L1 thresholds are calibrated on the training
+   split only, and the full run uses a 100-step dead-feature window. This
+   single-seed calibration does not establish cross-seed robustness.
 8. `08_synthetic_sparse_coding_vg_sparsity_sweep.ipynb`: VG-SAE-only nonnegative gamma sparsity sweep.
 9. `09_saelens_synthsaebench_rho_model_comparison.ipynb`: six-model comparison
    on the official SynthSAEBench generator. Training uses reproducible fresh

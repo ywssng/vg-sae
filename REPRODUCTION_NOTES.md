@@ -81,8 +81,18 @@ the paper leaves details open.
   activations and reused unchanged on held-out data. Dead features use the
   SAELens strict `steps_since_fired > window` boundary; notebook 07 sets the
   window to 100 for its 1000-step run (1 for the four-step smoke run), so AuxK
-  is exercised. Revised six-method outputs use a new directory; the original
-  four-method artifacts remain explicitly marked as legacy.
+  is exercised. Full mode is a seed-0 calibration: controls within each method
+  share initialization and batch order, and the recorded `init_seed` is stable
+  when a grid changes. The grids target paired VG density `0.0038--0.962` where
+  feasible. Gated's zero-coefficient run is an unregularized boundary anchor
+  (`rho_model` about `0.984`), not an interior matched-density point. TopK is
+  bounded below near `1 / d_sae`; Standard's train-fitted GMM support reaches
+  only about `0.46`; and JumpReLU reaches about `0.011` but is nonmonotone in its
+  L0 coefficient under this 1000-step protocol. JumpReLU is therefore compared
+  only by measured density, not coefficient order. These seed-calibrated ranges
+  do not establish cross-seed robustness. Revised six-method outputs use a new
+  directory; the original four-method artifacts remain explicitly marked as
+  legacy.
 - **SAE optimizer prior:** `fit_sae` defaults to `weight_decay=0.0`, avoiding an
   extra Gaussian weight prior that is not part of the VG construction.
 
