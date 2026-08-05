@@ -12,10 +12,12 @@ gates, nonnegative amplitudes, unit-norm decoder dictionaries, synthetic
 sparse-coding experiments, baseline SAEs, transition diagnostics, and a small
 GPT-2 residual-stream activation pipeline.
 
-SAELens is pinned to v6.47.0 commit `8be1408`. `L1ReLUSAE`, `TopKSAE`,
+SAELens is pinned to v6.47.0 commit `8be1408`. `StandardSAE`, `TopKSAE`,
 `BatchTopKSAE`, `JumpReLUSAE`, and `GatedSAE` are identity aliases of its
 official training classes; their configs, losses, optimizer steps, and inference
-export are not locally reimplemented.
+export are not locally reimplemented. The project's `StandardSAE` name aliases
+upstream `StandardTrainingSAE`; `to_inference_sae` returns the corresponding
+upstream inference architecture.
 
 ## Quick Start
 

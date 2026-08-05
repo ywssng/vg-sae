@@ -27,10 +27,10 @@ from sae_lens.saes.jumprelu_sae import (
 )
 from sae_lens.saes.sae import TrainCoefficientConfig, TrainingSAE, TrainStepInput
 from sae_lens.saes.standard_sae import (
-    StandardSAE as OfficialL1InferenceSAE,
-    StandardSAEConfig as OfficialL1InferenceSAEConfig,
-    StandardTrainingSAE as OfficialL1SAE,
-    StandardTrainingSAEConfig as OfficialL1SAEConfig,
+    StandardSAE as OfficialStandardInferenceSAE,
+    StandardSAEConfig as OfficialStandardInferenceSAEConfig,
+    StandardTrainingSAE as OfficialStandardTrainingSAE,
+    StandardTrainingSAEConfig as OfficialStandardTrainingSAEConfig,
 )
 from sae_lens.saes.topk_sae import (
     TopKTrainingSAE as OfficialTopKSAE,
@@ -40,6 +40,7 @@ from sae_lens.training.sae_trainer import SAETrainer as OfficialSAETrainer
 
 import src.sae_baselines as baseline_module
 import src.sae_model as model_module
+import src as package_module
 from src.sae_loss import sae_loss_terms, saelens_sae_loss_terms
 from src.sae_model import (
     BatchTopKSAE,
@@ -49,9 +50,9 @@ from src.sae_model import (
     JumpReLU,
     JumpReLUSAE,
     JumpReLUSAEConfig,
-    L1ReLUSAE,
-    L1SAEConfig,
     Step,
+    StandardSAE,
+    StandardSAEConfig,
     TopKSAE,
     TopKSAEConfig,
 )
@@ -71,8 +72,10 @@ def test_saelens_dependency_is_the_reviewed_revision() -> None:
 
 
 def test_public_baselines_and_configs_are_exact_official_objects() -> None:
-    assert L1ReLUSAE is OfficialL1SAE
-    assert L1SAEConfig is OfficialL1SAEConfig
+    assert StandardSAE is OfficialStandardTrainingSAE
+    assert StandardSAEConfig is OfficialStandardTrainingSAEConfig
+    assert package_module.StandardSAE is OfficialStandardTrainingSAE
+    assert package_module.StandardSAEConfig is OfficialStandardTrainingSAEConfig
     assert TopKSAE is OfficialTopKSAE
     assert TopKSAEConfig is OfficialTopKSAEConfig
     assert BatchTopKSAE is OfficialBatchTopKSAE
@@ -89,6 +92,9 @@ def test_public_baselines_and_configs_are_exact_official_objects() -> None:
     assert not hasattr(model_module, "SAEConfig")
     assert not hasattr(model_module, "CenteredLinearSAE")
     assert not hasattr(model_module, "UnitNormDecoderMixin")
+    for module in (package_module, baseline_module, model_module):
+        assert not hasattr(module, "L1ReLUSAE")
+        assert not hasattr(module, "L1SAEConfig")
     assert not hasattr(baseline_module, "SAELensTrainingSAEAdapter")
     assert not hasattr(baseline_module, "unwrap_saelens_training_sae")
 
@@ -103,7 +109,7 @@ def _coefficients(model: TrainingSAE) -> dict[str, float]:
 @pytest.mark.parametrize(
     ("model_type", "config_type", "kwargs"),
     [
-        (L1ReLUSAE, L1SAEConfig, {"l1_coefficient": 0.2}),
+        (StandardSAE, StandardSAEConfig, {"l1_coefficient": 0.2}),
         (TopKSAE, TopKSAEConfig, {"k": 2}),
         (BatchTopKSAE, BatchTopKSAEConfig, {"k": 2.0}),
         (JumpReLUSAE, JumpReLUSAEConfig, {"l0_coefficient": 0.2}),
@@ -150,8 +156,8 @@ def test_read_only_batchtopk_loss_does_not_update_ema() -> None:
     ("model_type", "config_type", "kwargs"),
     [
         pytest.param(
-            L1ReLUSAE,
-            L1SAEConfig,
+            StandardSAE,
+            StandardSAEConfig,
             {"l1_coefficient": 0.2},
             id="standard-l1",
         ),
@@ -220,16 +226,18 @@ def test_batchtopk_exports_to_official_jumprelu_before_folding() -> None:
         assert torch.equal(model.state_dict()[name], expected), name
 
 
-def test_l1_exports_to_official_standard_and_preserves_function() -> None:
-    model = L1ReLUSAE(L1SAEConfig(d_in=2, d_sae=3, l1_coefficient=0.2))
+def test_standard_exports_to_official_inference_sae_and_preserves_function() -> None:
+    model = StandardSAE(
+        StandardSAEConfig(d_in=2, d_sae=3, l1_coefficient=0.2)
+    )
     x = torch.randn(5, 2)
     expected = model(x).detach()
     before = {name: value.clone() for name, value in model.state_dict().items()}
 
     inference = to_inference_sae(model, fold_decoder_norm=True)
 
-    assert type(inference) is OfficialL1InferenceSAE
-    assert type(inference.cfg) is OfficialL1InferenceSAEConfig
+    assert type(inference) is OfficialStandardInferenceSAE
+    assert type(inference.cfg) is OfficialStandardInferenceSAEConfig
     assert torch.allclose(inference.W_dec.norm(dim=1), torch.ones(3))
     assert torch.allclose(inference(x), expected)
     for name, value in before.items():
@@ -239,7 +247,10 @@ def test_l1_exports_to_official_standard_and_preserves_function() -> None:
 @pytest.mark.parametrize(
     ("alias", "expected", "kwargs"),
     [
-        ("l1-relu", OfficialL1SAE, {}),
+        ("standard", OfficialStandardTrainingSAE, {}),
+        ("standard-sae", OfficialStandardTrainingSAE, {}),
+        ("standard_sae", OfficialStandardTrainingSAE, {}),
+        ("l1-relu", OfficialStandardTrainingSAE, {}),
         ("top-k", OfficialTopKSAE, {"k": 2}),
         ("batch_topk", OfficialBatchTopKSAE, {"k": 2.0}),
         ("jump-relu", OfficialJumpReLUSAE, {}),
@@ -257,9 +268,9 @@ def test_builder_is_the_only_legacy_dimension_seam(
     assert model.cfg.d_sae == 6
 
 
-def test_l1_factory_uses_official_standard_defaults() -> None:
-    model = build_sae("l1", input_dim=3, n_latents=6)
+def test_standard_factory_uses_official_defaults() -> None:
+    model = build_sae("standard", input_dim=3, n_latents=6)
 
-    assert type(model) is OfficialL1SAE
+    assert type(model) is OfficialStandardTrainingSAE
     assert model.cfg.l1_coefficient == 1.0
     assert model.cfg.decoder_init_norm == 0.1

@@ -33,8 +33,8 @@ from src.sae_model import (
     GatedSAEConfig,
     JumpReLUSAE,
     JumpReLUSAEConfig,
-    L1ReLUSAE,
-    L1SAEConfig,
+    StandardSAE,
+    StandardSAEConfig,
     TopKSAE,
     TopKSAEConfig,
     VGSAEConfig,
@@ -148,7 +148,14 @@ def append_baselines(
     k = max(1, min(width, round(args.support_density * width)))
     official_dimensions = {"d_in": data.x.shape[1], "d_sae": width}
     baselines = [
-        ("l1", L1ReLUSAE(L1SAEConfig(**official_dimensions, l1_coefficient=1.0e-3))),
+        (
+            "l1",
+            StandardSAE(
+                StandardSAEConfig(
+                    **official_dimensions, l1_coefficient=1.0e-3
+                )
+            ),
+        ),
         ("topk", TopKSAE(TopKSAEConfig(**official_dimensions, k=k))),
         (
             "batchtopk",

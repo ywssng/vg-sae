@@ -23,8 +23,8 @@ from sae_lens.saes.standard_sae import (
 from sae_lens.saes.topk_sae import TopKTrainingSAE, TopKTrainingSAEConfig
 
 # Public baseline names are identities, not wrappers or reimplementations.
-L1ReLUSAE = StandardTrainingSAE
-L1SAEConfig = StandardTrainingSAEConfig
+StandardSAE = StandardTrainingSAE
+StandardSAEConfig = StandardTrainingSAEConfig
 TopKSAE = TopKTrainingSAE
 TopKSAEConfig = TopKTrainingSAEConfig
 BatchTopKSAE = BatchTopKTrainingSAE
@@ -63,9 +63,9 @@ __all__ = [
     "JumpReLUSAEConfig",
     "JumpReLUTrainingSAE",
     "JumpReLUTrainingSAEConfig",
-    "L1ReLUSAE",
-    "L1SAEConfig",
     "Step",
+    "StandardSAE",
+    "StandardSAEConfig",
     "StandardTrainingSAE",
     "StandardTrainingSAEConfig",
     "TopKSAE",

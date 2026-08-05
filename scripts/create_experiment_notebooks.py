@@ -230,7 +230,7 @@ def synthetic_sparse_coding_notebook() -> dict:
                 )
                 from src.sae_model import (
                     GatedSAE, GatedSAEConfig,
-                    L1ReLUSAE, L1SAEConfig,
+                    StandardSAE, StandardSAEConfig,
                     TopKSAE, TopKSAEConfig,
                     VGSAEConfig, VariationalGarroteSAE,
                 )
@@ -291,7 +291,7 @@ def synthetic_sparse_coding_notebook() -> dict:
                 def run_baselines(data, width):
                     k = max(1, round(data.support.mean().item() * width))
                     baselines = [
-                        ("l1", L1ReLUSAE(L1SAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
+                        ("l1", StandardSAE(StandardSAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
                         ("topk", TopKSAE(TopKSAEConfig(d_in=data.x.shape[1], d_sae=width, k=k))),
                         ("gated", GatedSAE(GatedSAEConfig(d_in=data.x.shape[1], d_sae=width, l1_coefficient=1e-3))),
                     ]

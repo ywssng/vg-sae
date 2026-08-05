@@ -11,8 +11,8 @@ from src.sae_model import (
     BatchTopKSAE,
     GatedSAE,
     JumpReLUSAE,
-    L1ReLUSAE,
-    L1SAEConfig,
+    StandardSAE,
+    StandardSAEConfig,
     TopKSAE,
     VariationalGarroteSAE,
 )
@@ -64,12 +64,12 @@ def test_bulk_generator_preserves_curated_notebooks(tmp_path, monkeypatch) -> No
     ).read_text(encoding="utf-8")
 
 
-def test_notebook_02_uses_official_l1_and_new_output_directory() -> None:
+def test_notebook_02_uses_official_standard_and_new_output_directory() -> None:
     path = Path("notebooks/02_synthetic_sparse_coding_transition.ipynb")
     notebook = json.loads(path.read_text(encoding="utf-8"))
     source = _source(notebook)
 
-    assert "L1SAEConfig(d_in=data.x.shape[1], d_sae=width" in source
+    assert "StandardSAEConfig(d_in=data.x.shape[1], d_sae=width" in source
     assert "exp02_synthetic_sparse_coding_all_official" in source
     assert "embedded outputs" in source and "pre-migration" in source
     assert "official SAELens Standard/L1, TopK, and Gated SAEs" in source
@@ -96,14 +96,14 @@ def test_notebook_l1_mask_reuses_training_threshold() -> None:
         "BatchTopKSAE": BatchTopKSAE,
         "GatedSAE": GatedSAE,
         "JumpReLUSAE": JumpReLUSAE,
-        "L1ReLUSAE": L1ReLUSAE,
+        "StandardSAE": StandardSAE,
         "TopKSAE": TopKSAE,
         "TrainingSAE": TrainingSAE,
         "VariationalGarroteSAE": VariationalGarroteSAE,
         "to_inference_sae": to_inference_sae,
     }
     exec(compile(helper_source, "notebook-helpers", "exec"), namespace)
-    model = L1ReLUSAE(L1SAEConfig(d_in=1, d_sae=1))
+    model = StandardSAE(StandardSAEConfig(d_in=1, d_sae=1))
     with torch.no_grad():
         model.W_enc.fill_(1.0)
         model.W_dec.fill_(1.0)

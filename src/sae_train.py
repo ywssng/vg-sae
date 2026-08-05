@@ -23,8 +23,8 @@ from .sae_model import (
     GatedSAEConfig,
     JumpReLUSAE,
     JumpReLUSAEConfig,
-    L1ReLUSAE,
-    L1SAEConfig,
+    StandardSAE,
+    StandardSAEConfig,
     TopKSAE,
     TopKSAEConfig,
     VGSAEConfig,
@@ -288,8 +288,15 @@ def build_sae(kind: str, input_dim: int, n_latents: int, **kwargs: Any) -> torch
             VGSAEConfig(input_dim=input_dim, n_latents=n_latents, **kwargs)
         )
     dimensions = {"d_in": input_dim, "d_sae": n_latents}
-    if normalized in {"l1", "l1-relu", "l1_relu"}:
-        return L1ReLUSAE(L1SAEConfig(**dimensions, **kwargs))
+    if normalized in {
+        "standard",
+        "standard-sae",
+        "standard_sae",
+        "l1",
+        "l1-relu",
+        "l1_relu",
+    }:
+        return StandardSAE(StandardSAEConfig(**dimensions, **kwargs))
     if normalized in {"topk", "top-k", "top_k"}:
         return TopKSAE(TopKSAEConfig(**dimensions, **kwargs))
     if normalized in {"batchtopk", "batch-topk", "batch_topk"}:
@@ -298,4 +305,6 @@ def build_sae(kind: str, input_dim: int, n_latents: int, **kwargs: Any) -> torch
         return JumpReLUSAE(JumpReLUSAEConfig(**dimensions, **kwargs))
     if normalized in {"gated", "gated-sae", "gated_sae"}:
         return GatedSAE(GatedSAEConfig(**dimensions, **kwargs))
-    raise ValueError("kind must be one of: vg, l1, topk, batchtopk, jumprelu, gated.")
+    raise ValueError(
+        "kind must be one of: vg, standard, l1, topk, batchtopk, jumprelu, gated."
+    )

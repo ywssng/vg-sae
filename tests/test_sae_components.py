@@ -17,8 +17,8 @@ from src.sae_model import (
     GatedSAEConfig,
     JumpReLUSAE,
     JumpReLUSAEConfig,
-    L1ReLUSAE,
-    L1SAEConfig,
+    StandardSAE,
+    StandardSAEConfig,
     TopKSAE,
     TopKSAEConfig,
     VGSAEConfig,
@@ -186,7 +186,7 @@ def test_one_step_training_is_finite_for_vg_sae_and_baselines() -> None:
     )
     models = [
         VariationalGarroteSAE(VGSAEConfig(input_dim=4, n_latents=8, lambda_sparsity=0.5)),
-        L1ReLUSAE(L1SAEConfig(d_in=4, d_sae=8)),
+        StandardSAE(StandardSAEConfig(d_in=4, d_sae=8)),
         TopKSAE(TopKSAEConfig(d_in=4, d_sae=8, k=2)),
         BatchTopKSAE(BatchTopKSAEConfig(d_in=4, d_sae=8, k=2)),
         JumpReLUSAE(JumpReLUSAEConfig(d_in=4, d_sae=8)),
