@@ -41,6 +41,43 @@ python -B scripts/run_synthetic_sweep.py \
   --include-baselines
 ```
 
+Reproduce notebook 07 through parallel, resumable jobs instead of training in
+Jupyter:
+
+```bash
+# Edit WANDB_API_KEY in this launcher, or use an existing W&B login.
+python -B runs/run_vg_sae_sweep.py \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1
+
+# Notebook 07 used the final step, so `last` is the reproduction default.
+python -B runs/run_vg_sae_sweep_eval.py \
+  --sweep-dir outputs/runs/exp07_rho_model_comparison \
+  --checkpoint last \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3
+```
+
+Use `--methods vgsae` for one architecture, or `--fast-dev-run --devices cpu
+--no-wandb` for a small local smoke run. Each run stores its resolved config,
+training history, `best.pt` and `last.pt`, plus checkpoint-specific metrics and
+mask arrays. Sweep-level CSVs are written under `summary/`. Open
+`notebooks/10_exp07_parallel_sweep_results.ipynb` after evaluation; it only
+loads artifacts and draws the notebook-07 figures. `best` means the lowest
+full-training objective observed at a history step and is intentionally not
+mixed into the default `last` reproduction.
+
+```text
+outputs/runs/exp07_rho_model_comparison/
+├── sweep_config.json, manifest.json
+├── runs/<method>/<run_id>/
+│   ├── config.json, training_history.csv
+│   ├── checkpoints/{best,last}.pt
+│   └── eval/<checkpoint>/{metrics.json,cache.npz}
+└── summary/
+    ├── training_curves.csv, data_preview.npz
+    └── <checkpoint>/{final_metrics.csv,final_metrics_seed_mean.csv,summary.json}
+```
+
 Cache GPT-2 small layer-8 residual-stream activations, then sweep VG-SAE:
 
 ```bash
@@ -90,6 +127,9 @@ caches into deterministic SAELens data providers. Normalization is a single
 SAELens-compatible scale fitted on training data only. Arrow activation-cache
 rows can be kept together during splitting and selected token IDs can be removed;
 for Pythia-scale runs, use a bounded cache slice or a native streaming store.
+The parallel sweep keeps data selection behind a serialized `kind` boundary so
+SynthSAEBench streams or real activation stores can be added without changing
+the scheduler, checkpoint layout, or plot-only notebook.
 
 ## What Is Improved
 

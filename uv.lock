@@ -1960,6 +1960,7 @@ dependencies = [
     { name = "scipy" },
     { name = "seaborn" },
     { name = "torch" },
+    { name = "wandb" },
 ]
 
 [package.metadata]
@@ -1970,6 +1971,7 @@ requires-dist = [
     { name = "scipy", specifier = ">=1.18.0" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "torch", specifier = ">=2.13.0" },
+    { name = "wandb", specifier = ">=0.28.1" },
 ]
 
 [[package]]

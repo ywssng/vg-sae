@@ -1228,6 +1228,11 @@ def write_notebooks() -> None:
            activation streams and evaluation uses SAELens' native synthetic metrics;
            the default FAST mode is an end-to-end smoke run, while full mode is an
            exploratory sweep rather than the 200M-sample leaderboard protocol.
+        10. `10_exp07_parallel_sweep_results.ipynb`: plot-only reproduction of notebook
+            07 from saved parallel train/eval artifacts under `outputs/runs/`. It
+            defaults to `last` checkpoints for fidelity and writes collision-free
+            figure names; set `VGSAE_SWEEP_DIR` or `VGSAE_CHECKPOINT_KIND` to select a
+            different sweep or the separately tracked `best` results.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """

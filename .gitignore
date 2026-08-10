@@ -32,10 +32,13 @@ AGENTS.md
 
 # Generated experiment artifacts that can become large
 logs/
+wandb/
 outputs/gpt2/
 outputs/checkpoints/
+outputs/runs/**/eval/**/cache.npz
 outputs/.matplotlib/
 *.pt
+*.pt.tmp
 *.pth
 *.ckpt
 *.safetensors

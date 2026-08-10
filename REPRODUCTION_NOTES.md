@@ -93,6 +93,19 @@ the paper leaves details open.
   do not establish cross-seed robustness. Revised six-method outputs use a new
   directory; the original four-method artifacts remain explicitly marked as
   legacy.
+- **Experiment 07 artifact pipeline:** the parallel runner preserves the 163-run
+  grid and uses one subprocess per run so method-paired initialization and batch
+  seeds cannot race. Every run stores resolved data/model/training metadata and
+  both `last` and `best` state dictionaries. `best` is the minimum full-training
+  objective at a recorded history step; notebook 10 evaluates `last` by default
+  because notebook 07 used the final model. Evaluation refits the L1 GMM only on
+  the regenerated training split, persists aligned masks for heatmaps, and
+  aggregates only after worker completion. Source/package fingerprints and the
+  train/eval devices are recorded, and changed evaluator code invalidates old
+  caches. The serialized data `kind` is the extension seam for later
+  SynthSAEBench or real-activation adapters. Notebook 10 deliberately uses the
+  shared method order for heatmap rows instead of notebook 07's accidental
+  alphabetical groupby order.
 - **SAE optimizer prior:** `fit_sae` defaults to `weight_decay=0.0`, avoiding an
   extra Gaussian weight prior that is not part of the VG construction.
 

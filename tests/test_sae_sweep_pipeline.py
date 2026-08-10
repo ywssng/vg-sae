@@ -1,0 +1,151 @@
+import json
+from pathlib import Path
+from types import SimpleNamespace
+
+import torch
+
+from src.sae_model import VGSAEConfig, VariationalGarroteSAE
+from src.sae_sweep import (
+    METHOD_ORDER,
+    RunSpec,
+    SweepConfig,
+    SyntheticDataConfig,
+    TrainingConfig,
+    build_specs,
+    default_sweep_config,
+    load_checkpoint,
+    save_checkpoint,
+)
+from src.sae_train import fit_sae
+from runs._sweep_io import write_json
+from runs.run_vg_sae_sweep import configured_sweep, selected_specs
+from runs.run_vg_sae_sweep_eval import _training_ready
+
+
+def test_exp07_sweep_has_exact_grid_and_paired_initialization() -> None:
+    config = default_sweep_config()
+    specs = build_specs(config)
+    counts = {method: sum(spec.method == method for spec in specs) for method in METHOD_ORDER}
+
+    assert len(specs) == 163
+    assert counts == {
+        "vgsae": 33,
+        "l1": 16,
+        "topk": 32,
+        "batchtopk": 27,
+        "jumprelu": 32,
+        "gated": 23,
+    }
+    for method_index, method in enumerate(METHOD_ORDER):
+        assert {spec.init_seed for spec in specs if spec.method == method} == {
+            100_000 + method_index
+        }
+
+
+def test_sweep_config_and_checkpoint_roundtrip(tmp_path: Path) -> None:
+    config = SweepConfig(
+        experiment_name="test",
+        data=SyntheticDataConfig(input_dim=3, n_features=4, n_train=8, n_test=4),
+        training=TrainingConfig(train_steps=2, history_every=1),
+        seeds=[2],
+        methods=["vgsae"],
+        controls={"vgsae": [0.5]},
+    )
+    restored = SweepConfig.from_dict(config.to_dict())
+    spec = build_specs(restored)[0]
+    model = VariationalGarroteSAE(
+        VGSAEConfig(input_dim=3, n_latents=4, lambda_sparsity=0.5)
+    )
+    checkpoint = tmp_path / "last.pt"
+    save_checkpoint(
+        checkpoint,
+        model=model,
+        config=restored,
+        spec=spec,
+        checkpoint_kind="last",
+        step=1,
+        loss=1.25,
+        metadata={"train_device": "cpu"},
+    )
+
+    loaded, payload = load_checkpoint(checkpoint)
+    assert payload["checkpoint_kind"] == "last"
+    assert payload["metadata"] == {"train_device": "cpu"}
+    assert RunSpec.from_dict(payload["run_spec"]) == spec
+    for name, value in model.state_dict().items():
+        assert torch.equal(loaded.state_dict()[name], value)
+
+
+def test_fit_sae_tracks_best_snapshot_and_streams_history() -> None:
+    generator = torch.Generator().manual_seed(4)
+    x = torch.randn(12, 3, generator=generator)
+    model = VariationalGarroteSAE(VGSAEConfig(input_dim=3, n_latents=5))
+    callbacks = []
+    result = fit_sae(
+        model,
+        x,
+        max_steps=3,
+        batch_size=6,
+        history_every=1,
+        seed=7,
+        history_callback=callbacks.append,
+    )
+
+    assert callbacks == result.history
+    assert result.best_loss == min(row["loss"] for row in result.history)
+    assert result.best_step in {0, 1, 2}
+    assert result.best_state_dict is not None
+    assert all(
+        not value.is_cuda
+        for value in result.best_state_dict.values()
+        if isinstance(value, torch.Tensor)
+    )
+
+
+def test_notebook_10_is_plot_only_and_compiles() -> None:
+    notebook = json.loads(Path("notebooks/10_exp07_parallel_sweep_results.ipynb").read_text())
+    source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
+    assert "run_vg_sae_sweep.py" in source
+    assert "run_vg_sae_sweep_eval.py" in source
+    assert "fit_sae(" not in source
+    assert "evaluate_model(" not in source
+    assert "VGSAE_CHECKPOINT_KIND', 'last'" in source
+    for index, cell in enumerate(notebook["cells"]):
+        if cell["cell_type"] == "code":
+            compile("".join(cell["source"]), f"notebook-10-cell-{index}", "exec")
+
+
+def test_method_filter_selects_tasks_without_narrowing_saved_config() -> None:
+    args = SimpleNamespace(
+        config=None,
+        fast_dev_run=True,
+        methods="vgsae",
+        seeds=None,
+        train_steps=None,
+        history_every=None,
+    )
+    config = configured_sweep(args)
+    specs = selected_specs(config, args.methods)
+
+    assert config.methods == list(METHOD_ORDER)
+    assert len(specs) == 2
+    assert {spec.method for spec in specs} == {"vgsae"}
+
+
+def test_evaluation_rejects_non_complete_training_status(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run"
+    write_json(run_dir / "config.json", {"fingerprint": "current"})
+    write_json(
+        run_dir / "train_status.json",
+        {"state": "complete", "fingerprint": "current"},
+    )
+    checkpoint = run_dir / "checkpoints" / "last.pt"
+    checkpoint.parent.mkdir(parents=True)
+    checkpoint.write_bytes(b"checkpoint")
+    assert _training_ready(run_dir, "last")
+
+    write_json(
+        run_dir / "train_status.json",
+        {"state": "failed", "fingerprint": "current"},
+    )
+    assert not _training_ready(run_dir, "last")

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import copy
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Callable
 
 import numpy as np
 import torch
@@ -37,6 +38,21 @@ from .utils import set_seed
 class SAETrainResult:
     model: torch.nn.Module
     history: list[dict[str, float]]
+    best_state_dict: dict[str, Any] | None = None
+    best_step: int | None = None
+    best_loss: float | None = None
+
+
+HistoryCallback = Callable[[dict[str, float]], None]
+
+
+def _cpu_state_dict(model: torch.nn.Module) -> dict[str, Any]:
+    """Clone a model state without retaining accelerator storage."""
+
+    return {
+        name: value.detach().cpu().clone() if isinstance(value, torch.Tensor) else copy.deepcopy(value)
+        for name, value in model.state_dict().items()
+    }
 
 
 class _CyclingTensorBatches:
@@ -104,6 +120,7 @@ def fit_sae(
     dead_feature_window: int = 1000,
     seed: int = 0,
     verbose: bool = False,
+    history_callback: HistoryCallback | None = None,
 ) -> SAETrainResult:
     if x.ndim != 2:
         raise ValueError(f"Expected x with shape (n_samples, input_dim), got {tuple(x.shape)}.")
@@ -128,6 +145,7 @@ def fit_sae(
             dead_feature_window=dead_feature_window,
             seed=seed,
             verbose=verbose,
+            history_callback=history_callback,
         )
 
     model.to(device=x.device, dtype=x.dtype)
@@ -140,6 +158,9 @@ def fit_sae(
     )
     iterator = iter(loader)
     history: list[dict[str, float]] = []
+    best_state_dict: dict[str, Any] | None = None
+    best_step: int | None = None
+    best_loss: float | None = None
     steps_since_fired = torch.zeros(
         model.config.n_latents, dtype=torch.long, device=x.device  # type: ignore[attr-defined]
     )
@@ -180,6 +201,12 @@ def fit_sae(
                 model.train()
             row = _history_row(step, full_terms, optimizer.param_groups[0]["lr"])
             history.append(row)
+            if best_loss is None or row["loss"] < best_loss:
+                best_state_dict = _cpu_state_dict(model)
+                best_step = step
+                best_loss = row["loss"]
+            if history_callback is not None:
+                history_callback(dict(row))
             if verbose:
                 print(
                     f"step={step:5d} loss={row['loss']:.6g} "
@@ -188,7 +215,13 @@ def fit_sae(
                 )
 
     model.eval()
-    return SAETrainResult(model=model, history=history)
+    return SAETrainResult(
+        model=model,
+        history=history,
+        best_state_dict=best_state_dict,
+        best_step=best_step,
+        best_loss=best_loss,
+    )
 
 
 def _fit_saelens_sae(
@@ -204,6 +237,7 @@ def _fit_saelens_sae(
     dead_feature_window: int,
     seed: int,
     verbose: bool,
+    history_callback: HistoryCallback | None,
 ) -> SAETrainResult:
     """Train through the official optimizer, schedulers, and ``step`` method."""
 
@@ -242,6 +276,9 @@ def _fit_saelens_sae(
         )
 
     history: list[dict[str, float]] = []
+    best_state_dict: dict[str, Any] | None = None
+    best_step: int | None = None
+    best_loss: float | None = None
     for step in range(max_steps):
         trainer.maybe_reset_sparsity()
         trainer.step(next(provider))
@@ -263,6 +300,12 @@ def _fit_saelens_sae(
             if isinstance(model, BatchTopKTrainingSAE):
                 row["threshold"] = float(model.topk_threshold.detach().cpu())
             history.append(row)
+            if best_loss is None or row["loss"] < best_loss:
+                best_state_dict = _cpu_state_dict(model)
+                best_step = step
+                best_loss = row["loss"]
+            if history_callback is not None:
+                history_callback(dict(row))
             if verbose:
                 print(
                     f"step={step:5d} loss={row['loss']:.6g} "
@@ -272,11 +315,24 @@ def _fit_saelens_sae(
         trainer.n_training_steps += 1
 
     if trainer.activation_scaler.scaling_factor is not None:
-        model.fold_activation_norm_scaling_factor(trainer.activation_scaler.scaling_factor)
+        scaling_factor = trainer.activation_scaler.scaling_factor
+        last_state_dict = _cpu_state_dict(model)
+        if best_state_dict is not None:
+            model.load_state_dict(best_state_dict)
+            model.fold_activation_norm_scaling_factor(scaling_factor)
+            best_state_dict = _cpu_state_dict(model)
+        model.load_state_dict(last_state_dict)
+        model.fold_activation_norm_scaling_factor(scaling_factor)
         trainer.activation_scaler.scaling_factor = None
     trainer.set_final_sae_metadata()
     model.eval()
-    return SAETrainResult(model=model, history=history)
+    return SAETrainResult(
+        model=model,
+        history=history,
+        best_state_dict=best_state_dict,
+        best_step=best_step,
+        best_loss=best_loss,
+    )
 
 
 def build_sae(kind: str, input_dim: int, n_latents: int, **kwargs: Any) -> torch.nn.Module:
