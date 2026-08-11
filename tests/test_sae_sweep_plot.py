@@ -7,12 +7,65 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from src.sae_sweep import METHOD_LABELS, METHOD_ORDER
 from src.sae_sweep_plot import (
     _mask_representatives,
     load_sweep_plot_context,
     plot_data_overview,
+    plot_reconstruction_metrics,
+    plot_recovery_metrics,
     plot_sparsity_diagnostics,
+    plot_support_metrics,
+    plot_training_curves,
 )
+
+
+def _all_method_metrics() -> pd.DataFrame:
+    return pd.DataFrame(
+        [
+            {
+                "method": method,
+                "method_label": METHOD_LABELS[method],
+                "control_name": "control",
+                "control_value": float(index),
+                "seed": 0,
+                "rho_model": 0.05 * (index + 1),
+                "explained_variance": 0.8,
+                "reconstruction_error": 0.2,
+                "generalization_error": 0.1,
+                "decoder_recovery_cosine": 0.7,
+                "support_f1": 0.4,
+                "support_average_precision": 0.5,
+                "support_precision": 0.6,
+                "support_recall": 0.3,
+                "selection_error": 0.2,
+                "dead_fraction": 0.1,
+                "average_l0": 2.0,
+                "expected_l0": 1.5,
+            }
+            for index, method in enumerate(METHOD_ORDER)
+        ]
+    )
+
+
+def _assert_single_bottom_legend(figure) -> None:
+    expected = [METHOD_LABELS[method] for method in METHOD_ORDER]
+    assert all(axis.get_legend() is None for axis in figure.axes)
+    assert len(figure.legends) == 1
+    legend = figure.legends[0]
+    assert [text.get_text() for text in legend.get_texts()] == expected
+    assert legend._ncols == len(expected)
+    figure.canvas.draw()
+    legend_box = legend.get_window_extent()
+    assert figure.bbox.contains(legend_box.x0, legend_box.y0)
+    assert figure.bbox.contains(legend_box.x1, legend_box.y1)
+    text_rows = {
+        round(text.get_window_extent().y0, 3) for text in legend.get_texts()
+    }
+    assert len(text_rows) == 1
+    assert all(
+        not legend_box.overlaps(axis.get_window_extent()) for axis in figure.axes
+    )
 
 
 def test_plot_context_separates_ground_truth_and_sae_width(tmp_path) -> None:
@@ -78,6 +131,42 @@ def test_l0_diagnostics_are_normalized_by_sae_width() -> None:
     assert figure.axes[2].lines[0].get_ydata()[0] == pytest.approx(0.5)
     assert figure.axes[3].lines[0].get_ydata()[0] == pytest.approx(0.25)
     assert figure.axes[0].lines[1].get_xdata()[0] == pytest.approx(0.3)
+    plt.close(figure)
+
+
+@pytest.mark.parametrize(
+    "plotter",
+    [
+        plot_reconstruction_metrics,
+        plot_recovery_metrics,
+        plot_support_metrics,
+        plot_sparsity_diagnostics,
+    ],
+)
+def test_metric_figures_use_one_bottom_legend(plotter) -> None:
+    figure = plotter(
+        _all_method_metrics(), target_model_density=0.1, sae_width=4
+    )
+    _assert_single_bottom_legend(figure)
+    plt.close(figure)
+
+
+def test_training_curves_use_one_bottom_legend() -> None:
+    history = pd.DataFrame(
+        [
+            {
+                "method": method,
+                "run_id": f"{method}-0",
+                "step": 0,
+                "loss": 1.0,
+                "reconstruction_mse": 0.5,
+                "rho": 0.1,
+            }
+            for method in METHOD_ORDER
+        ]
+    )
+    figure = plot_training_curves(history)
+    _assert_single_bottom_legend(figure)
     plt.close(figure)
 
 

@@ -112,6 +112,29 @@ def _finish_metric_axis(
     ax.grid(alpha=0.25)
 
 
+def _add_bottom_method_legend(fig, frame: pd.DataFrame) -> None:
+    fig.set_layout_engine("constrained")
+    methods = [
+        method for method in METHOD_ORDER if (frame["method"] == method).any()
+    ]
+    handles = [
+        plt.Line2D([0], [0], color=METHOD_COLORS[method], label=METHOD_LABELS[method])
+        for method in methods
+    ]
+    if not handles:
+        return
+    fig.legend(
+        handles=handles,
+        loc="outside lower center",
+        ncols=len(handles),
+        fontsize=8,
+        frameon=False,
+        handlelength=1.4,
+        handletextpad=0.4,
+        columnspacing=0.8,
+    )
+
+
 def _plot_axes(
     target_model_density: float | None,
     sae_width: int | None,
@@ -171,9 +194,8 @@ def plot_reconstruction_metrics(
             _metric_line(ax, table, method, metric, sae_width)
         _finish_metric_axis(ax, target_model_density, sae_width, label)
     axes[1].set_yscale("log")
-    axes[0].legend(fontsize=8)
     axes[0].yaxis.set_minor_formatter(ticker.NullFormatter())
-    fig.tight_layout()
+    _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
     return fig
 
@@ -200,8 +222,7 @@ def plot_recovery_metrics(
         ax.yaxis.set_minor_formatter(ticker.NullFormatter())
     axes[0].set_yscale("log")
     axes[1].set_ylim(top=1.01)
-    axes[0].legend(fontsize=8)
-    fig.tight_layout()
+    _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
     return fig
 
@@ -234,8 +255,7 @@ def plot_support_metrics(
     for ax in axes[0]:
         ax.set_ylim(-0.01, 0.61)
         ax.set_xlabel("")
-    axes[0, 0].legend(fontsize=8)
-    fig.tight_layout()
+    _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
     return fig
 
@@ -267,8 +287,7 @@ def plot_sparsity_diagnostics(
     density = np.arange(1, sae_width + 1) / sae_width
     for ax in axes[2:]:
         ax.plot(density, density, color="black", linestyle="--", linewidth=1, alpha=0.6)
-    axes[0].legend(fontsize=8)
-    fig.tight_layout()
+    _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
     return fig
 
@@ -286,9 +305,7 @@ def plot_training_curves(history: pd.DataFrame, output_path: Path | str | None =
                 ax.plot(run["step"], run[metric], color=METHOD_COLORS[method], alpha=0.35, linewidth=1)
         ax.set(xlabel="step", ylabel=label)
         ax.grid(alpha=0.25)
-    handles = [plt.Line2D([0], [0], color=METHOD_COLORS[m], label=METHOD_LABELS[m]) for m in METHOD_ORDER]
-    axes[0].legend(handles=handles, fontsize=8)
-    fig.tight_layout()
+    _add_bottom_method_legend(fig, history)
     _save(fig, output_path)
     return fig
 
