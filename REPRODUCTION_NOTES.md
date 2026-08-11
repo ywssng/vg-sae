@@ -87,7 +87,10 @@ the paper leaves details open.
   dictionary coherence, correlated firing, or hierarchy.
   `ground_truth_num_features` sets the generating dictionary width, while
   `sae_width` independently sets the learned latent width. Legacy `n_features`
-  sweep configs remain readable and set both widths.
+  sweep configs remain readable and set both widths. The default matched
+  baseline uses `input_dim=16`, `ground_truth_num_features=128`, and
+  `sae_width=128`; its full TopK grid is `1..128`, and the BatchTopK grid spans
+  the corresponding dense regime through `k=128`.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is
   `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it
@@ -133,6 +136,12 @@ the paper leaves details open.
   SynthSAEBench or real-activation adapters. Notebook 10 deliberately uses the
   shared method order for heatmap rows instead of notebook 07's accidental
   alphabetical groupby order.
+- **uv GPU environment:** Linux `uv` resolution takes PyTorch 2.13 from the
+  official CUDA 12.6 wheel index. This keeps the project compatible with the
+  installed NVIDIA driver while preserving the locked PyTorch version. The SAE
+  sweep launcher reads `WANDB_API_KEY` from the ignored project-root `.env`
+  without overriding an explicitly exported value; credentials are never part
+  of sweep configs or artifact fingerprints.
 - **SAE optimizer prior:** `fit_sae` defaults to `weight_decay=0.0`, avoiding an
   extra Gaussian weight prior that is not part of the VG construction.
 

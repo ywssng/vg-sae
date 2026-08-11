@@ -46,11 +46,13 @@ FULL_CONTROLS: dict[str, list[float | int]] = {
     ],
     "l1": [5.0, 4.5, 3.5, 3.0, 2.0, 1.0, 0.5, 0.3, 0.25, 0.2, 0.1,
            0.05, 0.02, 0.002, 0.0003, 0.0],
-    "topk": list(range(1, 33)),
+    "topk": list(range(1, 129)),
     "batchtopk": [
         0.0625, 0.09375, 0.125, 0.1875, 0.25, 0.5, 0.75, 1.0, 1.5,
         2.0, 3.0, 4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 18.0,
-        20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 31.0, 32.0,
+        20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 31.0, 32.0, 36.0,
+        40.0, 48.0, 56.0, 64.0, 72.0, 80.0, 88.0, 96.0, 104.0,
+        112.0, 120.0, 124.0, 128.0,
     ],
     "jumprelu": [
         30.0, 10.0, 5.0, 4.3, 4.25, 4.2, 4.1, 4.0, 3.5, 3.0, 2.0,
@@ -119,7 +121,7 @@ class SyntheticDataConfig:
         n_features: int | None = None,
     ) -> None:
         if ground_truth_num_features is None:
-            ground_truth_num_features = 32 if n_features is None else n_features
+            ground_truth_num_features = 128 if n_features is None else n_features
         elif n_features is not None and ground_truth_num_features != n_features:
             raise ValueError(
                 "ground_truth_num_features and legacy n_features disagree."

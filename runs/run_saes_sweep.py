@@ -7,6 +7,8 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -40,7 +42,6 @@ from src.utils import set_seed  # noqa: E402
 
 
 WANDB_PROJECT = "vg-sae"
-WANDB_API_KEY = "paste-your-wandb-api-key-here"
 TRAIN_SOURCE_FILES = (
     "runs/_sweep_io.py",
     "runs/run_saes_sweep.py",
@@ -53,6 +54,12 @@ TRAIN_SOURCE_FILES = (
     "src/saelens_vg.py",
     "src/utils.py",
 )
+
+
+def _load_project_env() -> None:
+    """Load local secrets without overriding explicitly exported variables."""
+
+    load_dotenv(PROJECT_ROOT / ".env", override=False)
 
 
 def parse_args() -> argparse.Namespace:
@@ -218,17 +225,15 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path, mode: str):
         return None
     import wandb
 
-    if WANDB_API_KEY != "paste-your-wandb-api-key-here":
-        os.environ.setdefault("WANDB_API_KEY", WANDB_API_KEY)
-    elif mode == "online" and not os.getenv("WANDB_API_KEY"):
+    if mode == "online" and not os.getenv("WANDB_API_KEY"):
         try:
             existing_key = wandb.Api().api_key
         except Exception:
             existing_key = None
         if not existing_key:
             raise RuntimeError(
-                "W&B is not authenticated. Set WANDB_API_KEY, edit WANDB_API_KEY in "
-                "this script, or pass --no-wandb."
+                "W&B is not authenticated. Set WANDB_API_KEY in .env or the shell, "
+                "run `wandb login`, or pass --no-wandb."
             )
     sweep_dir = next(
         (parent for parent in run_dir.parents if (parent / "manifest.json").exists()),
@@ -249,8 +254,6 @@ def _preflight_wandb(mode: str) -> None:
         return
     import wandb
 
-    if WANDB_API_KEY != "paste-your-wandb-api-key-here":
-        os.environ.setdefault("WANDB_API_KEY", WANDB_API_KEY)
     if os.getenv("WANDB_API_KEY"):
         return
     try:
@@ -259,8 +262,8 @@ def _preflight_wandb(mode: str) -> None:
         existing_key = None
     if not existing_key:
         raise RuntimeError(
-            "W&B is not authenticated. Set WANDB_API_KEY, edit WANDB_API_KEY in "
-            "this script, or pass --no-wandb."
+            "W&B is not authenticated. Set WANDB_API_KEY in .env or the shell, "
+            "run `wandb login`, or pass --no-wandb."
         )
 
 
@@ -472,6 +475,7 @@ def prepare_runs(
 
 
 def main(args: argparse.Namespace) -> int:
+    _load_project_env()
     if args.worker:
         if args.run_dir is None:
             raise ValueError("--worker requires --run-dir.")

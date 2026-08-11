@@ -45,23 +45,18 @@ Run the Stage-1 custom baseline through parallel, resumable jobs instead of
 training in Jupyter:
 
 ```bash
-# Edit WANDB_API_KEY in this launcher, or use an existing W&B login.
-python -B runs/run_saes_sweep.py \
-  --output-dir outputs/runs/stage1_custom_baseline \
-  --input-dim 16 \
-  --ground-truth-num-features 32 \
-  --sae-width 32 \
-  --support-density 0.1 \
-  --seed 0 \
-  --model-sparsity-control vgsae=-5,-2,0,2,5 \
+# WANDB_API_KEY is read from the ignored project-root .env.
+uv run python -B runs/run_saes_sweep.py \
+  --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1
+  --max-per-device 16 \
+  --seed 1
 
 # Notebook 07 used the final step, so `last` is the reproduction default.
-python -B runs/run_saes_sweep_eval.py \
-  --sweep-dir outputs/runs/stage1_custom_baseline \
-  --checkpoint last \
-  --devices cuda:0,cuda:1,cuda:2,cuda:3
+uv run python -B runs/run_saes_sweep_eval.py \
+  --methods all \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 16
 ```
 
 The Stage-1 data is a noiseless linear mixture of an overcomplete random unit
@@ -72,7 +67,8 @@ are rejected. Supports are independent, and active
 amplitudes are nonnegative `Exponential(scale=1)` draws. There is no added
 dictionary coherence, correlated firing, or hierarchy.
 `ground_truth_num_features` controls the data dictionary while `sae_width`
-independently controls the learned latent width.
+independently controls the learned latent width. Their defaults are
+`input_dim=16`, `ground_truth_num_features=128`, and `sae_width=128`.
 
 One output directory represents one fixed data condition. Sweep seeds with
 `--seeds 0,1,2` and add repeatable controls such as

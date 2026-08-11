@@ -7,9 +7,21 @@ requires-python = ">=3.14"
 dependencies = [
     "matplotlib>=3.11.1",
     "numpy>=2.5.1",
+    "python-dotenv>=1.2.2",
     "sae-lens @ git+https://github.com/decoderesearch/SAELens.git@8be14080485952f729ed58d674bcddf9778e0aa4",
+    "scikit-learn>=1.9.0",
     "scipy>=1.18.0",
     "seaborn>=0.13.2",
     "torch>=2.13.0",
     "wandb>=0.28.1",
 ]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu126", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true

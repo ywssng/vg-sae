@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -22,17 +23,20 @@ from runs.run_saes_sweep import configured_sweep, selected_specs
 from runs.run_saes_sweep_eval import _training_ready
 
 
-def test_exp07_sweep_has_exact_grid_and_paired_initialization() -> None:
+def test_default_sweep_uses_128_wide_full_grid_and_paired_initialization() -> None:
     config = default_sweep_config()
     specs = build_specs(config)
     counts = {method: sum(spec.method == method for spec in specs) for method in METHOD_ORDER}
 
-    assert len(specs) == 163
+    assert config.data.input_dim == 16
+    assert config.data.ground_truth_num_features == 128
+    assert config.data.sae_width == 128
+    assert len(specs) == 273
     assert counts == {
         "vgsae": 33,
         "l1": 16,
-        "topk": 32,
-        "batchtopk": 27,
+        "topk": 128,
+        "batchtopk": 41,
         "jumprelu": 32,
         "gated": 23,
     }
@@ -40,6 +44,24 @@ def test_exp07_sweep_has_exact_grid_and_paired_initialization() -> None:
         assert {spec.init_seed for spec in specs if spec.method == method} == {
             100_000 + method_index
         }
+
+
+def test_wandb_credentials_are_loaded_only_from_local_environment(
+    tmp_path: Path, monkeypatch
+) -> None:
+    from runs.run_saes_sweep import _load_project_env
+
+    env_path = tmp_path / ".env"
+    env_path.write_text("WANDB_API_KEY=from-file\n")
+    monkeypatch.setattr("runs.run_saes_sweep.PROJECT_ROOT", tmp_path)
+    monkeypatch.delenv("WANDB_API_KEY", raising=False)
+
+    _load_project_env()
+    assert os.environ["WANDB_API_KEY"] == "from-file"
+
+    monkeypatch.setenv("WANDB_API_KEY", "from-shell")
+    _load_project_env()
+    assert os.environ["WANDB_API_KEY"] == "from-shell"
 
 
 def test_sweep_config_and_checkpoint_roundtrip(tmp_path: Path) -> None:
