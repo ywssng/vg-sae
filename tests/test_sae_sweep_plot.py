@@ -55,6 +55,8 @@ def _assert_single_bottom_legend(figure) -> None:
     legend = figure.legends[0]
     assert [text.get_text() for text in legend.get_texts()] == expected
     assert legend._ncols == len(expected)
+    assert legend.get_frame_on()
+    assert all(handle.get_marker() == "o" for handle in legend.legend_handles)
     figure.canvas.draw()
     legend_box = legend.get_window_extent()
     assert figure.bbox.contains(legend_box.x0, legend_box.y0)

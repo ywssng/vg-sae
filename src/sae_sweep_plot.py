@@ -118,7 +118,14 @@ def _add_bottom_method_legend(fig, frame: pd.DataFrame) -> None:
         method for method in METHOD_ORDER if (frame["method"] == method).any()
     ]
     handles = [
-        plt.Line2D([0], [0], color=METHOD_COLORS[method], label=METHOD_LABELS[method])
+        plt.Line2D(
+            [0],
+            [0],
+            color=METHOD_COLORS[method],
+            marker="o",
+            linewidth=1,
+            label=METHOD_LABELS[method],
+        )
         for method in methods
     ]
     if not handles:
@@ -128,7 +135,7 @@ def _add_bottom_method_legend(fig, frame: pd.DataFrame) -> None:
         loc="outside lower center",
         ncols=len(handles),
         fontsize=8,
-        frameon=False,
+        frameon=True,
         handlelength=1.4,
         handletextpad=0.4,
         columnspacing=0.8,
