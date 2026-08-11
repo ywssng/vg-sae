@@ -88,9 +88,12 @@ the paper leaves details open.
   `ground_truth_num_features` sets the generating dictionary width, while
   `sae_width` independently sets the learned latent width. Legacy `n_features`
   sweep configs remain readable and set both widths. The default matched
-  baseline uses `input_dim=16`, `ground_truth_num_features=128`, and
-  `sae_width=128`; its full TopK grid is `1..128`, and the BatchTopK grid spans
-  the corresponding dense regime through `k=128`.
+  baseline uses `input_dim=128`, `ground_truth_num_features=1024`,
+  `sae_width=1024`, and `support_density=0.01` (expected true L0 `10.24`). Its
+  calibrated TopK and BatchTopK grids currently span `k<=128`. Sweep output
+  directories and W&B groups use a resolved-config ID such as
+  `stage1_din128_gt1024_sae1024_sd001_seed0`; the manifest fingerprint remains
+  the guard for config axes omitted from this readable ID.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is
   `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it

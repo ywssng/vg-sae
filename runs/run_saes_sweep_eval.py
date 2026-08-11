@@ -27,6 +27,7 @@ from src.sae_sweep import (  # noqa: E402
     METHOD_ORDER,
     RunSpec,
     SweepConfig,
+    default_sweep_dir,
     default_sweep_config,
     load_checkpoint,
     make_train_test,
@@ -318,8 +319,8 @@ def main(args: argparse.Namespace) -> int:
             raise
         return 0
 
-    default_name = default_sweep_config(args.fast_dev_run).experiment_name
-    default_dir = PROJECT_ROOT / "outputs" / "runs" / default_name
+    default_config = default_sweep_config(args.fast_dev_run)
+    default_dir = default_sweep_dir(PROJECT_ROOT, default_config)
     sweep_dir = (args.sweep_dir or default_dir).resolve()
     run_dirs = _selected_run_dirs(sweep_dir, args.methods)
     invalid = [

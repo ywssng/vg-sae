@@ -31,6 +31,7 @@ from src.sae_sweep import (  # noqa: E402
     SweepConfig,
     build_model,
     build_specs,
+    default_sweep_dir,
     default_sweep_config,
     make_train_test,
     run_directory,
@@ -490,7 +491,7 @@ def main(args: argparse.Namespace) -> int:
 
     config = configured_sweep(args)
     specs = selected_specs(config, args.methods)
-    default_dir = PROJECT_ROOT / "outputs" / "runs" / config.experiment_name
+    default_dir = default_sweep_dir(PROJECT_ROOT, config)
     sweep_dir = (args.output_dir or default_dir).resolve()
     tasks, run_dirs = prepare_runs(
         sweep_dir, config, specs, args.force, args.wandb_mode

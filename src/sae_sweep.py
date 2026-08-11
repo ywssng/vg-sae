@@ -107,12 +107,12 @@ class SyntheticDataConfig:
     def __init__(
         self,
         kind: str = STAGE1_DATA_KIND,
-        input_dim: int = 16,
+        input_dim: int = 128,
         ground_truth_num_features: int | None = None,
         sae_width: int | None = None,
-        n_train: int = 512,
-        n_test: int = 512,
-        support_density: float = 0.1,
+        n_train: int = 8196,
+        n_test: int = 1024,
+        support_density: float = 0.01,
         coherence: float = 0.0,
         noise_std: float = 0.0,
         frequency_skew: float = 0.5,
@@ -121,7 +121,7 @@ class SyntheticDataConfig:
         n_features: int | None = None,
     ) -> None:
         if ground_truth_num_features is None:
-            ground_truth_num_features = 128 if n_features is None else n_features
+            ground_truth_num_features = 1024 if n_features is None else n_features
         elif n_features is not None and ground_truth_num_features != n_features:
             raise ValueError(
                 "ground_truth_num_features and legacy n_features disagree."
@@ -283,6 +283,42 @@ class SweepConfig:
         config = cls(**payload)
         config.validate()
         return config
+
+
+def _density_token(value: float) -> str:
+    whole, _, fraction = f"{value:.12f}".rstrip("0").rstrip(".").partition(".")
+    return f"{whole}{fraction.ljust(2, '0')}"
+
+
+def sweep_experiment_id(config: SweepConfig) -> str:
+    """Build the readable directory and W&B group ID for one data condition."""
+
+    prefixes = {
+        "stage1_custom_baseline": "stage1",
+        "stage1_custom_baseline_fast": "stage1_fast",
+    }
+    prefix = prefixes.get(config.experiment_name, config.experiment_name)
+    prefix = "_".join(
+        "".join(
+            character if character.isalnum() else " " for character in prefix
+        ).split()
+    )
+    seeds = config.seeds
+    seed_token = (
+        f"seed{seeds[0]}"
+        if len(seeds) == 1
+        else "seeds" + "-".join(str(seed) for seed in seeds)
+    )
+    data = config.data
+    return (
+        f"{prefix}_din{data.input_dim}_gt{data.ground_truth_num_features}"
+        f"_sae{data.sae_width}_sd{_density_token(data.support_density)}"
+        f"_{seed_token}"
+    )
+
+
+def default_sweep_dir(project_root: Path | str, config: SweepConfig) -> Path:
+    return Path(project_root) / "outputs" / "runs" / sweep_experiment_id(config)
 
 
 @dataclass(frozen=True)

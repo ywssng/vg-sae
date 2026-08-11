@@ -49,8 +49,7 @@ training in Jupyter:
 uv run python -B runs/run_saes_sweep.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 16 \
-  --seed 1
+  --max-per-device 16
 
 # Notebook 07 used the final step, so `last` is the reproduction default.
 uv run python -B runs/run_saes_sweep_eval.py \
@@ -68,14 +67,23 @@ amplitudes are nonnegative `Exponential(scale=1)` draws. There is no added
 dictionary coherence, correlated firing, or hierarchy.
 `ground_truth_num_features` controls the data dictionary while `sae_width`
 independently controls the learned latent width. Their defaults are
-`input_dim=16`, `ground_truth_num_features=128`, and `sae_width=128`.
+`input_dim=128`, `ground_truth_num_features=1024`, and `sae_width=1024`, with
+`support_density=0.01` (expected true L0 `10.24`).
+
+The default output directory and W&B group are derived from the resolved data
+config, for example
+`stage1_din128_gt1024_sae1024_sd001_seed0`. An explicit `--output-dir` still
+overrides it. The no-argument eval command resolves the same default config;
+when training with CLI overrides, pass its resolved directory to eval with
+`--sweep-dir`.
 
 One output directory represents one fixed data condition. Sweep seeds with
 `--seeds 0,1,2` and add repeatable controls such as
-`--model-sparsity-control topk=1,2,4`; use a separate output directory when a
-data dimension or density changes. Use `--methods vgsae` for one architecture,
-or `--fast-dev-run --devices cpu --no-wandb` for a small local smoke run. Each
-run stores its resolved config, training history, `best.pt` and `last.pt`, plus
+`--model-sparsity-control topk=1,2,4`. Data dimension and density changes get a
+new automatic directory; for other config changes, use an explicit
+`--output-dir`. Use `--methods vgsae` for one architecture, or
+`--fast-dev-run --devices cpu --no-wandb` for a small local smoke run. Each run
+stores its resolved config, training history, `best.pt` and `last.pt`, plus
 checkpoint-specific metrics and mask arrays. Sweep-level CSVs are written under
 `summary/`. Open
 `notebooks/10_exp07_parallel_sweep_results.ipynb` after evaluation; it only
@@ -84,7 +92,7 @@ full-training objective observed at a history step and is intentionally not
 mixed into the default `last` reproduction.
 
 ```text
-outputs/runs/stage1_custom_baseline/
+outputs/runs/stage1_din128_gt1024_sae1024_sd001_seed0/
 ├── sweep_config.json, manifest.json
 ├── runs/<method>/<run_id>/
 │   ├── config.json, training_history.csv

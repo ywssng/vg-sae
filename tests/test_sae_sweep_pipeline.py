@@ -14,9 +14,11 @@ from src.sae_sweep import (
     SyntheticDataConfig,
     TrainingConfig,
     build_specs,
+    default_sweep_dir,
     default_sweep_config,
     load_checkpoint,
     save_checkpoint,
+    sweep_experiment_id,
 )
 from src.sae_train import fit_sae
 from runs._sweep_io import write_json
@@ -24,14 +26,18 @@ from runs.run_saes_sweep import _preflight_wandb, configured_sweep, selected_spe
 from runs.run_saes_sweep_eval import _training_ready
 
 
-def test_default_sweep_uses_128_wide_full_grid_and_paired_initialization() -> None:
+def test_default_sweep_uses_current_full_grid_and_paired_initialization() -> None:
     config = default_sweep_config()
     specs = build_specs(config)
     counts = {method: sum(spec.method == method for spec in specs) for method in METHOD_ORDER}
 
-    assert config.data.input_dim == 16
-    assert config.data.ground_truth_num_features == 128
-    assert config.data.sae_width == 128
+    assert config.data.input_dim == 128
+    assert config.data.ground_truth_num_features == 1024
+    assert config.data.sae_width == 1024
+    assert config.data.n_train == 8196
+    assert config.data.n_test == 1024
+    assert config.data.support_density == pytest.approx(0.01)
+    assert config.data.frequency_skew == pytest.approx(0.5)
     assert len(specs) == 273
     assert counts == {
         "vgsae": 33,
@@ -45,6 +51,53 @@ def test_default_sweep_uses_128_wide_full_grid_and_paired_initialization() -> No
         assert {spec.init_seed for spec in specs if spec.method == method} == {
             100_000 + method_index
         }
+
+
+def test_config_derived_experiment_id_and_default_directory(tmp_path: Path) -> None:
+    config = SweepConfig(
+        data=SyntheticDataConfig(
+            input_dim=32,
+            ground_truth_num_features=256,
+            sae_width=128,
+            support_density=0.1,
+        ),
+        seeds=[1],
+    )
+
+    experiment_id = sweep_experiment_id(config)
+
+    assert experiment_id == "stage1_din32_gt256_sae128_sd010_seed1"
+    assert default_sweep_dir(tmp_path, config) == (
+        tmp_path / "outputs" / "runs" / experiment_id
+    )
+
+
+@pytest.mark.parametrize(
+    ("density", "token"), [(0.1, "010"), (0.05, "005"), (0.125, "0125")]
+)
+def test_experiment_id_density_and_multiple_seed_tokens(
+    density: float, token: str
+) -> None:
+    config = SweepConfig(
+        data=SyntheticDataConfig(
+            input_dim=32,
+            ground_truth_num_features=256,
+            sae_width=128,
+            support_density=density,
+        ),
+        seeds=[0, 2, 5],
+    )
+
+    assert sweep_experiment_id(config).endswith(f"_sd{token}_seeds0-2-5")
+
+
+def test_current_full_and_fast_experiment_ids_are_distinct() -> None:
+    assert sweep_experiment_id(default_sweep_config()) == (
+        "stage1_din128_gt1024_sae1024_sd001_seed0"
+    )
+    assert sweep_experiment_id(default_sweep_config(fast=True)) == (
+        "stage1_fast_din128_gt1024_sae1024_sd001_seed0"
+    )
 
 
 def test_wandb_credentials_are_loaded_only_from_local_environment(
