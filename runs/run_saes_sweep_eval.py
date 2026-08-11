@@ -1,4 +1,4 @@
-"""Evaluate saved Experiment 07 checkpoints as independent, parallel jobs."""
+"""Evaluate saved Stage-1 custom-baseline checkpoints in parallel."""
 
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ from src.sae_sweep import (  # noqa: E402
     METHOD_ORDER,
     RunSpec,
     SweepConfig,
+    default_sweep_config,
     load_checkpoint,
     make_train_test,
 )
@@ -35,7 +36,7 @@ from src.sae_sweep_eval import evaluate_model  # noqa: E402
 
 EVAL_SOURCE_FILES = (
     "runs/_sweep_io.py",
-    "runs/run_vg_sae_sweep_eval.py",
+    "runs/run_saes_sweep_eval.py",
     "src/evaluate.py",
     "src/sae_baselines.py",
     "src/sae_data.py",
@@ -51,8 +52,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--fast-dev-run", action="store_true")
     parser.add_argument("--checkpoint", choices=("last", "best"), default="last")
     parser.add_argument("--methods", default="all", help="Comma-separated methods, or all.")
-    parser.add_argument("--devices", default="auto", help="auto, cpu, or cuda:0,cuda:1,...")
-    parser.add_argument("--max-per-device", type=int, default=1)
+    parser.add_argument("--devices", default="cuda:0,cuda:1,cuda:2,cuda:3", help="auto, cpu, or cuda:0,cuda:1,...")
+    parser.add_argument("--max-per-device", type=int, default=16)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--run-dir", type=Path, help=argparse.SUPPRESS)
@@ -77,8 +78,11 @@ def _training_ready(run_dir: Path, checkpoint_kind: str) -> bool:
         return False
     bundle = read_json(config_path)
     status = read_json(status_path)
-    return status.get("state") == "complete" and status.get("fingerprint") == bundle.get(
-        "fingerprint"
+    return (
+        status.get("state") == "complete"
+        and status.get("fingerprint") == bundle.get("fingerprint")
+        and (run_dir / "training_history.csv").exists()
+        and (run_dir / "training_summary.json").exists()
     )
 
 
@@ -124,9 +128,10 @@ def evaluate_one(run_dir: Path, checkpoint_kind: str, device: str, force: bool) 
 
     model, payload = load_checkpoint(checkpoint_path, device)
     checkpoint_metadata = payload.get("metadata", {})
+    checkpoint_config = SweepConfig.from_dict(payload["sweep_config"])
     if (
-        payload["run_spec"] != spec.to_dict()
-        or payload["sweep_config"] != config.to_dict()
+        RunSpec.from_dict(payload["run_spec"]) != spec
+        or checkpoint_config.to_dict() != config.to_dict()
         or payload.get("checkpoint_kind") != checkpoint_kind
         or checkpoint_metadata.get("train_fingerprint") != bundle["fingerprint"]
     ):
@@ -141,6 +146,9 @@ def evaluate_one(run_dir: Path, checkpoint_kind: str, device: str, force: bool) 
         eval_device=device,
         train_source_fingerprint=checkpoint_metadata["train_provenance"][
             "source_fingerprint"
+        ],
+        train_pipeline_fingerprint=checkpoint_metadata["train_provenance"][
+            "pipeline_fingerprint"
         ],
         eval_source_fingerprint=provenance["source_fingerprint"],
     )
@@ -165,6 +173,8 @@ def _selected_run_dirs(sweep_dir: Path, methods: str) -> list[Path]:
     if methods == "all":
         return run_dirs
     requested = {value.strip().lower() for value in methods.split(",") if value.strip()}
+    if not requested:
+        raise ValueError("--methods must name at least one method or use 'all'.")
     selected = []
     for run_dir in run_dirs:
         spec = RunSpec.from_dict(read_json(run_dir / "config.json")["spec"])
@@ -200,9 +210,12 @@ def _aggregate(
     ]
     metric_rows.sort(key=_metric_sort_key)
     train_fingerprints = {row["train_source_fingerprint"] for row in metric_rows}
-    if len(train_fingerprints) != 1:
+    train_pipeline_fingerprints = {
+        row["train_pipeline_fingerprint"] for row in metric_rows
+    }
+    if len(train_fingerprints) != 1 or len(train_pipeline_fingerprints) != 1:
         raise ValueError(
-            "Refusing to aggregate runs trained by different source versions. "
+            "Refusing to aggregate runs trained by different source or package versions. "
             "Use a new sweep directory or retrain every method with --force."
         )
     checkpoint_summary = summary_dir / checkpoint_kind
@@ -215,6 +228,7 @@ def _aggregate(
             "n_evaluated_runs": len(run_dirs),
             "methods": sorted({row["method"] for row in metric_rows}),
             "train_source_fingerprint": next(iter(train_fingerprints)),
+            "train_pipeline_fingerprint": next(iter(train_pipeline_fingerprints)),
             "eval_fingerprint": eval_status["eval_fingerprint"],
             "eval_provenance": eval_status["eval_provenance"],
             "generated_at": utc_now(),
@@ -222,7 +236,19 @@ def _aggregate(
     )
 
     metrics = pd.DataFrame(metric_rows)
-    groups = ["method", "method_label", "control_name", "control_value"]
+    data_axes = [
+        "input_dim",
+        "ground_truth_num_features",
+        "sae_width",
+        "support_density",
+    ]
+    groups = [
+        *[column for column in data_axes if column in metrics],
+        "method",
+        "method_label",
+        "control_name",
+        "control_value",
+    ]
     numeric = [
         column
         for column in metrics.select_dtypes(include=np.number).columns
@@ -265,7 +291,15 @@ def _aggregate(
         feature_probabilities=train_data.feature_probabilities.cpu().numpy(),
         dictionary=train_data.dictionary.cpu().numpy(),
         z0=train_data.z[0].cpu().numpy(),
-        coherence=config.data.coherence,
+        input_dim=config.data.input_dim,
+        ground_truth_num_features=config.data.ground_truth_num_features,
+        sae_width=config.data.sae_width,
+        support_density=config.data.support_density,
+        frequency_skew=config.data.frequency_skew,
+        amplitude_scale=config.data.amplitude_scale,
+        target_model_density=float(
+            train_data.feature_probabilities.sum() / config.data.sae_width
+        ),
     )
 
 
@@ -284,8 +318,8 @@ def main(args: argparse.Namespace) -> int:
             raise
         return 0
 
-    suffix = "_fast" if args.fast_dev_run else ""
-    default_dir = PROJECT_ROOT / "outputs" / "runs" / f"exp07_rho_model_comparison{suffix}"
+    default_name = default_sweep_config(args.fast_dev_run).experiment_name
+    default_dir = PROJECT_ROOT / "outputs" / "runs" / default_name
     sweep_dir = (args.sweep_dir or default_dir).resolve()
     run_dirs = _selected_run_dirs(sweep_dir, args.methods)
     invalid = [

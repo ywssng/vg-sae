@@ -10,18 +10,79 @@ import torch
 from .utils import as_tensor
 
 
-@dataclass
+@dataclass(init=False)
 class SyntheticSparseCodingConfig:
-    input_dim: int = 16
-    n_features: int = 64
-    n_samples: int = 1024
-    support_density: float = 0.05
-    coherence: float = 0.0
-    noise_std: float = 0.03
-    frequency_skew: float = 0.0
-    amplitude_scale: float = 1.0
-    seed: int = 0
-    dtype: torch.dtype | str = torch.float32
+    """Configuration for the generic sparse-coding data generator.
+
+    ``n_features`` remains an accepted constructor alias so older callers can
+    migrate. Stage 1 invariants are enforced by ``SweepConfig`` rather than by
+    this reusable generator.
+    """
+
+    input_dim: int
+    ground_truth_num_features: int
+    n_samples: int
+    support_density: float
+    coherence: float
+    noise_std: float
+    frequency_skew: float
+    amplitude_scale: float
+    seed: int
+    dtype: torch.dtype | str
+
+    def __init__(
+        self,
+        input_dim: int = 16,
+        ground_truth_num_features: int | None = None,
+        n_samples: int = 1024,
+        support_density: float = 0.05,
+        coherence: float = 0.0,
+        noise_std: float = 0.03,
+        frequency_skew: float = 0.0,
+        amplitude_scale: float = 1.0,
+        seed: int = 0,
+        dtype: torch.dtype | str = torch.float32,
+        *,
+        n_features: int | None = None,
+    ) -> None:
+        if ground_truth_num_features is None:
+            ground_truth_num_features = 64 if n_features is None else n_features
+        elif n_features is not None and ground_truth_num_features != n_features:
+            raise ValueError(
+                "ground_truth_num_features and legacy n_features disagree."
+            )
+        self.input_dim = input_dim
+        self.ground_truth_num_features = ground_truth_num_features
+        self.n_samples = n_samples
+        self.support_density = support_density
+        self.coherence = coherence
+        self.noise_std = noise_std
+        self.frequency_skew = frequency_skew
+        self.amplitude_scale = amplitude_scale
+        self.seed = seed
+        self.dtype = dtype
+
+    @property
+    def n_features(self) -> int:
+        """Deprecated ground-truth feature-count alias."""
+
+        return self.ground_truth_num_features
+
+    def validate(self) -> None:
+        if self.input_dim <= 0 or self.ground_truth_num_features <= 0:
+            raise ValueError("input_dim and ground_truth_num_features must be positive.")
+        if self.n_samples <= 0:
+            raise ValueError("n_samples must be positive.")
+        if not 0.0 < self.support_density < 1.0:
+            raise ValueError("support_density must be in (0, 1).")
+        if self.frequency_skew < 0.0:
+            raise ValueError("frequency_skew must be nonnegative.")
+        if self.amplitude_scale <= 0.0:
+            raise ValueError("amplitude_scale must be positive.")
+        if not 0.0 <= self.coherence < 1.0:
+            raise ValueError("coherence must satisfy 0 <= coherence < 1.")
+        if self.noise_std < 0.0:
+            raise ValueError("noise_std must be nonnegative.")
 
 
 @dataclass
@@ -85,23 +146,25 @@ def make_synthetic_sparse_coding(
     config: SyntheticSparseCodingConfig,
     device: torch.device | str = "cpu",
 ) -> SparseCodingTensors:
+    config.validate()
     rng = np.random.default_rng(config.seed)
     dtype = _torch_dtype(config.dtype)
     torch_device = torch.device(device)
 
     dictionary = make_unit_dictionary(
         input_dim=config.input_dim,
-        n_features=config.n_features,
+        n_features=config.ground_truth_num_features,
         rng=rng,
         coherence=config.coherence,
     )
     probabilities = feature_probabilities(
-        n_features=config.n_features,
+        n_features=config.ground_truth_num_features,
         support_density=config.support_density,
         frequency_skew=config.frequency_skew,
     )
-    support = rng.binomial(1, probabilities[None, :], size=(config.n_samples, config.n_features)).astype(np.float64)
-    amplitudes = rng.exponential(scale=config.amplitude_scale, size=(config.n_samples, config.n_features))
+    shape = (config.n_samples, config.ground_truth_num_features)
+    support = rng.binomial(1, probabilities[None, :], size=shape).astype(np.float64)
+    amplitudes = rng.exponential(scale=config.amplitude_scale, size=shape)
     z = support * amplitudes
     clean_x = z @ dictionary.T
     noise = rng.normal(0.0, config.noise_std, size=clean_x.shape)

@@ -18,8 +18,8 @@ from src.sae_sweep import (
 )
 from src.sae_train import fit_sae
 from runs._sweep_io import write_json
-from runs.run_vg_sae_sweep import configured_sweep, selected_specs
-from runs.run_vg_sae_sweep_eval import _training_ready
+from runs.run_saes_sweep import configured_sweep, selected_specs
+from runs.run_saes_sweep_eval import _training_ready
 
 
 def test_exp07_sweep_has_exact_grid_and_paired_initialization() -> None:
@@ -105,8 +105,8 @@ def test_fit_sae_tracks_best_snapshot_and_streams_history() -> None:
 def test_notebook_10_is_plot_only_and_compiles() -> None:
     notebook = json.loads(Path("notebooks/10_exp07_parallel_sweep_results.ipynb").read_text())
     source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
-    assert "run_vg_sae_sweep.py" in source
-    assert "run_vg_sae_sweep_eval.py" in source
+    assert "run_saes_sweep.py" in source
+    assert "run_saes_sweep_eval.py" in source
     assert "fit_sae(" not in source
     assert "evaluate_model(" not in source
     assert "VGSAE_CHECKPOINT_KIND', 'last'" in source
@@ -132,6 +132,53 @@ def test_method_filter_selects_tasks_without_narrowing_saved_config() -> None:
     assert {spec.method for spec in specs} == {"vgsae"}
 
 
+def test_stage1_cli_overrides_dimensions_density_control_and_seed() -> None:
+    args = SimpleNamespace(
+        config=None,
+        fast_dev_run=True,
+        input_dim=3,
+        ground_truth_num_features=7,
+        sae_width=5,
+        support_density=0.2,
+        seed=4,
+        seeds=None,
+        sparsity_controls=["vgsae=-1,0,1", "topk=1,3"],
+        train_steps=None,
+        history_every=None,
+    )
+
+    config = configured_sweep(args)
+
+    assert config.data.input_dim == 3
+    assert config.data.ground_truth_num_features == 7
+    assert config.data.sae_width == 5
+    assert config.data.support_density == 0.2
+    assert config.seeds == [4]
+    assert config.controls["vgsae"] == [-1.0, 0.0, 1.0]
+    assert config.controls["topk"] == [1, 3]
+
+
+def test_default_topk_grids_follow_overridden_sae_width() -> None:
+    args = SimpleNamespace(
+        config=None,
+        fast_dev_run=False,
+        input_dim=None,
+        ground_truth_num_features=None,
+        sae_width=5,
+        support_density=None,
+        seed=None,
+        seeds=None,
+        sparsity_controls=None,
+        train_steps=None,
+        history_every=None,
+    )
+
+    config = configured_sweep(args)
+
+    assert config.controls["topk"] == [1, 2, 3, 4, 5]
+    assert config.controls["batchtopk"][-1] == 5.0
+
+
 def test_evaluation_rejects_non_complete_training_status(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     write_json(run_dir / "config.json", {"fingerprint": "current"})
@@ -142,6 +189,9 @@ def test_evaluation_rejects_non_complete_training_status(tmp_path: Path) -> None
     checkpoint = run_dir / "checkpoints" / "last.pt"
     checkpoint.parent.mkdir(parents=True)
     checkpoint.write_bytes(b"checkpoint")
+    assert not _training_ready(run_dir, "last")
+    (run_dir / "training_history.csv").write_text("step\n0\n")
+    write_json(run_dir / "training_summary.json", {})
     assert _training_ready(run_dir, "last")
 
     write_json(

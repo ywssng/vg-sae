@@ -1232,7 +1232,10 @@ def write_notebooks() -> None:
             07 from saved parallel train/eval artifacts under `outputs/runs/`. It
             defaults to `last` checkpoints for fidelity and writes collision-free
             figure names; set `VGSAE_SWEEP_DIR` or `VGSAE_CHECKPOINT_KIND` to select a
-            different sweep or the separately tracked `best` results.
+            different sweep or the separately tracked `best` results. It reads artifacts
+            from `runs/run_saes_sweep.py` and `runs/run_saes_sweep_eval.py`, keeps
+            ground-truth feature count separate from SAE width, and uses expected true
+            L0 divided by SAE width as the model-density reference.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, field
+from numbers import Integral
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
@@ -80,25 +82,81 @@ CONTROL_NAMES = {
     "gated": "l1_coefficient",
 }
 
+STAGE1_DATA_KIND = "stage1_custom_baseline"
+LEGACY_DATA_KIND = "synthetic_sparse_coding"
 
-@dataclass
+
+@dataclass(init=False)
 class SyntheticDataConfig:
-    """Serializable data boundary; ``kind`` is the future adapter switch."""
+    """Serializable boundary for the simple custom sparse-coding baseline."""
 
-    kind: str = "synthetic_sparse_coding"
-    input_dim: int = 16
-    n_features: int = 32
-    n_train: int = 512
-    n_test: int = 512
-    support_density: float = 0.1
-    coherence: float = 0.3
-    noise_std: float = 0.0
-    frequency_skew: float = 0.01
-    amplitude_scale: float = 1.0
+    kind: str
+    input_dim: int
+    ground_truth_num_features: int
+    sae_width: int
+    n_train: int
+    n_test: int
+    support_density: float
+    coherence: float
+    noise_std: float
+    frequency_skew: float
+    amplitude_scale: float
+
+    def __init__(
+        self,
+        kind: str = STAGE1_DATA_KIND,
+        input_dim: int = 16,
+        ground_truth_num_features: int | None = None,
+        sae_width: int | None = None,
+        n_train: int = 512,
+        n_test: int = 512,
+        support_density: float = 0.1,
+        coherence: float = 0.0,
+        noise_std: float = 0.0,
+        frequency_skew: float = 0.5,
+        amplitude_scale: float = 1.0,
+        *,
+        n_features: int | None = None,
+    ) -> None:
+        if ground_truth_num_features is None:
+            ground_truth_num_features = 32 if n_features is None else n_features
+        elif n_features is not None and ground_truth_num_features != n_features:
+            raise ValueError(
+                "ground_truth_num_features and legacy n_features disagree."
+            )
+        if sae_width is None:
+            sae_width = ground_truth_num_features if n_features is None else n_features
+        elif n_features is not None and sae_width != n_features:
+            raise ValueError("sae_width and legacy n_features disagree.")
+        self.kind = kind
+        self.input_dim = input_dim
+        self.ground_truth_num_features = ground_truth_num_features
+        self.sae_width = sae_width
+        self.n_train = n_train
+        self.n_test = n_test
+        self.support_density = support_density
+        self.coherence = coherence
+        self.noise_std = noise_std
+        self.frequency_skew = frequency_skew
+        self.amplitude_scale = amplitude_scale
+
+    @property
+    def n_features(self) -> int:
+        """Deprecated alias for old configurations where both widths matched."""
+
+        return self.ground_truth_num_features
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> SyntheticDataConfig:
-        return cls(**values)
+        payload = dict(values)
+        if "n_features" in payload and "kind" not in payload:
+            payload["kind"] = LEGACY_DATA_KIND
+        if "n_features" in payload and {
+            "ground_truth_num_features",
+            "sae_width",
+        } & payload.keys():
+            raise ValueError("Do not mix legacy n_features with canonical width fields.")
+        return cls(**payload)
 
 
 @dataclass
@@ -120,7 +178,7 @@ class TrainingConfig:
 
 @dataclass
 class SweepConfig:
-    experiment_name: str = "exp07_parallel"
+    experiment_name: str = "stage1_custom_baseline"
     data: SyntheticDataConfig = field(default_factory=SyntheticDataConfig)
     training: TrainingConfig = field(default_factory=TrainingConfig)
     seeds: list[int] = field(default_factory=lambda: [0])
@@ -138,15 +196,79 @@ class SweepConfig:
             raise ValueError(f"Unknown methods: {sorted(unknown)}")
         if not self.seeds:
             raise ValueError("At least one experiment seed is required.")
-        if self.data.kind != "synthetic_sparse_coding":
+        if any(not isinstance(seed, Integral) or seed < 0 for seed in self.seeds):
+            raise ValueError("Experiment seeds must be nonnegative integers.")
+        if len(set(self.seeds)) != len(self.seeds):
+            raise ValueError("Experiment seeds must be unique.")
+        if self.data.kind not in {STAGE1_DATA_KIND, LEGACY_DATA_KIND}:
             raise ValueError(
                 f"Unsupported data kind {self.data.kind!r}; add its adapter in make_train_test()."
             )
+        if self.data.input_dim <= 0:
+            raise ValueError("input_dim must be positive.")
+        if self.data.ground_truth_num_features <= 0:
+            raise ValueError("ground_truth_num_features must be positive.")
+        if self.data.sae_width <= 0:
+            raise ValueError("sae_width must be positive.")
+        if self.data.n_train <= 0 or self.data.n_test <= 0:
+            raise ValueError("n_train and n_test must be positive.")
+        if not 0.0 < self.data.support_density < 1.0:
+            raise ValueError("support_density must be in (0, 1).")
+        if self.data.frequency_skew < 0.0:
+            raise ValueError("frequency_skew must be nonnegative.")
+        if self.data.amplitude_scale <= 0.0:
+            raise ValueError("amplitude_scale must be positive.")
+        if not 0.0 <= self.data.coherence < 1.0:
+            raise ValueError("coherence must satisfy 0 <= coherence < 1.")
+        if self.data.noise_std < 0.0:
+            raise ValueError("noise_std must be nonnegative.")
+        if self.data.kind == STAGE1_DATA_KIND:
+            if self.data.ground_truth_num_features <= self.data.input_dim:
+                raise ValueError(
+                    "The simple baseline requires ground_truth_num_features > input_dim."
+                )
+            if self.data.frequency_skew <= 0.0:
+                raise ValueError(
+                    "frequency_skew must be positive for the skewed baseline."
+                )
+            n_features = self.data.ground_truth_num_features
+            mean_weight = sum(
+                rank ** (-self.data.frequency_skew)
+                for rank in range(1, n_features + 1)
+            ) / n_features
+            if self.data.support_density / mean_weight > 0.95:
+                raise ValueError(
+                    "support_density is too high to preserve its requested mean "
+                    "without clipping feature probabilities."
+                )
+            if self.data.coherence != 0.0:
+                raise ValueError("The simple baseline does not add dictionary coherence.")
+            if self.data.noise_std != 0.0:
+                raise ValueError("The simple baseline does not add observation noise.")
         if self.training.train_steps <= 0 or self.training.history_every <= 0:
             raise ValueError("train_steps and history_every must be positive.")
         for method in self.methods:
-            if not self.controls.get(method):
+            values = self.controls.get(method)
+            if not values:
                 raise ValueError(f"No controls configured for method {method!r}.")
+            if any(not math.isfinite(float(value)) for value in values):
+                raise ValueError(f"Controls for {method!r} must be finite.")
+            if len({float(value) for value in values}) != len(values):
+                raise ValueError(f"Controls for {method!r} must be unique.")
+            if method == "topk" and any(
+                float(value) != int(value)
+                or not 1 <= int(value) <= self.data.sae_width
+                for value in values
+            ):
+                raise ValueError("TopK controls must be integers in [1, sae_width].")
+            if method == "batchtopk" and any(
+                not 0.0 < float(value) <= self.data.sae_width for value in values
+            ):
+                raise ValueError("BatchTopK controls must be in (0, sae_width].")
+            if method in {"l1", "jumprelu", "gated"} and any(
+                float(value) < 0.0 for value in values
+            ):
+                raise ValueError(f"Controls for {method!r} must be nonnegative.")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -186,7 +308,9 @@ class RunSpec:
 def default_sweep_config(fast: bool = False) -> SweepConfig:
     controls = FAST_CONTROLS if fast else FULL_CONTROLS
     return SweepConfig(
-        experiment_name="exp07_parallel_fast" if fast else "exp07_parallel",
+        experiment_name=(
+            "stage1_custom_baseline_fast" if fast else "stage1_custom_baseline"
+        ),
         data=SyntheticDataConfig(n_train=96, n_test=96) if fast else SyntheticDataConfig(),
         training=(
             TrainingConfig(train_steps=4, history_every=1, dead_feature_window=1)
@@ -222,7 +346,7 @@ def make_train_test(
     data = make_synthetic_sparse_coding(
         SyntheticSparseCodingConfig(
             input_dim=data_cfg.input_dim,
-            n_features=data_cfg.n_features,
+            ground_truth_num_features=data_cfg.ground_truth_num_features,
             n_samples=data_cfg.n_train + data_cfg.n_test,
             support_density=data_cfg.support_density,
             coherence=data_cfg.coherence,
@@ -256,12 +380,12 @@ def make_train_test(
 
 def build_model(config: SweepConfig, spec: RunSpec) -> torch.nn.Module:
     data, training, value = config.data, config.training, spec.control_value
-    dimensions = {"d_in": data.input_dim, "d_sae": data.n_features}
+    dimensions = {"d_in": data.input_dim, "d_sae": data.sae_width}
     if spec.method == "vgsae":
         return VariationalGarroteSAE(
             VGSAEConfig(
                 input_dim=data.input_dim,
-                n_latents=data.n_features,
+                n_latents=data.sae_width,
                 lambda_sparsity=float(value),
                 beta=training.beta,
                 beta_mode="profiled",
@@ -306,7 +430,7 @@ def save_checkpoint(
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
-        "format_version": 1,
+        "format_version": 2,
         "checkpoint_kind": checkpoint_kind,
         "step": step,
         "loss": loss,

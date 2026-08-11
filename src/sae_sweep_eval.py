@@ -55,6 +55,39 @@ def _align(values: torch.Tensor, learned_idx, true_idx, n_true: int, signs=None)
     return aligned
 
 
+def _rectangular_union(
+    values: torch.Tensor,
+    target: torch.Tensor,
+    learned_idx,
+    true_idx,
+    signs=None,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """Align matches, then retain unmatched truth (FN) and learned columns (FP)."""
+
+    array = values.detach().cpu().numpy()
+    truth = target.detach().cpu().numpy()
+    learned_idx = np.asarray(learned_idx, dtype=np.int64)
+    true_idx = np.asarray(true_idx, dtype=np.int64)
+    unmatched = np.setdiff1d(np.arange(array.shape[1]), learned_idx, assume_unique=True)
+    union_width = truth.shape[1] + unmatched.size
+
+    aligned = np.zeros((array.shape[0], union_width), dtype=np.float64)
+    union_truth = np.zeros((truth.shape[0], union_width), dtype=np.float64)
+    union_truth[:, : truth.shape[1]] = truth
+    selected = array[:, learned_idx]
+    if signs is not None:
+        selected = selected * np.asarray(signs)[None, :]
+    aligned[:, true_idx] = selected
+    aligned[:, truth.shape[1] :] = array[:, unmatched]
+
+    union_learned_idx = np.full(union_width, -1, dtype=np.int64)
+    union_true_idx = np.full(union_width, -1, dtype=np.int64)
+    union_learned_idx[true_idx] = learned_idx
+    union_learned_idx[truth.shape[1] :] = unmatched
+    union_true_idx[: truth.shape[1]] = np.arange(truth.shape[1])
+    return aligned, union_truth, union_learned_idx, union_true_idx
+
+
 def _l1_threshold(h: torch.Tensor) -> float:
     from sklearn.mixture import GaussianMixture
 
@@ -141,10 +174,25 @@ def evaluate_model(
     )
     reconstruction = _reconstruct(model, test_data.x)
     learned_idx, true_idx, signs, recovery = _decoder_matching(model, test_data.dictionary)
-    mask = _align(test_mask, learned_idx, true_idx, test_data.support.shape[1])
-    h = _align(test_h, learned_idx, true_idx, test_data.support.shape[1], signs)
-    support = test_data.support.detach().cpu().numpy()
-    z = test_data.z.detach().cpu().numpy()
+    mask, support, union_learned_idx, union_true_idx = _rectangular_union(
+        test_mask, test_data.support, learned_idx, true_idx
+    )
+    h, z, _, _ = _rectangular_union(test_h, test_data.z, learned_idx, true_idx, signs)
+    raw_mask = test_mask.detach().cpu().numpy()
+    raw_h = test_h.detach().cpu().numpy()
+    ground_truth_support = test_data.support.detach().cpu().numpy()
+    ground_truth_z = test_data.z.detach().cpu().numpy()
+    sae_width = raw_mask.shape[1]
+    ground_truth_num_features = ground_truth_support.shape[1]
+    matched_latent_count = len(learned_idx)
+    union_width = mask.shape[1]
+    data_config = getattr(config, "data", None)
+    probabilities = getattr(test_data, "feature_probabilities", None)
+    expected_true_l0 = (
+        float(probabilities.sum())
+        if probabilities is not None
+        else float(ground_truth_support.sum(1).mean())
+    )
     precision, recall, f1, average_precision, roc_auc = _support_metrics(mask, support, threshold)
     active = z > 1e-8
     amplitude_ratio = h[active] / np.maximum(z[active], 1e-8) if active.any() else np.array([])
@@ -157,9 +205,26 @@ def evaluate_model(
         "method_label": METHOD_LABELS[spec.method],
         "control_name": spec.control_name,
         "control_value": spec.control_value,
+        "input_dim": int(test_data.x.shape[1]),
+        "support_density": (
+            float(data_config.support_density)
+            if data_config is not None
+            else float(ground_truth_support.mean())
+        ),
         "train_steps": config.training.train_steps,
         "dead_feature_window": config.training.dead_feature_window,
-        "rho_model": float(mask.mean()),
+        "rho_model": float(raw_mask.mean()),
+        "sae_width": sae_width,
+        "ground_truth_num_features": ground_truth_num_features,
+        "ground_truth_expected_l0": expected_true_l0,
+        "target_model_density": expected_true_l0 / sae_width,
+        "matched_latent_count": matched_latent_count,
+        "union_width": union_width,
+        "unmatched_ground_truth_features": ground_truth_num_features - matched_latent_count,
+        "unmatched_sae_latents": sae_width - matched_latent_count,
+        "ground_truth_match_coverage": matched_latent_count / ground_truth_num_features,
+        "sae_latent_match_coverage": matched_latent_count / sae_width,
+        "matching_policy": "rectangular_hungarian_union",
         "generalization_error": float(np.sqrt(np.sum((h - z) ** 2) / max(np.sum(z**2), 1e-12))),
         "reconstruction_error": _relative_error(reconstruction, test_data.x),
         "clean_reconstruction_error": _relative_error(reconstruction, test_data.clean_x),
@@ -173,21 +238,29 @@ def evaluate_model(
         "support_f1": f1,
         "support_average_precision": average_precision,
         "support_roc_auc": roc_auc,
-        "decoder_recovery_cosine": recovery,
+        "decoder_recovery_cosine": recovery * matched_latent_count / union_width,
+        "matched_decoder_recovery_cosine": recovery,
+        "decoder_recovery_ground_truth": (
+            recovery * matched_latent_count / ground_truth_num_features
+        ),
+        "decoder_recovery_sae": recovery * matched_latent_count / sae_width,
         "dead_fraction": float((train_h.mean(0) <= config.training.dead_threshold).float().mean()),
         "amplitude_shrinkage": float(amplitude_ratio.mean()) if amplitude_ratio.size else np.nan,
         "mean_activation": float(test_h.mean()),
-        "average_l0": float((mask >= threshold).sum(1).mean()),
-        "expected_l0": float(mask.sum(1).mean()),
+        "average_l0": float((raw_mask >= threshold).sum(1).mean()),
+        "expected_l0": float(raw_mask.sum(1).mean()),
     }
     row.update({key: value for key, value in train_info.items() if not isinstance(value, str)})
     row.update({key: value for key, value in test_info.items() if not isinstance(value, str)})
     if spec.method == "l1":
-        raw = _align((test_h > 0).to(test_h), learned_idx, true_idx, support.shape[1])
+        raw = (test_h > 0).to(test_h)
+        raw_union, _, _, _ = _rectangular_union(
+            raw, test_data.support, learned_idx, true_idx
+        )
         row.update(
-            l1_raw_relu_rho_model=float(raw.mean()),
-            l1_raw_relu_selection_error=selection_error(raw, support),
-            l1_raw_relu_sigma_sel=selection_uncertainty(raw),
+            l1_raw_relu_rho_model=float(raw.float().mean()),
+            l1_raw_relu_selection_error=selection_error(raw_union, support),
+            l1_raw_relu_sigma_sel=selection_uncertainty(raw_union),
         )
     else:
         row.update(
@@ -195,4 +268,18 @@ def evaluate_model(
             l1_raw_relu_selection_error=np.nan,
             l1_raw_relu_sigma_sel=np.nan,
         )
-    return row, {"mask": mask, "true_support": support, "h": h}
+    return row, {
+        "mask": mask,
+        "true_support": support,
+        "h": h,
+        "true_latents": z,
+        "raw_mask": raw_mask,
+        "raw_h": raw_h,
+        "ground_truth_support": ground_truth_support,
+        "ground_truth_latents": ground_truth_z,
+        "matched_learned_idx": np.asarray(learned_idx, dtype=np.int64),
+        "matched_true_idx": np.asarray(true_idx, dtype=np.int64),
+        "matched_signs": np.asarray(signs),
+        "union_learned_idx": union_learned_idx,
+        "union_true_idx": union_true_idx,
+    }

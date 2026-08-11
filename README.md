@@ -41,33 +41,54 @@ python -B scripts/run_synthetic_sweep.py \
   --include-baselines
 ```
 
-Reproduce notebook 07 through parallel, resumable jobs instead of training in
-Jupyter:
+Run the Stage-1 custom baseline through parallel, resumable jobs instead of
+training in Jupyter:
 
 ```bash
 # Edit WANDB_API_KEY in this launcher, or use an existing W&B login.
-python -B runs/run_vg_sae_sweep.py \
+python -B runs/run_saes_sweep.py \
+  --output-dir outputs/runs/stage1_custom_baseline \
+  --input-dim 16 \
+  --ground-truth-num-features 32 \
+  --sae-width 32 \
+  --support-density 0.1 \
+  --seed 0 \
+  --model-sparsity-control vgsae=-5,-2,0,2,5 \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 1
 
 # Notebook 07 used the final step, so `last` is the reproduction default.
-python -B runs/run_vg_sae_sweep_eval.py \
-  --sweep-dir outputs/runs/exp07_rho_model_comparison \
+python -B runs/run_saes_sweep_eval.py \
+  --sweep-dir outputs/runs/stage1_custom_baseline \
   --checkpoint last \
   --devices cuda:0,cuda:1,cuda:2,cuda:3
 ```
 
-Use `--methods vgsae` for one architecture, or `--fast-dev-run --devices cpu
---no-wandb` for a small local smoke run. Each run stores its resolved config,
-training history, `best.pt` and `last.pt`, plus checkpoint-specific metrics and
-mask arrays. Sweep-level CSVs are written under `summary/`. Open
+The Stage-1 data is a noiseless linear mixture of an overcomplete random unit
+dictionary. Marginal firing probabilities are rank-skewed from the requested
+mean `support_density` with the default Stage-1 exponent `frequency_skew=0.5`
+while preserving that mean; settings that would require probability clipping
+are rejected. Supports are independent, and active
+amplitudes are nonnegative `Exponential(scale=1)` draws. There is no added
+dictionary coherence, correlated firing, or hierarchy.
+`ground_truth_num_features` controls the data dictionary while `sae_width`
+independently controls the learned latent width.
+
+One output directory represents one fixed data condition. Sweep seeds with
+`--seeds 0,1,2` and add repeatable controls such as
+`--model-sparsity-control topk=1,2,4`; use a separate output directory when a
+data dimension or density changes. Use `--methods vgsae` for one architecture,
+or `--fast-dev-run --devices cpu --no-wandb` for a small local smoke run. Each
+run stores its resolved config, training history, `best.pt` and `last.pt`, plus
+checkpoint-specific metrics and mask arrays. Sweep-level CSVs are written under
+`summary/`. Open
 `notebooks/10_exp07_parallel_sweep_results.ipynb` after evaluation; it only
 loads artifacts and draws the notebook-07 figures. `best` means the lowest
 full-training objective observed at a history step and is intentionally not
 mixed into the default `last` reproduction.
 
 ```text
-outputs/runs/exp07_rho_model_comparison/
+outputs/runs/stage1_custom_baseline/
 ├── sweep_config.json, manifest.json
 ├── runs/<method>/<run_id>/
 │   ├── config.json, training_history.csv

@@ -77,6 +77,30 @@ the paper leaves details open.
   separate diagnostics. The benchmark model snapshot is fixed at
   `b2efd8b919ae46d6d487c73d46db5ee52813621d`. Full mode remains an exploratory
   sweep rather than the official 200M-training-sample leaderboard protocol.
+- **Stage-1 custom baseline:** observations are noiseless linear mixtures of an
+  overcomplete random unit dictionary. Feature supports are independent
+  Bernoulli draws with marginal probabilities rank-skewed from
+  `support_density` using `frequency_skew=0.5`. Stage-1 configs that would need
+  the generic generator's `0.95` probability cap are rejected so the requested
+  mean remains exact. Nonzero amplitudes are independent `Exponential(scale=1)`
+  draws. The baseline adds no
+  dictionary coherence, correlated firing, or hierarchy.
+  `ground_truth_num_features` sets the generating dictionary width, while
+  `sae_width` independently sets the learned latent width. Legacy `n_features`
+  sweep configs remain readable and set both widths.
+- **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
+  defined over all `sae_width` learned latents. The data reference line is
+  `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it
+  remains valid when the ground-truth and SAE widths differ. Dictionary previews
+  report empirical pairwise cosine similarity instead of a configured coherence
+  parameter.
+- **Rectangular recovery matching:** decoder atoms use rectangular Hungarian
+  matching. Unmatched ground-truth features remain zero predictions (false
+  negatives), while unmatched learned latents are appended against zero targets
+  (false positives). Support and latent-recovery metrics use this union; raw
+  model density and L0 always use every SAE latent.
+- **Multi-seed mask panels:** representative heatmaps use the lowest seed shared
+  by every plotted method, so all rows visualize the same regenerated dataset.
 - **Experiment 07 controls:** L1's GMM mask threshold is fitted on training
   activations and reused unchanged on held-out data. Dead features use the
   SAELens strict `steps_since_fired > window` boundary; notebook 07 sets the
@@ -93,10 +117,13 @@ the paper leaves details open.
   do not establish cross-seed robustness. Revised six-method outputs use a new
   directory; the original four-method artifacts remain explicitly marked as
   legacy.
-- **Experiment 07 artifact pipeline:** the parallel runner preserves the 163-run
-  grid and uses one subprocess per run so method-paired initialization and batch
-  seeds cannot race. Every run stores resolved data/model/training metadata and
-  both `last` and `best` state dictionaries. `best` is the minimum full-training
+- **Experiment 07 artifact pipeline:** the parallel runner uses one subprocess
+  per run so method-paired initialization and batch seeds cannot race. Stage-1
+  command-line overrides expose `input_dim`, `ground_truth_num_features`,
+  `sae_width`, `support_density`, seed, and repeatable per-method sparsity
+  controls; a sweep directory contains one fixed data condition. Every run
+  stores resolved data/model/training metadata and both `last` and `best` state
+  dictionaries. `best` is the minimum full-training
   objective at a recorded history step; notebook 10 evaluates `last` by default
   because notebook 07 used the final model. Evaluation refits the L1 GMM only on
   the regenerated training split, persists aligned masks for heatmaps, and
