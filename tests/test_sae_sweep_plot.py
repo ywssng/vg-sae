@@ -17,6 +17,7 @@ from src.sae_sweep_plot import (
     plot_sparsity_diagnostics,
     plot_support_metrics,
     plot_training_curves,
+    plot_vg_posterior_diagnostics,
 )
 
 
@@ -46,6 +47,27 @@ def _all_method_metrics() -> pd.DataFrame:
             for index, method in enumerate(METHOD_ORDER)
         ]
     )
+
+
+def _all_method_synth_metrics() -> pd.DataFrame:
+    metrics = _all_method_metrics()
+    metrics["benchmark_model_id"] = "decoderesearch/synth-sae-bench-16k-v1"
+    metrics["mcc"] = 0.8
+    metrics["uniqueness"] = 0.7
+    metrics["classification_f1"] = 0.9
+    metrics["classification_precision"] = 0.91
+    metrics["classification_recall"] = 0.89
+    metrics["classification_accuracy"] = 0.95
+    metrics["sae_l0"] = 32.0
+    metrics["true_l0"] = 35.0
+    metrics["shrinkage"] = 0.85
+    metrics["vg_expected_l0"] = metrics["sae_l0"]
+    metrics["vg_expected_explained_variance"] = metrics["explained_variance"]
+    metrics.loc[metrics["method"] == "vgsae", "vg_expected_l0"] = 1_500.0
+    metrics.loc[
+        metrics["method"] == "vgsae", "vg_expected_explained_variance"
+    ] = 0.95
+    return metrics
 
 
 def _assert_single_bottom_legend(figure) -> None:
@@ -109,6 +131,42 @@ def test_plot_context_separates_ground_truth_and_sae_width(tmp_path) -> None:
     plt.close(figure)
 
 
+def test_synth_plot_context_uses_empirical_true_l0_and_preview_dictionary(
+    tmp_path,
+) -> None:
+    (tmp_path / "summary").mkdir()
+    (tmp_path / "sweep_config.json").write_text(
+        json.dumps(
+            {
+                "data": {
+                    "kind": "synthsaebench_pretrained",
+                    "ground_truth_num_features": 16_384,
+                    "sae_width": 4_096,
+                }
+            }
+        )
+    )
+    np.savez_compressed(
+        tmp_path / "summary" / "data_preview.npz",
+        feature_probabilities=np.full(16, 0.01),
+        dictionary=np.eye(4, 8),
+        z0=np.zeros(8),
+        empirical_true_l0=np.asarray(34.5),
+        target_model_density=np.asarray(34.5 / 4_096),
+        data_kind=np.asarray("synthsaebench_pretrained"),
+    )
+
+    context = load_sweep_plot_context(tmp_path)
+    assert context["expected_true_l0"] == pytest.approx(34.5)
+    assert context["target_model_density"] == pytest.approx(34.5 / 4_096)
+    assert context["ground_truth_num_features"] == 16_384
+    assert context["sae_width"] == 4_096
+
+    figure = plot_data_overview(tmp_path)
+    assert "Pretrained dictionary preview" in figure.axes[1].get_title()
+    plt.close(figure)
+
+
 def test_l0_diagnostics_are_normalized_by_sae_width() -> None:
     metrics = pd.DataFrame(
         [
@@ -150,6 +208,55 @@ def test_metric_figures_use_one_bottom_legend(plotter) -> None:
         _all_method_metrics(), target_model_density=0.1, sae_width=4
     )
     _assert_single_bottom_legend(figure)
+    plt.close(figure)
+
+
+@pytest.mark.parametrize(
+    ("plotter", "expected_labels"),
+    [
+        (plot_reconstruction_metrics, [r"$R^2$", "Shrinkage"]),
+        (plot_recovery_metrics, ["MCC", "Uniqueness"]),
+        (
+            plot_support_metrics,
+            ["F1", "Precision", "Recall", "Accuracy"],
+        ),
+        (
+            plot_sparsity_diagnostics,
+            [
+                r"SAE L0 / $d_\mathrm{sae}$",
+                r"True L0 / $d_\mathrm{sae}$",
+                "Dead latent fraction",
+                r"Expected L0 / $d_\mathrm{sae}$",
+            ],
+        ),
+    ],
+)
+def test_synth_metric_figures_use_official_panels(plotter, expected_labels) -> None:
+    figure = plotter(
+        _all_method_synth_metrics(),
+        target_model_density=35.0 / 4_096,
+        sae_width=4_096,
+    )
+
+    assert [axis.get_ylabel() for axis in figure.axes] == expected_labels
+    if plotter is plot_support_metrics:
+        assert all(axis.get_ylim()[1] == pytest.approx(1.02) for axis in figure.axes)
+    _assert_single_bottom_legend(figure)
+    plt.close(figure)
+
+
+def test_vg_posterior_figure_separates_hard_and_expected_paths() -> None:
+    figure = plot_vg_posterior_diagnostics(
+        _all_method_synth_metrics(),
+        target_model_density=35.0 / 4_096,
+        sae_width=4_096,
+    )
+
+    assert [line.get_label() for line in figure.axes[0].lines[:2]] == [
+        "Hard inference",
+        "Posterior expectation",
+    ]
+    assert figure.axes[1].get_yscale() == "log"
     plt.close(figure)
 
 

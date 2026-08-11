@@ -77,6 +77,45 @@ the paper leaves details open.
   separate diagnostics. The benchmark model snapshot is fixed at
   `b2efd8b919ae46d6d487c73d46db5ee52813621d`. Full mode remains an exploratory
   sweep rather than the official 200M-training-sample leaderboard protocol.
+- **Stage-2 fixed SynthSAEBench runner:** the parallel Stage-2 runner loads that
+  exact pretrained snapshot and verifies the SHA-256 of its serialized model
+  config (`ec969226283f05b69fd3b2a8c1cd14b152a998d79a491d732ccd286d096908b5`).
+  It records the pinned SAELens source revision
+  `8be14080485952f729ed58d674bcddf9778e0aa4` and never reconstructs a
+  generator variant. This
+  matters because the pinned artifact has `scale_children_by_parent=false`,
+  whereas the paper description and public generator-creation script use
+  `true`. Results from this runner are fixed-artifact experiments, not exact
+  reproductions of the paper's regenerated distribution. The batch-aligned
+  full budget is 199,999,488 train samples and 24,999,936 independently seeded
+  test samples (exactly 8:1) at batch size 1024 and SAE width 4096. Epochs do
+  not apply to the infinite activation stream. The executable public runner
+  configs use constant Adam learning rate 3e-4, which is the local default;
+  the paper's final-third linear decay is available as an explicit override.
+  Official MCC, uniqueness, per-latent best-match classification, hard L0,
+  dead-latent, shrinkage, and explained-variance definitions are kept separate
+  from Stage-1's rectangular-union metrics. Only an 80-row classifier-aligned
+  preview is cached for heatmaps. L1, JumpReLU, VG, and Gated are compared via
+  direct coefficient controls rather than the paper repository's L0 autotuner,
+  so measured hard L0—not coefficient order—is the comparison axis. A one-seed
+  20M-sample BF16 pilot mapped L1 coefficients `1.25, 1.5, 2, 3, 4` to hard L0
+  `44.29, 34.93, 26.52, 20.64, 16.89`, and Gated coefficients
+  `1.35, 1.4, 1.5, 2, 3, 4` to `42.00, 38.29, 34.34, 25.31, 17.90, 15.02`.
+  Piecewise interpolation produced the final seven-point L1 and Gated grids;
+  the outer L1/Gated controls are short extrapolations and remain labeled as
+  pilot-informed rather than exact target-L0 solutions. TopK and BatchTopK use
+  the direct `15--45` target band, while JumpReLU and VG retain narrowed static
+  diagnostic grids. The default is one seed (`0`) rather than the paper's five;
+  the five-seed protocol is exposed through `--seeds 0,1,2,3,4` at five times
+  the compute. Exact rolling interruption checkpoints are written every 10,000
+  updates. Sample budgets must be exact multiples of batch size so the claimed
+  8:1 train/test accounting cannot silently round.
+  A 1.024M-sample VG pilot found hard L0 `69.83, 42.61, 20.64, 16.45` but
+  expected L0 `1594.73, 1547.46, 1477.77, 1454.88` at gamma
+  `0.50, 0.55, 0.625, 0.65`; hard EV was only `0.146--0.035` while expected-code
+  EV was `0.847--0.831`. Stage-2 therefore persists posterior probability
+  quantiles and plots hard-versus-expected L0 and EV explicitly instead of
+  presenting hard-L0 matching as a sufficient VG comparison.
 - **Stage-1 custom baseline:** observations are noiseless linear mixtures of an
   overcomplete random unit dictionary. Feature supports are independent
   Bernoulli draws with marginal probabilities rank-skewed from

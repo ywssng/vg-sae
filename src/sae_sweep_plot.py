@@ -1,4 +1,4 @@
-"""Plot-only helpers for saved custom-baseline sweep artifacts."""
+"""Plot-only helpers for saved CustomData and SynthSAEBench sweep artifacts."""
 
 from __future__ import annotations
 
@@ -34,13 +34,25 @@ def load_sweep_results(
     return metrics, history
 
 
-def load_sweep_plot_context(sweep_dir: Path | str) -> dict[str, float | int]:
+def load_sweep_plot_context(
+    sweep_dir: Path | str,
+) -> dict[str, float | int | str]:
     """Load width-aware plotting constants, including legacy sweep artifacts."""
 
     root = Path(sweep_dir)
     data = json.loads((root / "sweep_config.json").read_text())["data"]
     with np.load(root / "summary" / "data_preview.npz") as preview:
         probabilities = preview["feature_probabilities"]
+        expected_true_l0 = float(
+            preview["empirical_true_l0"]
+            if "empirical_true_l0" in preview
+            else probabilities.sum()
+        )
+        target_model_density = float(
+            preview["target_model_density"]
+            if "target_model_density" in preview
+            else expected_true_l0 / int(data.get("sae_width", len(probabilities)))
+        )
     legacy_width = data.get("n_features", len(probabilities))
     ground_truth_num_features = int(
         data.get("ground_truth_num_features", legacy_width)
@@ -49,9 +61,12 @@ def load_sweep_plot_context(sweep_dir: Path | str) -> dict[str, float | int]:
     return {
         "ground_truth_num_features": ground_truth_num_features,
         "sae_width": sae_width,
-        "support_density": float(data["support_density"]),
-        "expected_true_l0": float(probabilities.sum()),
-        "target_model_density": float(probabilities.sum() / sae_width),
+        "support_density": float(
+            data.get("support_density", expected_true_l0 / ground_truth_num_features)
+        ),
+        "expected_true_l0": expected_true_l0,
+        "target_model_density": target_model_density,
+        "data_kind": str(data.get("kind", "synthetic_sparse_coding")),
     }
 
 
@@ -87,7 +102,7 @@ def _metric_line(ax, table: pd.DataFrame, method: str, metric: str, sae_width: i
     if subset.empty:
         return
     values = subset[metric].to_numpy(float)
-    if metric in {"average_l0", "expected_l0"}:
+    if metric in {"average_l0", "expected_l0", "sae_l0", "true_l0"}:
         values = values / sae_width
     label = METHOD_LABELS[method]
     ax.plot(
@@ -164,16 +179,31 @@ def plot_data_overview(
         probabilities = preview["feature_probabilities"]
         dictionary = preview["dictionary"]
         z0 = preview["z0"]
+        data_kind = (
+            str(preview["data_kind"].item())
+            if "data_kind" in preview
+            else "synthetic_sparse_coding"
+        )
     gram = dictionary.T @ dictionary
     np.fill_diagonal(gram, 0.0)
     max_pairwise_cosine = float(np.abs(gram).max(initial=0.0))
     fig, axes = plt.subplots(1, 3, figsize=(12, 3))
     axes[0].plot(probabilities, marker="o", markersize=3)
-    axes[0].set_title("Feature probabilities")
+    axes[0].set_title(
+        "Base feature probabilities" if data_kind == "synthsaebench_pretrained"
+        else "Feature probabilities"
+    )
     axes[1].imshow(dictionary, aspect="auto", cmap="RdBu_r")
-    axes[1].set_title(f"Random unit dictionary\nmax |pairwise cosine|={max_pairwise_cosine:.2f}")
+    dictionary_name = (
+        "Pretrained dictionary preview"
+        if data_kind == "synthsaebench_pretrained"
+        else "Random unit dictionary"
+    )
+    axes[1].set_title(
+        f"{dictionary_name}\npreview max |pairwise cosine|={max_pairwise_cosine:.2f}"
+    )
     axes[2].stem(z0)
-    axes[2].set_title("Example sparse code")
+    axes[2].set_title("Example sparse-code preview")
     for ax in axes:
         ax.grid(alpha=0.2)
     fig.tight_layout()
@@ -194,13 +224,19 @@ def plot_reconstruction_metrics(
         target_model_density, sae_width, support_density, n_features
     )
     table = aggregate_seed_metrics(metrics)
-    panels = [("explained_variance", r"$R^2$"), ("reconstruction_error", "Recon. error")]
+    is_synthsaebench = "benchmark_model_id" in metrics.columns
+    panels = (
+        [("explained_variance", r"$R^2$"), ("shrinkage", "Shrinkage")]
+        if is_synthsaebench
+        else [("explained_variance", r"$R^2$"), ("reconstruction_error", "Recon. error")]
+    )
     fig, axes = plt.subplots(1, 2, figsize=(5.5, 2), sharex=False)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
         _finish_metric_axis(ax, target_model_density, sae_width, label)
-    axes[1].set_yscale("log")
+    if not is_synthsaebench:
+        axes[1].set_yscale("log")
     axes[0].yaxis.set_minor_formatter(ticker.NullFormatter())
     _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
@@ -220,14 +256,23 @@ def plot_recovery_metrics(
         target_model_density, sae_width, support_density, n_features
     )
     table = aggregate_seed_metrics(metrics)
-    panels = [("generalization_error", "Gen. error"), ("decoder_recovery_cosine", "Dict. Cos sim.")]
+    is_synthsaebench = "benchmark_model_id" in metrics.columns
+    panels = (
+        [("mcc", "MCC"), ("uniqueness", "Uniqueness")]
+        if is_synthsaebench
+        else [
+            ("generalization_error", "Gen. error"),
+            ("decoder_recovery_cosine", "Dict. Cos sim."),
+        ]
+    )
     fig, axes = plt.subplots(1, 2, figsize=(5.5, 2), sharex=False)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
         _finish_metric_axis(ax, target_model_density, sae_width, label)
         ax.yaxis.set_minor_formatter(ticker.NullFormatter())
-    axes[0].set_yscale("log")
+    if not is_synthsaebench:
+        axes[0].set_yscale("log")
     axes[1].set_ylim(top=1.01)
     _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
@@ -247,12 +292,22 @@ def plot_support_metrics(
         target_model_density, sae_width, support_density, n_features
     )
     table = aggregate_seed_metrics(metrics)
-    panels = [
-        ("support_f1", "F1"),
-        ("support_average_precision", "AP"),
-        ("support_precision", "Precision"),
-        ("support_recall", "Recall"),
-    ]
+    is_synthsaebench = "benchmark_model_id" in metrics.columns
+    panels = (
+        [
+            ("classification_f1", "F1"),
+            ("classification_precision", "Precision"),
+            ("classification_recall", "Recall"),
+            ("classification_accuracy", "Accuracy"),
+        ]
+        if is_synthsaebench
+        else [
+            ("support_f1", "F1"),
+            ("support_average_precision", "AP"),
+            ("support_precision", "Precision"),
+            ("support_recall", "Recall"),
+        ]
+    )
     fig, axes = plt.subplots(2, 2, figsize=(5.5, 4.5), sharex=True)
     for ax, (metric, label) in zip(axes.ravel(), panels, strict=True):
         for method in METHOD_ORDER:
@@ -260,7 +315,8 @@ def plot_support_metrics(
         _finish_metric_axis(ax, target_model_density, sae_width, label)
         ax.set_ylim(-0.02, 1.02)
     for ax in axes[0]:
-        ax.set_ylim(-0.01, 0.61)
+        if not is_synthsaebench:
+            ax.set_ylim(-0.01, 0.61)
         ax.set_xlabel("")
     _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
@@ -280,27 +336,98 @@ def plot_sparsity_diagnostics(
         target_model_density, sae_width, support_density, n_features
     )
     table = aggregate_seed_metrics(metrics)
-    panels = [
-        ("selection_error", "Selection error"),
-        ("dead_fraction", "dead latent fraction"),
-        ("average_l0", r"Avg. L0 / $d_\mathrm{sae}$"),
-        ("expected_l0", r"Exp. L0 / $d_\mathrm{sae}$"),
-    ]
+    is_synthsaebench = "benchmark_model_id" in metrics.columns
+    panels = (
+        [
+            ("sae_l0", r"SAE L0 / $d_\mathrm{sae}$"),
+            ("true_l0", r"True L0 / $d_\mathrm{sae}$"),
+            ("dead_fraction", "Dead latent fraction"),
+            ("expected_l0", r"Expected L0 / $d_\mathrm{sae}$"),
+        ]
+        if is_synthsaebench
+        else [
+            ("selection_error", "Selection error"),
+            ("dead_fraction", "dead latent fraction"),
+            ("average_l0", r"Avg. L0 / $d_\mathrm{sae}$"),
+            ("expected_l0", r"Exp. L0 / $d_\mathrm{sae}$"),
+        ]
+    )
     fig, axes = plt.subplots(1, 4, figsize=(7.2, 1.75), sharex=True)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
         _finish_metric_axis(ax, target_model_density, sae_width, label)
     density = np.arange(1, sae_width + 1) / sae_width
-    for ax in axes[2:]:
+    identity_axes = axes[:1] if is_synthsaebench else axes[2:]
+    for ax in identity_axes:
         ax.plot(density, density, color="black", linestyle="--", linewidth=1, alpha=0.6)
     _add_bottom_method_legend(fig, table)
     _save(fig, output_path)
     return fig
 
 
+def plot_vg_posterior_diagnostics(
+    metrics: pd.DataFrame,
+    *,
+    target_model_density: float,
+    sae_width: int,
+    output_path: Path | str | None = None,
+):
+    """Show whether VG hard inference agrees with its variational expectation."""
+
+    required = {"vg_expected_explained_variance", "vg_expected_l0"}
+    if not required.issubset(metrics.columns):
+        raise ValueError("VG posterior diagnostic columns are absent from metrics.")
+    table = aggregate_seed_metrics(metrics)
+    subset = table[table["method"] == "vgsae"].sort_values("rho_model")
+    if subset.empty:
+        raise ValueError("VG posterior diagnostics require at least one VG-SAE run.")
+
+    fig, axes = plt.subplots(1, 2, figsize=(6.2, 2.2))
+    axes[0].plot(
+        subset["rho_model"],
+        subset["explained_variance"],
+        marker="o",
+        label="Hard inference",
+    )
+    axes[0].plot(
+        subset["rho_model"],
+        subset["vg_expected_explained_variance"],
+        marker="s",
+        label="Posterior expectation",
+    )
+    axes[1].plot(
+        subset["rho_model"],
+        subset["sae_l0"] / sae_width,
+        marker="o",
+        label="Hard inference",
+    )
+    axes[1].plot(
+        subset["rho_model"],
+        subset["vg_expected_l0"] / sae_width,
+        marker="s",
+        label="Posterior expectation",
+    )
+    _finish_metric_axis(
+        axes[0], target_model_density, sae_width, r"VG explained variance ($R^2$)"
+    )
+    _finish_metric_axis(
+        axes[1], target_model_density, sae_width, r"VG L0 / $d_\mathrm{sae}$"
+    )
+    axes[1].set_yscale("log")
+    handles, labels = axes[0].get_legend_handles_labels()
+    fig.set_layout_engine("constrained")
+    fig.legend(handles, labels, loc="outside lower center", ncols=2, frameon=True)
+    _save(fig, output_path)
+    return fig
+
+
 def plot_training_curves(history: pd.DataFrame, output_path: Path | str | None = None):
-    panels = [("loss", "training loss"), ("reconstruction_mse", "train reconstruction MSE"), ("rho", "train rho")]
+    panels = [
+        ("loss", "method-specific training loss"),
+        ("reconstruction_mse", "train reconstruction MSE"),
+        ("rho", "train rho"),
+    ]
     fig, axes = plt.subplots(1, 3, figsize=(14, 3.8))
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
@@ -378,12 +505,22 @@ def plot_mask_heatmaps(
         axes[row_index, 0].set(ylabel=row["method_label"], title="true support")
         axes[row_index, 1].imshow(mask, aspect="auto", interpolation="nearest", vmin=0, vmax=1)
         axes[row_index, 1].set_title(f"mask, rho={row['rho_model']:.3f}, sel err={row['selection_error']:.3f}")
+        matching_policy = str(row.get("matching_policy", ""))
         ground_truth_width = int(row.get("ground_truth_num_features", support.shape[1]))
-        if support.shape[1] > ground_truth_width:
+        if support.shape[1] > ground_truth_width and "per_latent_best" not in matching_policy:
             for ax in axes[row_index]:
                 ax.axvline(ground_truth_width - 0.5, color="white", linewidth=1)
+    synth_alignment = (
+        "matching_policy" in representatives
+        and representatives["matching_policy"].astype(str).str.contains("per_latent_best").any()
+    )
+    xlabel = (
+        "SAE latent / best-matched GT feature"
+        if synth_alignment
+        else "GT features + unmatched SAE latents"
+    )
     for ax in axes.ravel():
-        ax.set_xlabel("GT features + unmatched SAE latents")
+        ax.set_xlabel(xlabel)
     fig.tight_layout()
     _save(fig, output_path)
     return fig, representatives
@@ -395,7 +532,7 @@ def plot_all(
     checkpoint_kind: str = "last",
     output_dir: Path | str | None = None,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
-    """Reproduce every visual from notebook 07 with collision-free names."""
+    """Reproduce every visual from plot-only notebook 10 with collision-free names."""
 
     root = Path(sweep_dir)
     metrics, history = load_sweep_results(root, checkpoint_kind)
@@ -438,4 +575,11 @@ def plot_all(
         output_path=destination("mask_heatmaps.png"),
     )
     figures["masks"] = heatmap
+    if "vg_expected_l0" in metrics.columns and (metrics["method"] == "vgsae").any():
+        figures["vg_posterior"] = plot_vg_posterior_diagnostics(
+            metrics,
+            target_model_density=float(context["target_model_density"]),
+            sae_width=int(context["sae_width"]),
+            output_path=destination("vg_posterior_diagnostics.png"),
+        )
     return figures, representatives

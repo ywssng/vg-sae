@@ -22,14 +22,14 @@ from src.sae_sweep import (
 )
 from src.sae_train import fit_sae
 from runs._sweep_io import write_json
-from runs.run_saes_sweep import (
+from runs.run_CustomData_sweep import (
     _preflight_wandb,
     _run_metadata,
     _wandb_run,
     configured_sweep,
     selected_specs,
 )
-from runs.run_saes_sweep_eval import _checkpoint_kinds, _training_ready
+from runs.run_CustomData_sweep_eval import _checkpoint_kinds, _training_ready
 
 
 def test_default_sweep_uses_current_full_grid_and_paired_initialization() -> None:
@@ -109,11 +109,11 @@ def test_current_full_and_fast_experiment_ids_are_distinct() -> None:
 def test_wandb_credentials_are_loaded_only_from_local_environment(
     tmp_path: Path, monkeypatch
 ) -> None:
-    from runs.run_saes_sweep import _load_project_env
+    from runs.run_CustomData_sweep import _load_project_env
 
     env_path = tmp_path / ".env"
     env_path.write_text("WANDB_API_KEY=from-file\n")
-    monkeypatch.setattr("runs.run_saes_sweep.PROJECT_ROOT", tmp_path)
+    monkeypatch.setattr("runs.run_CustomData_sweep.PROJECT_ROOT", tmp_path)
     monkeypatch.delenv("WANDB_API_KEY", raising=False)
 
     _load_project_env()
@@ -260,8 +260,8 @@ def test_fit_sae_tracks_best_snapshot_and_streams_history() -> None:
 def test_notebook_10_is_plot_only_and_compiles() -> None:
     notebook = json.loads(Path("notebooks/10_exp07_parallel_sweep_results.ipynb").read_text())
     source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
-    assert "run_saes_sweep.py" in source
-    assert "run_saes_sweep_eval.py" in source
+    assert "run_CustomData_sweep.py" in source
+    assert "run_CustomData_sweep_eval.py" in source
     assert "fit_sae(" not in source
     assert "evaluate_model(" not in source
     assert "VGSAE_CHECKPOINT_KIND', 'last'" in source

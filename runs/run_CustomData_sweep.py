@@ -45,7 +45,7 @@ from src.utils import set_seed  # noqa: E402
 WANDB_PROJECT = "vg-sae"
 TRAIN_SOURCE_FILES = (
     "runs/_sweep_io.py",
-    "runs/run_saes_sweep.py",
+    "runs/run_CustomData_sweep.py",
     "src/sae_baselines.py",
     "src/sae_data.py",
     "src/sae_loss.py",

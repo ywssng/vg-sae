@@ -46,13 +46,13 @@ training in Jupyter:
 
 ```bash
 # WANDB_API_KEY is read from the ignored project-root .env.
-uv run python -B runs/run_saes_sweep.py \
+uv run python -B runs/run_CustomData_sweep.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 16
 
 # Evaluate both `last` and `best`; plotting still defaults to Notebook 07's `last`.
-uv run python -B runs/run_saes_sweep_eval.py \
+uv run python -B runs/run_CustomData_sweep_eval.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 16
@@ -104,6 +104,70 @@ outputs/runs/stage1_din128_gt1024_sae1024_sd001_seed0/
     ├── training_curves.csv, data_preview.npz
     └── <checkpoint>/{final_metrics.csv,final_metrics_seed_mean.csv,summary.json}
 ```
+
+Run Stage 2 on the pinned official SynthSAEBench generator with streamed data:
+
+```bash
+# Short coefficient/L0 calibration. --test-samples defaults to train/8.
+uv run python -B runs/run_SynthSAEBench_sweep.py \
+  --calibration-grid \
+  --output-dir outputs/runs/stage2_synthsaebench16k_calibration \
+  --training-samples 1048576 \
+  --history-every 64 \
+  --methods all \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1 \
+  --no-wandb
+
+uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
+  --sweep-dir outputs/runs/stage2_synthsaebench16k_calibration \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1
+
+# Full default: about 200M train samples and exactly one-eighth as held-out test.
+uv run python -B runs/run_SynthSAEBench_sweep.py \
+  --methods all \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1
+
+uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
+  --methods all \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1
+```
+
+This runner always loads `decoderesearch/synth-sae-bench-16k-v1` at revision
+`b2efd8b919ae46d6d487c73d46db5ee52813621d`; it does not build benchmark
+variants. The fixed dimensions are 768 input units, 16,384 ground-truth
+features, and SAE width 4,096. Training is an online stream rather than a finite
+dataset, so there is no epoch axis. The batch-aligned defaults are 199,999,488
+train samples (195,312 optimizer updates at batch size 1,024) and 24,999,936
+fresh held-out samples. The released experiment configs use constant Adam
+learning rate `3e-4`; pass `--lr-decay-fraction 0.3333333333` to reproduce the
+final-third linear decay described in the paper instead.
+
+The pretrained artifact records `scale_children_by_parent=false`, while the
+paper's generator description and creation script use `true`. Manifests store
+the pinned revision, model-config SHA-256, and SAELens source revision so
+fixed-artifact results are not mistaken for a regenerated paper variant.
+Evaluation accumulates the official
+MCC, uniqueness, classifier, L0, dead-latent, shrinkage, and explained-variance
+metrics in streaming form. Only a small preview is cached for heatmaps. Point
+`VGSAE_SWEEP_DIR` at a completed Stage-2 directory and run notebook 10 to draw
+the SynthSAEBench-specific panels with the same artifact-only workflow.
+
+The default one-seed method grid has seven controls per method. TopK and
+BatchTopK use target `k=[15,20,25,30,35,40,45]`; 20M-sample pilots were used to
+interpolate L1 controls `[1.23,1.36,1.50,1.79,2.26,3.17,4.50]` and Gated
+controls `[1.31,1.38,1.48,1.74,2.04,2.72,4.01]` toward the same achieved-hard-L0
+band. JumpReLU uses `[0.25,0.35,0.5,0.7,1.0,1.5,2.0]`, and VG-SAE uses gamma
+`[0.50,0.525,0.55,0.575,0.60,0.625,0.65]`. These are pilot-informed static
+controls, not the official L0 autotuner. VG-SAE therefore reports and plots
+hard and posterior-expected L0/reconstruction separately; a short pilot showed
+a large hard/expected gap. Interrupted jobs write an exact rolling resume
+checkpoint every 10,000 updates. The official study used five seeds; the local
+default is seed 0, and `--seeds 0,1,2,3,4` requests the full five-seed repeat at
+five times the compute.
 
 Cache GPT-2 small layer-8 residual-stream activations, then sweep VG-SAE:
 

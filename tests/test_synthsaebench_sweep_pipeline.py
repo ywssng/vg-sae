@@ -1,0 +1,515 @@
+from __future__ import annotations
+
+import gc
+import hashlib
+from types import SimpleNamespace
+
+import numpy as np
+import pytest
+import torch
+
+sae_lens = pytest.importorskip("sae_lens")
+if sae_lens.__version__ != "6.47.0":
+    pytest.skip(
+        "SynthSAEBench integration is pinned to sae-lens 6.47.0",
+        allow_module_level=True,
+    )
+
+from sae_lens import (
+    BatchTopKTrainingSAE,
+    GatedTrainingSAE,
+    JumpReLUTrainingSAE,
+    StandardTrainingSAE,
+    TopKTrainingSAE,
+)
+from sae_lens.synthetic import (
+    ConstantFiringProbabilityConfig,
+    SyntheticModel,
+    SyntheticModelConfig,
+    eval_sae_on_synthetic_data,
+)
+
+import src.synthsaebench_sweep as sweep_module
+from runs.run_SynthSAEBench_sweep import (
+    _load_resume_checkpoint,
+    _save_resume_checkpoint,
+    _trainer,
+    configured_sweep,
+)
+from src.sae_baselines import to_inference_sae
+from src.saelens_vg import VGTrainingSAE
+from src.synthsaebench_eval import evaluate_model
+from src.synthsaebench_sweep import (
+    BENCHMARK_CONFIG_SHA256,
+    BENCHMARK_INPUT_DIM,
+    BENCHMARK_MODEL_ID,
+    BENCHMARK_NUM_FEATURES,
+    BENCHMARK_REVISION,
+    BENCHMARK_SAE_WIDTH,
+    BENCHMARK_SCALE_CHILDREN_BY_PARENT,
+    CALIBRATION_CONTROLS,
+    FINAL_CONTROLS,
+    SAELENS_REVISION,
+    SynthSAEBenchDataConfig,
+    SynthSAEBenchRunSpec,
+    SynthSAEBenchSweepConfig,
+    SynthSAEBenchTrainingConfig,
+    build_model,
+    build_specs,
+    default_sweep_config,
+    load_benchmark_model,
+    load_checkpoint,
+    save_checkpoint,
+    temporary_seed_for_device,
+)
+
+
+def _small_config(monkeypatch: pytest.MonkeyPatch) -> SynthSAEBenchSweepConfig:
+    monkeypatch.setattr(sweep_module, "BENCHMARK_INPUT_DIM", 3)
+    monkeypatch.setattr(sweep_module, "BENCHMARK_NUM_FEATURES", 6)
+    monkeypatch.setattr(sweep_module, "BENCHMARK_SAE_WIDTH", 5)
+    return SynthSAEBenchSweepConfig(
+        data=SynthSAEBenchDataConfig(
+            input_dim=3,
+            ground_truth_num_features=6,
+            sae_width=5,
+            n_train=12,
+            n_test=4,
+        ),
+        training=SynthSAEBenchTrainingConfig(
+            batch_size=4,
+            history_every=1,
+            dead_feature_window=2,
+            feature_sampling_window=2,
+            n_batches_for_norm_estimate=2,
+            heatmap_samples=3,
+            resume_every=1,
+            autocast_sae=False,
+            autocast_data=False,
+        ),
+        controls={
+            "vgsae": [0.4],
+            "l1": [4.0],
+            "topk": [2],
+            "batchtopk": [2.0],
+            "jumprelu": [1.0],
+            "gated": [8.0],
+        },
+    )
+
+
+def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
+    config = default_sweep_config()
+
+    assert config.data.model_id == BENCHMARK_MODEL_ID
+    assert config.data.revision == BENCHMARK_REVISION
+    assert config.data.model_config_sha256 == BENCHMARK_CONFIG_SHA256
+    assert config.data.input_dim == BENCHMARK_INPUT_DIM
+    assert config.data.ground_truth_num_features == BENCHMARK_NUM_FEATURES
+    assert config.data.sae_width == BENCHMARK_SAE_WIDTH
+    assert config.data.scale_children_by_parent is BENCHMARK_SCALE_CHILDREN_BY_PARENT
+    assert config.data.n_test * 8 == config.data.n_train
+    assert config.data.n_train % config.training.batch_size == 0
+    assert config.data.n_test % config.training.batch_size == 0
+    assert config.total_training_steps == 195_312
+    assert config.training.batch_size == 1_024
+    assert config.training.lr == pytest.approx(3.0e-4)
+    assert config.training.lr_decay_fraction == 0.0
+    assert config.training.resume_every == 10_000
+    assert SAELENS_REVISION == "8be14080485952f729ed58d674bcddf9778e0aa4"
+    assert config.controls["topk"] == [15, 20, 25, 30, 35, 40, 45]
+    assert config.controls == FINAL_CONTROLS
+
+    calibration = default_sweep_config(calibration=True)
+    assert calibration.controls == CALIBRATION_CONTROLS
+    assert calibration.experiment_name.endswith("_calibration")
+
+
+def test_generator_identity_and_dimensions_cannot_be_overridden() -> None:
+    config = default_sweep_config()
+    raw = config.to_dict()
+    raw["data"]["revision"] = "main"
+    with pytest.raises(ValueError, match="revision"):
+        SynthSAEBenchSweepConfig.from_dict(raw)
+
+    raw = config.to_dict()
+    raw["data"]["sae_width"] = 2_048
+    with pytest.raises(ValueError, match="sae_width"):
+        SynthSAEBenchSweepConfig.from_dict(raw)
+
+    raw = config.to_dict()
+    raw["data"]["n_train"] -= 1
+    with pytest.raises(ValueError, match="divisible by batch_size"):
+        SynthSAEBenchSweepConfig.from_dict(raw)
+
+
+def test_specs_share_stream_seeds_across_methods_and_controls() -> None:
+    config = default_sweep_config(fast=True)
+    specs = build_specs(config)
+
+    assert len(specs) == 12
+    assert len({spec.train_stream_seed for spec in specs}) == 1
+    assert len({spec.eval_stream_seed for spec in specs}) == 1
+    assert len({spec.calibration_seed for spec in specs}) == 1
+    assert len({spec.run_id for spec in specs}) == len(specs)
+
+
+def test_cli_training_budget_derives_exact_one_eighth_test_and_direct_grid() -> None:
+    config = configured_sweep(
+        SimpleNamespace(
+            config=None,
+            fast_dev_run=False,
+            seed=3,
+            seeds=None,
+            sparsity_controls=["topk=15,30,45", "l1=3,6,10"],
+            batch_size=1_024,
+            training_samples=8_192,
+            test_samples=None,
+            history_every=2,
+            lr_decay_fraction=1.0 / 3.0,
+        )
+    )
+
+    assert config.seeds == [3]
+    assert config.data.n_train == 8_192
+    assert config.data.n_test == 1_024
+    assert config.controls["topk"] == [15, 30, 45]
+    assert config.controls["l1"] == [3.0, 6.0, 10.0]
+    assert config.training.lr_decay_fraction == pytest.approx(1.0 / 3.0)
+
+
+def test_all_method_factories_use_benchmark_specific_settings(monkeypatch) -> None:
+    config = _small_config(monkeypatch)
+    expected_classes = {
+        "vgsae": VGTrainingSAE,
+        "l1": StandardTrainingSAE,
+        "topk": TopKTrainingSAE,
+        "batchtopk": BatchTopKTrainingSAE,
+        "jumprelu": JumpReLUTrainingSAE,
+        "gated": GatedTrainingSAE,
+    }
+
+    for spec in build_specs(config):
+        model = build_model(config, spec)
+        assert isinstance(model, expected_classes[spec.method])
+        assert model.cfg.d_in == 3
+        assert model.cfg.d_sae == 5
+        if spec.method in {"l1", "gated"}:
+            assert model.cfg.l1_warm_up_steps == 1
+        if spec.method == "jumprelu":
+            assert model.cfg.normalize_activations == "expected_average_only_in"
+            assert model.cfg.jumprelu_init_threshold == pytest.approx(1.0)
+            assert model.cfg.jumprelu_bandwidth == pytest.approx(1.0)
+            assert model.cfg.decoder_init_norm == pytest.approx(0.5)
+        else:
+            assert model.cfg.normalize_activations == "none"
+        del model
+        gc.collect()
+
+
+def test_pinned_loader_verifies_revision_hash_and_dimensions(
+    monkeypatch, tmp_path
+) -> None:
+    config_bytes = b'{"pinned": true}\n'
+    digest = hashlib.sha256(config_bytes).hexdigest()
+    (tmp_path / "synthetic_model_config.json").write_bytes(config_bytes)
+    monkeypatch.setattr(sweep_module, "BENCHMARK_CONFIG_SHA256", digest)
+    config = SynthSAEBenchSweepConfig(
+        data=SynthSAEBenchDataConfig(model_config_sha256=digest)
+    )
+    calls: dict[str, object] = {}
+
+    def fake_download(*, repo_id: str, revision: str) -> str:
+        calls.update(repo_id=repo_id, revision=revision)
+        return str(tmp_path)
+
+    fake_model = SimpleNamespace(
+        cfg=SimpleNamespace(
+            hidden_dim=BENCHMARK_INPUT_DIM,
+            num_features=BENCHMARK_NUM_FEATURES,
+            hierarchy=SimpleNamespace(scale_children_by_parent=False),
+        )
+    )
+
+    def fake_load(path, device: str):
+        calls.update(path=path, device=device)
+        return fake_model
+
+    monkeypatch.setattr(sweep_module, "snapshot_download", fake_download)
+    monkeypatch.setattr(SyntheticModel, "load_from_disk", fake_load)
+
+    loaded, snapshot = load_benchmark_model(config, "cpu")
+
+    assert loaded is fake_model
+    assert snapshot == tmp_path
+    assert calls["repo_id"] == BENCHMARK_MODEL_ID
+    assert calls["revision"] == BENCHMARK_REVISION
+    assert calls["device"] == "cpu"
+
+
+def test_native_training_checkpoint_round_trip(monkeypatch, tmp_path) -> None:
+    config = _small_config(monkeypatch)
+    spec = next(spec for spec in build_specs(config) if spec.method == "vgsae")
+    model = build_model(config, spec)
+    path = save_checkpoint(
+        tmp_path / "last.pt",
+        model=model,
+        config=config,
+        spec=spec,
+        step=2,
+        n_training_samples=12,
+        loss=1.25,
+        metadata={"sentinel": True},
+    )
+
+    loaded, payload = load_checkpoint(path)
+
+    assert isinstance(loaded, VGTrainingSAE)
+    assert payload["run_spec"] == spec.to_dict()
+    assert payload["metadata"]["sentinel"] is True
+    assert payload["n_training_samples"] == 12
+    for name, value in model.state_dict().items():
+        assert torch.equal(loaded.state_dict()[name], value)
+
+
+def test_rolling_checkpoint_restores_trainer_and_exact_stream_rng(
+    monkeypatch, tmp_path
+) -> None:
+    config = _small_config(monkeypatch)
+    spec = next(spec for spec in build_specs(config) if spec.method == "topk")
+
+    def make_synthetic() -> SyntheticModel:
+        return SyntheticModel(
+            SyntheticModelConfig(
+                num_features=6,
+                hidden_dim=3,
+                firing_probability=ConstantFiringProbabilityConfig(0.4),
+                mean_firing_magnitudes=1.0,
+                std_firing_magnitudes=0.0,
+                bias=False,
+                seed=None,
+            )
+        )
+
+    with temporary_seed_for_device(spec.init_seed, "cpu"):
+        model = build_model(config, spec)
+        synthetic = make_synthetic()
+    trainer = _trainer(config, spec, model, synthetic, "cpu")
+    resume_path = tmp_path / "resume.pt"
+    with temporary_seed_for_device(spec.train_stream_seed, "cpu"):
+        output = trainer.step(next(trainer.data_provider))
+        trainer.n_training_steps += 1
+        saved_model = {
+            name: value.detach().clone() for name, value in model.state_dict().items()
+        }
+        _save_resume_checkpoint(
+            resume_path,
+            trainer=trainer,
+            run_fingerprint="fingerprint",
+            history=[{"step": 0, "loss": 1.0}],
+            last_loss=float(output.loss.detach()),
+            elapsed_seconds=3.5,
+            device="cpu",
+        )
+        expected_next_batch = next(trainer.data_provider).clone()
+
+    with temporary_seed_for_device(spec.init_seed, "cpu"):
+        resumed_model = build_model(config, spec)
+        resumed_synthetic = make_synthetic()
+    resumed_trainer = _trainer(
+        config, spec, resumed_model, resumed_synthetic, "cpu"
+    )
+    history, last_loss, elapsed, cpu_rng, device_rng = _load_resume_checkpoint(
+        resume_path,
+        trainer=resumed_trainer,
+        run_fingerprint="fingerprint",
+        device="cpu",
+    )
+
+    assert history == [{"step": 0, "loss": 1.0}]
+    assert last_loss == pytest.approx(float(output.loss.detach()))
+    assert elapsed == pytest.approx(3.5)
+    assert device_rng is None
+    assert resumed_trainer.n_training_steps == 1
+    assert resumed_trainer.n_training_samples == 4
+    for name, value in saved_model.items():
+        assert torch.equal(resumed_model.state_dict()[name], value)
+    with temporary_seed_for_device(
+        spec.train_stream_seed, "cpu", cpu_rng_state=cpu_rng
+    ):
+        actual_next_batch = next(resumed_trainer.data_provider)
+    assert torch.equal(actual_next_batch, expected_next_batch)
+    with pytest.raises(ValueError, match="cannot change RNG device type"):
+        _load_resume_checkpoint(
+            resume_path,
+            trainer=resumed_trainer,
+            run_fingerprint="fingerprint",
+            device="cuda:0",
+        )
+
+
+def test_l1_resume_is_bit_exact_during_coefficient_warmup(
+    monkeypatch, tmp_path
+) -> None:
+    config = _small_config(monkeypatch)
+    spec = next(spec for spec in build_specs(config) if spec.method == "l1")
+
+    def make_synthetic() -> SyntheticModel:
+        return SyntheticModel(
+            SyntheticModelConfig(
+                num_features=6,
+                hidden_dim=3,
+                firing_probability=ConstantFiringProbabilityConfig(0.4),
+                mean_firing_magnitudes=1.0,
+                std_firing_magnitudes=0.0,
+                bias=False,
+                seed=None,
+            )
+        )
+
+    def fresh_trainer():
+        with temporary_seed_for_device(spec.init_seed, "cpu"):
+            model = build_model(config, spec)
+            synthetic = make_synthetic()
+        return _trainer(config, spec, model, synthetic, "cpu")
+
+    uninterrupted = fresh_trainer()
+    with temporary_seed_for_device(spec.train_stream_seed, "cpu"):
+        while uninterrupted.n_training_samples < config.data.n_train:
+            uninterrupted.maybe_reset_sparsity()
+            uninterrupted.step(next(uninterrupted.data_provider))
+            uninterrupted.n_training_steps += 1
+
+    partial = fresh_trainer()
+    resume_path = tmp_path / "l1_resume.pt"
+    with temporary_seed_for_device(spec.train_stream_seed, "cpu"):
+        partial.maybe_reset_sparsity()
+        first_output = partial.step(next(partial.data_provider))
+        partial.n_training_steps += 1
+        _save_resume_checkpoint(
+            resume_path,
+            trainer=partial,
+            run_fingerprint="l1",
+            history=[],
+            last_loss=float(first_output.loss.detach()),
+            elapsed_seconds=0.0,
+            device="cpu",
+        )
+
+    resumed = fresh_trainer()
+    _, _, _, cpu_rng, _ = _load_resume_checkpoint(
+        resume_path,
+        trainer=resumed,
+        run_fingerprint="l1",
+        device="cpu",
+    )
+    with temporary_seed_for_device(
+        spec.train_stream_seed, "cpu", cpu_rng_state=cpu_rng
+    ):
+        while resumed.n_training_samples < config.data.n_train:
+            resumed.maybe_reset_sparsity()
+            resumed.step(next(resumed.data_provider))
+            resumed.n_training_steps += 1
+
+    assert resumed.coefficient_schedulers.keys() == uninterrupted.coefficient_schedulers.keys()
+    coefficient_name = next(iter(resumed.coefficient_schedulers))
+    assert resumed.coefficient_schedulers[coefficient_name].value == pytest.approx(
+        uninterrupted.coefficient_schedulers[coefficient_name].value
+    )
+    for name, value in uninterrupted.sae.state_dict().items():
+        assert torch.equal(resumed.sae.state_dict()[name], value), name
+
+
+def test_streaming_evaluator_matches_official_core_metrics_and_caps_cache(
+    monkeypatch,
+) -> None:
+    config = _small_config(monkeypatch)
+    config.data = SynthSAEBenchDataConfig(
+        input_dim=3,
+        ground_truth_num_features=6,
+        sae_width=5,
+        n_train=12,
+        n_test=8,
+    )
+    spec = next(spec for spec in build_specs(config) if spec.method == "topk")
+    with temporary_seed_for_device(spec.init_seed, "cpu"):
+        model = build_model(config, spec)
+        synthetic = SyntheticModel(
+            SyntheticModelConfig(
+                num_features=6,
+                hidden_dim=3,
+                firing_probability=ConstantFiringProbabilityConfig(0.4),
+                mean_firing_magnitudes=1.0,
+                std_firing_magnitudes=0.0,
+                bias=False,
+                seed=None,
+            )
+        )
+
+    inference = to_inference_sae(model, fold_decoder_norm=True)
+    with temporary_seed_for_device(spec.eval_stream_seed, "cpu"):
+        official = eval_sae_on_synthetic_data(
+            inference,
+            synthetic.feature_dict,
+            synthetic.activation_generator,
+            num_samples=config.data.n_test,
+            batch_size=config.training.batch_size,
+        )
+    row, cache = evaluate_model(model, synthetic, config, spec)
+
+    assert row["n_evaluation_samples"] == 8
+    assert row["sae_l0"] == pytest.approx(official.sae_l0)
+    assert row["true_l0"] == pytest.approx(official.true_l0)
+    assert row["explained_variance"] == pytest.approx(
+        official.explained_variance, abs=1.0e-6
+    )
+    assert row["mcc"] == pytest.approx(official.mcc, abs=1.0e-6)
+    assert row["uniqueness"] == pytest.approx(official.uniqueness, abs=1.0e-6)
+    assert row["classification_precision"] == pytest.approx(
+        official.classification.precision, abs=1.0e-6
+    )
+    assert row["classification_recall"] == pytest.approx(
+        official.classification.recall, abs=1.0e-6
+    )
+    assert row["classification_f1"] == pytest.approx(
+        official.classification.f1_score, abs=1.0e-6
+    )
+    assert row["classification_accuracy"] == pytest.approx(
+        official.classification.accuracy, abs=1.0e-6
+    )
+    assert cache["mask"].shape == (config.training.heatmap_samples, 5)
+    assert cache["true_support"].shape == cache["mask"].shape
+    assert cache["matched_true_idx"].shape == (5,)
+    assert np.asarray(cache["preview_sample_count"]).item() == 3
+
+
+def test_vg_streaming_eval_records_hard_expected_and_posterior_diagnostics(
+    monkeypatch,
+) -> None:
+    config = _small_config(monkeypatch)
+    spec = next(spec for spec in build_specs(config) if spec.method == "vgsae")
+    with temporary_seed_for_device(spec.init_seed, "cpu"):
+        model = build_model(config, spec)
+        synthetic = SyntheticModel(
+            SyntheticModelConfig(
+                num_features=6,
+                hidden_dim=3,
+                firing_probability=ConstantFiringProbabilityConfig(0.4),
+                mean_firing_magnitudes=1.0,
+                std_firing_magnitudes=0.0,
+                bias=False,
+                seed=None,
+            )
+        )
+
+    row, cache = evaluate_model(model, synthetic, config, spec)
+
+    assert row["vg_expected_l0"] == pytest.approx(row["expected_l0"])
+    assert row["vg_expected_to_hard_l0_ratio"] >= 0.0
+    assert row["vg_posterior_probability_q10"] <= row[
+        "vg_posterior_probability_q90"
+    ]
+    assert cache["posterior_probability"].shape == (
+        config.training.heatmap_samples,
+        config.data.sae_width,
+    )
