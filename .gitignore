@@ -18,6 +18,7 @@ env/
 
 # Jupyter
 .ipynb_checkpoints/
+notebooks/
 
 # Local configuration and secrets
 .env
@@ -33,12 +34,8 @@ AGENTS.md
 # Generated experiment artifacts that can become large
 logs/
 wandb/
-outputs/gpt2/
-outputs/checkpoints/
-# Keep sweep-level configs, summaries, and figures; per-run artifacts stay local.
-outputs/runs/**/runs/
-outputs/runs/**/eval/**/cache.npz
-outputs/.matplotlib/
+outputs/
+
 *.pt
 *.pt.tmp
 *.pth

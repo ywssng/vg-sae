@@ -89,10 +89,7 @@ def _metric_line(ax, table: pd.DataFrame, method: str, metric: str, sae_width: i
     values = subset[metric].to_numpy(float)
     if metric in {"average_l0", "expected_l0"}:
         values = values / sae_width
-    seeds = sorted(subset["n_seeds"].dropna().astype(int).unique())
     label = METHOD_LABELS[method]
-    if len(seeds) == 1:
-        label += f" (n={seeds[0]})"
     ax.plot(
         subset["rho_model"],
         values,
@@ -111,7 +108,7 @@ def _finish_metric_axis(
         target_model_density, color="black", linestyle="--", linewidth=1, alpha=0.6
     )
     ax.set(xlabel=r"$\rho_\text{model}$", ylabel=ylabel)
-    ax.set_xscale("symlog", linthresh=1 / sae_width)
+    ax.set_xscale("log")
     ax.grid(alpha=0.25)
 
 
