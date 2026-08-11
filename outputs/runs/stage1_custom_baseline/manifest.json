@@ -1,0 +1,3334 @@
+{
+  "format_version": 2,
+  "runs": [
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.0625_seed=1",
+      "run_id": "batchtopk_k=0.0625_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.0625,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.09375_seed=1",
+      "run_id": "batchtopk_k=0.09375_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.09375,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.125_seed=1",
+      "run_id": "batchtopk_k=0.125_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.125,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.1875_seed=1",
+      "run_id": "batchtopk_k=0.1875_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.1875,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.25_seed=1",
+      "run_id": "batchtopk_k=0.25_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.25,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.5_seed=1",
+      "run_id": "batchtopk_k=0.5_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.5,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=0.75_seed=1",
+      "run_id": "batchtopk_k=0.75_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 0.75,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=1.0_seed=1",
+      "run_id": "batchtopk_k=1.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 1.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=1.5_seed=1",
+      "run_id": "batchtopk_k=1.5_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 1.5,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=10.0_seed=1",
+      "run_id": "batchtopk_k=10.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 10.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=104.0_seed=1",
+      "run_id": "batchtopk_k=104.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 104.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=112.0_seed=1",
+      "run_id": "batchtopk_k=112.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 112.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=12.0_seed=1",
+      "run_id": "batchtopk_k=12.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 12.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=120.0_seed=1",
+      "run_id": "batchtopk_k=120.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 120.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=124.0_seed=1",
+      "run_id": "batchtopk_k=124.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 124.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=128.0_seed=1",
+      "run_id": "batchtopk_k=128.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 128.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=14.0_seed=1",
+      "run_id": "batchtopk_k=14.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 14.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=16.0_seed=1",
+      "run_id": "batchtopk_k=16.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 16.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=18.0_seed=1",
+      "run_id": "batchtopk_k=18.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 18.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=2.0_seed=1",
+      "run_id": "batchtopk_k=2.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 2.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=20.0_seed=1",
+      "run_id": "batchtopk_k=20.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 20.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=22.0_seed=1",
+      "run_id": "batchtopk_k=22.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 22.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=24.0_seed=1",
+      "run_id": "batchtopk_k=24.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 24.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=26.0_seed=1",
+      "run_id": "batchtopk_k=26.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 26.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=28.0_seed=1",
+      "run_id": "batchtopk_k=28.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 28.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=3.0_seed=1",
+      "run_id": "batchtopk_k=3.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 3.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=30.0_seed=1",
+      "run_id": "batchtopk_k=30.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 30.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=31.0_seed=1",
+      "run_id": "batchtopk_k=31.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 31.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=32.0_seed=1",
+      "run_id": "batchtopk_k=32.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 32.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=36.0_seed=1",
+      "run_id": "batchtopk_k=36.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 36.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=4.0_seed=1",
+      "run_id": "batchtopk_k=4.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 4.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=40.0_seed=1",
+      "run_id": "batchtopk_k=40.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 40.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=48.0_seed=1",
+      "run_id": "batchtopk_k=48.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 48.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=56.0_seed=1",
+      "run_id": "batchtopk_k=56.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 56.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=6.0_seed=1",
+      "run_id": "batchtopk_k=6.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 6.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=64.0_seed=1",
+      "run_id": "batchtopk_k=64.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 64.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=72.0_seed=1",
+      "run_id": "batchtopk_k=72.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 72.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=8.0_seed=1",
+      "run_id": "batchtopk_k=8.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 8.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=80.0_seed=1",
+      "run_id": "batchtopk_k=80.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 80.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=88.0_seed=1",
+      "run_id": "batchtopk_k=88.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 88.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/batchtopk/batchtopk_k=96.0_seed=1",
+      "run_id": "batchtopk_k=96.0_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 96.0,
+        "init_seed": 101003,
+        "method": "batchtopk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.005_seed=1",
+      "run_id": "gated_l1_coefficient=0.005_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.005,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.0125_seed=1",
+      "run_id": "gated_l1_coefficient=0.0125_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.0125,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.015_seed=1",
+      "run_id": "gated_l1_coefficient=0.015_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.015,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.01_seed=1",
+      "run_id": "gated_l1_coefficient=0.01_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.01,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.025_seed=1",
+      "run_id": "gated_l1_coefficient=0.025_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.025,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.02_seed=1",
+      "run_id": "gated_l1_coefficient=0.02_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.02,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.03_seed=1",
+      "run_id": "gated_l1_coefficient=0.03_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.03,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.05_seed=1",
+      "run_id": "gated_l1_coefficient=0.05_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.05,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.07_seed=1",
+      "run_id": "gated_l1_coefficient=0.07_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.07,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.0_seed=1",
+      "run_id": "gated_l1_coefficient=0.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.15_seed=1",
+      "run_id": "gated_l1_coefficient=0.15_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.15,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.1_seed=1",
+      "run_id": "gated_l1_coefficient=0.1_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.1,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.2_seed=1",
+      "run_id": "gated_l1_coefficient=0.2_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.2,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.3_seed=1",
+      "run_id": "gated_l1_coefficient=0.3_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.3,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=0.5_seed=1",
+      "run_id": "gated_l1_coefficient=0.5_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.5,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=1.0_seed=1",
+      "run_id": "gated_l1_coefficient=1.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 1.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=10.0_seed=1",
+      "run_id": "gated_l1_coefficient=10.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 10.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=2.0_seed=1",
+      "run_id": "gated_l1_coefficient=2.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 2.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=3.0_seed=1",
+      "run_id": "gated_l1_coefficient=3.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 3.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=4.0_seed=1",
+      "run_id": "gated_l1_coefficient=4.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 4.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=5.0_seed=1",
+      "run_id": "gated_l1_coefficient=5.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 5.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=7.0_seed=1",
+      "run_id": "gated_l1_coefficient=7.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 7.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/gated/gated_l1_coefficient=9.0_seed=1",
+      "run_id": "gated_l1_coefficient=9.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 9.0,
+        "init_seed": 101005,
+        "method": "gated",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.0003_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.0003_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.0003,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.001_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.001_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.001,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.003_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.003_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.003,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.005_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.005_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.005,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.006_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.006_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.006,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.007_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.007_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.007,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.015_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.015_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.015,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.01_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.01_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.01,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.02_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.02_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.02,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.03_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.03_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.03,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.05_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.05_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.05,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.07_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.07_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.07,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.15_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.15_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.15,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.1_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.1_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.1,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.2_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.2_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.2,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.3_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.3_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.3,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.5_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.5_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.5,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=0.7_seed=1",
+      "run_id": "jumprelu_l0_coefficient=0.7_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 0.7,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=1.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=1.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 1.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=1.5_seed=1",
+      "run_id": "jumprelu_l0_coefficient=1.5_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 1.5,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=10.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=10.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 10.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=2.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=2.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 2.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=3.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=3.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 3.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=3.5_seed=1",
+      "run_id": "jumprelu_l0_coefficient=3.5_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 3.5,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=30.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=30.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 30.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=4.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=4.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 4.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=4.1_seed=1",
+      "run_id": "jumprelu_l0_coefficient=4.1_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 4.1,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=4.25_seed=1",
+      "run_id": "jumprelu_l0_coefficient=4.25_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 4.25,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=4.2_seed=1",
+      "run_id": "jumprelu_l0_coefficient=4.2_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 4.2,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=4.3_seed=1",
+      "run_id": "jumprelu_l0_coefficient=4.3_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 4.3,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/jumprelu/jumprelu_l0_coefficient=5.0_seed=1",
+      "run_id": "jumprelu_l0_coefficient=5.0_seed=1",
+      "spec": {
+        "control_name": "l0_coefficient",
+        "control_value": 5.0,
+        "init_seed": 101004,
+        "method": "jumprelu",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.0003_seed=1",
+      "run_id": "l1_l1_coefficient=0.0003_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.0003,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.002_seed=1",
+      "run_id": "l1_l1_coefficient=0.002_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.002,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.02_seed=1",
+      "run_id": "l1_l1_coefficient=0.02_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.02,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.05_seed=1",
+      "run_id": "l1_l1_coefficient=0.05_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.05,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.0_seed=1",
+      "run_id": "l1_l1_coefficient=0.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.0,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.1_seed=1",
+      "run_id": "l1_l1_coefficient=0.1_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.1,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.25_seed=1",
+      "run_id": "l1_l1_coefficient=0.25_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.25,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.2_seed=1",
+      "run_id": "l1_l1_coefficient=0.2_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.2,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.3_seed=1",
+      "run_id": "l1_l1_coefficient=0.3_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.3,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=0.5_seed=1",
+      "run_id": "l1_l1_coefficient=0.5_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 0.5,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=1.0_seed=1",
+      "run_id": "l1_l1_coefficient=1.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 1.0,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=2.0_seed=1",
+      "run_id": "l1_l1_coefficient=2.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 2.0,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=3.0_seed=1",
+      "run_id": "l1_l1_coefficient=3.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 3.0,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=3.5_seed=1",
+      "run_id": "l1_l1_coefficient=3.5_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 3.5,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=4.5_seed=1",
+      "run_id": "l1_l1_coefficient=4.5_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 4.5,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/l1/l1_l1_coefficient=5.0_seed=1",
+      "run_id": "l1_l1_coefficient=5.0_seed=1",
+      "spec": {
+        "control_name": "l1_coefficient",
+        "control_value": 5.0,
+        "init_seed": 101001,
+        "method": "l1",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=100_seed=1",
+      "run_id": "topk_k=100_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 100,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=101_seed=1",
+      "run_id": "topk_k=101_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 101,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=102_seed=1",
+      "run_id": "topk_k=102_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 102,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=103_seed=1",
+      "run_id": "topk_k=103_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 103,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=104_seed=1",
+      "run_id": "topk_k=104_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 104,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=105_seed=1",
+      "run_id": "topk_k=105_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 105,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=106_seed=1",
+      "run_id": "topk_k=106_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 106,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=107_seed=1",
+      "run_id": "topk_k=107_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 107,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=108_seed=1",
+      "run_id": "topk_k=108_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 108,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=109_seed=1",
+      "run_id": "topk_k=109_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 109,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=10_seed=1",
+      "run_id": "topk_k=10_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 10,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=110_seed=1",
+      "run_id": "topk_k=110_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 110,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=111_seed=1",
+      "run_id": "topk_k=111_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 111,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=112_seed=1",
+      "run_id": "topk_k=112_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 112,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=113_seed=1",
+      "run_id": "topk_k=113_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 113,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=114_seed=1",
+      "run_id": "topk_k=114_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 114,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=115_seed=1",
+      "run_id": "topk_k=115_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 115,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=116_seed=1",
+      "run_id": "topk_k=116_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 116,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=117_seed=1",
+      "run_id": "topk_k=117_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 117,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=118_seed=1",
+      "run_id": "topk_k=118_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 118,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=119_seed=1",
+      "run_id": "topk_k=119_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 119,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=11_seed=1",
+      "run_id": "topk_k=11_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 11,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=120_seed=1",
+      "run_id": "topk_k=120_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 120,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=121_seed=1",
+      "run_id": "topk_k=121_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 121,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=122_seed=1",
+      "run_id": "topk_k=122_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 122,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=123_seed=1",
+      "run_id": "topk_k=123_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 123,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=124_seed=1",
+      "run_id": "topk_k=124_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 124,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=125_seed=1",
+      "run_id": "topk_k=125_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 125,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=126_seed=1",
+      "run_id": "topk_k=126_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 126,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=127_seed=1",
+      "run_id": "topk_k=127_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 127,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=128_seed=1",
+      "run_id": "topk_k=128_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 128,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=12_seed=1",
+      "run_id": "topk_k=12_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 12,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=13_seed=1",
+      "run_id": "topk_k=13_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 13,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=14_seed=1",
+      "run_id": "topk_k=14_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 14,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=15_seed=1",
+      "run_id": "topk_k=15_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 15,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=16_seed=1",
+      "run_id": "topk_k=16_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 16,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=17_seed=1",
+      "run_id": "topk_k=17_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 17,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=18_seed=1",
+      "run_id": "topk_k=18_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 18,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=19_seed=1",
+      "run_id": "topk_k=19_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 19,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=1_seed=1",
+      "run_id": "topk_k=1_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 1,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=20_seed=1",
+      "run_id": "topk_k=20_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 20,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=21_seed=1",
+      "run_id": "topk_k=21_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 21,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=22_seed=1",
+      "run_id": "topk_k=22_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 22,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=23_seed=1",
+      "run_id": "topk_k=23_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 23,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=24_seed=1",
+      "run_id": "topk_k=24_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 24,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=25_seed=1",
+      "run_id": "topk_k=25_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 25,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=26_seed=1",
+      "run_id": "topk_k=26_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 26,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=27_seed=1",
+      "run_id": "topk_k=27_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 27,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=28_seed=1",
+      "run_id": "topk_k=28_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 28,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=29_seed=1",
+      "run_id": "topk_k=29_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 29,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=2_seed=1",
+      "run_id": "topk_k=2_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 2,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=30_seed=1",
+      "run_id": "topk_k=30_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 30,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=31_seed=1",
+      "run_id": "topk_k=31_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 31,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=32_seed=1",
+      "run_id": "topk_k=32_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 32,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=33_seed=1",
+      "run_id": "topk_k=33_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 33,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=34_seed=1",
+      "run_id": "topk_k=34_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 34,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=35_seed=1",
+      "run_id": "topk_k=35_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 35,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=36_seed=1",
+      "run_id": "topk_k=36_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 36,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=37_seed=1",
+      "run_id": "topk_k=37_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 37,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=38_seed=1",
+      "run_id": "topk_k=38_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 38,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=39_seed=1",
+      "run_id": "topk_k=39_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 39,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=3_seed=1",
+      "run_id": "topk_k=3_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 3,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=40_seed=1",
+      "run_id": "topk_k=40_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 40,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=41_seed=1",
+      "run_id": "topk_k=41_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 41,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=42_seed=1",
+      "run_id": "topk_k=42_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 42,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=43_seed=1",
+      "run_id": "topk_k=43_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 43,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=44_seed=1",
+      "run_id": "topk_k=44_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 44,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=45_seed=1",
+      "run_id": "topk_k=45_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 45,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=46_seed=1",
+      "run_id": "topk_k=46_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 46,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=47_seed=1",
+      "run_id": "topk_k=47_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 47,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=48_seed=1",
+      "run_id": "topk_k=48_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 48,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=49_seed=1",
+      "run_id": "topk_k=49_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 49,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=4_seed=1",
+      "run_id": "topk_k=4_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 4,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=50_seed=1",
+      "run_id": "topk_k=50_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 50,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=51_seed=1",
+      "run_id": "topk_k=51_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 51,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=52_seed=1",
+      "run_id": "topk_k=52_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 52,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=53_seed=1",
+      "run_id": "topk_k=53_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 53,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=54_seed=1",
+      "run_id": "topk_k=54_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 54,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=55_seed=1",
+      "run_id": "topk_k=55_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 55,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=56_seed=1",
+      "run_id": "topk_k=56_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 56,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=57_seed=1",
+      "run_id": "topk_k=57_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 57,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=58_seed=1",
+      "run_id": "topk_k=58_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 58,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=59_seed=1",
+      "run_id": "topk_k=59_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 59,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=5_seed=1",
+      "run_id": "topk_k=5_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 5,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=60_seed=1",
+      "run_id": "topk_k=60_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 60,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=61_seed=1",
+      "run_id": "topk_k=61_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 61,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=62_seed=1",
+      "run_id": "topk_k=62_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 62,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=63_seed=1",
+      "run_id": "topk_k=63_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 63,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=64_seed=1",
+      "run_id": "topk_k=64_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 64,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=65_seed=1",
+      "run_id": "topk_k=65_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 65,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=66_seed=1",
+      "run_id": "topk_k=66_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 66,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=67_seed=1",
+      "run_id": "topk_k=67_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 67,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=68_seed=1",
+      "run_id": "topk_k=68_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 68,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=69_seed=1",
+      "run_id": "topk_k=69_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 69,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=6_seed=1",
+      "run_id": "topk_k=6_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 6,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=70_seed=1",
+      "run_id": "topk_k=70_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 70,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=71_seed=1",
+      "run_id": "topk_k=71_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 71,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=72_seed=1",
+      "run_id": "topk_k=72_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 72,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=73_seed=1",
+      "run_id": "topk_k=73_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 73,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=74_seed=1",
+      "run_id": "topk_k=74_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 74,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=75_seed=1",
+      "run_id": "topk_k=75_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 75,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=76_seed=1",
+      "run_id": "topk_k=76_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 76,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=77_seed=1",
+      "run_id": "topk_k=77_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 77,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=78_seed=1",
+      "run_id": "topk_k=78_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 78,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=79_seed=1",
+      "run_id": "topk_k=79_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 79,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=7_seed=1",
+      "run_id": "topk_k=7_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 7,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=80_seed=1",
+      "run_id": "topk_k=80_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 80,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=81_seed=1",
+      "run_id": "topk_k=81_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 81,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=82_seed=1",
+      "run_id": "topk_k=82_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 82,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=83_seed=1",
+      "run_id": "topk_k=83_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 83,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=84_seed=1",
+      "run_id": "topk_k=84_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 84,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=85_seed=1",
+      "run_id": "topk_k=85_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 85,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=86_seed=1",
+      "run_id": "topk_k=86_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 86,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=87_seed=1",
+      "run_id": "topk_k=87_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 87,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=88_seed=1",
+      "run_id": "topk_k=88_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 88,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=89_seed=1",
+      "run_id": "topk_k=89_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 89,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=8_seed=1",
+      "run_id": "topk_k=8_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 8,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=90_seed=1",
+      "run_id": "topk_k=90_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 90,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=91_seed=1",
+      "run_id": "topk_k=91_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 91,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=92_seed=1",
+      "run_id": "topk_k=92_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 92,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=93_seed=1",
+      "run_id": "topk_k=93_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 93,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=94_seed=1",
+      "run_id": "topk_k=94_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 94,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=95_seed=1",
+      "run_id": "topk_k=95_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 95,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=96_seed=1",
+      "run_id": "topk_k=96_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 96,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=97_seed=1",
+      "run_id": "topk_k=97_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 97,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=98_seed=1",
+      "run_id": "topk_k=98_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 98,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=99_seed=1",
+      "run_id": "topk_k=99_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 99,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/topk/topk_k=9_seed=1",
+      "run_id": "topk_k=9_seed=1",
+      "spec": {
+        "control_name": "k",
+        "control_value": 9,
+        "init_seed": 101002,
+        "method": "topk",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.1_seed=1",
+      "run_id": "vgsae_gamma=-0.1_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.1,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.2_seed=1",
+      "run_id": "vgsae_gamma=-0.2_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.2,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.3_seed=1",
+      "run_id": "vgsae_gamma=-0.3_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.3,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.4_seed=1",
+      "run_id": "vgsae_gamma=-0.4_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.4,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.5_seed=1",
+      "run_id": "vgsae_gamma=-0.5_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.5,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.6_seed=1",
+      "run_id": "vgsae_gamma=-0.6_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.6,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.7_seed=1",
+      "run_id": "vgsae_gamma=-0.7_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.7,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.8_seed=1",
+      "run_id": "vgsae_gamma=-0.8_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.8,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-0.9_seed=1",
+      "run_id": "vgsae_gamma=-0.9_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -0.9,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-1.0_seed=1",
+      "run_id": "vgsae_gamma=-1.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -1.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=-1.1_seed=1",
+      "run_id": "vgsae_gamma=-1.1_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": -1.1,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.0_seed=1",
+      "run_id": "vgsae_gamma=0.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.125_seed=1",
+      "run_id": "vgsae_gamma=0.125_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.125,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.25_seed=1",
+      "run_id": "vgsae_gamma=0.25_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.25,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.35_seed=1",
+      "run_id": "vgsae_gamma=0.35_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.35,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.5_seed=1",
+      "run_id": "vgsae_gamma=0.5_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.5,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=0.75_seed=1",
+      "run_id": "vgsae_gamma=0.75_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 0.75,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=1.0_seed=1",
+      "run_id": "vgsae_gamma=1.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 1.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=1.25_seed=1",
+      "run_id": "vgsae_gamma=1.25_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 1.25,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=1.5_seed=1",
+      "run_id": "vgsae_gamma=1.5_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 1.5,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=1.75_seed=1",
+      "run_id": "vgsae_gamma=1.75_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 1.75,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=10.0_seed=1",
+      "run_id": "vgsae_gamma=10.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 10.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=12.0_seed=1",
+      "run_id": "vgsae_gamma=12.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 12.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=2.0_seed=1",
+      "run_id": "vgsae_gamma=2.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 2.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=2.5_seed=1",
+      "run_id": "vgsae_gamma=2.5_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 2.5,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=3.0_seed=1",
+      "run_id": "vgsae_gamma=3.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 3.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=3.5_seed=1",
+      "run_id": "vgsae_gamma=3.5_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 3.5,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=4.0_seed=1",
+      "run_id": "vgsae_gamma=4.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 4.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=5.0_seed=1",
+      "run_id": "vgsae_gamma=5.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 5.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=6.0_seed=1",
+      "run_id": "vgsae_gamma=6.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 6.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=7.0_seed=1",
+      "run_id": "vgsae_gamma=7.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 7.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=8.0_seed=1",
+      "run_id": "vgsae_gamma=8.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 8.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    },
+    {
+      "relative_dir": "runs/vgsae/vgsae_gamma=9.0_seed=1",
+      "run_id": "vgsae_gamma=9.0_seed=1",
+      "spec": {
+        "control_name": "gamma",
+        "control_value": 9.0,
+        "init_seed": 101000,
+        "method": "vgsae",
+        "seed": 1
+      }
+    }
+  ],
+  "sweep_config": {
+    "controls": {
+      "batchtopk": [
+        0.0625,
+        0.09375,
+        0.125,
+        0.1875,
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        1.5,
+        2.0,
+        3.0,
+        4.0,
+        6.0,
+        8.0,
+        10.0,
+        12.0,
+        14.0,
+        16.0,
+        18.0,
+        20.0,
+        22.0,
+        24.0,
+        26.0,
+        28.0,
+        30.0,
+        31.0,
+        32.0,
+        36.0,
+        40.0,
+        48.0,
+        56.0,
+        64.0,
+        72.0,
+        80.0,
+        88.0,
+        96.0,
+        104.0,
+        112.0,
+        120.0,
+        124.0,
+        128.0
+      ],
+      "gated": [
+        10.0,
+        9.0,
+        7.0,
+        5.0,
+        4.0,
+        3.0,
+        2.0,
+        1.0,
+        0.5,
+        0.3,
+        0.2,
+        0.15,
+        0.1,
+        0.07,
+        0.05,
+        0.03,
+        0.025,
+        0.02,
+        0.015,
+        0.0125,
+        0.01,
+        0.005,
+        0.0
+      ],
+      "jumprelu": [
+        30.0,
+        10.0,
+        5.0,
+        4.3,
+        4.25,
+        4.2,
+        4.1,
+        4.0,
+        3.5,
+        3.0,
+        2.0,
+        1.5,
+        1.0,
+        0.7,
+        0.5,
+        0.3,
+        0.2,
+        0.15,
+        0.1,
+        0.07,
+        0.05,
+        0.03,
+        0.02,
+        0.015,
+        0.01,
+        0.007,
+        0.006,
+        0.005,
+        0.003,
+        0.001,
+        0.0003,
+        0.0
+      ],
+      "l1": [
+        5.0,
+        4.5,
+        3.5,
+        3.0,
+        2.0,
+        1.0,
+        0.5,
+        0.3,
+        0.25,
+        0.2,
+        0.1,
+        0.05,
+        0.02,
+        0.002,
+        0.0003,
+        0.0
+      ],
+      "topk": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128
+      ],
+      "vgsae": [
+        12.0,
+        10.0,
+        9.0,
+        8.0,
+        7.0,
+        6.0,
+        5.0,
+        4.0,
+        3.5,
+        3.0,
+        2.5,
+        2.0,
+        1.75,
+        1.5,
+        1.25,
+        1.0,
+        0.75,
+        0.5,
+        0.35,
+        0.25,
+        0.125,
+        0.0,
+        -0.1,
+        -0.2,
+        -0.3,
+        -0.4,
+        -0.5,
+        -0.6,
+        -0.7,
+        -0.8,
+        -0.9,
+        -1.0,
+        -1.1
+      ]
+    },
+    "data": {
+      "amplitude_scale": 1.0,
+      "coherence": 0.0,
+      "frequency_skew": 0.5,
+      "ground_truth_num_features": 128,
+      "input_dim": 16,
+      "kind": "stage1_custom_baseline",
+      "n_test": 512,
+      "n_train": 512,
+      "noise_std": 0.0,
+      "sae_width": 128,
+      "support_density": 0.1
+    },
+    "experiment_name": "stage1_custom_baseline",
+    "methods": [
+      "vgsae",
+      "l1",
+      "topk",
+      "batchtopk",
+      "jumprelu",
+      "gated"
+    ],
+    "seeds": [
+      1
+    ],
+    "training": {
+      "batch_size": 128,
+      "beta": 1.0,
+      "dead_feature_window": 100,
+      "dead_threshold": 1e-06,
+      "gradient_clip_norm": 1.0,
+      "history_every": 25,
+      "lr": 0.01,
+      "mask_threshold": 0.5,
+      "train_steps": 1000
+    },
+    "wandb_project": "vg-sae"
+  }
+}

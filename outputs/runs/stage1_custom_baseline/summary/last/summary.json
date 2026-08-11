@@ -1,0 +1,28 @@
+{
+  "checkpoint_kind": "last",
+  "eval_fingerprint": "e4565860c737b1fc0970532839debb41d5801639cd1b275b5e2a76a20299845f",
+  "eval_provenance": {
+    "git_revision": "5bf66e7ec3ddbf97c1d86a92dde87bac72068cbe",
+    "numpy": "2.5.1",
+    "pandas": "3.0.5",
+    "pipeline_fingerprint": "e4565860c737b1fc0970532839debb41d5801639cd1b275b5e2a76a20299845f",
+    "python": "3.14.0",
+    "sae_lens": "6.47.0",
+    "scikit_learn": "1.9.0",
+    "scipy": "1.18.0",
+    "source_fingerprint": "5028d1c35eac1da27dac7db65b67aabd6fdcbdc9b45f277bc78a33eedc170fc3",
+    "torch": "2.13.0+cu126"
+  },
+  "generated_at": "2026-08-11T16:10:26.453250+00:00",
+  "methods": [
+    "batchtopk",
+    "gated",
+    "jumprelu",
+    "l1",
+    "topk",
+    "vgsae"
+  ],
+  "n_evaluated_runs": 273,
+  "train_pipeline_fingerprint": "d76babe29ed739203d4387cdb65c440b17c463f759dab6811dde961669a04911",
+  "train_source_fingerprint": "fd63bc87fd3badec9fb0796e6d6457705f8069a6838216d11ca0f9a1c67d02c5"
+}
