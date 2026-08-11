@@ -1,0 +1,354 @@
+% Draft manuscript for the VG-SAE project.
+% Compile from this directory with: latexmk -pdf apssamp.tex
+\documentclass[aps,pre,reprint,groupedaddress,amsmath,amssymb,nofootinbib]{revtex4-2}
+
+\usepackage{bm}
+\usepackage{hyperref}
+\hypersetup{hidelinks}
+
+\newcommand{\E}{\mathbb{E}}
+
+\begin{document}
+
+\title{\texorpdfstring{$L_0$}{L0} Is Not a Free Parameter: A Statistical-Mechanical Variational Garrote for Sparse Autoencoders}
+
+\author{Author names to be added}
+\affiliation{Affiliations to be added}
+
+\date{\today}
+
+\begin{abstract}
+Sparse autoencoders (SAEs) are usually selected on a sparsity--reconstruction
+frontier, treating the mean number of active latents, $L_0$, as an operating
+point.  This is insufficient for feature recovery: at an incorrectly low
+$L_0$, an SAE can mix correlated features and reconstruct better than a model
+constrained to the ground-truth directions at the same sparsity.  We formulate
+an SAE as a statistical-mechanical system with input-dependent binary
+occupations.  A mean-field posterior over these occupations turns the Gaussian
+reconstruction energy, its Bernoulli
+fluctuation correction, the support prior, and the posterior entropy into a
+Variational Garrote free energy.  Its posterior expectation defines a soft
+occupation conditional on the sparsity field, rather than a prescribed Top-$K$
+budget.  We propose a three-stage program to test whether density-sweep
+transitions locate the feature-recovery regime on a controlled sparse-coding
+model, the official SynthSAEBench generator, and real language-model
+activations, including settings where reconstruction alone can favor an
+incorrect representation.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+\label{sec:introduction}
+
+Sparse autoencoders seek a small set of latent directions whose activations
+explain a high-dimensional representation.  In current practice, sparsity is
+often imposed by fixing $K$ or by tuning a penalty and then comparing models
+on a sparsity--reconstruction curve.  This procedure implicitly treats the
+mean number of active latents, $L_0$, as a free design parameter: lower
+reconstruction error at a chosen $L_0$ is taken as evidence for a better SAE\@.
+
+That inference can fail.  Chanin and Garriga-Alonso showed that when the SAE
+$L_0$ lies below the activity of the generating features, reconstruction loss
+can favor decoder directions that mix correlated
+features~\cite{chanin2026sparse}.  In their controlled examples, the mixed
+dictionary can reconstruct better than a model constrained to the ground-truth
+feature directions at the same incorrect $L_0$.  The same work finds
+degenerate feature mixtures at excessive $L_0$
+empirically~\cite{chanin2026sparse}.  Consequently,
+reconstruction fidelity is necessary but not sufficient for feature recovery,
+and a Pareto frontier cannot by itself determine the correct sparse
+representation.  Their decoder statistic
+\begin{equation}
+ c_{\mathrm{dec}}
+ = \binom{L}{2}^{-1}\sum_{i<j}
+   \left|\cos(\bm d_i,\bm d_j)\right|
+ \label{eq:cdec}
+\end{equation}
+is minimized near the generating $L_0$ in toy models.  On language-model SAEs,
+its low-$L_0$ elbow coincides with peak sparse-probe performance, making it a
+useful but non-identifying diagnostic.
+
+We take the corresponding modeling position: for a generative code $\bm z$
+with specified feature model and granularity,
+\begin{equation}
+ L_0^\star = \E\!\left[\lVert \bm z\rVert_0\right]
+ \end{equation}
+is an estimand, not an arbitrary sparsity budget.  This statement is
+necessarily model dependent.  Changing the dictionary width or the feature
+granularity changes the relevant occupation number, and real activations do
+not provide an observed ground-truth $L_0^\star$.
+
+The Variational Garrote (VG) supplies a statistical-mechanical language for
+this problem.  VG introduces explicit binary selection variables, replaces
+their intractable posterior by a mean-field distribution, and optimizes a
+variational free energy rather than a reconstruction term
+alone~\cite{soh2025variational}.  Its mask values are order parameters, its
+precision is analogous to inverse temperature, and its sparsity cost is an
+external field coupled to occupation.  Across the densities studied by Soh
+\emph{et al.}, cross-realization selection uncertainty is smallest near matched
+model and data density and rises under under- or over-selection; they fit the
+full curve to estimate the underlying density~\cite{soh2025variational}.
+
+Here we extend that construction from global regression-variable selection to
+input-dependent SAE activity.  We do not remove reconstruction from the
+objective; we embed it as a likelihood energy inside a normalized free energy
+that also accounts for support fluctuations, entropy, and a sparse prior.  The
+training target is therefore the variational free-energy surrogate, not bare
+reconstruction energy.  The resulting VG-SAE does not set $L_0$ directly: its
+fitted occupation is an output order parameter conditional on the sparsity
+field.  We define a three-stage program to test whether occupation and
+uncertainty transitions co-localize with feature-recovery or downstream optima.
+Because $\gamma$ remains external, this is a sweep-based estimator, not
+parameter-free identification.
+
+\section{Variational Garrote SAE}
+\label{sec:method}
+
+For an activation $\bm x_\mu\in\mathbb R^d$, let
+$s_{\mu j}\in\{0,1\}$ be the occupation of SAE latent $j$, $a_{\mu j}$ its
+amplitude, and $\bm d_j$ a unit-norm decoder atom.  The sample index on
+$s_{\mu j}$ is essential: the original VG selector is global, whereas SAE
+$L_0$ is a per-input occupation.  We use
+\begin{align}
+ q_\phi(\bm s_\mu\mid\bm x_\mu)
+   &= \prod_{j=1}^{L}\operatorname{Bernoulli}(s_{\mu j};m_{\mu j}),\\
+ m_{\mu j}&=\sigma[g_{\phi,j}(\bm x_\mu-\bm b)],\\
+ a_{\mu j}&=\operatorname{softplus}[r_{\phi,j}(\bm x_\mu-\bm b)],\\
+ \widehat{\bm x}_\mu&=\bm b+\sum_j m_{\mu j}a_{\mu j}\bm d_j .
+\end{align}
+Under an isotropic Gaussian likelihood, the expected per-sample energy is
+\begin{align}
+ E_\mu ={}& \frac12\left\lVert
+ \bm x_\mu-\bm b-\sum_j m_{\mu j}a_{\mu j}\bm d_j
+ \right\rVert_2^2 \nonumber\\
+ &+\frac12\sum_j m_{\mu j}(1-m_{\mu j})a_{\mu j}^2
+ \lVert\bm d_j\rVert_2^2 .
+ \label{eq:energy}
+\end{align}
+The second term is not an auxiliary regularizer: it is the exact diagonal
+Bernoulli variance correction under the mean-field posterior.
+
+We choose the normalized sparse prior
+\begin{equation}
+ p_\gamma(s_{\mu j})=
+ \frac{\exp(-\gamma s_{\mu j})}{1+\exp(-\gamma)},
+ \label{eq:prior}
+\end{equation}
+so positive $\gamma$ suppresses occupation.  For a minibatch $\mathcal B$ of
+$B$ vectors, we treat the deterministic amplitudes and decoder as amortized
+MAP quantities and vary only the selectors.  The resulting dimensionless
+selector variational/MAP free-energy surrogate, up to constants independent of
+the parameters, is
+\begin{align}
+ \mathcal F_{\mathcal B}={}&
+ \beta\sum_{\mu\in\mathcal B}E_\mu
+ -\frac{Bd}{2}\log\frac{\beta}{2\pi}
+ +\gamma\sum_{\mu,j}m_{\mu j}\nonumber\\
+ &+BL\log(1+e^{-\gamma})
+ -\sum_{\mu,j}H(m_{\mu j}),
+ \label{eq:free-energy}
+\end{align}
+where $H(m)=-m\log m-(1-m)\log(1-m)$.  Equation~\eqref{eq:free-energy}
+uses the sign implied by Eq.~\eqref{eq:prior}: the printed signs of the field
+term in Eqs.~(9) and (13) of Ref.~\cite{soh2025variational} are inconsistent
+with that paper's normalized prior and its statement that increasing
+$\gamma$ strengthens sparsity.
+Because the present implementation has neither an amplitude posterior nor an
+amplitude prior, Eq.~\eqref{eq:free-energy} is not a complete generative-model
+ELBO\@; such a model would add the corresponding amplitude KL term.
+
+For a fitted model, the soft occupation observables are
+\begin{align}
+ \widehat L_0^{\mathrm{soft}}
+ &=\frac1B\sum_{\mu,j}m_{\mu j},\\
+ \widehat\rho&=\frac{\widehat L_0^{\mathrm{soft}}}{L},\\
+ V_{\mathrm{post}}&=\frac1{BL}\sum_{\mu,j}m_{\mu j}(1-m_{\mu j}).
+ \label{eq:observables}
+\end{align}
+We report these separately from the hard-thresholded firing count.  The
+notation $L_0^\star$ is reserved for generative activity, whereas
+$\widehat L_0^{\mathrm{soft}}$ is a VG posterior expectation and the measured
+hard SAE count is
+$B^{-1}\sum_{\mu,j}\mathbf 1[h^{\mathrm{hard}}_{\mu j}\ne0]$, using thresholded
+VG gates at inference.  The
+single-fit posterior quantity $V_{\mathrm{post}}$ is also distinct from the
+cross-realization selection uncertainty studied by Soh \emph{et al.}; the
+latter requires independent realizations.  A $\gamma$ sweep
+therefore yields a conditional equation of state $\rho(\gamma)$.
+
+To make the transition estimator operational, at each target hard density we
+align independently trained decoder atoms to a common $L$-slot reference.  We
+use ground-truth atoms only in matched-width Stage 1 and a fixed reference SAE
+otherwise.  On a common held-out batch, let
+$\widetilde s^{(r)}_{\mu j}\in\{0,1\}$ be the aligned hard mask from repetition
+$r$ and define the SAE analogue of cross-realization selection uncertainty,
+\begin{equation}
+ \overline s_{\mu j}=\frac1R\sum_{r=1}^{R}\widetilde s^{(r)}_{\mu j},
+ \qquad
+ \sigma_{\mathrm{sel}}^{\mathrm{SAE}}(\rho)
+ =\frac1{BL}\sum_{\mu,j}\overline s_{\mu j}(1-\overline s_{\mu j}).
+ \label{eq:sae-selection-uncertainty}
+\end{equation}
+We fit the full nondegenerate density curve, rather than selecting its raw
+global minimum, to the mean-field family of Ref.~\cite{soh2025variational},
+\begin{equation}
+ f(\rho;\rho_\star)=
+ \begin{cases}
+ \dfrac{\rho}{\rho_\star}(\rho_\star-\rho),&\rho\leq\rho_\star,\\[4pt]
+ (\rho-\rho_\star)\dfrac{1-\rho}{1-\rho_\star},&\rho>\rho_\star.
+ \end{cases}
+ \label{eq:mean-field-template}
+\end{equation}
+A nonnegative mixture over candidate $\rho_\star$ values gives a normalized
+weight distribution and hence a point estimate and interval.  This transfer
+from global VG variables to sample-dependent SAE gates is a hypothesis to be
+calibrated in Stage 1, not an assumed identity.  The equation-of-state slope
+and $c_{\mathrm{dec}}$ remain complementary cross-checks.
+
+The implementation supports fixed, learned, and minibatch-profiled precision.
+The last option inserts $\beta^\star=Bd/(2\sum_\mu E_\mu)$ separately in each
+minibatch; unlike the original global VG precision, this is a log-batch-energy
+surrogate.  It is unbounded as the residual energy approaches zero.
+Confirmatory noiseless and overcomplete experiments must therefore compare
+this exploratory choice with a fixed or properly regularized learned
+precision.
+
+\section{Three-stage experimental program}
+\label{sec:experiments}
+
+All architectures are compared at a common \emph{measured hard} test-set
+$L_0$, not at nominal penalty values; VG soft occupation is shown separately.
+Reconstruction is retained as a fidelity check, while feature recovery or
+downstream behavior is the primary endpoint.
+
+\subsection{Stage 1: finalized controlled baseline}
+
+The finalized baseline is a matched-capacity sparse-coding model
+\begin{align}
+ \bm x_\mu&=D^\star(\bm s^\star_\mu\odot\bm a^\star_\mu),\\
+ s^\star_{\mu j}&\sim\operatorname{Bernoulli}(q_j),\\
+ a^\star_{\mu j}&\sim\operatorname{Exponential}(1),
+ \label{eq:stage1-data}
+\end{align}
+with
+\begin{equation}
+ q_j=0.1\,
+ \frac{j^{-1/2}}{128^{-1}\sum_{r=1}^{128}r^{-1/2}}.
+\end{equation}
+The columns of $D^\star\in\mathbb R^{16\times128}$ are independent Gaussian
+directions normalized to unit length.  ``No added coherence'' means that no
+common direction is injected; it does not mean orthogonality, which is
+impossible for 128 atoms in 16 dimensions.  Supports are independent, and the
+model has no hierarchy, correlated firing, or observation noise.  The train
+and test sets each contain 512 samples.  The ground-truth and learned widths
+are both 128, so
+\begin{equation}
+ L_0^\star=\sum_j q_j=12.8,
+ \qquad \rho^\star=0.1.
+\end{equation}
+This is an expected count, not a fixed per-sample cardinality.
+
+The completed calibration uses seed 1, 1000 optimization steps, batch size
+128, learning rate $10^{-2}$, gradient-norm clipping at 1, and the final
+(\texttt{last}) checkpoint; metrics are recorded every 25 steps.  The dead
+feature window is 100 steps, the evaluation dead threshold is $10^{-6}$, and
+the VG hard-mask threshold is $0.5$.  The sweep contains 273 runs: 33 VG-SAE, 16
+L1/ReLU, 128 TopK, 41 BatchTopK, 32 JumpReLU, and 23 Gated SAE control values.
+Within each architecture, control values share the data, initialization seed,
+and batch order.  The five baselines use the pinned SAELens v6.47 training
+implementations.  VG-SAE uses its Bernoulli variance term, unit entropy
+coefficient, and profiled precision; the stored $\beta=1$ is not a fixed
+precision in this mode.  This single-seed sweep is a calibration, not an
+uncertainty estimate.  In the confirmatory study, each data seed fixes the
+dictionary and held-out inputs across optimization repetitions; curves are
+estimated after decoder alignment and then aggregated across data seeds on a
+common measured-hard-$L_0$ grid.  The stored calibration field
+\texttt{rho\_model} is soft for VG-SAE but hard for the five baselines, so it is
+not by itself the final cross-method axis.
+
+Because the full generative state is known, the existing sweep records decoder
+matching, support precision/recall/F1, feature coverage, and amplitude
+shrinkage alongside MSE and explained variance.  The confirmatory extension
+will add multi-seed stability and $c_{\mathrm{dec}}$ relative to both the true
+dictionary and the finite-dimensional random-direction baseline
+\begin{equation}
+ c_{\mathrm{null}}(d)=
+ \frac{\Gamma(d/2)}{\sqrt{\pi}\,\Gamma[(d+1)/2]},
+ \qquad c_{\mathrm{null}}(16)\simeq0.203.
+\end{equation}
+This baseline is required because the orthogonality assumptions underlying the
+toy analysis of Ref.~\cite{chanin2026sparse} do not hold for 128
+atoms in 16 dimensions.  The key falsifiable prediction is that recovery is
+optimized near $L_0^\star=12.8$ even if a different occupation reconstructs
+better.  We will then test whether the VG transition and
+Eq.~\eqref{eq:cdec} locate that regime.
+
+\subsection{Stage 2: official SynthSAEBench}
+
+The second stage will use the
+\href{https://huggingface.co/decoderesearch/synth-sae-bench-16k-v1}{released
+SynthSAEBench-16k generator} at the pinned
+\href{https://huggingface.co/decoderesearch/synth-sae-bench-16k-v1/tree/b2efd8b919ae46d6d487c73d46db5ee52813621d}{\texttt{b2efd8b}}
+revision rather than regenerating an approximately equivalent model.  It has
+$d=768$, 16,384 ground-truth features, SAE width 4096, and mean full-generator
+$L_0$ of approximately 34.  Its skewed firing rates, hierarchy, mutual
+exclusion, low-rank support correlations, heterogeneous amplitudes, and bias
+provide a structured test beyond Stage 1.
+
+The planned full-mode development defaults use five seeds, batch size 256, learning rate
+$3\times10^{-4}$, 65,536 normalization samples, 256,000 online training
+samples, and 100,000 evaluation samples.  It is an exploratory precursor to
+the official 200-million-sample training protocol, and it excludes profiled
+precision for VG-SAE\@.
+The same six architectures will be evaluated with native SynthSAEBench metrics:
+hard SAE and true $L_0$, feature-classification precision/recall/F1, Matthews
+correlation, uniqueness, explained variance, dead latents, and shrinkage.  VG
+posterior observables will remain separate diagnostics; frequency-stratified recovery,
+duplicate/missed features, and $c_{\mathrm{dec}}$ are planned additions.
+
+Here the ground-truth vocabulary is four times wider than the SAE\@.  Full
+dictionary recovery is therefore impossible, and the generator's full
+$L_0$ divided by SAE width is not a uniquely correct SAE density.  We instead
+will measure recovery by feature frequency, duplicate and missed features, and
+capacity-limited coverage.  Custom hierarchy or correlation ablations will be
+reported separately from the fixed official benchmark.
+
+\subsection{Stage 3: real activation data}
+
+The third stage will use versioned, train/validation-separated language-model
+activation stores through the same SAELens interface.  The current scaffold is
+a VG-only sweep on at most 4096 WikiText tokens from the GPT-2-small layer-8
+residual stream; it is not the confirmatory six-method experiment.  The final
+model, layer, corpus, and token budget remain to be fixed and will be recorded
+before running the sweep.  That experiment will fit normalization on training
+data only and match width, tokens, optimizer budget, and measured $L_0$ across
+methods.
+
+There is no observed true dictionary or true $L_0$ in this stage.  We therefore
+call the output an inferred operating density, not the actual number of LLM
+features.  Candidate densities will be chosen without using reconstruction as
+the sole criterion, then evaluated by held-out explained variance and loss
+recovery, dead and firing-frequency distributions, seed stability,
+$c_{\mathrm{dec}}$, sparse probes, and causal ablation or patching.  Agreement
+between the VG transition, decoder diagnostics, and downstream optima would
+support the order-parameter interpretation; systematic disagreement would
+falsify the proposed estimator.
+
+\section{Claim boundary and outlook}
+
+The intended take-home message is not that any physical metaphor makes
+$L_0$ identifiable.  It is that reconstruction error does not define the
+feature decomposition, and that $L_0$ should be treated as an inferential
+target under an explicit probabilistic model rather than chosen as an
+arbitrary budget.  In the current
+VG-SAE, $\gamma$ remains an external field, so the method is not yet
+parameter-free.  After specifying a proper generative model for amplitudes,
+evidence optimization or a hyperprior over the inclusion rate is a natural
+next step.  Until then, the paper's target empirical claim
+is the testable co-localization of free-energy transition diagnostics and the
+feature-recovery regime, with exact validation restricted to synthetic data.
+
+\bibliography{apssamp}
+
+\end{document}
