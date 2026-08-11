@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import sys
 from pathlib import Path
 
@@ -225,16 +224,6 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path, mode: str):
         return None
     import wandb
 
-    if mode == "online" and not os.getenv("WANDB_API_KEY"):
-        try:
-            existing_key = wandb.Api().api_key
-        except Exception:
-            existing_key = None
-        if not existing_key:
-            raise RuntimeError(
-                "W&B is not authenticated. Set WANDB_API_KEY in .env or the shell, "
-                "run `wandb login`, or pass --no-wandb."
-            )
     sweep_dir = next(
         (parent for parent in run_dir.parents if (parent / "manifest.json").exists()),
         run_dir.parent,
@@ -254,13 +243,14 @@ def _preflight_wandb(mode: str) -> None:
         return
     import wandb
 
-    if os.getenv("WANDB_API_KEY"):
-        return
     try:
-        existing_key = wandb.Api().api_key
+        authenticated = wandb.login(verify=True, force=True)
     except Exception:
-        existing_key = None
-    if not existing_key:
+        raise RuntimeError(
+            "W&B authentication preflight failed; check WANDB_API_KEY in .env, "
+            "the shell environment, or your existing W&B login."
+        ) from None
+    if not authenticated:
         raise RuntimeError(
             "W&B is not authenticated. Set WANDB_API_KEY in .env or the shell, "
             "run `wandb login`, or pass --no-wandb."

@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 from src.sae_model import VGSAEConfig, VariationalGarroteSAE
@@ -19,7 +20,7 @@ from src.sae_sweep import (
 )
 from src.sae_train import fit_sae
 from runs._sweep_io import write_json
-from runs.run_saes_sweep import configured_sweep, selected_specs
+from runs.run_saes_sweep import _preflight_wandb, configured_sweep, selected_specs
 from runs.run_saes_sweep_eval import _training_ready
 
 
@@ -62,6 +63,27 @@ def test_wandb_credentials_are_loaded_only_from_local_environment(
     monkeypatch.setenv("WANDB_API_KEY", "from-shell")
     _load_project_env()
     assert os.environ["WANDB_API_KEY"] == "from-shell"
+
+
+def test_wandb_preflight_verifies_credentials_before_workers(monkeypatch) -> None:
+    calls = []
+    monkeypatch.setattr("wandb.login", lambda **kwargs: calls.append(kwargs) or True)
+
+    _preflight_wandb("online")
+
+    assert calls == [{"verify": True, "force": True}]
+
+
+def test_wandb_preflight_hides_sdk_error_details(monkeypatch) -> None:
+    def fail_login(**_kwargs) -> bool:
+        raise ValueError("sensitive SDK detail")
+
+    monkeypatch.setattr("wandb.login", fail_login)
+
+    with pytest.raises(RuntimeError, match="authentication preflight failed") as error:
+        _preflight_wandb("online")
+
+    assert "sensitive SDK detail" not in str(error.value)
 
 
 def test_sweep_config_and_checkpoint_roundtrip(tmp_path: Path) -> None:
