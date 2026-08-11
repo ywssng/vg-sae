@@ -92,14 +92,18 @@ the paper leaves details open.
   `sae_width=1024`, and `support_density=0.01` (expected true L0 `10.24`). Its
   calibrated TopK and BatchTopK grids currently span `k<=128`. Sweep output
   directories and W&B groups use a resolved-config ID such as
-  `stage1_din128_gt1024_sae1024_sd001_seed0`; the manifest fingerprint remains
-  the guard for config axes omitted from this readable ID.
+  `stage1_din128_gt1024_sae1024_sd001_seed0`; W&B also records it as `exp_id`
+  in config and summary. The manifest fingerprint remains the guard for config
+  axes omitted from this readable ID.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is
   `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it
   remains valid when the ground-truth and SAE widths differ. Dictionary previews
   report empirical pairwise cosine similarity instead of a configured coherence
-  parameter.
+  parameter. VG-SAE's `rho_model` is the posterior mean probability `mean(m)`,
+  whereas baseline `rho_model` values are hard inference densities. Therefore
+  VG peak locations on this soft-density axis are not directly hard-L0 matched;
+  `average_l0 / sae_width` is the corresponding hard-density diagnostic.
 - **Rectangular recovery matching:** decoder atoms use rectangular Hungarian
   matching. Unmatched ground-truth features remain zero predictions (false
   negatives), while unmatched learned latents are appended against zero targets
@@ -129,13 +133,14 @@ the paper leaves details open.
   `sae_width`, `support_density`, seed, and repeatable per-method sparsity
   controls; a sweep directory contains one fixed data condition. Every run
   stores resolved data/model/training metadata and both `last` and `best` state
-  dictionaries. `best` is the minimum full-training
-  objective at a recorded history step; notebook 10 evaluates `last` by default
-  because notebook 07 used the final model. Evaluation refits the L1 GMM only on
-  the regenerated training split, persists aligned masks for heatmaps, and
-  aggregates only after worker completion. Source/package fingerprints and the
-  train/eval devices are recorded, and changed evaluator code invalidates old
-  caches. The serialized data `kind` is the extension seam for later
+  dictionaries. `best` is the minimum full-training objective at a recorded
+  history step. The evaluator processes both checkpoint kinds by default, while
+  notebook 10 plots `last` by default because notebook 07 used the final model.
+  Evaluation refits the L1 GMM only on the regenerated training split, persists
+  aligned masks for heatmaps, and aggregates only after worker completion.
+  Source/package fingerprints and the train/eval devices are recorded, and
+  changed evaluator code invalidates old caches. The serialized data `kind` is
+  the extension seam for later
   SynthSAEBench or real-activation adapters. Notebook 10 deliberately uses the
   shared method order for heatmap rows instead of notebook 07's accidental
   alphabetical groupby order.

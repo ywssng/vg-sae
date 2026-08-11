@@ -36,6 +36,7 @@ from src.sae_sweep import (  # noqa: E402
     make_train_test,
     run_directory,
     save_checkpoint,
+    sweep_experiment_id,
 )
 from src.sae_train import fit_sae  # noqa: E402
 from src.utils import set_seed  # noqa: E402
@@ -229,11 +230,12 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path, mode: str):
         (parent for parent in run_dir.parents if (parent / "manifest.json").exists()),
         run_dir.parent,
     )
+    exp_id = sweep_experiment_id(SweepConfig.from_dict(bundle["sweep_config"]))
     return wandb.init(
         project=bundle["sweep_config"].get("wandb_project", WANDB_PROJECT),
         name=spec.run_id,
         group=sweep_dir.name,
-        config=bundle,
+        config={**bundle, "exp_id": exp_id},
         mode=mode,
         dir=str(run_dir),
     )
@@ -263,6 +265,7 @@ def _run_metadata(
 ) -> dict:
     data = config.data
     return {
+        "exp_id": sweep_experiment_id(config),
         "run_id": spec.run_id,
         "seed": spec.seed,
         "init_seed": spec.init_seed,

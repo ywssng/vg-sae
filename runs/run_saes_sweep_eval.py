@@ -45,13 +45,18 @@ EVAL_SOURCE_FILES = (
     "src/sae_sweep.py",
     "src/sae_sweep_eval.py",
 )
+CHECKPOINT_KINDS = ("last", "best")
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--sweep-dir", type=Path)
     parser.add_argument("--fast-dev-run", action="store_true")
-    parser.add_argument("--checkpoint", choices=("last", "best"), default="last")
+    parser.add_argument(
+        "--checkpoint",
+        choices=CHECKPOINT_KINDS,
+        help="Evaluate one checkpoint only; the default evaluates both last and best.",
+    )
     parser.add_argument("--methods", default="all", help="Comma-separated methods, or all.")
     parser.add_argument("--devices", default="cuda:0,cuda:1,cuda:2,cuda:3", help="auto, cpu, or cuda:0,cuda:1,...")
     parser.add_argument("--max-per-device", type=int, default=16)
@@ -69,6 +74,10 @@ def _checkpoint_identity(path: Path) -> dict[str, int]:
 
 def _eval_dir(run_dir: Path, checkpoint_kind: str) -> Path:
     return run_dir / "eval" / checkpoint_kind
+
+
+def _checkpoint_kinds(requested: str | None) -> tuple[str, ...]:
+    return CHECKPOINT_KINDS if requested is None else (requested,)
 
 
 def _training_ready(run_dir: Path, checkpoint_kind: str) -> bool:
@@ -306,8 +315,8 @@ def _aggregate(
 
 def main(args: argparse.Namespace) -> int:
     if args.worker:
-        if args.run_dir is None:
-            raise ValueError("--worker requires --run-dir.")
+        if args.run_dir is None or args.checkpoint is None:
+            raise ValueError("--worker requires --run-dir and --checkpoint.")
         destination = _eval_dir(args.run_dir, args.checkpoint)
         try:
             evaluate_one(args.run_dir.resolve(), args.checkpoint, args.device, args.force)
@@ -323,15 +332,24 @@ def main(args: argparse.Namespace) -> int:
     default_dir = default_sweep_dir(PROJECT_ROOT, default_config)
     sweep_dir = (args.sweep_dir or default_dir).resolve()
     run_dirs = _selected_run_dirs(sweep_dir, args.methods)
-    invalid = [
-        run_dir
+    checkpoint_kinds = _checkpoint_kinds(args.checkpoint)
+    run_checkpoints = [
+        (run_dir, checkpoint_kind)
         for run_dir in run_dirs
-        if not _training_ready(run_dir, args.checkpoint)
+        for checkpoint_kind in checkpoint_kinds
+    ]
+    invalid = [
+        (run_dir, checkpoint_kind)
+        for run_dir, checkpoint_kind in run_checkpoints
+        if not _training_ready(run_dir, checkpoint_kind)
     ]
     if invalid:
-        examples = ", ".join(str(path) for path in invalid[:3])
+        examples = ", ".join(
+            f"{path} [{kind}]" for path, kind in invalid[:3]
+        )
         raise RuntimeError(
-            f"Training is incomplete or stale for {len(invalid)} run(s): {examples}"
+            "Training is incomplete or stale for "
+            f"{len(invalid)} run/checkpoint pair(s): {examples}"
         )
 
     provenance = runtime_provenance(PROJECT_ROOT, EVAL_SOURCE_FILES)
@@ -343,14 +361,14 @@ def main(args: argparse.Namespace) -> int:
             (
                 "--worker",
                 f"--run-dir={run_dir}",
-                f"--checkpoint={args.checkpoint}",
+                f"--checkpoint={checkpoint_kind}",
                 *(('--force',) if args.force else ()),
             ),
-            run_dir.name,
+            f"{run_dir.name}[{checkpoint_kind}]",
         )
-        for run_dir in run_dirs
+        for run_dir, checkpoint_kind in run_checkpoints
         if args.force
-        or not _is_complete(run_dir, args.checkpoint, eval_fingerprint)
+        or not _is_complete(run_dir, checkpoint_kind, eval_fingerprint)
     ]
     return_code = ParallelExecutor(
         tasks,
@@ -358,24 +376,35 @@ def main(args: argparse.Namespace) -> int:
         max_per_device=args.max_per_device,
     ).run_all()
     incomplete = [
-        path
-        for path in run_dirs
-        if not _is_complete(path, args.checkpoint, eval_fingerprint)
+        (path, checkpoint_kind)
+        for path, checkpoint_kind in run_checkpoints
+        if not _is_complete(path, checkpoint_kind, eval_fingerprint)
     ]
     if return_code or incomplete:
-        print(f"Evaluation incomplete: {len(incomplete)} run(s) are missing valid artifacts.")
+        print(
+            "Evaluation incomplete: "
+            f"{len(incomplete)} run/checkpoint pair(s) are missing valid artifacts."
+        )
         return 1
     all_run_dirs = manifest_run_dirs(sweep_dir)
-    evaluated_run_dirs = [
-        path
-        for path in all_run_dirs
-        if _is_complete(path, args.checkpoint, eval_fingerprint)
-    ]
-    history_run_dirs = [
-        path for path in all_run_dirs if _training_ready(path, args.checkpoint)
-    ]
-    _aggregate(sweep_dir, evaluated_run_dirs, history_run_dirs, args.checkpoint)
-    print(f"Evaluation summary: {sweep_dir / 'summary' / args.checkpoint}")
+    for checkpoint_kind in checkpoint_kinds:
+        evaluated_run_dirs = [
+            path
+            for path in all_run_dirs
+            if _is_complete(path, checkpoint_kind, eval_fingerprint)
+        ]
+        history_run_dirs = [
+            path
+            for path in all_run_dirs
+            if _training_ready(path, checkpoint_kind)
+        ]
+        _aggregate(
+            sweep_dir,
+            evaluated_run_dirs,
+            history_run_dirs,
+            checkpoint_kind,
+        )
+        print(f"Evaluation summary: {sweep_dir / 'summary' / checkpoint_kind}")
     return 0
 
 

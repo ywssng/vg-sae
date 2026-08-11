@@ -22,8 +22,14 @@ from src.sae_sweep import (
 )
 from src.sae_train import fit_sae
 from runs._sweep_io import write_json
-from runs.run_saes_sweep import _preflight_wandb, configured_sweep, selected_specs
-from runs.run_saes_sweep_eval import _training_ready
+from runs.run_saes_sweep import (
+    _preflight_wandb,
+    _run_metadata,
+    _wandb_run,
+    configured_sweep,
+    selected_specs,
+)
+from runs.run_saes_sweep_eval import _checkpoint_kinds, _training_ready
 
 
 def test_default_sweep_uses_current_full_grid_and_paired_initialization() -> None:
@@ -137,6 +143,58 @@ def test_wandb_preflight_hides_sdk_error_details(monkeypatch) -> None:
         _preflight_wandb("online")
 
     assert "sensitive SDK detail" not in str(error.value)
+
+
+def test_wandb_logs_filterable_experiment_id(
+    tmp_path: Path, monkeypatch
+) -> None:
+    config = SweepConfig(
+        experiment_name="stage1_custom_baseline_fast",
+        data=SyntheticDataConfig(
+            input_dim=3,
+            ground_truth_num_features=7,
+            sae_width=5,
+            n_train=8,
+            n_test=4,
+            support_density=0.2,
+        ),
+        training=TrainingConfig(train_steps=2, history_every=1),
+        seeds=[2],
+        methods=["vgsae"],
+        controls={"vgsae": [0.5]},
+    )
+    spec = build_specs(config)[0]
+    sweep_dir = tmp_path / "custom-output"
+    (sweep_dir / "manifest.json").parent.mkdir(parents=True)
+    (sweep_dir / "manifest.json").write_text("{}")
+    run_dir = sweep_dir / "runs" / "vgsae" / spec.run_id
+    captured = {}
+    sentinel = object()
+    monkeypatch.setattr(
+        "wandb.init", lambda **kwargs: captured.update(kwargs) or sentinel
+    )
+
+    result = _wandb_run(
+        {"sweep_config": config.to_dict()}, spec, run_dir, "offline"
+    )
+
+    exp_id = sweep_experiment_id(config)
+    assert result is sentinel
+    assert captured["group"] == "custom-output"
+    assert captured["config"]["exp_id"] == exp_id
+    metadata = _run_metadata(
+        config,
+        spec,
+        "cpu",
+        {"source_fingerprint": "source", "pipeline_fingerprint": "pipeline"},
+    )
+    assert metadata["exp_id"] == exp_id
+
+
+def test_eval_defaults_to_both_checkpoint_kinds() -> None:
+    assert _checkpoint_kinds(None) == ("last", "best")
+    assert _checkpoint_kinds("last") == ("last",)
+    assert _checkpoint_kinds("best") == ("best",)
 
 
 def test_sweep_config_and_checkpoint_roundtrip(tmp_path: Path) -> None:
