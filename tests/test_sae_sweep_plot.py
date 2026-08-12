@@ -19,6 +19,7 @@ from src.sae_sweep_plot import (
     plot_support_metrics,
     plot_training_curves,
     plot_vg_posterior_diagnostics,
+    plot_mask_heatmaps,
 )
 
 
@@ -297,3 +298,53 @@ def test_mask_representatives_use_one_common_seed() -> None:
     representatives = _mask_representatives(metrics, 0.25, None)
 
     assert representatives["seed"].tolist() == [0, 0]
+
+
+def test_mask_heatmaps_can_resolve_rows_from_multiple_sweep_roots(tmp_path) -> None:
+    primary = tmp_path / "primary"
+    corrective = tmp_path / "corrective"
+    metrics = pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "method_label": "VG-SAE",
+                "run_id": "vg-primary",
+                "seed": 0,
+                "rho_model": 0.1,
+                "selection_error": 0.2,
+                "ground_truth_num_features": 2,
+                "matching_policy": "per_latent_best",
+            },
+            {
+                "method": "l1",
+                "method_label": "L1-ReLU",
+                "run_id": "l1-corrective",
+                "seed": 0,
+                "rho_model": 0.1,
+                "selection_error": 0.2,
+                "ground_truth_num_features": 2,
+                "matching_policy": "per_latent_best",
+            },
+        ]
+    )
+    for root, method, run_id in (
+        (primary, "vgsae", "vg-primary"),
+        (corrective, "l1", "l1-corrective"),
+    ):
+        destination = root / "runs" / method / run_id / "eval" / "last"
+        destination.mkdir(parents=True)
+        np.savez_compressed(
+            destination / "cache.npz",
+            true_support=np.zeros((2, 2)),
+            mask=np.zeros((2, 2)),
+        )
+
+    figure, representatives = plot_mask_heatmaps(
+        primary,
+        metrics,
+        target_model_density=0.1,
+        run_roots={"l1-corrective": corrective},
+    )
+
+    assert representatives["run_id"].tolist() == ["vg-primary", "l1-corrective"]
+    plt.close(figure)

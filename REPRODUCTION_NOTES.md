@@ -97,15 +97,24 @@ the paper leaves details open.
   from Stage-1's rectangular-union metrics. Only an 80-row classifier-aligned
   preview is cached for heatmaps. L1, JumpReLU, VG, and Gated are compared via
   direct coefficient controls rather than the paper repository's L0 autotuner,
-  so measured hard L0—not coefficient order—is the comparison axis. A one-seed
-  20M-sample BF16 pilot mapped L1 coefficients `1.25, 1.5, 2, 3, 4` to hard L0
-  `44.29, 34.93, 26.52, 20.64, 16.89`, and Gated coefficients
-  `1.35, 1.4, 1.5, 2, 3, 4` to `42.00, 38.29, 34.34, 25.31, 17.90, 15.02`.
-  Piecewise interpolation produced the final seven-point L1 and Gated grids;
-  the outer L1/Gated controls are short extrapolations and remain labeled as
-  pilot-informed rather than exact target-L0 solutions. TopK and BatchTopK use
-  the direct `15--45` target band, while JumpReLU and VG retain narrowed static
-  diagnostic grids. The default is one seed (`0`) rather than the paper's five;
+  so measured hard L0—not coefficient order—is the comparison axis. Initial
+  20M-sample BF16 pilots did not predict the 200M endpoint: for example, L1
+  coefficient `1.23` moved from hard L0 `44` near warmup completion to `32.86`
+  on the evaluation stream, and the original VG grid ended at L0 `60.95--92.82`.
+  Consequently, a complete 42-run 200M sweep plus twelve 200M corrective
+  anchors were used to invert calibration-stream L0 curves toward targets
+  `[45,40,35,30,25,20,15]`. The resulting rounded static grids are VG gamma
+  `[.77,.82,.88,.96,1.07,1.17,1.39]`, L1
+  `[.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
+  `[.41,.46,.52,.61,.78,1.16,1.80]`, and Gated
+  `[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`; TopK and BatchTopK use the direct
+  targets. Rounded interpolation is not an L0 controller, so achieved
+  calibration-stream L0 remains authoritative. VG gamma `1.39` is specifically
+  a power-law extrapolation beyond the largest 200M anchor (`1.15`), predicting hard L0
+  around `14--16`; it is not an observed interpolation. The fixed evaluation
+  stream was reused to choose these controls and therefore serves as a
+  calibration stream rather than an untouched test set. The default is one seed
+  (`0`) rather than the paper's five;
   the five-seed protocol is exposed through `--seeds 0,1,2,3,4` at five times
   the compute. Exact rolling interruption checkpoints are written every 10,000
   updates. Sample budgets must be exact multiples of batch size so the claimed

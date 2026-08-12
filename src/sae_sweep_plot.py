@@ -488,6 +488,7 @@ def plot_mask_heatmaps(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     representative_seed: int | None = None,
+    run_roots: dict[str, Path | str] | None = None,
 ) -> tuple[Any, pd.DataFrame]:
     if target_model_density is None:
         if support_density is None:
@@ -502,7 +503,12 @@ def plot_mask_heatmaps(
     axes = np.atleast_2d(axes)
     root = Path(sweep_dir)
     for row_index, row in representatives.iterrows():
-        cache_path = root / "runs" / row["method"] / row["run_id"] / "eval" / checkpoint_kind / "cache.npz"
+        cache_root = (
+            Path(run_roots[str(row["run_id"])])
+            if run_roots is not None and str(row["run_id"]) in run_roots
+            else root
+        )
+        cache_path = cache_root / "runs" / row["method"] / row["run_id"] / "eval" / checkpoint_kind / "cache.npz"
         with np.load(cache_path) as cache:
             support, mask = cache["true_support"][:n_show], cache["mask"][:n_show]
         axes[row_index, 0].imshow(support, aspect="auto", interpolation="nearest", vmin=0, vmax=1)

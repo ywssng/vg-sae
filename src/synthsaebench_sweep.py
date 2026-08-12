@@ -46,8 +46,8 @@ BENCHMARK_NUM_FEATURES = 16_384
 BENCHMARK_SAE_WIDTH = 4_096
 BENCHMARK_SCALE_CHILDREN_BY_PARENT = False
 
-# Broad range-scout controls.  Use the narrower pilot-informed FINAL_CONTROLS
-# for a full 200M-sample run.
+# Broad range-scout controls.  Use the 200M-calibrated FINAL_CONTROLS for the
+# definitive full-budget comparison.
 CALIBRATION_CONTROLS: dict[str, list[float | int]] = {
     "vgsae": [0.4, 0.5, 0.55, 0.6, 0.65, 0.75],
     "l1": [1.0, 1.25, 1.5, 2.0, 3.0, 4.0, 5.0],
@@ -57,16 +57,16 @@ CALIBRATION_CONTROLS: dict[str, list[float | int]] = {
     "gated": [1.0, 1.35, 1.5, 2.0, 3.0, 4.0, 5.0],
 }
 
-# One-seed 1M/5M/10M/20M scouts narrowed coefficient methods toward the
-# benchmark's measured hard-L0 comparison band [15, 45].  The final x-axis is
-# always achieved hard L0, never coefficient order.
+# One-seed 200M calibration runs invert each method's measured calibration-stream
+# hard-L0 curve toward the benchmark comparison targets [45, 40, ..., 15].  The
+# final x-axis remains achieved hard L0, never coefficient order.
 FINAL_CONTROLS: dict[str, list[float | int]] = {
-    "vgsae": [0.5, 0.525, 0.55, 0.575, 0.6, 0.625, 0.65],
-    "l1": [1.23, 1.36, 1.5, 1.79, 2.26, 3.17, 4.5],
+    "vgsae": [0.77, 0.82, 0.88, 0.96, 1.07, 1.17, 1.39],
+    "l1": [0.99, 1.07, 1.17, 1.36, 1.69, 2.42, 4.26],
     "topk": [15, 20, 25, 30, 35, 40, 45],
     "batchtopk": [15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0],
-    "jumprelu": [0.25, 0.35, 0.5, 0.7, 1.0, 1.5, 2.0],
-    "gated": [1.31, 1.38, 1.48, 1.74, 2.04, 2.72, 4.01],
+    "jumprelu": [0.41, 0.46, 0.52, 0.61, 0.78, 1.16, 1.80],
+    "gated": [1.07, 1.10, 1.21, 1.38, 1.70, 2.17, 3.28],
 }
 
 FAST_CONTROLS: dict[str, list[float | int]] = {
@@ -188,7 +188,7 @@ class SynthSAEBenchTrainingConfig:
 
 @dataclass
 class SynthSAEBenchSweepConfig:
-    experiment_name: str = "stage2_synthsaebench16k"
+    experiment_name: str = "stage2_synthsaebench16k_l0calibrated"
     data: SynthSAEBenchDataConfig = field(default_factory=SynthSAEBenchDataConfig)
     training: SynthSAEBenchTrainingConfig = field(
         default_factory=SynthSAEBenchTrainingConfig
@@ -363,7 +363,7 @@ def default_sweep_config(
             else (
                 "stage2_synthsaebench16k_calibration"
                 if calibration
-                else "stage2_synthsaebench16k"
+                else "stage2_synthsaebench16k_l0calibrated"
             )
         ),
         data=data,

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gc
 import hashlib
+from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
@@ -57,9 +58,11 @@ from src.synthsaebench_sweep import (
     build_model,
     build_specs,
     default_sweep_config,
+    default_sweep_dir,
     load_benchmark_model,
     load_checkpoint,
     save_checkpoint,
+    sweep_experiment_id,
     temporary_seed_for_device,
 )
 
@@ -119,6 +122,19 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     assert SAELENS_REVISION == "8be14080485952f729ed58d674bcddf9778e0aa4"
     assert config.controls["topk"] == [15, 20, 25, 30, 35, 40, 45]
     assert config.controls == FINAL_CONTROLS
+    assert config.experiment_name == "stage2_synthsaebench16k_l0calibrated"
+    assert config.controls["vgsae"] == [0.77, 0.82, 0.88, 0.96, 1.07, 1.17, 1.39]
+    assert config.controls["l1"] == [0.99, 1.07, 1.17, 1.36, 1.69, 2.42, 4.26]
+    assert config.controls["jumprelu"] == [0.41, 0.46, 0.52, 0.61, 0.78, 1.16, 1.8]
+    assert config.controls["gated"] == [1.07, 1.1, 1.21, 1.38, 1.7, 2.17, 3.28]
+    expected_id = (
+        "stage2_synthsaebench16k_l0calibrated_"
+        "sae4096_train200m_test25m_seed0"
+    )
+    assert sweep_experiment_id(config) == expected_id
+    assert default_sweep_dir(Path("/project"), config) == (
+        Path("/project") / "outputs" / "runs" / expected_id
+    )
 
     calibration = default_sweep_config(calibration=True)
     assert calibration.controls == CALIBRATION_CONTROLS

@@ -157,12 +157,18 @@ metrics in streaming form. Only a small preview is cached for heatmaps. Point
 the SynthSAEBench-specific panels with the same artifact-only workflow.
 
 The default one-seed method grid has seven controls per method. TopK and
-BatchTopK use target `k=[15,20,25,30,35,40,45]`; 20M-sample pilots were used to
-interpolate L1 controls `[1.23,1.36,1.50,1.79,2.26,3.17,4.50]` and Gated
-controls `[1.31,1.38,1.48,1.74,2.04,2.72,4.01]` toward the same achieved-hard-L0
-band. JumpReLU uses `[0.25,0.35,0.5,0.7,1.0,1.5,2.0]`, and VG-SAE uses gamma
-`[0.50,0.525,0.55,0.575,0.60,0.625,0.65]`. These are pilot-informed static
-controls, not the official L0 autotuner. VG-SAE therefore reports and plots
+BatchTopK use target `k=[15,20,25,30,35,40,45]`. Full 200M-sample calibration
+runs were used to invert the calibration-stream hard-L0 curves toward the same targets:
+VG-SAE gamma `[0.77,0.82,0.88,0.96,1.07,1.17,1.39]`, L1
+`[0.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
+`[0.41,0.46,0.52,0.61,0.78,1.16,1.80]`, and Gated
+`[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`. These are empirically calibrated static
+controls, not the official L0 autotuner; rounded interpolation means achieved
+L0 remains the authoritative comparison axis. The same fixed evaluation stream
+was used for calibration and the final tables, so it is a calibration stream,
+not an untouched test set. VG gamma `1.39` is a power-law extrapolation beyond
+the largest 200M calibration anchor (`1.15`), with predicted hard L0 about
+`14--16`. VG-SAE therefore reports and plots
 hard and posterior-expected L0/reconstruction separately; a short pilot showed
 a large hard/expected gap. Interrupted jobs write an exact rolling resume
 checkpoint every 10,000 updates. The official study used five seeds; the local

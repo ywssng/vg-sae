@@ -75,7 +75,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--calibration-grid",
         action="store_true",
-        help="Use broad range-scout controls instead of pilot-informed final controls.",
+        help="Use broad range-scout controls instead of 200M-calibrated final controls.",
     )
     parser.add_argument("--methods", default="all", help="Comma-separated methods, or all.")
     seed = parser.add_mutually_exclusive_group()
