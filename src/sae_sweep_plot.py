@@ -124,6 +124,10 @@ def _finish_metric_axis(
     )
     ax.set(xlabel=r"$\rho_\text{model}$", ylabel=ylabel)
     ax.set_xscale("log")
+    # The benchmark's useful density band is less than one decade wide.  The
+    # default log formatter labels every minor tick there, which makes the
+    # notebook-10 panels unreadable once six methods are overlaid.
+    ax.xaxis.set_minor_formatter(ticker.NullFormatter())
     ax.grid(alpha=0.25)
 
 

@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import matplotlib.pyplot as plt
+import matplotlib.ticker as ticker
 import numpy as np
 import pandas as pd
 import pytest
@@ -241,6 +242,10 @@ def test_synth_metric_figures_use_official_panels(plotter, expected_labels) -> N
     assert [axis.get_ylabel() for axis in figure.axes] == expected_labels
     if plotter is plot_support_metrics:
         assert all(axis.get_ylim()[1] == pytest.approx(1.02) for axis in figure.axes)
+    assert all(
+        isinstance(axis.xaxis.get_minor_formatter(), ticker.NullFormatter)
+        for axis in figure.axes
+    )
     _assert_single_bottom_legend(figure)
     plt.close(figure)
 
