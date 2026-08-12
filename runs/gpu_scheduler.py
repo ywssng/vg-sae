@@ -11,6 +11,22 @@ from pathlib import Path
 from typing import Sequence
 
 
+def activate_worker_device(device: str) -> None:
+    """Make an assigned CUDA device current before libraries initialize CUDA.
+
+    Passing an indexed device to tensor constructors is not sufficient for all
+    third-party loaders: some initialize the process's current CUDA device as
+    well.  Selecting it at worker entry prevents nonzero-GPU workers from
+    creating a stray primary context on GPU 0.
+    """
+
+    import torch
+
+    normalized = torch.device(device)
+    if normalized.type == "cuda":
+        torch.cuda.set_device(normalized)
+
+
 @dataclass(frozen=True)
 class ScriptTask:
     script: Path

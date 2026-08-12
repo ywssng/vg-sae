@@ -41,6 +41,7 @@ from runs.run_SynthSAEBench_sweep import (
     configured_sweep,
     parse_args,
 )
+from runs.run_SynthSAEBench_sweep_eval import parse_args as parse_eval_args
 from src.sae_baselines import to_inference_sae
 from src.saelens_vg import VGTrainingSAE
 from src.synthsaebench_eval import evaluate_model
@@ -53,6 +54,7 @@ from src.synthsaebench_sweep import (
     BENCHMARK_SAE_WIDTH,
     BENCHMARK_SCALE_CHILDREN_BY_PARENT,
     CALIBRATION_CONTROLS,
+    DEFAULT_MAX_PER_DEVICE,
     FINAL_CONTROLS,
     SAELENS_REVISION,
     SynthSAEBenchDataConfig,
@@ -251,6 +253,17 @@ def test_synth_sweep_rejects_wandb_bypass_options(
 
     with pytest.raises(SystemExit):
         parse_args()
+
+
+def test_synth_sweep_defaults_to_benchmarked_worker_concurrency(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["run_SynthSAEBench_sweep.py"])
+
+    assert DEFAULT_MAX_PER_DEVICE == 2
+    assert parse_args().max_per_device == DEFAULT_MAX_PER_DEVICE
+    monkeypatch.setattr(sys, "argv", ["run_SynthSAEBench_sweep_eval.py"])
+    assert parse_eval_args().max_per_device == DEFAULT_MAX_PER_DEVICE
 
 
 def test_synth_wandb_rejects_run_without_sweep_manifest(

@@ -29,10 +29,15 @@ from runs._sweep_io import (  # noqa: E402
     write_json,
     write_rows,
 )
-from runs.gpu_scheduler import ParallelExecutor, ScriptTask  # noqa: E402
+from runs.gpu_scheduler import (  # noqa: E402
+    ParallelExecutor,
+    ScriptTask,
+    activate_worker_device,
+)
 from src.sae_sweep import CONTROL_NAMES, METHOD_LABELS, METHOD_ORDER  # noqa: E402
 from src.saelens_vg import VGSAETrainer  # noqa: E402
 from src.synthsaebench_sweep import (  # noqa: E402
+    DEFAULT_MAX_PER_DEVICE,
     SAELENS_REVISION,
     SynthSAEBenchRunSpec,
     SynthSAEBenchSweepConfig,
@@ -111,7 +116,12 @@ def parse_args() -> argparse.Namespace:
         default="cuda:0,cuda:1,cuda:2,cuda:3",
         help="auto, cpu, or cuda:0,cuda:1,...",
     )
-    parser.add_argument("--max-per-device", type=int, default=1)
+    parser.add_argument(
+        "--max-per-device",
+        type=int,
+        default=DEFAULT_MAX_PER_DEVICE,
+        help="Concurrent workers per device (default: benchmarked value 2).",
+    )
     parser.add_argument("--force", action="store_true", help="Rerun completed jobs.")
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--run-dir", type=Path, help=argparse.SUPPRESS)
@@ -539,6 +549,7 @@ def _run_metadata(
 
 
 def train_one(run_dir: Path, device: str, force: bool) -> None:
+    activate_worker_device(device)
     bundle = read_json(run_dir / "config.json")
     config = SynthSAEBenchSweepConfig.from_dict(bundle["sweep_config"])
     spec = SynthSAEBenchRunSpec.from_dict(bundle["spec"])

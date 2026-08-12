@@ -119,6 +119,13 @@ the paper leaves details open.
   the compute. Exact rolling interruption checkpoints are written every 10,000
   updates. Sample budgets must be exact multiples of batch size so the claimed
   8:1 train/test accounting cannot silently round.
+  Workers select their assigned CUDA device before loading the pretrained
+  generator, preventing nonzero-device processes from opening an extra primary
+  context on GPU 0. The Stage-2 train/eval scheduler default is two workers per
+  GPU: one-A6000 measurements gave aggregate train throughput gains of 19.3%
+  for VG and 10.1% for L1 over one worker, while a third worker added only 2.4%
+  and 3.7%, respectively. The shared value favors throughput without tripling
+  individual-job latency and synchronized checkpoint/W&B pressure.
   A 1.024M-sample VG pilot found hard L0 `69.83, 42.61, 20.64, 16.45` but
   expected L0 `1594.73, 1547.46, 1477.77, 1454.88` at gamma
   `0.50, 0.55, 0.625, 0.65`; hard EV was only `0.146--0.035` while expected-code

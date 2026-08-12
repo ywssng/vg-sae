@@ -120,23 +120,23 @@ uv run python -B runs/run_SynthSAEBench_sweep.py \
   --history-every 64 \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1
+  --max-per-device 2
 
 uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
   --sweep-dir outputs/runs/stage2_synthsaebench16k_calibration \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1
+  --max-per-device 2
 
 # Full default: about 200M train samples and exactly one-eighth as held-out test.
 uv run python -B runs/run_SynthSAEBench_sweep.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1
+  --max-per-device 2
 
 uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1
+  --max-per-device 2
 ```
 
 This runner always loads `decoderesearch/synth-sae-bench-16k-v1` at revision

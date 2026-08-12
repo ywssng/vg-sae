@@ -22,7 +22,11 @@ from runs._sweep_io import (  # noqa: E402
     write_json,
     write_rows,
 )
-from runs.gpu_scheduler import ParallelExecutor, ScriptTask  # noqa: E402
+from runs.gpu_scheduler import (  # noqa: E402
+    ParallelExecutor,
+    ScriptTask,
+    activate_worker_device,
+)
 from src.sae_sweep import (  # noqa: E402
     CONTROL_NAMES,
     METHOD_LABELS,
@@ -45,6 +49,7 @@ from src.utils import set_seed  # noqa: E402
 WANDB_PROJECT = "vg-sae"
 TRAIN_SOURCE_FILES = (
     "runs/_sweep_io.py",
+    "runs/gpu_scheduler.py",
     "runs/run_CustomData_sweep.py",
     "src/sae_baselines.py",
     "src/sae_data.py",
@@ -291,6 +296,7 @@ def _run_metadata(
 
 
 def train_one(run_dir: Path, device: str, force: bool) -> None:
+    activate_worker_device(device)
     bundle = read_json(run_dir / "config.json")
     config = SweepConfig.from_dict(bundle["sweep_config"])
     spec = RunSpec.from_dict(bundle["spec"])

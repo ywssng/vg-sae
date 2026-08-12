@@ -22,7 +22,11 @@ from runs._sweep_io import (  # noqa: E402
     write_json,
     write_rows,
 )
-from runs.gpu_scheduler import ParallelExecutor, ScriptTask  # noqa: E402
+from runs.gpu_scheduler import (  # noqa: E402
+    ParallelExecutor,
+    ScriptTask,
+    activate_worker_device,
+)
 from src.sae_sweep import (  # noqa: E402
     METHOD_ORDER,
     RunSpec,
@@ -37,6 +41,7 @@ from src.sae_sweep_eval import evaluate_model  # noqa: E402
 
 EVAL_SOURCE_FILES = (
     "runs/_sweep_io.py",
+    "runs/gpu_scheduler.py",
     "runs/run_CustomData_sweep_eval.py",
     "src/evaluate.py",
     "src/sae_baselines.py",
@@ -112,6 +117,7 @@ def _is_complete(run_dir: Path, checkpoint_kind: str, eval_fingerprint: str) -> 
 
 
 def evaluate_one(run_dir: Path, checkpoint_kind: str, device: str, force: bool) -> None:
+    activate_worker_device(device)
     provenance = runtime_provenance(PROJECT_ROOT, EVAL_SOURCE_FILES)
     eval_fingerprint = provenance["pipeline_fingerprint"]
     if not force and _is_complete(run_dir, checkpoint_kind, eval_fingerprint):
