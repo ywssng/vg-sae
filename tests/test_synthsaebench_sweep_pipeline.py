@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import gc
 import hashlib
+import json
+import math
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -33,6 +35,7 @@ from sae_lens.synthetic import (
 
 import src.synthsaebench_sweep as sweep_module
 from runs.run_SynthSAEBench_sweep import (
+    _final_beta_precision,
     _load_resume_checkpoint,
     _preflight_wandb,
     _save_resume_checkpoint,
@@ -41,7 +44,9 @@ from runs.run_SynthSAEBench_sweep import (
     configured_sweep,
     parse_args,
 )
+import runs.run_SynthSAEBench_sweep_eval as synth_eval_runner
 from runs.run_SynthSAEBench_sweep_eval import parse_args as parse_eval_args
+from runs._sweep_io import write_json, write_rows
 from src.sae_baselines import to_inference_sae
 from src.saelens_vg import VGTrainingSAE
 from src.synthsaebench_eval import evaluate_model
@@ -124,6 +129,7 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     assert config.training.batch_size == 1_024
     assert config.training.lr == pytest.approx(3.0e-4)
     assert config.training.lr_decay_fraction == 0.0
+    assert config.training.beta_mode == "profiled"
     assert config.training.resume_every == 10_000
     assert SAELENS_REVISION == "8be14080485952f729ed58d674bcddf9778e0aa4"
     assert config.controls["topk"] == [15, 20, 25, 30, 35, 40, 45]
@@ -135,11 +141,20 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     assert config.controls["gated"] == [1.07, 1.1, 1.21, 1.38, 1.7, 2.17, 3.28]
     expected_id = (
         "stage2_synthsaebench16k_l0calibrated_"
-        "sae4096_train200m_test25m_seed0"
+        "sae4096_train200m_test25m_beta_profiled_seed0"
     )
     assert sweep_experiment_id(config) == expected_id
     assert default_sweep_dir(Path("/project"), config) == (
         Path("/project") / "outputs" / "runs" / expected_id
+    )
+    learned_raw = config.to_dict()
+    learned_raw["training"]["beta_mode"] = "learned"
+    learned = SynthSAEBenchSweepConfig.from_dict(learned_raw)
+    assert sweep_experiment_id(learned) == expected_id.replace(
+        "beta_profiled", "beta_learned"
+    )
+    assert default_sweep_dir(Path("/project"), learned) != default_sweep_dir(
+        Path("/project"), config
     )
 
     calibration = default_sweep_config(calibration=True)
@@ -164,6 +179,17 @@ def test_generator_identity_and_dimensions_cannot_be_overridden() -> None:
     with pytest.raises(ValueError, match="divisible by batch_size"):
         SynthSAEBenchSweepConfig.from_dict(raw)
 
+    raw = config.to_dict()
+    raw["training"]["beta_mode"] = "fixed"
+    with pytest.raises(ValueError, match="profiled or learned"):
+        SynthSAEBenchSweepConfig.from_dict(raw)
+
+    with pytest.raises(ValueError, match="profiled or learned"):
+        SynthSAEBenchTrainingConfig(beta_mode="fixed")  # type: ignore[arg-type]
+    for beta in (0.0, float("nan"), float("inf")):
+        with pytest.raises(ValueError, match="positive and finite"):
+            SynthSAEBenchTrainingConfig(beta=beta)
+
 
 def test_specs_share_stream_seeds_across_methods_and_controls() -> None:
     config = default_sweep_config(fast=True)
@@ -185,6 +211,7 @@ def test_cli_training_budget_derives_exact_one_eighth_test_and_direct_grid() -> 
             seeds=None,
             sparsity_controls=["topk=15,30,45", "l1=3,6,10"],
             batch_size=1_024,
+            beta_mode="learned",
             training_samples=8_192,
             test_samples=None,
             history_every=2,
@@ -198,6 +225,7 @@ def test_cli_training_budget_derives_exact_one_eighth_test_and_direct_grid() -> 
     assert config.controls["topk"] == [15, 30, 45]
     assert config.controls["l1"] == [3.0, 6.0, 10.0]
     assert config.training.lr_decay_fraction == pytest.approx(1.0 / 3.0)
+    assert config.training.beta_mode == "learned"
 
 
 def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(
@@ -225,6 +253,7 @@ def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(
     assert captured["tags"] == [
         "stage:stage2_synthsaebench16k_l0calibrated",
         f"method:{spec.method}",
+        "beta_mode:profiled",
     ]
     wandb_config = captured["config"]
     assert isinstance(wandb_config, dict)
@@ -232,6 +261,75 @@ def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(
     assert wandb_config["stage"] == "stage2_synthsaebench16k_l0calibrated"
     assert wandb_config["sweep_root"] == "stage2_synthsaebench16k_test"
     assert wandb_config["method"] == spec.method
+    assert wandb_config["beta_mode"] == "profiled"
+
+
+def test_synth_wandb_records_learned_mode(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    config = _small_config(monkeypatch)
+    raw = config.to_dict()
+    raw["training"]["beta_mode"] = "learned"
+    config = SynthSAEBenchSweepConfig.from_dict(raw)
+    spec = build_specs(config)[0]
+    sweep_dir = tmp_path / "stage2_beta_learned"
+    (sweep_dir / "manifest.json").parent.mkdir(parents=True)
+    (sweep_dir / "manifest.json").write_text("{}")
+    captured: dict[str, object] = {}
+    monkeypatch.setattr(
+        "wandb.init", lambda **kwargs: captured.update(kwargs) or object()
+    )
+
+    _wandb_run(
+        {"sweep_config": config.to_dict()},
+        spec,
+        sweep_dir / "runs" / spec.method / spec.run_id,
+    )
+
+    assert "beta_mode:learned" in captured["tags"]
+    assert captured["config"]["beta_mode"] == "learned"
+
+
+@pytest.mark.parametrize("beta_mode", ["profiled", "learned"])
+def test_synth_sweep_cli_accepts_supported_beta_modes(
+    beta_mode: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_SynthSAEBench_sweep.py", "--beta-mode", beta_mode],
+    )
+    assert parse_args().beta_mode == beta_mode
+
+
+def test_synth_sweep_cli_rejects_fixed_beta_mode(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_SynthSAEBench_sweep.py", "--beta-mode", "fixed"],
+    )
+    with pytest.raises(SystemExit):
+        parse_args()
+
+
+def test_synth_eval_cli_selects_mode_and_rejects_fixed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_SynthSAEBench_sweep_eval.py", "--beta-mode", "learned"],
+    )
+    assert parse_eval_args().beta_mode == "learned"
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_SynthSAEBench_sweep_eval.py", "--beta-mode", "fixed"],
+    )
+    with pytest.raises(SystemExit):
+        parse_eval_args()
 
 
 def test_synth_wandb_preflight_requires_verified_login(
@@ -372,6 +470,143 @@ def test_native_training_checkpoint_round_trip(monkeypatch, tmp_path) -> None:
     assert payload["n_training_samples"] == 12
     for name, value in model.state_dict().items():
         assert torch.equal(loaded.state_dict()[name], value)
+
+
+def test_learned_training_checkpoint_round_trip_preserves_mode(
+    monkeypatch, tmp_path
+) -> None:
+    config = _small_config(monkeypatch)
+    raw = config.to_dict()
+    raw["training"]["beta_mode"] = "learned"
+    config = SynthSAEBenchSweepConfig.from_dict(raw)
+    spec = next(spec for spec in build_specs(config) if spec.method == "vgsae")
+    model = build_model(config, spec)
+    assert model.core.log_beta is not None
+    path = save_checkpoint(
+        tmp_path / "learned.pt",
+        model=model,
+        config=config,
+        spec=spec,
+        step=0,
+        n_training_samples=4,
+        loss=1.0,
+    )
+
+    loaded, payload = load_checkpoint(path)
+
+    assert payload["sweep_config"]["training"]["beta_mode"] == "learned"
+    assert loaded.cfg.beta_mode == "learned"
+    assert loaded.core.log_beta is not None
+
+
+def test_final_learned_beta_precision_reads_post_update_model_state(
+    monkeypatch,
+) -> None:
+    config = _small_config(monkeypatch)
+    raw = config.to_dict()
+    raw["training"]["beta_mode"] = "learned"
+    config = SynthSAEBenchSweepConfig.from_dict(raw)
+    spec = next(spec for spec in build_specs(config) if spec.method == "vgsae")
+    model = build_model(config, spec)
+    assert model.core.log_beta is not None
+    with torch.no_grad():
+        model.core.log_beta.fill_(math.log(3.25))
+
+    actual = _final_beta_precision(
+        config,
+        spec,
+        model,
+        [{"beta_precision": 1.0}],
+    )
+
+    assert actual == pytest.approx(3.25)
+
+
+def test_synth_eval_summary_retains_one_beta_mode(tmp_path, monkeypatch) -> None:
+    run_dirs = []
+    config = _small_config(monkeypatch)
+    for control_value in (0.4, 0.8):
+        run_dir = tmp_path / "runs" / "vgsae" / f"vg-{control_value}"
+        run_dirs.append(run_dir)
+        row = {
+            "run_id": run_dir.name,
+            "seed": 0,
+            "method": "vgsae",
+            "method_label": "VG-SAE",
+            "beta_mode": "learned",
+            "control_name": "gamma",
+            "control_value": control_value,
+            "rho_model": control_value / 10,
+            "true_l0": 2.0,
+            "train_source_fingerprint": "source",
+            "train_pipeline_fingerprint": "pipeline",
+        }
+        spec = next(
+            spec
+            for spec in build_specs(config)
+            if spec.method == "vgsae" and spec.control_value == control_value
+        ) if control_value in config.controls["vgsae"] else SynthSAEBenchRunSpec(
+            method="vgsae",
+            control_name="gamma",
+            control_value=control_value,
+            seed=0,
+            init_seed=50_000,
+            calibration_seed=20_000,
+            train_stream_seed=30_000,
+            eval_stream_seed=40_000,
+        )
+        write_json(
+            run_dir / "config.json",
+            {"sweep_config": config.to_dict(), "spec": spec.to_dict()},
+        )
+        write_json(run_dir / "eval" / "last" / "metrics.json", row)
+        write_json(
+            run_dir / "eval" / "last" / "status.json",
+            {
+                "eval_fingerprint": "eval",
+                "eval_provenance": {"source_fingerprint": "eval-source"},
+            },
+        )
+        write_rows(
+            run_dir / "training_history.csv",
+            [{"method": "vgsae", "run_id": run_dir.name, "step": 0}],
+        )
+    monkeypatch.setattr(synth_eval_runner, "_write_data_preview", lambda *_: None)
+
+    synth_eval_runner._aggregate(tmp_path, run_dirs, run_dirs)
+
+    summary = json.loads(
+        (tmp_path / "summary" / "last" / "summary.json").read_text()
+    )
+    assert summary["beta_mode"] == "learned"
+    assert "beta_mode" in (
+        tmp_path / "summary" / "last" / "final_metrics_seed_mean.csv"
+    ).read_text().splitlines()[0]
+
+
+def test_synth_eval_rejects_mixed_beta_modes(tmp_path) -> None:
+    run_dirs = []
+    for index, beta_mode in enumerate(("profiled", "learned")):
+        run_dir = tmp_path / "runs" / "vgsae" / f"vg-{index}"
+        run_dirs.append(run_dir)
+        write_json(
+            run_dir / "eval" / "last" / "metrics.json",
+            {
+                "run_id": run_dir.name,
+                "seed": 0,
+                "method": "vgsae",
+                "method_label": "VG-SAE",
+                "beta_mode": beta_mode,
+                "control_name": "gamma",
+                "control_value": float(index),
+                "rho_model": 0.1,
+                "train_source_fingerprint": "source",
+                "train_pipeline_fingerprint": "pipeline",
+            },
+        )
+
+    with pytest.raises(ValueError, match="different VG beta modes"):
+        synth_eval_runner._aggregate(tmp_path, run_dirs, run_dirs)
 
 
 def test_rolling_checkpoint_restores_trainer_and_exact_stream_rng(

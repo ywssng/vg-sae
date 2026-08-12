@@ -25,9 +25,9 @@ def _constant_energy_model(**kwargs: object) -> VariationalGarroteSAE:
     return model
 
 
-def test_fixed_beta_uses_full_gaussian_and_normalized_signed_prior() -> None:
+def test_learned_beta_uses_full_gaussian_and_normalized_signed_prior() -> None:
     gamma, beta = -0.7, 2.0
-    model = _constant_energy_model(beta=beta, beta_mode="fixed", lambda_sparsity=gamma)
+    model = _constant_energy_model(beta=beta, beta_mode="learned", lambda_sparsity=gamma)
     x = torch.tensor([[1.0, 2.0], [2.0, 0.0]])
     energy = 0.5 * x.pow(2).sum(dim=1)
     prior = gamma * 0.5 + F.softplus(torch.tensor(-gamma))
@@ -50,7 +50,7 @@ def test_learned_beta_gradient_and_stationary_point() -> None:
     assert stationary.log_beta.grad == pytest.approx(0.0, abs=1e-6)
 
 
-def test_profiled_gradient_matches_fixed_at_profiled_beta() -> None:
+def test_profiled_gradient_matches_learned_at_profiled_beta() -> None:
     torch.manual_seed(4)
     x = torch.randn(5, 3)
     profiled = VariationalGarroteSAE(
@@ -62,30 +62,31 @@ def test_profiled_gradient_matches_fixed_at_profiled_beta() -> None:
         profiled_output["loss"], profiled.amplitude_encoder.weight
     )[0]
 
-    fixed = VariationalGarroteSAE(
-        VGSAEConfig(3, 4, beta=beta_star, beta_mode="fixed", lambda_sparsity=-0.2)
+    learned = VariationalGarroteSAE(
+        VGSAEConfig(3, 4, beta=beta_star, beta_mode="learned", lambda_sparsity=-0.2)
     )
-    fixed.load_state_dict(profiled.state_dict())
-    grad_fixed = torch.autograd.grad(
-        fixed.free_energy(x)["loss"], fixed.amplitude_encoder.weight
+    learned.load_state_dict(profiled.state_dict(), strict=False)
+    grad_learned = torch.autograd.grad(
+        learned.free_energy(x)["loss"], learned.amplitude_encoder.weight
     )[0]
-    assert torch.allclose(grad_profiled, grad_fixed, atol=2e-6, rtol=2e-5)
+    assert torch.allclose(grad_profiled, grad_learned, atol=2e-6, rtol=2e-5)
 
 
-def test_legacy_trace_beta_alias_and_explicit_mode_priority() -> None:
-    assert _constant_energy_model(trace_beta=True)._resolve_beta_mode() == "profiled"
-    assert _constant_energy_model(trace_beta=False)._resolve_beta_mode() == "fixed"
-    model = _constant_energy_model(beta_mode="fixed", trace_beta=True)
-    assert model._resolve_beta_mode(trace_beta=True) == "fixed"
+def test_fixed_mode_and_legacy_trace_beta_are_rejected() -> None:
+    with pytest.raises(ValueError, match="profiled, learned"):
+        _constant_energy_model(beta_mode="fixed")  # type: ignore[arg-type]
+    with pytest.raises(TypeError, match="trace_beta"):
+        _constant_energy_model(trace_beta=True)
+
+    model = _constant_energy_model()
+    with pytest.raises(ValueError, match="profiled, learned"):
+        model.free_energy(torch.ones(1, 2), beta_mode="fixed")  # type: ignore[arg-type]
 
 
-def test_learned_mode_requires_trainable_beta_and_disallows_override() -> None:
-    fixed = _constant_energy_model(beta_mode="fixed")
+def test_learned_mode_requires_trainable_beta() -> None:
+    profiled = _constant_energy_model(beta_mode="profiled")
     with pytest.raises(ValueError, match="requires"):
-        fixed.free_energy(torch.ones(1, 2), beta_mode="learned")
-    learned = _constant_energy_model(beta_mode="learned")
-    with pytest.raises(ValueError, match="cannot override"):
-        learned.free_energy(torch.ones(1, 2), beta=2.0)
+        profiled.free_energy(torch.ones(1, 2), beta_mode="learned")
 
 
 def test_beta_mode_override_and_loss_epsilon_are_validated() -> None:

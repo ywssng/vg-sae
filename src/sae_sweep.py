@@ -15,6 +15,7 @@ from .sae_data import SyntheticSparseCodingConfig, make_synthetic_sparse_coding
 from .sae_model import (
     BatchTopKSAE,
     BatchTopKSAEConfig,
+    BetaMode,
     GatedSAE,
     GatedSAEConfig,
     JumpReLUSAE,
@@ -170,8 +171,13 @@ class TrainingConfig:
     dead_feature_window: int = 100
     gradient_clip_norm: float | None = 1.0
     beta: float = 1.0
+    beta_mode: BetaMode = "profiled"
     dead_threshold: float = 1.0e-6
     mask_threshold: float = 0.5
+
+    def __post_init__(self) -> None:
+        if self.beta_mode not in {"profiled", "learned"}:
+            raise ValueError("Stage-1 VG beta_mode must be profiled or learned.")
 
     @classmethod
     def from_dict(cls, values: dict[str, Any]) -> TrainingConfig:
@@ -249,6 +255,10 @@ class SweepConfig:
                 raise ValueError("The simple baseline does not add observation noise.")
         if self.training.train_steps <= 0 or self.training.history_every <= 0:
             raise ValueError("train_steps and history_every must be positive.")
+        if self.training.beta_mode not in {"profiled", "learned"}:
+            raise ValueError(
+                "Stage-1 VG beta_mode must be profiled or learned."
+            )
         for method in self.methods:
             values = self.controls.get(method)
             if not values:
@@ -311,7 +321,8 @@ def sweep_experiment_id(config: SweepConfig) -> str:
     )
     data = config.data
     return (
-        f"{prefix}_din{data.input_dim}_gt{data.ground_truth_num_features}"
+        f"{prefix}_beta_{config.training.beta_mode}"
+        f"_din{data.input_dim}_gt{data.ground_truth_num_features}"
         f"_sae{data.sae_width}_sd{_density_token(data.support_density)}"
         f"_{seed_token}"
     )
@@ -426,7 +437,7 @@ def build_model(config: SweepConfig, spec: RunSpec) -> torch.nn.Module:
                 n_latents=data.sae_width,
                 lambda_sparsity=float(value),
                 beta=training.beta,
-                beta_mode="profiled",
+                beta_mode=training.beta_mode,
             )
         )
     if spec.method == "l1":

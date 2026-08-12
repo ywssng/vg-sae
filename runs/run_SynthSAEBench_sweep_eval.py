@@ -61,6 +61,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sweep-dir", type=Path)
     parser.add_argument("--fast-dev-run", action="store_true")
     parser.add_argument("--calibration-grid", action="store_true")
+    parser.add_argument(
+        "--beta-mode",
+        choices=("profiled", "learned"),
+        default="profiled",
+        help="Resolve the matching mode-specific default sweep root.",
+    )
     parser.add_argument("--methods", default="all", help="Comma-separated methods, or all.")
     parser.add_argument(
         "--devices",
@@ -159,6 +165,11 @@ def evaluate_one(run_dir: Path, device: str, force: bool) -> None:
     synthetic, _ = load_benchmark_model(config, device)
     row, cache = evaluate_model(model, synthetic, config, spec)
     row.update(
+        final_beta_precision=(
+            float(model.core.log_beta.exp().detach().cpu())
+            if spec.method == "vgsae" and model.core.log_beta is not None
+            else checkpoint_metadata.get("final_beta_precision")
+        ),
         checkpoint_kind="last",
         checkpoint_step=payload.get("step"),
         checkpoint_training_loss=payload.get("loss"),
@@ -274,10 +285,15 @@ def _aggregate(
     train_pipeline_fingerprints = {
         row["train_pipeline_fingerprint"] for row in metric_rows
     }
+    beta_modes = {row["beta_mode"] for row in metric_rows}
     if len(train_fingerprints) != 1 or len(train_pipeline_fingerprints) != 1:
         raise ValueError(
             "Refusing to aggregate runs trained by different source or package versions. "
             "Use a new sweep directory or retrain every method with --force."
+        )
+    if len(beta_modes) != 1:
+        raise ValueError(
+            "Refusing to aggregate different VG beta modes in one sweep directory."
         )
     checkpoint_summary = summary_dir / "last"
     write_rows(checkpoint_summary / "final_metrics.csv", metric_rows)
@@ -288,6 +304,7 @@ def _aggregate(
             "checkpoint_kind": "last",
             "n_evaluated_runs": len(run_dirs),
             "methods": sorted({row["method"] for row in metric_rows}),
+            "beta_mode": next(iter(beta_modes)),
             "train_source_fingerprint": next(iter(train_fingerprints)),
             "train_pipeline_fingerprint": next(iter(train_pipeline_fingerprints)),
             "eval_fingerprint": eval_status["eval_fingerprint"],
@@ -297,7 +314,13 @@ def _aggregate(
     )
 
     metrics = pd.DataFrame(metric_rows)
-    groups = ["method", "method_label", "control_name", "control_value"]
+    groups = [
+        "method",
+        "method_label",
+        "beta_mode",
+        "control_name",
+        "control_value",
+    ]
     numeric = [
         column
         for column in metrics.select_dtypes(include=np.number).columns
@@ -360,6 +383,9 @@ def main(args: argparse.Namespace) -> int:
     default_config = default_sweep_config(
         args.fast_dev_run, calibration=args.calibration_grid
     )
+    default_raw = default_config.to_dict()
+    default_raw["training"]["beta_mode"] = args.beta_mode
+    default_config = SynthSAEBenchSweepConfig.from_dict(default_raw)
     sweep_dir = (
         args.sweep_dir or default_sweep_dir(PROJECT_ROOT, default_config)
     ).resolve()

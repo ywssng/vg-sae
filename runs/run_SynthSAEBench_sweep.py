@@ -97,6 +97,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--training-samples", type=int)
     parser.add_argument("--test-samples", type=int)
     parser.add_argument("--batch-size", type=int)
+    parser.add_argument(
+        "--beta-mode",
+        choices=("profiled", "learned"),
+        help="VG precision treatment; also separates local and W&B sweep roots.",
+    )
     parser.add_argument("--history-every", type=int)
     parser.add_argument(
         "--resume-every",
@@ -182,6 +187,9 @@ def configured_sweep(args: argparse.Namespace) -> SynthSAEBenchSweepConfig:
     batch_size = getattr(args, "batch_size", None)
     if batch_size is not None:
         raw["training"]["batch_size"] = batch_size
+    beta_mode = getattr(args, "beta_mode", None)
+    if beta_mode is not None:
+        raw["training"]["beta_mode"] = beta_mode
     training_samples = getattr(args, "training_samples", None)
     test_samples = getattr(args, "test_samples", None)
     if training_samples is not None:
@@ -305,13 +313,18 @@ def _wandb_run(
         job_type=spec.method,
         # The full sweep root remains filterable in config/group; W&B tags are
         # limited to 64 characters and resolved sweep directory names can exceed it.
-        tags=[f"stage:{stage}", f"method:{spec.method}"],
+        tags=[
+            f"stage:{stage}",
+            f"method:{spec.method}",
+            f"beta_mode:{config.training.beta_mode}",
+        ],
         config={
             **bundle,
             "exp_id": sweep_experiment_id(config),
             "stage": stage,
             "sweep_root": sweep_root,
             "method": spec.method,
+            "beta_mode": config.training.beta_mode,
         },
         mode="online",
         force=True,
@@ -527,6 +540,8 @@ def _run_metadata(
         "eval_stream_seed": spec.eval_stream_seed,
         "method": spec.method,
         "method_label": METHOD_LABELS[spec.method],
+        "beta_mode": config.training.beta_mode,
+        "beta_initial": config.training.beta,
         "control_name": spec.control_name,
         "control_value": spec.control_value,
         "input_dim": config.data.input_dim,
@@ -546,6 +561,24 @@ def _run_metadata(
         "train_source_fingerprint": provenance["source_fingerprint"],
         "train_pipeline_fingerprint": provenance["pipeline_fingerprint"],
     }
+
+
+def _final_beta_precision(
+    config: SynthSAEBenchSweepConfig,
+    spec: SynthSAEBenchRunSpec,
+    model: Any,
+    history: list[dict[str, Any]],
+) -> float | None:
+    """Read beta from the saved model state, not the pre-update history row."""
+
+    if spec.method != "vgsae":
+        return None
+    if config.training.beta_mode == "learned":
+        if model.core.log_beta is None:
+            raise RuntimeError("Learned beta run has no trainable log_beta.")
+        return float(model.core.log_beta.exp().detach().cpu())
+    value = history[-1].get("beta_precision")
+    return None if value is None else float(value)
 
 
 def train_one(run_dir: Path, device: str, force: bool) -> None:
@@ -690,6 +723,9 @@ def train_one(run_dir: Path, device: str, force: bool) -> None:
             metadata={
                 "train_fingerprint": bundle["fingerprint"],
                 "train_provenance": bundle["train_provenance"],
+                "final_beta_precision": _final_beta_precision(
+                    config, spec, model, history
+                ),
                 **metadata,
             },
         )
@@ -701,6 +737,9 @@ def train_one(run_dir: Path, device: str, force: bool) -> None:
             **metadata,
             "last_step": trainer.n_training_steps - 1,
             "last_loss": last_loss,
+            "final_beta_precision": _final_beta_precision(
+                config, spec, model, history
+            ),
             "resumed": resumed,
             "train_provenance": bundle["train_provenance"],
         }

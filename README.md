@@ -47,12 +47,14 @@ training in Jupyter:
 ```bash
 # WANDB_API_KEY is read from the ignored project-root .env.
 uv run python -B runs/run_CustomData_sweep.py \
+  --beta-mode profiled \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 16
 
 # Evaluate both `last` and `best`; plotting still defaults to Notebook 07's `last`.
 uv run python -B runs/run_CustomData_sweep_eval.py \
+  --beta-mode profiled \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 16
@@ -72,13 +74,14 @@ independently controls the learned latent width. Their defaults are
 
 The default output directory and W&B group are derived from the resolved data
 config, for example
-`stage1_din128_gt1024_sae1024_sd001_seed0`. An explicit `--output-dir` still
+`stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0`. The learned-beta
+counterpart uses `stage1_beta_learned_...`. An explicit `--output-dir` still
 overrides it. The no-argument eval command resolves the same default config;
 when training with CLI overrides, pass its resolved directory to eval with
 `--sweep-dir`. Training sweeps require authenticated W&B online logging. W&B
 stores this ID as the top-level `exp_id`, the configured stage as `stage`, and
 the actual sweep-directory basename as `sweep_root`. The latter
-is also the W&B group; stage and method are tags. The full sweep root stays in
+is also the W&B group; stage, method, and beta mode are tags. The full sweep root stays in
 config/group rather than a tag because W&B limits individual tags to 64
 characters, so long custom output directories remain directly filterable.
 
@@ -98,7 +101,7 @@ full-training objective observed at a history step and is intentionally not
 mixed into the default `last` reproduction.
 
 ```text
-outputs/runs/stage1_din128_gt1024_sae1024_sd001_seed0/
+outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/
 ├── sweep_config.json, manifest.json
 ├── runs/<method>/<run_id>/
 │   ├── config.json, training_history.csv
@@ -115,6 +118,7 @@ Run Stage 2 on the pinned official SynthSAEBench generator with streamed data:
 # Short coefficient/L0 calibration. --test-samples defaults to train/8.
 uv run python -B runs/run_SynthSAEBench_sweep.py \
   --calibration-grid \
+  --beta-mode profiled \
   --output-dir outputs/runs/stage2_synthsaebench16k_calibration \
   --training-samples 1048576 \
   --history-every 64 \
@@ -129,12 +133,14 @@ uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
 
 # Full default: about 200M train samples and exactly one-eighth as held-out test.
 uv run python -B runs/run_SynthSAEBench_sweep.py \
-  --methods all \
+  --beta-mode profiled \
+  --methods vgsae \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 2
 
 uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
-  --methods all \
+  --beta-mode profiled \
+  --methods vgsae \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 2
 ```
@@ -160,12 +166,17 @@ metrics in streaming form. Only a small preview is cached for heatmaps. Point
 the SynthSAEBench-specific panels with the same artifact-only workflow. Its
 eighth figure, `vg_posterior_diagnostics.png`, compares VG hard inference with
 the posterior expectation; Stage-1 CustomData artifacts skip that unavailable
-panel without error.
+panel without error. For a VG-only mode root, also set
+`VGSAE_BASELINE_SWEEP_DIR` to the preserved 35-run non-VG Stage-2 root; the
+notebook fills only methods absent from the primary root and resolves each
+heatmap from its source root.
 
 The default one-seed method grid has seven controls per method. TopK and
 BatchTopK use target `k=[15,20,25,30,35,40,45]`. Full 200M-sample calibration
-runs were used to invert the calibration-stream hard-L0 curves toward the same targets:
-VG-SAE gamma `[0.77,0.82,0.88,0.96,1.07,1.17,1.39]`, L1
+runs were used to invert the calibration-stream hard-L0 curves toward the same targets.
+The historical VG-SAE gamma grid `[0.77,0.82,0.88,0.96,1.07,1.17,1.39]` was
+calibrated under a removed precision mode, so each supported beta mode must be
+recalibrated before its definitive VG sweep. The other calibrated grids are L1
 `[0.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
 `[0.41,0.46,0.52,0.61,0.78,1.16,1.80]`, and Gated
 `[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`. These are empirically calibrated static
@@ -174,7 +185,8 @@ L0 remains the authoritative comparison axis. The same fixed evaluation stream
 was used for calibration and the final tables, so it is a calibration stream,
 not an untouched test set. VG gamma `1.39` is a power-law extrapolation beyond
 the largest 200M calibration anchor (`1.15`), with predicted hard L0 about
-`14--16`. VG-SAE therefore reports and plots
+`14--16` in that historical calibration and is not assumed to transfer to
+`profiled` or `learned`. VG-SAE therefore reports and plots
 hard and posterior-expected L0/reconstruction separately; a short pilot showed
 a large hard/expected gap. Interrupted jobs write an exact rolling resume
 checkpoint every 10,000 updates. The official study used five seeds; the local
@@ -211,19 +223,20 @@ loss = vg_free_energy(model, x, y)
 loss.backward()
 ```
 
-VG-SAE supports `beta_mode="profiled"` (the legacy beta-eliminated objective),
-`"fixed"`, and `"learned"`. In profiled mode `--beta` is only the configured
-initial/reporting value; the minibatch optimum is used in the loss. In learned
-mode it initializes the trainable positive precision. The sparsity field
-`lambda_sparsity` may be any finite real value: positive values favor sparse
-supports and negative values intentionally favor dense supports.
+VG-SAE experiment interfaces expose `beta_mode="profiled"` (the legacy
+beta-eliminated objective) and `"learned"`. In profiled mode `--beta` is only
+the configured initial/reporting value; the minibatch optimum is used in the
+loss. In learned mode it initializes the trainable positive precision. The
+sparsity field `lambda_sparsity` may be any finite real value: positive values
+favor sparse supports and negative values intentionally favor dense supports.
 
 The SAELens-native VG architecture lives in `src.saelens_vg` and registers the
-architecture name `"vg"` for both training and inference. Use `beta_mode="fixed"`
-or `"learned"` when the experiment must not impose the profiled
-`partial F / partial beta = 0` stationarity condition. Its public SAELens code is
-hard-thresholded for firing metrics, while the training objective reconstructs
-with the variational expected code; the two metric families are named separately.
+architecture name `"vg"` for both training and inference. Use
+`beta_mode="learned"` when the experiment must not impose the profiled
+`partial F / partial beta = 0` stationarity condition. Its public SAELens code
+is hard-thresholded for firing metrics, while the training objective
+reconstructs with the variational expected code; the two metric families are
+named separately.
 
 `src.saelens_data` converts the existing synthetic tensors and local activation
 caches into deterministic SAELens data providers. Normalization is a single

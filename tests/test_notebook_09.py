@@ -62,8 +62,10 @@ def test_notebook_09_uses_official_full_model_and_six_native_paths() -> None:
 
 def test_notebook_09_records_fairness_and_inference_audits() -> None:
     code = _source(_notebook(), code_only=True)
-    assert 'VG_BETA_MODE not in {"fixed", "learned"}' in code
-    assert 'beta_mode="profiled"' not in code
+    assert 'os.environ.get("VGSAE_BETA_MODE", "profiled")' in code
+    assert 'VG_BETA_MODE not in {"profiled", "learned"}' in code
+    assert 'VGSAE_BETA_MODE must be \'profiled\' or \'learned\'.' in code
+    assert '"fixed"' not in code
     assert "SyntheticActivationIterator" in code
     assert "temporary_seed(train_seed_offset + seed)" in code
     assert "OfficialActivationScaler" in code

@@ -43,7 +43,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--batch-size", type=int, default=128)
     parser.add_argument("--lr", type=float, default=1.0e-3)
     parser.add_argument("--beta", type=float, default=1.0)
-    parser.add_argument("--beta-mode", choices=("profiled", "fixed", "learned"), default="profiled")
+    parser.add_argument(
+        "--beta-mode", choices=("profiled", "learned"), default="profiled"
+    )
     parser.add_argument("--seed", type=int, default=0)
     return parser.parse_args()
 

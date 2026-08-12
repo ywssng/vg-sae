@@ -22,7 +22,13 @@ METHOD_COLORS = {
     "jumprelu": "tab:brown",
     "gated": "tab:red",
 }
-GROUP_COLUMNS = ["method", "method_label", "control_name", "control_value"]
+GROUP_COLUMNS = [
+    "method",
+    "method_label",
+    "beta_mode",
+    "control_name",
+    "control_value",
+]
 
 
 def load_sweep_results(
@@ -32,6 +38,85 @@ def load_sweep_results(
     metrics = pd.read_csv(root / "summary" / checkpoint_kind / "final_metrics.csv")
     history = pd.read_csv(root / "summary" / "training_curves.csv")
     return metrics, history
+
+
+def load_comparison_results(
+    sweep_dir: Path | str,
+    checkpoint_kind: str = "last",
+    baseline_sweep_dir: Path | str | None = None,
+) -> tuple[pd.DataFrame, pd.DataFrame, dict[tuple[str, str], Path]]:
+    """Load one sweep, optionally filling absent methods from a baseline root."""
+
+    root = Path(sweep_dir)
+    metrics, history = load_sweep_results(root, checkpoint_kind)
+    if "beta_mode" not in metrics:
+        metrics["beta_mode"] = "legacy_unspecified"
+    else:
+        metrics["beta_mode"] = metrics["beta_mode"].fillna(
+            "legacy_unspecified"
+        )
+    if "beta_mode" not in history:
+        history["beta_mode"] = "legacy_unspecified"
+    else:
+        history["beta_mode"] = history["beta_mode"].fillna(
+            "legacy_unspecified"
+        )
+    run_roots = {
+        (str(row.method), str(row.run_id)): root
+        for row in metrics[["method", "run_id"]].itertuples(index=False)
+    }
+    if baseline_sweep_dir is None:
+        return metrics, history, run_roots
+
+    baseline_root = Path(baseline_sweep_dir)
+    baseline_metrics, baseline_history = load_sweep_results(
+        baseline_root, checkpoint_kind
+    )
+    primary_data = json.loads((root / "sweep_config.json").read_text())["data"]
+    baseline_data = json.loads(
+        (baseline_root / "sweep_config.json").read_text()
+    )["data"]
+    identity_fields = sorted(set(primary_data) | set(baseline_data))
+    mismatched = [
+        field
+        for field in identity_fields
+        if primary_data.get(field) != baseline_data.get(field)
+    ]
+    if mismatched:
+        raise ValueError(
+            "Comparison roots use different data/evaluation conditions: "
+            + ", ".join(mismatched)
+        )
+    present_methods = set(metrics["method"].astype(str))
+    baseline_metrics = baseline_metrics[
+        ~baseline_metrics["method"].astype(str).isin(present_methods)
+    ].copy()
+    baseline_history = baseline_history[
+        ~baseline_history["method"].astype(str).isin(present_methods)
+    ].copy()
+    for frame in (baseline_metrics, baseline_history):
+        if "beta_mode" not in frame:
+            frame["beta_mode"] = "legacy_unspecified"
+        else:
+            frame["beta_mode"] = frame["beta_mode"].fillna(
+                "legacy_unspecified"
+            )
+        frame.loc[frame["method"] != "vgsae", "beta_mode"] = (
+            "baseline_invariant"
+        )
+    run_roots.update(
+        {
+            (str(row.method), str(row.run_id)): baseline_root
+            for row in baseline_metrics[["method", "run_id"]].itertuples(
+                index=False
+            )
+        }
+    )
+    return (
+        pd.concat([metrics, baseline_metrics], ignore_index=True, sort=False),
+        pd.concat([history, baseline_history], ignore_index=True, sort=False),
+        run_roots,
+    )
 
 
 def load_sweep_plot_context(
@@ -71,6 +156,12 @@ def load_sweep_plot_context(
 
 
 def aggregate_seed_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
+    if "beta_mode" not in metrics:
+        metrics = metrics.assign(beta_mode="legacy_unspecified")
+    else:
+        metrics = metrics.assign(
+            beta_mode=metrics["beta_mode"].fillna("legacy_unspecified")
+        )
     numeric = [
         column
         for column in metrics.select_dtypes(include=np.number).columns
@@ -499,7 +590,7 @@ def plot_mask_heatmaps(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     representative_seed: int | None = None,
-    run_roots: dict[str, Path | str] | None = None,
+    run_roots: dict[tuple[str, str] | str, Path | str] | None = None,
 ) -> tuple[Any, pd.DataFrame]:
     if target_model_density is None:
         if support_density is None:
@@ -514,11 +605,14 @@ def plot_mask_heatmaps(
     axes = np.atleast_2d(axes)
     root = Path(sweep_dir)
     for row_index, row in representatives.iterrows():
-        cache_root = (
-            Path(run_roots[str(row["run_id"])])
-            if run_roots is not None and str(row["run_id"]) in run_roots
-            else root
-        )
+        root_key = (str(row["method"]), str(row["run_id"]))
+        legacy_key = str(row["run_id"])
+        cache_root = root
+        if run_roots is not None:
+            if root_key in run_roots:
+                cache_root = Path(run_roots[root_key])
+            elif legacy_key in run_roots:
+                cache_root = Path(run_roots[legacy_key])
         cache_path = cache_root / "runs" / row["method"] / row["run_id"] / "eval" / checkpoint_kind / "cache.npz"
         with np.load(cache_path) as cache:
             support, mask = cache["true_support"][:n_show], cache["mask"][:n_show]
@@ -552,11 +646,14 @@ def plot_all(
     *,
     checkpoint_kind: str = "last",
     output_dir: Path | str | None = None,
+    baseline_sweep_dir: Path | str | None = None,
 ) -> tuple[dict[str, Any], pd.DataFrame]:
     """Reproduce every visual from plot-only notebook 10 with collision-free names."""
 
     root = Path(sweep_dir)
-    metrics, history = load_sweep_results(root, checkpoint_kind)
+    metrics, history, run_roots = load_comparison_results(
+        root, checkpoint_kind, baseline_sweep_dir
+    )
     context = load_sweep_plot_context(root)
     outputs = Path(output_dir) if output_dir is not None else None
     destination = lambda name: outputs / name if outputs is not None else None
@@ -594,6 +691,7 @@ def plot_all(
         target_model_density=context["target_model_density"],
         checkpoint_kind=checkpoint_kind,
         output_path=destination("mask_heatmaps.png"),
+        run_roots=run_roots,
     )
     figures["masks"] = heatmap
     if "vg_expected_l0" in metrics.columns and (metrics["method"] == "vgsae").any():

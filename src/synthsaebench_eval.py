@@ -203,6 +203,8 @@ def evaluate_model(
         "eval_stream_seed": spec.eval_stream_seed,
         "method": spec.method,
         "method_label": METHOD_LABELS[spec.method],
+        "beta_mode": config.training.beta_mode,
+        "beta_initial": config.training.beta,
         "control_name": spec.control_name,
         "control_value": spec.control_value,
         "benchmark_model_id": metadata.model_id,

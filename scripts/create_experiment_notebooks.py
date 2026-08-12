@@ -1212,7 +1212,7 @@ def parallel_sweep_results_notebook() -> dict:
 
                 from src.sae_sweep_plot import (
                     load_sweep_plot_context,
-                    load_sweep_results,
+                    load_comparison_results,
                     plot_data_overview,
                     plot_mask_heatmaps,
                     plot_reconstruction_metrics,
@@ -1232,14 +1232,20 @@ def parallel_sweep_results_notebook() -> dict:
                 """
                 SWEEP_DIR = Path(os.environ.get(
                     "VGSAE_SWEEP_DIR",
-                    PROJECT_ROOT / "outputs" / "runs" / "stage1_din128_gt1024_sae1024_sd001_seed0",
+                    PROJECT_ROOT / "outputs" / "runs" / "stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0",
                 ))
+                BASELINE_SWEEP_DIR_RAW = os.environ.get("VGSAE_BASELINE_SWEEP_DIR")
+                BASELINE_SWEEP_DIR = (
+                    Path(BASELINE_SWEEP_DIR_RAW) if BASELINE_SWEEP_DIR_RAW else None
+                )
                 CHECKPOINT_KIND = os.environ.get("VGSAE_CHECKPOINT_KIND", "last")
                 FIGURE_DIR = SWEEP_DIR / "figures" / CHECKPOINT_KIND
                 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
                 plot_context = load_sweep_plot_context(SWEEP_DIR)
-                final_df, history_df = load_sweep_results(SWEEP_DIR, CHECKPOINT_KIND)
+                final_df, history_df, RUN_ROOTS = load_comparison_results(
+                    SWEEP_DIR, CHECKPOINT_KIND, BASELINE_SWEEP_DIR
+                )
                 print(f"{len(final_df)} evaluated runs from {SWEEP_DIR}")
                 print(plot_context)
                 final_df.head()
@@ -1331,6 +1337,7 @@ def parallel_sweep_results_notebook() -> dict:
                     target_model_density=plot_context["target_model_density"],
                     checkpoint_kind=CHECKPOINT_KIND,
                     output_path=FIGURE_DIR / "mask_heatmaps.png",
+                    run_roots=RUN_ROOTS,
                 )
                 plt.show()
                 representatives[[
@@ -1396,8 +1403,10 @@ def write_notebooks() -> None:
         10. `10_exp07_parallel_sweep_results.ipynb`: plot-only reproduction of notebook
             07 from saved parallel train/eval artifacts under `outputs/runs/`. It
             defaults to `last` checkpoints for fidelity and writes collision-free
-            figure names; set `VGSAE_SWEEP_DIR` or `VGSAE_CHECKPOINT_KIND` to select a
-            different sweep or the separately tracked `best` results. It reads artifacts
+            figure names; set `VGSAE_SWEEP_DIR`, optional
+            `VGSAE_BASELINE_SWEEP_DIR`, or `VGSAE_CHECKPOINT_KIND` to select a
+            different sweep, fill absent methods from a preserved baseline root, or
+            use the separately tracked `best` results. It reads artifacts
             from `runs/run_CustomData_sweep.py`, `runs/run_CustomData_sweep_eval.py`,
             or the corresponding SynthSAEBench runners, keeps
             ground-truth feature count separate from SAE width, and uses expected true

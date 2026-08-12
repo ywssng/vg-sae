@@ -33,11 +33,13 @@ the paper leaves details open.
   `gamma * sum(m) + n_latents * softplus(-gamma)` per sample. Positive gamma
   favors sparse support; negative gamma is a valid dense-prior regime. The
   minus sign printed in Eqs. 9/13 conflicts with Eq. 6 and is treated as a typo.
-- **VG-SAE precision:** `beta_mode="profiled"` preserves the beta-eliminated
-  objective; `"fixed"` uses the full Gaussian NLL with constant beta; and
-  `"learned"` optimizes `log_beta`. The legacy `trace_beta` flag remains an
-  alias when `beta_mode` is omitted. `--beta` does not set the profiled optimum;
-  it is an initial/reporting value in that mode.
+- **VG-SAE precision:** experiment interfaces offer two choices:
+  `beta_mode="profiled"` preserves the beta-eliminated objective, while
+  `"learned"` optimizes `log_beta` in the full Gaussian NLL. Configs must choose
+  one of these explicit modes; the legacy `trace_beta` flag is no longer
+  accepted. `--beta` does not set the profiled optimum; it is an
+  initial/reporting value in profiled mode and the positive-precision
+  initialization in learned mode.
 - **Entropy ablations:** the variational objective has unit entropy weight.
   `entropy_weight != 1` and `use_entropy_term=False` are explicit ablations,
   not alternative derivations of the same posterior.
@@ -103,12 +105,14 @@ the paper leaves details open.
   on the evaluation stream, and the original VG grid ended at L0 `60.95--92.82`.
   Consequently, a complete 42-run 200M sweep plus twelve 200M corrective
   anchors were used to invert calibration-stream L0 curves toward targets
-  `[45,40,35,30,25,20,15]`. The resulting rounded static grids are VG gamma
+  `[45,40,35,30,25,20,15]`. The resulting rounded historical static grids are VG gamma
   `[.77,.82,.88,.96,1.07,1.17,1.39]`, L1
   `[.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
   `[.41,.46,.52,.61,.78,1.16,1.80]`, and Gated
   `[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`; TopK and BatchTopK use the direct
-  targets. Rounded interpolation is not an L0 controller, so achieved
+  targets. The VG grid was calibrated under the now-removed precision mode; it
+  is not reused as a definitive profiled/learned grid without a separate
+  mode-specific calibration. Rounded interpolation is not an L0 controller, so achieved
   calibration-stream L0 remains authoritative. VG gamma `1.39` is specifically
   a power-law extrapolation beyond the largest 200M anchor (`1.15`), predicting hard L0
   around `14--16`; it is not an observed interpolation. The fixed evaluation
@@ -146,8 +150,8 @@ the paper leaves details open.
   baseline uses `input_dim=128`, `ground_truth_num_features=1024`,
   `sae_width=1024`, and `support_density=0.01` (expected true L0 `10.24`). Its
   calibrated TopK and BatchTopK grids currently span `k<=128`. Sweep output
-  directories and W&B groups use a resolved-config ID such as
-  `stage1_din128_gt1024_sae1024_sd001_seed0`. Training sweep runners require
+  directories and W&B groups include the precision mode, for example
+  `stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0`. Training sweep runners require
   W&B online mode and verified authentication; offline and disabled bypasses
   are not exposed. W&B records the resolved ID as `exp_id`, the experiment
   family as `stage`, and the actual `outputs/runs/` child directory as

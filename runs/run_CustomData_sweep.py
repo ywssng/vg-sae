@@ -92,6 +92,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--train-steps", type=int)
     parser.add_argument("--history-every", type=int)
     parser.add_argument(
+        "--beta-mode",
+        choices=("profiled", "learned"),
+        help="VG precision treatment; defaults to profiled.",
+    )
+    parser.add_argument(
         "--devices",
         default="cuda:0,cuda:1,cuda:2,cuda:3",
         help="auto, cpu, or cuda:0,cuda:1,...",
@@ -173,6 +178,9 @@ def configured_sweep(args: argparse.Namespace) -> SweepConfig:
         raw["training"]["train_steps"] = args.train_steps
     if args.history_every is not None:
         raw["training"]["history_every"] = args.history_every
+    beta_mode = getattr(args, "beta_mode", None)
+    if beta_mode is not None:
+        raw["training"]["beta_mode"] = beta_mode
     return SweepConfig.from_dict(raw)
 
 
@@ -241,13 +249,18 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path):
         job_type=spec.method,
         # The full sweep root remains filterable in config/group; W&B tags are
         # limited to 64 characters and resolved sweep directory names can exceed it.
-        tags=[f"stage:{stage}", f"method:{spec.method}"],
+        tags=[
+            f"stage:{stage}",
+            f"method:{spec.method}",
+            f"beta_mode:{config.training.beta_mode}",
+        ],
         config={
             **bundle,
             "exp_id": exp_id,
             "stage": stage,
             "sweep_root": sweep_root,
             "method": spec.method,
+            "beta_mode": config.training.beta_mode,
         },
         mode="online",
         force=True,
@@ -289,6 +302,7 @@ def _run_metadata(
         "method_label": METHOD_LABELS[spec.method],
         "control_name": spec.control_name,
         "control_value": spec.control_value,
+        "beta_mode": config.training.beta_mode,
         "train_device": device,
         "train_source_fingerprint": provenance["source_fingerprint"],
         "train_pipeline_fingerprint": provenance["pipeline_fingerprint"],
@@ -347,6 +361,7 @@ def train_one(run_dir: Path, device: str, force: bool) -> None:
         checkpoint_metadata = {
             "train_fingerprint": bundle["fingerprint"],
             "train_device": device,
+            "beta_mode": config.training.beta_mode,
             "train_provenance": bundle["train_provenance"],
         }
         save_checkpoint(

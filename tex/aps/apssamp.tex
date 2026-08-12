@@ -206,13 +206,12 @@ from global VG variables to sample-dependent SAE gates is a hypothesis to be
 calibrated in Stage 1, not an assumed identity.  The equation-of-state slope
 and $c_{\mathrm{dec}}$ remain complementary cross-checks.
 
-The implementation supports fixed, learned, and minibatch-profiled precision.
-The last option inserts $\beta^\star=Bd/(2\sum_\mu E_\mu)$ separately in each
+The implementation supports learned and minibatch-profiled precision.  The
+profiled option inserts $\beta^\star=Bd/(2\sum_\mu E_\mu)$ separately in each
 minibatch; unlike the original global VG precision, this is a log-batch-energy
 surrogate.  It is unbounded as the residual energy approaches zero.
-Confirmatory noiseless and overcomplete experiments must therefore compare
-this exploratory choice with a fixed or properly regularized learned
-precision.
+Confirmatory noiseless and overcomplete experiments therefore compare this
+profiled choice with learned precision.
 
 \section{Three-stage experimental program}
 \label{sec:experiments}
@@ -296,11 +295,10 @@ $L_0$ of approximately 34.  Its skewed firing rates, hierarchy, mutual
 exclusion, low-rank support correlations, heterogeneous amplitudes, and bias
 provide a structured test beyond Stage 1.
 
-The planned full-mode development defaults use five seeds, batch size 256, learning rate
-$3\times10^{-4}$, 65,536 normalization samples, 256,000 online training
-samples, and 100,000 evaluation samples.  It is an exploratory precursor to
-the official 200-million-sample training protocol, and it excludes profiled
-precision for VG-SAE\@.
+The full protocol uses the official pretrained generator, batch size 1024,
+199,999,488 online training samples, and 24,999,936 independently seeded
+evaluation samples.  VG-SAE is run separately with profiled and learned
+precision, with mode-specific sparsity calibration.
 The same six architectures will be evaluated with native SynthSAEBench metrics:
 hard SAE and true $L_0$, feature-classification precision/recall/F1, Matthews
 correlation, uniqueness, explained variance, dead latents, and shrinkage.  VG

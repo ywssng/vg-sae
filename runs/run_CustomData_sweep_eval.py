@@ -58,6 +58,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sweep-dir", type=Path)
     parser.add_argument("--fast-dev-run", action="store_true")
     parser.add_argument(
+        "--beta-mode",
+        choices=("profiled", "learned"),
+        default="profiled",
+        help="Resolve the matching mode-specific default sweep root.",
+    )
+    parser.add_argument(
         "--checkpoint",
         choices=CHECKPOINT_KINDS,
         help="Evaluate one checkpoint only; the default evaluates both last and best.",
@@ -154,7 +160,18 @@ def evaluate_one(run_dir: Path, checkpoint_kind: str, device: str, force: bool) 
         raise ValueError(f"Checkpoint metadata does not match {run_dir / 'config.json'}.")
     train_data, test_data = make_train_test(config, spec.seed, device)
     row, cache = evaluate_model(model, train_data, test_data, config, spec, spec.run_id)
+    final_beta_precision = None
+    if spec.method == "vgsae":
+        if model.log_beta is not None:
+            final_beta_precision = float(model.log_beta.exp().detach().cpu())
+        else:
+            final_beta_precision = float(
+                model.free_energy(train_data.x)["beta_eff"].detach().cpu()
+            )
     row.update(
+        beta_mode=config.training.beta_mode,
+        beta_initial=config.training.beta,
+        final_beta_precision=final_beta_precision,
         checkpoint_kind=checkpoint_kind,
         checkpoint_step=payload.get("step"),
         checkpoint_training_loss=payload.get("loss"),
@@ -229,10 +246,15 @@ def _aggregate(
     train_pipeline_fingerprints = {
         row["train_pipeline_fingerprint"] for row in metric_rows
     }
+    beta_modes = {row["beta_mode"] for row in metric_rows}
     if len(train_fingerprints) != 1 or len(train_pipeline_fingerprints) != 1:
         raise ValueError(
             "Refusing to aggregate runs trained by different source or package versions. "
             "Use a new sweep directory or retrain every method with --force."
+        )
+    if len(beta_modes) != 1:
+        raise ValueError(
+            "Refusing to aggregate different VG beta modes in one sweep directory."
         )
     checkpoint_summary = summary_dir / checkpoint_kind
     write_rows(checkpoint_summary / "final_metrics.csv", metric_rows)
@@ -243,6 +265,7 @@ def _aggregate(
             "checkpoint_kind": checkpoint_kind,
             "n_evaluated_runs": len(run_dirs),
             "methods": sorted({row["method"] for row in metric_rows}),
+            "beta_mode": next(iter(beta_modes)),
             "train_source_fingerprint": next(iter(train_fingerprints)),
             "train_pipeline_fingerprint": next(iter(train_pipeline_fingerprints)),
             "eval_fingerprint": eval_status["eval_fingerprint"],
@@ -257,6 +280,7 @@ def _aggregate(
         "ground_truth_num_features",
         "sae_width",
         "support_density",
+        "beta_mode",
     ]
     groups = [
         *[column for column in data_axes if column in metrics],
@@ -334,7 +358,9 @@ def main(args: argparse.Namespace) -> int:
             raise
         return 0
 
-    default_config = default_sweep_config(args.fast_dev_run)
+    default_raw = default_sweep_config(args.fast_dev_run).to_dict()
+    default_raw["training"]["beta_mode"] = args.beta_mode
+    default_config = SweepConfig.from_dict(default_raw)
     default_dir = default_sweep_dir(PROJECT_ROOT, default_config)
     sweep_dir = (args.sweep_dir or default_dir).resolve()
     run_dirs = _selected_run_dirs(sweep_dir, args.methods)

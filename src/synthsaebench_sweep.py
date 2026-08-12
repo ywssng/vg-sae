@@ -31,7 +31,7 @@ from sae_lens.synthetic import SyntheticModel
 from sae_lens.synthetic import synthetic_model as synthetic_model_module
 
 from .sae_sweep import CONTROL_NAMES, METHOD_LABELS, METHOD_ORDER
-from .saelens_vg import VGTrainingSAE, VGTrainingSAEConfig
+from .saelens_vg import BetaMode, VGTrainingSAE, VGTrainingSAEConfig
 
 
 SYNTHSAEBENCH_DATA_KIND = "synthsaebench_pretrained"
@@ -175,10 +175,18 @@ class SynthSAEBenchTrainingConfig:
     # use a constant 3e-4 learning rate.  Default to the executable reference.
     lr_decay_fraction: float = 0.0
     beta: float = 1.0
-    beta_mode: str = "fixed"
+    beta_mode: BetaMode = "profiled"
     mask_threshold: float = 0.5
     heatmap_samples: int = 80
     resume_every: int = 10_000
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.beta) or self.beta <= 0.0:
+            raise ValueError("SynthSAEBench VG beta must be positive and finite.")
+        if self.beta_mode not in {"profiled", "learned"}:
+            raise ValueError(
+                "SynthSAEBench VG beta_mode must be profiled or learned."
+            )
 
     @classmethod
     def from_dict(
@@ -248,8 +256,10 @@ class SynthSAEBenchSweepConfig:
             raise ValueError("n_batches_for_norm_estimate must be positive.")
         if not 0.0 <= training.lr_decay_fraction < 1.0:
             raise ValueError("lr_decay_fraction must lie in [0, 1).")
-        if training.beta_mode not in {"fixed", "learned"}:
-            raise ValueError("SynthSAEBench VG beta_mode must be fixed or learned.")
+        if training.beta_mode not in {"profiled", "learned"}:
+            raise ValueError(
+                "SynthSAEBench VG beta_mode must be profiled or learned."
+            )
         if not 0.0 <= training.mask_threshold <= 1.0:
             raise ValueError("mask_threshold must lie in [0, 1].")
         if training.heatmap_samples <= 0:
@@ -394,7 +404,8 @@ def sweep_experiment_id(config: SynthSAEBenchSweepConfig) -> str:
     return (
         f"{config.experiment_name}_sae{config.data.sae_width}"
         f"_train{_sample_token(config.data.n_train)}"
-        f"_test{_sample_token(config.data.n_test)}_{seed_token}"
+        f"_test{_sample_token(config.data.n_test)}"
+        f"_beta_{config.training.beta_mode}_{seed_token}"
     )
 
 

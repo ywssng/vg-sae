@@ -109,7 +109,7 @@ The sparsity prior follows the VG paper:
     \qquad \gamma \in \mathbb{R} .
 \end{equation}
 Thus larger positive $\gamma$ penalizes active support variables, while
-negative $\gamma$ defines a valid dense prior. The normalized fixed-$\beta$
+negative $\gamma$ defines a valid dense prior. The normalized full-$\beta$
 VG-SAE objective over a
 minibatch $\mathcal{B}$ is
 \begin{equation}
@@ -126,7 +126,7 @@ minibatch $\mathcal{B}$ is
         -
         \eta \sum_{j=1}^{N} H(m_{\mu j})
     \right],
-    \label{eq:vg_sae_fixed_beta}
+    \label{eq:vg_sae_full_beta}
 \end{equation}
 where
 \begin{equation}
@@ -163,11 +163,10 @@ This is the direct vector-output analogue of the VG free energy: the scalar
 sample count $M$ in the paper is replaced by the number of scalar reconstructed
 coordinates $|\mathcal{B}|d$.
 
-We implement three precision modes.  The profiled mode uses
-Eq.~\eqref{eq:vg_sae_reduced}; the fixed mode uses
-Eq.~\eqref{eq:vg_sae_fixed_beta}; and the learned mode parameterizes
-$\beta=\exp(\log\beta)$ and optimizes the same full objective.  In the learned
-mode,
+We use two precision modes.  The profiled mode uses
+Eq.~\eqref{eq:vg_sae_reduced}.  The learned mode parameterizes
+$\beta=\exp(\log\beta)$ and optimizes the full objective in
+Eq.~\eqref{eq:vg_sae_full_beta}.  In the learned mode,
 \begin{equation}
   \frac{\partial \mathcal{L}}{\partial\log\beta}
   = \frac{\beta}{|\mathcal{B}|}\sum_{\mu\in\mathcal{B}}E_\mu-\frac{d}{2},

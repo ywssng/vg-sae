@@ -119,7 +119,7 @@ def test_bernoulli_kl_is_finite_and_stable_at_endpoints(dtype: torch.dtype) -> N
     assert torch.isfinite(m.grad).all()
 
 
-def test_vg_sae_trace_beta_counts_vector_observations() -> None:
+def test_vg_sae_profiled_beta_counts_vector_observations() -> None:
     model = VariationalGarroteSAE(
         VGSAEConfig(
             input_dim=3,

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
-from typing import Any, Literal
+from typing import Any
 
 import torch
 import torch.nn as nn
@@ -27,13 +27,12 @@ from sae_lens.saes.sae import (
 )
 from sae_lens.training.sae_trainer import SAETrainer
 
-from .sae_model import VGSAEConfig as CoreVGSAEConfig
+from .sae_model import BetaMode, VGSAEConfig as CoreVGSAEConfig
 from .sae_model import VariationalGarroteSAE
 
 
 SAELENS_VERSION = "6.47.0"
 ARCHITECTURE = "vg"
-BetaMode = Literal["profiled", "fixed", "learned"]
 
 if saelens_version != SAELENS_VERSION:
     raise RuntimeError(
@@ -128,7 +127,6 @@ def _core_config(cfg: VGConfig) -> CoreVGSAEConfig:
         use_entropy_term=cfg.use_entropy_term,
         entropy_weight=cfg.entropy_weight,
         beta_mode=cfg.beta_mode,
-        trace_beta=None,
         decoder_bias=cfg.decoder_bias,
         tie_encoder_init=cfg.tie_encoder_init,
         gate_bias_init=cfg.gate_bias_init,
@@ -244,9 +242,6 @@ class _VGCoreMixin:
         if self.cfg.beta_mode == "learned":
             assert self.core.log_beta is not None
             self.core.log_beta.add_(2.0 * math.log(scaling_factor))
-        elif self.cfg.beta_mode == "fixed":
-            self.cfg.beta *= scaling_factor**2
-            self.core.config.beta = self.cfg.beta
         self.cfg.metadata.decoder_normalized_during_training = self.cfg.normalize_decoder
         self.cfg.normalize_decoder = False
         self.core.config.normalize_decoder = False
@@ -475,6 +470,7 @@ register_vg_saes()
 
 __all__ = [
     "ARCHITECTURE",
+    "BetaMode",
     "SAELENS_VERSION",
     "VGSAE",
     "VGSAEConfig",

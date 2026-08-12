@@ -11,7 +11,9 @@ import pytest
 from src.sae_sweep import METHOD_LABELS, METHOD_ORDER
 from src.sae_sweep_plot import (
     _mask_representatives,
+    aggregate_seed_metrics,
     load_sweep_plot_context,
+    load_comparison_results,
     plot_data_overview,
     plot_reconstruction_metrics,
     plot_recovery_metrics,
@@ -21,6 +23,161 @@ from src.sae_sweep_plot import (
     plot_vg_posterior_diagnostics,
     plot_mask_heatmaps,
 )
+
+
+def test_comparison_loader_fills_only_absent_methods_from_baseline_root(
+    tmp_path,
+) -> None:
+    vg_root = tmp_path / "vg"
+    baseline_root = tmp_path / "baseline"
+    for root in (vg_root, baseline_root):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "summary").mkdir(exist_ok=True)
+        (root / "sweep_config.json").write_text(
+            json.dumps(
+                {
+                    "data": {
+                        "kind": "synthsaebench_pretrained",
+                        "model_id": "benchmark",
+                        "revision": "revision",
+                        "model_config_sha256": "sha",
+                        "input_dim": 3,
+                        "ground_truth_num_features": 6,
+                        "sae_width": 5,
+                        "n_test": 4,
+                    }
+                }
+            )
+        )
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-new", "beta_mode": "learned"}]
+    ).to_csv(vg_root / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame([{"method": "vgsae", "run_id": "vg-new", "step": 0}]).to_csv(
+        vg_root / "summary" / "training_curves.csv", index=False
+    )
+    pd.DataFrame(
+        [
+            {"method": "vgsae", "run_id": "vg-old"},
+            {"method": "topk", "run_id": "topk-old"},
+        ]
+    ).to_csv(
+        baseline_root / "summary" / "last" / "final_metrics.csv", index=False
+    )
+    pd.DataFrame(
+        [
+            {"method": "vgsae", "run_id": "vg-old", "step": 0},
+            {"method": "topk", "run_id": "topk-old", "step": 0},
+        ]
+    ).to_csv(baseline_root / "summary" / "training_curves.csv", index=False)
+
+    metrics, history, roots = load_comparison_results(
+        vg_root, baseline_sweep_dir=baseline_root
+    )
+
+    assert set(metrics["run_id"]) == {"vg-new", "topk-old"}
+    assert set(history["run_id"]) == {"vg-new", "topk-old"}
+    assert metrics.loc[
+        metrics["method"] == "topk", "beta_mode"
+    ].item() == "baseline_invariant"
+    assert roots[("vgsae", "vg-new")] == vg_root
+    assert roots[("topk", "topk-old")] == baseline_root
+
+
+def test_comparison_loader_rejects_different_data_conditions(tmp_path) -> None:
+    primary = tmp_path / "primary"
+    baseline = tmp_path / "baseline"
+    for root, n_test in ((primary, 4), (baseline, 8)):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "summary").mkdir(exist_ok=True)
+        pd.DataFrame([{"method": "vgsae", "run_id": root.name}]).to_csv(
+            root / "summary" / "last" / "final_metrics.csv", index=False
+        )
+        pd.DataFrame([{"method": "vgsae", "run_id": root.name}]).to_csv(
+            root / "summary" / "training_curves.csv", index=False
+        )
+        (root / "sweep_config.json").write_text(
+            json.dumps({"data": {"n_test": n_test}})
+        )
+
+    with pytest.raises(ValueError, match="different data/evaluation.*n_test"):
+        load_comparison_results(primary, baseline_sweep_dir=baseline)
+
+
+def test_legacy_primary_mode_survives_baseline_merge_and_aggregation(
+    tmp_path,
+) -> None:
+    primary = tmp_path / "primary"
+    baseline = tmp_path / "baseline"
+    data = {
+        "kind": "synthsaebench_pretrained",
+        "model_id": "benchmark",
+        "revision": "revision",
+        "model_config_sha256": "sha",
+        "input_dim": 3,
+        "ground_truth_num_features": 6,
+        "sae_width": 5,
+        "n_test": 4,
+    }
+    for root, method in ((primary, "vgsae"), (baseline, "topk")):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "summary").mkdir(exist_ok=True)
+        (root / "sweep_config.json").write_text(json.dumps({"data": data}))
+        pd.DataFrame(
+            [
+                {
+                    "method": method,
+                    "method_label": METHOD_LABELS[method],
+                    "run_id": f"{method}-legacy",
+                    "control_name": "control",
+                    "control_value": 1.0,
+                    "seed": 0,
+                    "rho_model": 0.1,
+                }
+            ]
+        ).to_csv(root / "summary" / "last" / "final_metrics.csv", index=False)
+        pd.DataFrame(
+            [{"method": method, "run_id": f"{method}-legacy", "step": 0}]
+        ).to_csv(root / "summary" / "training_curves.csv", index=False)
+
+    metrics, _, _ = load_comparison_results(
+        primary, baseline_sweep_dir=baseline
+    )
+    table = aggregate_seed_metrics(metrics)
+
+    assert set(table["method"]) == {"vgsae", "topk"}
+    assert metrics.loc[
+        metrics["method"] == "vgsae", "beta_mode"
+    ].item() == "legacy_unspecified"
+
+
+def test_baseline_vg_never_gets_invariant_mode_label(tmp_path) -> None:
+    primary = tmp_path / "primary"
+    baseline = tmp_path / "baseline"
+    data = {"kind": "same", "n_test": 4}
+    for root in (primary, baseline):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "summary").mkdir(exist_ok=True)
+        (root / "sweep_config.json").write_text(json.dumps({"data": data}))
+    pd.DataFrame([{"method": "topk", "run_id": "topk-new"}]).to_csv(
+        primary / "summary" / "last" / "final_metrics.csv", index=False
+    )
+    pd.DataFrame([{"method": "topk", "run_id": "topk-new"}]).to_csv(
+        primary / "summary" / "training_curves.csv", index=False
+    )
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-old", "beta_mode": "profiled"}]
+    ).to_csv(baseline / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-old", "beta_mode": "profiled"}]
+    ).to_csv(baseline / "summary" / "training_curves.csv", index=False)
+
+    metrics, _, _ = load_comparison_results(
+        primary, baseline_sweep_dir=baseline
+    )
+
+    assert metrics.loc[
+        metrics["method"] == "vgsae", "beta_mode"
+    ].item() == "profiled"
 
 
 def _all_method_metrics() -> pd.DataFrame:

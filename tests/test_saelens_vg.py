@@ -70,7 +70,7 @@ def test_config_rejects_unsupported_normalization_and_invalid_warmup(warmup) -> 
         VGTrainingSAEConfig(d_in=3, d_sae=5, lambda_warm_up_steps=warmup)
 
 
-@pytest.mark.parametrize("beta_mode", ["profiled", "fixed", "learned"])
+@pytest.mark.parametrize("beta_mode", ["profiled", "learned"])
 def test_training_forward_delegates_free_energy_and_beta_modes(beta_mode: str) -> None:
     cfg = VGTrainingSAEConfig(
         d_in=3,
@@ -120,6 +120,12 @@ def test_training_forward_delegates_free_energy_and_beta_modes(beta_mode: str) -
         assert model.core.log_beta.grad is not None
 
 
+@pytest.mark.parametrize("config_class", [VGSAEConfig, VGTrainingSAEConfig])
+def test_saelens_configs_reject_fixed_beta_mode(config_class) -> None:
+    with pytest.raises(ValueError, match="profiled, learned"):
+        config_class(d_in=2, d_sae=3, beta_mode="fixed")  # type: ignore[arg-type]
+
+
 def test_public_encode_is_hard_but_training_reconstruction_is_expected() -> None:
     model = VGTrainingSAE(VGTrainingSAEConfig(d_in=2, d_sae=2))
     with torch.no_grad():
@@ -167,7 +173,7 @@ def test_vg_trainer_uses_hard_firing_and_enforces_unit_decoder() -> None:
 
 def test_project_fit_dispatches_to_vg_trainer_and_records_free_energy() -> None:
     model = VGTrainingSAE(
-        VGTrainingSAEConfig(d_in=2, d_sae=3, beta_mode="fixed")
+        VGTrainingSAEConfig(d_in=2, d_sae=3, beta_mode="profiled")
     )
     result = fit_sae(
         model,
@@ -207,7 +213,7 @@ def test_base_trainer_uses_hard_firing_and_renormalizes_on_next_forward() -> Non
     assert torch.allclose(model.W_dec.norm(dim=-1), torch.ones(2), atol=1.0e-6)
 
 
-@pytest.mark.parametrize("beta_mode", ["profiled", "fixed", "learned"])
+@pytest.mark.parametrize("beta_mode", ["profiled", "learned"])
 def test_activation_norm_folding_preserves_raw_function(beta_mode: str) -> None:
     model = VGSAE(
         VGSAEConfig(
@@ -224,7 +230,7 @@ def test_activation_norm_folding_preserves_raw_function(beta_mode: str) -> None:
     beta_before = (
         model.core.log_beta.exp().clone()
         if model.core.log_beta is not None
-        else torch.tensor(model.cfg.beta)
+        else None
     )
 
     model.fold_activation_norm_scaling_factor(scaling)
@@ -238,13 +244,15 @@ def test_activation_norm_folding_preserves_raw_function(beta_mode: str) -> None:
     assert model.core.config.normalize_decoder is False
     with pytest.raises(NotImplementedError, match="cannot be folded"):
         model.fold_W_dec_norm()
-    if beta_mode != "profiled":
-        beta_after = (
-            model.core.log_beta.exp()
-            if model.core.log_beta is not None
-            else torch.tensor(model.cfg.beta)
-        )
-        assert torch.allclose(beta_after, beta_before * scaling**2)
+    if beta_mode == "learned":
+        assert beta_before is not None
+        assert model.core.log_beta is not None
+        assert torch.allclose(model.core.log_beta.exp(), beta_before * scaling**2)
+    else:
+        assert beta_before is None
+        assert model.core.log_beta is None
+        assert model.cfg.beta == pytest.approx(1.5)
+        assert model.core.config.beta == pytest.approx(1.5)
 
 
 def test_training_and_inference_save_load_boundary(tmp_path) -> None:
@@ -285,7 +293,7 @@ def test_official_synthetic_eval_external_scaler_and_generic_export() -> None:
             )
         )
     model = VGTrainingSAE(
-        VGTrainingSAEConfig(d_in=2, d_sae=3, beta_mode="fixed")
+        VGTrainingSAEConfig(d_in=2, d_sae=3, beta_mode="profiled")
     )
     scaler = ActivationScaler(scaling_factor=1.7)
 

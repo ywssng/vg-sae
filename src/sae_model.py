@@ -27,6 +27,9 @@ from .sae_baselines import (
 )
 
 
+BetaMode = Literal["profiled", "learned"]
+
+
 @dataclass
 class VGSAEConfig:
     """Configuration for the amortized vector-output VG-SAE."""
@@ -40,8 +43,7 @@ class VGSAEConfig:
     use_variance_term: bool = True
     use_entropy_term: bool = True
     entropy_weight: float = 1.0
-    beta_mode: Literal["profiled", "fixed", "learned"] | None = None
-    trace_beta: bool | None = True
+    beta_mode: BetaMode = "profiled"
 
     # Architecture.
     decoder_bias: bool = True
@@ -56,6 +58,9 @@ class VGSAEConfig:
     inference_threshold: float = 0.5
     dtype: torch.dtype | str = torch.float32
 
+    def __post_init__(self) -> None:
+        self.validate()
+
     @property
     def torch_dtype(self) -> torch.dtype:
         return _dtype_from_value(self.dtype)
@@ -69,8 +74,8 @@ class VGSAEConfig:
             raise ValueError("beta must be positive.")
         if not math.isfinite(self.lambda_sparsity):
             raise ValueError("lambda_sparsity/gamma must be finite.")
-        if self.beta_mode not in {None, "profiled", "fixed", "learned"}:
-            raise ValueError("beta_mode must be one of: profiled, fixed, learned.")
+        if self.beta_mode not in {"profiled", "learned"}:
+            raise ValueError("beta_mode must be one of: profiled, learned.")
         if not math.isfinite(self.entropy_weight) or self.entropy_weight < 0.0:
             raise ValueError("entropy_weight must be non-negative.")
         if not math.isfinite(self.loss_eps) or self.loss_eps <= 0.0:
@@ -103,28 +108,20 @@ class VariationalGarroteSAE(nn.Module):
         self.decoder = nn.Linear(L, d, bias=False, dtype=dtype)
         self.pre_bias: Optional[nn.Parameter]
         self.pre_bias = nn.Parameter(torch.zeros(d, dtype=dtype)) if config.decoder_bias else None
-        mode = self._resolve_beta_mode()
         self.log_beta = (
             nn.Parameter(torch.tensor(math.log(config.beta), dtype=dtype))
-            if mode == "learned"
+            if config.beta_mode == "learned"
             else None
         )
         self.reset_parameters()
 
     def _resolve_beta_mode(
         self,
-        beta_mode: Literal["profiled", "fixed", "learned"] | None = None,
-        trace_beta: bool | None = None,
-    ) -> Literal["profiled", "fixed", "learned"]:
-        if beta_mode is not None:
-            mode = beta_mode
-        elif self.config.beta_mode is not None:
-            mode = self.config.beta_mode
-        else:
-            trace = self.config.trace_beta if trace_beta is None else trace_beta
-            mode = "profiled" if trace is not False else "fixed"
-        if mode not in {"profiled", "fixed", "learned"}:
-            raise ValueError("beta_mode must be one of: profiled, fixed, learned.")
+        beta_mode: BetaMode | None = None,
+    ) -> BetaMode:
+        mode = self.config.beta_mode if beta_mode is None else beta_mode
+        if mode not in {"profiled", "learned"}:
+            raise ValueError("beta_mode must be one of: profiled, learned.")
         return mode
 
     def reset_parameters(self) -> None:
@@ -222,25 +219,22 @@ class VariationalGarroteSAE(nn.Module):
         self,
         x: torch.Tensor,
         *,
-        beta: Optional[float] = None,
         lambda_sparsity: Optional[float] = None,
         entropy_weight: Optional[float] = None,
         use_entropy_term: Optional[bool] = None,
-        beta_mode: Literal["profiled", "fixed", "learned"] | None = None,
-        trace_beta: Optional[bool] = None,
+        beta_mode: BetaMode | None = None,
     ) -> dict[str, torch.Tensor]:
         """Compute the VG-SAE negative variational log posterior.
 
-        ``beta`` overrides the constant precision in fixed mode. ``beta_mode``
-        overrides the configured mode; the legacy ``trace_beta`` switch is used
-        only when neither explicit mode is set.
+        ``beta_mode`` may override the configured mode, but learned precision
+        requires a model constructed with its trainable ``log_beta`` parameter.
         """
         self._check_input(x)
         cfg = self.config
         gamma_value = cfg.lambda_sparsity if lambda_sparsity is None else float(lambda_sparsity)
         entropy_coeff = cfg.entropy_weight if entropy_weight is None else float(entropy_weight)
         entropy_on = cfg.use_entropy_term if use_entropy_term is None else bool(use_entropy_term)
-        mode = self._resolve_beta_mode(beta_mode, trace_beta)
+        mode = self._resolve_beta_mode(beta_mode)
 
         if not math.isfinite(gamma_value):
             raise ValueError("lambda_sparsity/gamma must be finite.")
@@ -280,21 +274,11 @@ class VariationalGarroteSAE(nn.Module):
             loss = loss_total / B
             beta_eff = torch.as_tensor(0.5 * M, device=x.device, dtype=x.dtype) / E_tot.detach()
         else:
-            if mode == "learned":
-                if self.log_beta is None:
-                    raise ValueError(
-                        "learned beta mode requires a model configured with beta_mode='learned'."
-                    )
-                if beta is not None:
-                    raise ValueError(
-                        "beta cannot override the trainable precision in learned mode."
-                    )
-                beta_eff = self.log_beta.exp()
-            else:
-                beta_value = cfg.beta if beta is None else float(beta)
-                if not math.isfinite(beta_value) or beta_value <= 0.0:
-                    raise ValueError("beta must be positive and finite.")
-                beta_eff = x.new_tensor(beta_value)
+            if self.log_beta is None:
+                raise ValueError(
+                    "learned beta mode requires a model configured with beta_mode='learned'."
+                )
+            beta_eff = self.log_beta.exp()
             gaussian_normalizer = -0.5 * d * torch.log(beta_eff / (2.0 * math.pi))
             per_sample = beta_eff * energy + gaussian_normalizer + prior - entropy_coeff * entropy
             loss = per_sample.mean()
@@ -329,6 +313,7 @@ class VariationalGarroteSAE(nn.Module):
 __all__ = [
     "BatchTopKSAE",
     "BatchTopKSAEConfig",
+    "BetaMode",
     "GatedSAE",
     "GatedSAEConfig",
     "JumpReLU",
