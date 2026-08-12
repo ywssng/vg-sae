@@ -138,6 +138,28 @@ def test_comparison_loader_rejects_different_data_conditions(tmp_path) -> None:
         load_comparison_results(primary, baseline_sweep_dir=baseline)
 
 
+def test_comparison_loader_rejects_invalid_explicit_beta_mode(tmp_path) -> None:
+    root = tmp_path / "sweep"
+    (root / "summary" / "last").mkdir(parents=True)
+    pd.DataFrame([{"method": "vgsae", "run_id": "vg"}]).to_csv(
+        root / "summary" / "last" / "final_metrics.csv", index=False
+    )
+    pd.DataFrame([{"method": "vgsae", "run_id": "vg"}]).to_csv(
+        root / "summary" / "training_curves.csv", index=False
+    )
+
+    with pytest.raises(ValueError, match="explicit beta_mode.*fixed"):
+        load_comparison_results(root, beta_mode="fixed")
+
+
+def test_plot_aggregation_rejects_invalid_beta_mode() -> None:
+    with pytest.raises(ValueError, match="explicit beta_mode.*fixed"):
+        aggregate_seed_metrics(pd.DataFrame(), beta_mode="fixed")
+
+    with pytest.raises(ValueError, match="invalid beta_mode.*fixed"):
+        aggregate_seed_metrics(pd.DataFrame([{"beta_mode": "fixed"}]))
+
+
 def test_legacy_primary_mode_survives_baseline_merge_and_aggregation(
     tmp_path,
 ) -> None:

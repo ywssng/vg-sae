@@ -29,6 +29,25 @@ GROUP_COLUMNS = [
     "control_name",
     "control_value",
 ]
+VALID_BETA_MODES = frozenset({"profiled", "learned"})
+
+
+def _validate_beta_mode(beta_mode: str, *, source: str) -> str:
+    if beta_mode not in VALID_BETA_MODES:
+        choices = ", ".join(sorted(VALID_BETA_MODES))
+        raise ValueError(
+            f"{source} beta_mode must be one of {{{choices}}}, got {beta_mode!r}"
+        )
+    return beta_mode
+
+
+def _validate_frame_beta_modes(frame: pd.DataFrame, *, source: str) -> None:
+    if "beta_mode" not in frame:
+        return
+    observed = {str(value) for value in frame["beta_mode"].dropna()}
+    invalid = sorted(observed - VALID_BETA_MODES)
+    if invalid:
+        raise ValueError(f"{source} contains invalid beta_mode values: {invalid}")
 
 
 def load_sweep_results(
@@ -50,18 +69,25 @@ def load_comparison_results(
 
     root = Path(sweep_dir)
     metrics, history = load_sweep_results(root, checkpoint_kind)
-    mode = beta_mode
+    _validate_frame_beta_modes(metrics, source="primary metrics")
+    _validate_frame_beta_modes(history, source="primary history")
+    mode = (
+        _validate_beta_mode(beta_mode, source="explicit")
+        if beta_mode is not None
+        else None
+    )
     if mode is None:
         config_path = root / "sweep_config.json"
         if config_path.exists():
             mode = json.loads(config_path.read_text()).get("training", {}).get(
                 "beta_mode"
             )
-    if mode not in {"profiled", "learned"}:
+            if mode is not None:
+                mode = _validate_beta_mode(str(mode), source="sweep config")
+    if mode is None:
         observed = {
             str(value)
             for value in metrics.get("beta_mode", pd.Series(dtype=str)).dropna()
-            if str(value) in {"profiled", "learned"}
         }
         mode = next(iter(observed)) if len(observed) == 1 else "profiled"
     if "beta_mode" not in metrics:
@@ -83,6 +109,8 @@ def load_comparison_results(
     baseline_metrics, baseline_history = load_sweep_results(
         baseline_root, checkpoint_kind
     )
+    _validate_frame_beta_modes(baseline_metrics, source="baseline metrics")
+    _validate_frame_beta_modes(baseline_history, source="baseline history")
     primary_data = json.loads((root / "sweep_config.json").read_text())["data"]
     baseline_data = json.loads(
         (baseline_root / "sweep_config.json").read_text()
@@ -168,7 +196,12 @@ def load_sweep_plot_context(
 def aggregate_seed_metrics(
     metrics: pd.DataFrame, beta_mode: str | None = None
 ) -> pd.DataFrame:
-    mode = beta_mode if beta_mode in {"profiled", "learned"} else "profiled"
+    _validate_frame_beta_modes(metrics, source="metrics")
+    mode = (
+        _validate_beta_mode(beta_mode, source="explicit")
+        if beta_mode is not None
+        else "profiled"
+    )
     if "beta_mode" not in metrics:
         metrics = metrics.assign(beta_mode=mode)
     else:
