@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
+import scripts.create_experiment_notebooks as notebook_generator
 from src.sae_model import VGSAEConfig, VariationalGarroteSAE
 from src.sae_sweep import (
     METHOD_ORDER,
@@ -289,17 +290,81 @@ def test_fit_sae_tracks_best_snapshot_and_streams_history() -> None:
     )
 
 
-def test_notebook_10_is_plot_only_and_compiles() -> None:
-    notebook = json.loads(Path("notebooks/10_exp07_parallel_sweep_results.ipynb").read_text())
+def test_notebook_10_is_plot_only_and_compiles(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(notebook_generator, "NOTEBOOK_DIR", tmp_path)
+    notebook_generator.write_notebooks()
+    notebook = json.loads(
+        (tmp_path / "10_exp07_parallel_sweep_results.ipynb").read_text()
+    )
     source = "\n".join("".join(cell.get("source", [])) for cell in notebook["cells"])
     assert "run_CustomData_sweep.py" in source
     assert "run_CustomData_sweep_eval.py" in source
     assert "fit_sae(" not in source
     assert "evaluate_model(" not in source
-    assert "VGSAE_CHECKPOINT_KIND', 'last'" in source
+    assert 'VGSAE_CHECKPOINT_KIND", "last"' in source
+    assert "plot_vg_posterior_diagnostics" in source
+    assert "vg_posterior_columns.issubset(final_df.columns)" in source
+    for figure_name in (
+        "data_overview.png",
+        "reconstruction_metrics.png",
+        "recovery_metrics.png",
+        "support_metrics.png",
+        "sparsity_diagnostics.png",
+        "training_curves.png",
+        "mask_heatmaps.png",
+        "vg_posterior_diagnostics.png",
+    ):
+        assert figure_name in source
     for index, cell in enumerate(notebook["cells"]):
         if cell["cell_type"] == "code":
             compile("".join(cell["source"]), f"notebook-10-cell-{index}", "exec")
+    vg_cell = next(
+        "".join(cell["source"])
+        for cell in notebook["cells"]
+        if "vg_posterior_columns =" in "".join(cell.get("source", []))
+    )
+    exec(vg_cell, {"final_df": SimpleNamespace(columns=set())})
+
+    class _Methods:
+        def __eq__(self, value: str):
+            assert value == "vgsae"
+            return self
+
+        @staticmethod
+        def any() -> bool:
+            return True
+
+    class _SynthFrame:
+        columns = {"vg_expected_explained_variance", "vg_expected_l0"}
+
+        def __getitem__(self, key: str):
+            assert key == "method"
+            return _Methods()
+
+    calls = []
+
+    def fake_vg_plot(frame, **kwargs):
+        calls.append((frame, kwargs))
+
+    exec(
+        vg_cell,
+        {
+            "FIGURE_DIR": tmp_path,
+            "final_df": _SynthFrame(),
+            "plot_context": {"target_model_density": 0.1, "sae_width": 8},
+            "plot_vg_posterior_diagnostics": fake_vg_plot,
+            "plt": SimpleNamespace(show=lambda: None),
+        },
+    )
+    assert len(calls) == 1
+    assert isinstance(calls[0][0], _SynthFrame)
+    assert calls[0][1] == {
+        "target_model_density": 0.1,
+        "sae_width": 8,
+        "output_path": tmp_path / "vg_posterior_diagnostics.png",
+    }
 
 
 def test_method_filter_selects_tasks_without_narrowing_saved_config() -> None:

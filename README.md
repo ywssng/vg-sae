@@ -157,7 +157,10 @@ Evaluation accumulates the official
 MCC, uniqueness, classifier, L0, dead-latent, shrinkage, and explained-variance
 metrics in streaming form. Only a small preview is cached for heatmaps. Point
 `VGSAE_SWEEP_DIR` at a completed Stage-2 directory and run notebook 10 to draw
-the SynthSAEBench-specific panels with the same artifact-only workflow.
+the SynthSAEBench-specific panels with the same artifact-only workflow. Its
+eighth figure, `vg_posterior_diagnostics.png`, compares VG hard inference with
+the posterior expectation; Stage-1 CustomData artifacts skip that unavailable
+panel without error.
 
 The default one-seed method grid has seven controls per method. TopK and
 BatchTopK use target `k=[15,20,25,30,35,40,45]`. Full 200M-sample calibration

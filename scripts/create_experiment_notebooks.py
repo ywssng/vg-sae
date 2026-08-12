@@ -1182,6 +1182,170 @@ def ioi_notebook() -> dict:
     )
 
 
+def parallel_sweep_results_notebook() -> dict:
+    """Build the plot-only notebook shared by CustomData and SynthSAEBench."""
+
+    return notebook(
+        [
+            md(
+                """
+                # Experiment 10: Reproduce Experiment 07 from Saved Sweep Artifacts
+
+                This notebook does no training or evaluation. It loads per-run results produced by `runs/run_CustomData_sweep.py` plus `runs/run_CustomData_sweep_eval.py`, or by their `run_SynthSAEBench_*` counterparts, then recreates the corresponding comparison figures. The default is the `last` checkpoint because notebook 07 evaluated the final training step; set `VGSAE_CHECKPOINT_KIND=best` only for CustomData best-training-loss analysis.
+                """
+            ),
+            code(
+                """
+                from pathlib import Path
+                import os
+                import sys
+
+                PROJECT_ROOT = Path.cwd()
+                if PROJECT_ROOT.name == "notebooks":
+                    PROJECT_ROOT = PROJECT_ROOT.parent
+                sys.path.insert(0, str(PROJECT_ROOT))
+                os.environ.setdefault(
+                    "MPLCONFIGDIR", str(PROJECT_ROOT / "outputs" / ".matplotlib")
+                )
+
+                import matplotlib.pyplot as plt
+
+                from src.sae_sweep_plot import (
+                    load_sweep_plot_context,
+                    load_sweep_results,
+                    plot_data_overview,
+                    plot_mask_heatmaps,
+                    plot_reconstruction_metrics,
+                    plot_recovery_metrics,
+                    plot_sparsity_diagnostics,
+                    plot_support_metrics,
+                    plot_training_curves,
+                    plot_vg_posterior_diagnostics,
+                )
+
+                style_path = PROJECT_ROOT / "physrev.mplstyle"
+                if style_path.exists():
+                    plt.style.use(style_path)
+                """
+            ),
+            code(
+                """
+                SWEEP_DIR = Path(os.environ.get(
+                    "VGSAE_SWEEP_DIR",
+                    PROJECT_ROOT / "outputs" / "runs" / "stage1_din128_gt1024_sae1024_sd001_seed0",
+                ))
+                CHECKPOINT_KIND = os.environ.get("VGSAE_CHECKPOINT_KIND", "last")
+                FIGURE_DIR = SWEEP_DIR / "figures" / CHECKPOINT_KIND
+                FIGURE_DIR.mkdir(parents=True, exist_ok=True)
+
+                plot_context = load_sweep_plot_context(SWEEP_DIR)
+                final_df, history_df = load_sweep_results(SWEEP_DIR, CHECKPOINT_KIND)
+                print(f"{len(final_df)} evaluated runs from {SWEEP_DIR}")
+                print(plot_context)
+                final_df.head()
+                """
+            ),
+            md("## Synthetic data overview"),
+            code(
+                """
+                plot_data_overview(SWEEP_DIR, FIGURE_DIR / "data_overview.png")
+                plt.show()
+                """
+            ),
+            md("## Reconstruction and recovery metrics"),
+            code(
+                """
+                plot_reconstruction_metrics(
+                    final_df,
+                    target_model_density=plot_context["target_model_density"],
+                    sae_width=plot_context["sae_width"],
+                    output_path=FIGURE_DIR / "reconstruction_metrics.png",
+                )
+                plot_recovery_metrics(
+                    final_df,
+                    target_model_density=plot_context["target_model_density"],
+                    sae_width=plot_context["sae_width"],
+                    output_path=FIGURE_DIR / "recovery_metrics.png",
+                )
+                plt.show()
+                """
+            ),
+            md("## Support and sparsity diagnostics"),
+            code(
+                """
+                plot_support_metrics(
+                    final_df,
+                    target_model_density=plot_context["target_model_density"],
+                    sae_width=plot_context["sae_width"],
+                    output_path=FIGURE_DIR / "support_metrics.png",
+                )
+                plot_sparsity_diagnostics(
+                    final_df,
+                    target_model_density=plot_context["target_model_density"],
+                    sae_width=plot_context["sae_width"],
+                    output_path=FIGURE_DIR / "sparsity_diagnostics.png",
+                )
+                plt.show()
+                """
+            ),
+            md(
+                """
+                ## VG posterior diagnostics (SynthSAEBench)
+
+                SynthSAEBench artifacts record both hard inference and the VG posterior expectation. CustomData artifacts do not contain these columns, so this panel is skipped there.
+                """
+            ),
+            code(
+                """
+                vg_posterior_columns = {
+                    "vg_expected_explained_variance",
+                    "vg_expected_l0",
+                }
+                if (
+                    vg_posterior_columns.issubset(final_df.columns)
+                    and (final_df["method"] == "vgsae").any()
+                ):
+                    plot_vg_posterior_diagnostics(
+                        final_df,
+                        target_model_density=plot_context["target_model_density"],
+                        sae_width=plot_context["sae_width"],
+                        output_path=FIGURE_DIR / "vg_posterior_diagnostics.png",
+                    )
+                    plt.show()
+                else:
+                    print(
+                        "VG posterior diagnostics are unavailable for this sweep "
+                        "(expected for CustomData artifacts)."
+                    )
+                """
+            ),
+            md("## Training curves and representative masks"),
+            code(
+                """
+                plot_training_curves(
+                    history_df, FIGURE_DIR / "training_curves.png"
+                )
+                _, representatives = plot_mask_heatmaps(
+                    SWEEP_DIR,
+                    final_df,
+                    target_model_density=plot_context["target_model_density"],
+                    checkpoint_kind=CHECKPOINT_KIND,
+                    output_path=FIGURE_DIR / "mask_heatmaps.png",
+                )
+                plt.show()
+                representatives[[
+                    "method_label",
+                    "control_name",
+                    "control_value",
+                    "rho_model",
+                    "selection_error",
+                ]]
+                """
+            ),
+        ]
+    )
+
+
 def write_notebooks() -> None:
     NOTEBOOK_DIR.mkdir(parents=True, exist_ok=True)
     # Notebooks 02 and 07 are curated and intentionally never bulk-regenerated.
@@ -1192,6 +1356,7 @@ def write_notebooks() -> None:
         "05_feature_uncertainty_quality.ipynb": feature_quality_notebook(),
         "06_ioi_causal_control_case_study.ipynb": ioi_notebook(),
         "08_synthetic_sparse_coding_vg_sparsity_sweep.ipynb": vg_sparsity_sweep_notebook(),
+        "10_exp07_parallel_sweep_results.ipynb": parallel_sweep_results_notebook(),
     }
     for name, payload in notebooks.items():
         (NOTEBOOK_DIR / name).write_text(json.dumps(payload, indent=1), encoding="utf-8")
@@ -1237,7 +1402,9 @@ def write_notebooks() -> None:
             or the corresponding SynthSAEBench runners, keeps
             ground-truth feature count separate from SAE width, and uses expected true
             L0 for CustomData or streamed empirical true L0 for SynthSAEBench as the
-            model-density reference.
+            model-density reference. SynthSAEBench additionally writes an eighth
+            `vg_posterior_diagnostics.png` panel comparing hard inference with the VG
+            posterior expectation; CustomData skips that unavailable panel.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """
