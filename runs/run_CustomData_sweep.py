@@ -93,11 +93,6 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--max-per-device", type=int, default=16)
     parser.add_argument("--force", action="store_true", help="Rerun completed jobs.")
-    logging = parser.add_mutually_exclusive_group()
-    logging.add_argument("--wandb-mode", choices=("online", "offline"), default="online")
-    logging.add_argument(
-        "--no-wandb", action="store_const", const="disabled", dest="wandb_mode"
-    )
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--run-dir", type=Path, help=argparse.SUPPRESS)
     parser.add_argument("--device", default="cpu", help=argparse.SUPPRESS)
@@ -221,29 +216,39 @@ def _is_complete(run_dir: Path, run_fingerprint: str) -> bool:
     )
 
 
-def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path, mode: str):
-    if mode == "disabled":
-        return None
+def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path):
     import wandb
 
+    config = SweepConfig.from_dict(bundle["sweep_config"])
     sweep_dir = next(
         (parent for parent in run_dir.parents if (parent / "manifest.json").exists()),
-        run_dir.parent,
+        None,
     )
-    exp_id = sweep_experiment_id(SweepConfig.from_dict(bundle["sweep_config"]))
+    if sweep_dir is None:
+        raise ValueError(f"Cannot identify sweep root for W&B logging from {run_dir}.")
+    exp_id = sweep_experiment_id(config)
+    stage = config.experiment_name
+    sweep_root = sweep_dir.name
     return wandb.init(
         project=bundle["sweep_config"].get("wandb_project", WANDB_PROJECT),
         name=spec.run_id,
-        group=sweep_dir.name,
-        config={**bundle, "exp_id": exp_id},
-        mode=mode,
+        group=sweep_root,
+        job_type=spec.method,
+        tags=[f"stage:{stage}", f"sweep_root:{sweep_root}", f"method:{spec.method}"],
+        config={
+            **bundle,
+            "exp_id": exp_id,
+            "stage": stage,
+            "sweep_root": sweep_root,
+            "method": spec.method,
+        },
+        mode="online",
+        force=True,
         dir=str(run_dir),
     )
 
 
-def _preflight_wandb(mode: str) -> None:
-    if mode in {"disabled", "offline"}:
-        return
+def _preflight_wandb() -> None:
     import wandb
 
     try:
@@ -256,7 +261,7 @@ def _preflight_wandb(mode: str) -> None:
     if not authenticated:
         raise RuntimeError(
             "W&B is not authenticated. Set WANDB_API_KEY in .env or the shell, "
-            "run `wandb login`, or pass --no-wandb."
+            "or run `wandb login`. Training sweeps require online W&B logging."
         )
 
 
@@ -283,7 +288,7 @@ def _run_metadata(
     }
 
 
-def train_one(run_dir: Path, device: str, wandb_mode: str, force: bool) -> None:
+def train_one(run_dir: Path, device: str, force: bool) -> None:
     bundle = read_json(run_dir / "config.json")
     config = SweepConfig.from_dict(bundle["sweep_config"])
     spec = RunSpec.from_dict(bundle["spec"])
@@ -309,7 +314,7 @@ def train_one(run_dir: Path, device: str, wandb_mode: str, force: bool) -> None:
     checkpoints = run_dir / "checkpoints"
     for checkpoint_kind in ("best", "last"):
         (checkpoints / f"{checkpoint_kind}.pt").unlink(missing_ok=True)
-    wandb_run = _wandb_run(bundle, spec, run_dir, wandb_mode)
+    wandb_run = _wandb_run(bundle, spec, run_dir)
     try:
         train_data, _ = make_train_test(config, spec.seed, device)
         set_seed(spec.init_seed)
@@ -398,7 +403,6 @@ def prepare_runs(
     config: SweepConfig,
     specs: list[RunSpec],
     force: bool,
-    wandb_mode: str,
 ) -> tuple[list[ScriptTask], list[Path]]:
     sweep_dir.mkdir(parents=True, exist_ok=True)
     config_dict = config.to_dict()
@@ -433,15 +437,9 @@ def prepare_runs(
             "spec": spec.to_dict(),
         }
         if force or not _is_complete(run_dir, bundle["fingerprint"]):
-            logging_arg = (
-                "--no-wandb"
-                if wandb_mode == "disabled"
-                else f"--wandb-mode={wandb_mode}"
-            )
             worker_args = (
                 "--worker",
                 f"--run-dir={run_dir}",
-                logging_arg,
                 *(("--force",) if force else ()),
             )
             tasks.append(ScriptTask(Path(__file__).resolve(), worker_args, spec.run_id))
@@ -474,7 +472,7 @@ def main(args: argparse.Namespace) -> int:
         if args.run_dir is None:
             raise ValueError("--worker requires --run-dir.")
         try:
-            train_one(args.run_dir.resolve(), args.device, args.wandb_mode, args.force)
+            train_one(args.run_dir.resolve(), args.device, args.force)
         except BaseException as error:
             config_path = args.run_dir / "config.json"
             run_fingerprint = (
@@ -496,11 +494,9 @@ def main(args: argparse.Namespace) -> int:
     specs = selected_specs(config, args.methods)
     default_dir = default_sweep_dir(PROJECT_ROOT, config)
     sweep_dir = (args.output_dir or default_dir).resolve()
-    tasks, run_dirs = prepare_runs(
-        sweep_dir, config, specs, args.force, args.wandb_mode
-    )
+    tasks, run_dirs = prepare_runs(sweep_dir, config, specs, args.force)
     if tasks:
-        _preflight_wandb(args.wandb_mode)
+        _preflight_wandb()
     return_code = ParallelExecutor(
         tasks,
         resolve_devices(args.devices),

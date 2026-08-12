@@ -140,9 +140,12 @@ the paper leaves details open.
   `sae_width=1024`, and `support_density=0.01` (expected true L0 `10.24`). Its
   calibrated TopK and BatchTopK grids currently span `k<=128`. Sweep output
   directories and W&B groups use a resolved-config ID such as
-  `stage1_din128_gt1024_sae1024_sd001_seed0`; W&B also records it as `exp_id`
-  in config and summary. The manifest fingerprint remains the guard for config
-  axes omitted from this readable ID.
+  `stage1_din128_gt1024_sae1024_sd001_seed0`. Training sweep runners require
+  W&B online mode and verified authentication; offline and disabled bypasses
+  are not exposed. W&B records the resolved ID as `exp_id`, the experiment
+  family as `stage`, and the actual `outputs/runs/` child directory as
+  `sweep_root`; group and tags mirror these fields for filtering. The manifest
+  fingerprint remains the guard for config axes omitted from this readable ID.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is
   `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it

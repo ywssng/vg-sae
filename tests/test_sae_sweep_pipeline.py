@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -27,6 +28,7 @@ from runs.run_CustomData_sweep import (
     _run_metadata,
     _wandb_run,
     configured_sweep,
+    parse_args,
     selected_specs,
 )
 from runs.run_CustomData_sweep_eval import _checkpoint_kinds, _training_ready
@@ -128,7 +130,7 @@ def test_wandb_preflight_verifies_credentials_before_workers(monkeypatch) -> Non
     calls = []
     monkeypatch.setattr("wandb.login", lambda **kwargs: calls.append(kwargs) or True)
 
-    _preflight_wandb("online")
+    _preflight_wandb()
 
     assert calls == [{"verify": True, "force": True}]
 
@@ -140,12 +142,12 @@ def test_wandb_preflight_hides_sdk_error_details(monkeypatch) -> None:
     monkeypatch.setattr("wandb.login", fail_login)
 
     with pytest.raises(RuntimeError, match="authentication preflight failed") as error:
-        _preflight_wandb("online")
+        _preflight_wandb()
 
     assert "sensitive SDK detail" not in str(error.value)
 
 
-def test_wandb_logs_filterable_experiment_id(
+def test_wandb_is_forced_online_with_filterable_sweep_identity(
     tmp_path: Path, monkeypatch
 ) -> None:
     config = SweepConfig(
@@ -174,14 +176,23 @@ def test_wandb_logs_filterable_experiment_id(
         "wandb.init", lambda **kwargs: captured.update(kwargs) or sentinel
     )
 
-    result = _wandb_run(
-        {"sweep_config": config.to_dict()}, spec, run_dir, "offline"
-    )
+    result = _wandb_run({"sweep_config": config.to_dict()}, spec, run_dir)
 
     exp_id = sweep_experiment_id(config)
     assert result is sentinel
     assert captured["group"] == "custom-output"
+    assert captured["job_type"] == "vgsae"
+    assert captured["mode"] == "online"
+    assert captured["force"] is True
+    assert captured["tags"] == [
+        "stage:stage1_custom_baseline_fast",
+        "sweep_root:custom-output",
+        "method:vgsae",
+    ]
     assert captured["config"]["exp_id"] == exp_id
+    assert captured["config"]["stage"] == "stage1_custom_baseline_fast"
+    assert captured["config"]["sweep_root"] == "custom-output"
+    assert captured["config"]["method"] == "vgsae"
     metadata = _run_metadata(
         config,
         spec,
@@ -189,6 +200,28 @@ def test_wandb_logs_filterable_experiment_id(
         {"source_fingerprint": "source", "pipeline_fingerprint": "pipeline"},
     )
     assert metadata["exp_id"] == exp_id
+
+
+@pytest.mark.parametrize("option", ["--no-wandb", "--wandb-mode=offline"])
+def test_custom_sweep_rejects_wandb_bypass_options(
+    option: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["run_CustomData_sweep.py", option])
+
+    with pytest.raises(SystemExit):
+        parse_args()
+
+
+def test_custom_wandb_rejects_run_without_sweep_manifest(tmp_path: Path) -> None:
+    config = default_sweep_config(fast=True)
+    spec = build_specs(config)[0]
+
+    with pytest.raises(ValueError, match="Cannot identify sweep root"):
+        _wandb_run(
+            {"sweep_config": config.to_dict()},
+            spec,
+            tmp_path / "runs" / spec.method / spec.run_id,
+        )
 
 
 def test_eval_defaults_to_both_checkpoint_kinds() -> None:

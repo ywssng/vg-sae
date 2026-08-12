@@ -75,15 +75,18 @@ config, for example
 `stage1_din128_gt1024_sae1024_sd001_seed0`. An explicit `--output-dir` still
 overrides it. The no-argument eval command resolves the same default config;
 when training with CLI overrides, pass its resolved directory to eval with
-`--sweep-dir`. W&B also stores this ID as the top-level `exp_id` config and
-summary field, so runs can be filtered independently of their output path.
+`--sweep-dir`. Training sweeps require authenticated W&B online logging. W&B
+stores this ID as the top-level `exp_id`, the configured stage as `stage`, and
+the actual sweep-directory basename as `sweep_root`. The latter
+is also the W&B group; stage, sweep root, and method are tags, so custom output
+directories remain directly filterable.
 
 One output directory represents one fixed data condition. Sweep seeds with
 `--seeds 0,1,2` and add repeatable controls such as
 `--model-sparsity-control topk=1,2,4`. Data dimension and density changes get a
 new automatic directory; for other config changes, use an explicit
 `--output-dir`. Use `--methods vgsae` for one architecture, or
-`--fast-dev-run --devices cpu --no-wandb` for a small local smoke run. Each run
+`--fast-dev-run --devices cpu` for a small local smoke run. Each run
 stores its resolved config, training history, `best.pt` and `last.pt`, plus
 checkpoint-specific metrics and mask arrays. Sweep-level CSVs are written under
 `summary/`. Evaluation processes both checkpoints by default; pass
@@ -116,8 +119,7 @@ uv run python -B runs/run_SynthSAEBench_sweep.py \
   --history-every 64 \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 1 \
-  --no-wandb
+  --max-per-device 1
 
 uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
   --sweep-dir outputs/runs/stage2_synthsaebench16k_calibration \

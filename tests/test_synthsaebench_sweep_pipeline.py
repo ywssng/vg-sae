@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import gc
 import hashlib
+import sys
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -33,9 +34,12 @@ from sae_lens.synthetic import (
 import src.synthsaebench_sweep as sweep_module
 from runs.run_SynthSAEBench_sweep import (
     _load_resume_checkpoint,
+    _preflight_wandb,
     _save_resume_checkpoint,
     _trainer,
+    _wandb_run,
     configured_sweep,
+    parse_args,
 )
 from src.sae_baselines import to_inference_sae
 from src.saelens_vg import VGTrainingSAE
@@ -194,6 +198,76 @@ def test_cli_training_budget_derives_exact_one_eighth_test_and_direct_grid() -> 
     assert config.training.lr_decay_fraction == pytest.approx(1.0 / 3.0)
 
 
+def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    config = _small_config(monkeypatch)
+    spec = build_specs(config)[0]
+    sweep_dir = tmp_path / "stage2_synthsaebench16k_test"
+    (sweep_dir / "manifest.json").parent.mkdir(parents=True)
+    (sweep_dir / "manifest.json").write_text("{}")
+    run_dir = sweep_dir / "runs" / spec.method / spec.run_id
+    captured: dict[str, object] = {}
+    sentinel = object()
+    monkeypatch.setattr(
+        "wandb.init", lambda **kwargs: captured.update(kwargs) or sentinel
+    )
+
+    result = _wandb_run({"sweep_config": config.to_dict()}, spec, run_dir)
+
+    assert result is sentinel
+    assert captured["group"] == "stage2_synthsaebench16k_test"
+    assert captured["job_type"] == spec.method
+    assert captured["mode"] == "online"
+    assert captured["force"] is True
+    assert captured["tags"] == [
+        "stage:stage2_synthsaebench16k_l0calibrated",
+        "sweep_root:stage2_synthsaebench16k_test",
+        f"method:{spec.method}",
+    ]
+    wandb_config = captured["config"]
+    assert isinstance(wandb_config, dict)
+    assert wandb_config["exp_id"] == sweep_experiment_id(config)
+    assert wandb_config["stage"] == "stage2_synthsaebench16k_l0calibrated"
+    assert wandb_config["sweep_root"] == "stage2_synthsaebench16k_test"
+    assert wandb_config["method"] == spec.method
+
+
+def test_synth_wandb_preflight_requires_verified_login(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[dict[str, object]] = []
+    monkeypatch.setattr("wandb.login", lambda **kwargs: calls.append(kwargs) or True)
+
+    _preflight_wandb()
+
+    assert calls == [{"verify": True, "force": True}]
+
+
+@pytest.mark.parametrize("option", ["--no-wandb", "--wandb-mode=offline"])
+def test_synth_sweep_rejects_wandb_bypass_options(
+    option: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(sys, "argv", ["run_SynthSAEBench_sweep.py", option])
+
+    with pytest.raises(SystemExit):
+        parse_args()
+
+
+def test_synth_wandb_rejects_run_without_sweep_manifest(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    config = _small_config(monkeypatch)
+    spec = build_specs(config)[0]
+
+    with pytest.raises(ValueError, match="Cannot identify sweep root"):
+        _wandb_run(
+            {"sweep_config": config.to_dict()},
+            spec,
+            tmp_path / "runs" / spec.method / spec.run_id,
+        )
+
+
 def test_all_method_factories_use_benchmark_specific_settings(monkeypatch) -> None:
     config = _small_config(monkeypatch)
     expected_classes = {
@@ -311,6 +385,7 @@ def test_rolling_checkpoint_restores_trainer_and_exact_stream_rng(
         model = build_model(config, spec)
         synthetic = make_synthetic()
     trainer = _trainer(config, spec, model, synthetic, "cpu")
+    assert trainer.cfg.logger.log_to_wandb is False
     resume_path = tmp_path / "resume.pt"
     with temporary_seed_for_device(spec.train_stream_seed, "cpu"):
         output = trainer.step(next(trainer.data_provider))
