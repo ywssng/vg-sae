@@ -271,7 +271,13 @@ def _save(fig, output_path: Path | str | None) -> None:
     if output_path is not None:
         path = Path(output_path)
         path.parent.mkdir(parents=True, exist_ok=True)
-        fig.savefig(path, dpi=160)
+        fig.savefig(path, dpi=160, bbox_inches="tight", pad_inches=0.08)
+
+
+def _format_step_tick(value: float, _position: int) -> str:
+    if abs(value) >= 1_000:
+        return f"{value / 1_000:g}k"
+    return f"{value:g}"
 
 
 def _metric_line(ax, table: pd.DataFrame, method: str, metric: str, sae_width: int) -> None:
@@ -533,7 +539,7 @@ def plot_sparsity_diagnostics(
             ("expected_l0", r"Exp. L0 / $d_\mathrm{sae}$"),
         ]
     )
-    fig, axes = plt.subplots(1, 4, figsize=(7.2, 1.75), sharex=True)
+    fig, axes = plt.subplots(1, 4, figsize=(8.4, 2.4), sharex=True)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
@@ -575,7 +581,7 @@ def plot_vg_posterior_diagnostics(
     if subset.empty:
         raise ValueError("VG posterior diagnostics require at least one VG-SAE run.")
 
-    fig, axes = plt.subplots(1, 2, figsize=(6.2, 2.2))
+    fig, axes = plt.subplots(1, 2, figsize=(6.4, 2.7))
     axes[0].plot(
         subset["rho_model"],
         subset["explained_variance"],
@@ -630,6 +636,8 @@ def plot_training_curves(history: pd.DataFrame, output_path: Path | str | None =
                 run = run.sort_values("step")
                 ax.plot(run["step"], run[metric], color=METHOD_COLORS[method], alpha=0.35, linewidth=1)
         ax.set(xlabel="step", ylabel=label)
+        ax.xaxis.set_major_locator(ticker.MaxNLocator(nbins=6, min_n_ticks=4))
+        ax.xaxis.set_major_formatter(ticker.FuncFormatter(_format_step_tick))
         ax.grid(alpha=0.25)
     _add_bottom_method_legend(fig, history)
     _save(fig, output_path)

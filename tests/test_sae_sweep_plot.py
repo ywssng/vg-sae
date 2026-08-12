@@ -595,6 +595,29 @@ def test_training_curves_use_one_bottom_legend() -> None:
     plt.close(figure)
 
 
+def test_training_curves_use_compact_step_ticks() -> None:
+    history = pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "run_id": "vg-0",
+                "step": step,
+                "loss": 1.0,
+                "reconstruction_mse": 0.5,
+                "rho": 0.1,
+            }
+            for step in (0, 100_000, 200_000)
+        ]
+    )
+
+    figure = plot_training_curves(history)
+    figure.canvas.draw()
+    labels = [label.get_text() for label in figure.axes[0].get_xticklabels()]
+    assert any(label.endswith("k") for label in labels)
+    assert all(len(label) <= 5 for label in labels)
+    plt.close(figure)
+
+
 def test_mask_representatives_use_one_common_seed() -> None:
     metrics = pd.DataFrame(
         [
