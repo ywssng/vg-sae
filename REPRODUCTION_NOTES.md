@@ -144,7 +144,8 @@ the paper leaves details open.
   W&B online mode and verified authentication; offline and disabled bypasses
   are not exposed. W&B records the resolved ID as `exp_id`, the experiment
   family as `stage`, and the actual `outputs/runs/` child directory as
-  `sweep_root`; group and tags mirror these fields for filtering. The manifest
+  `sweep_root`; the group mirrors the full sweep root while tags mirror stage
+  and method because W&B caps individual tags at 64 characters. The manifest
   fingerprint remains the guard for config axes omitted from this readable ID.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is

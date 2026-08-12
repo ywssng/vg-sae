@@ -222,7 +222,6 @@ def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(
     assert captured["force"] is True
     assert captured["tags"] == [
         "stage:stage2_synthsaebench16k_l0calibrated",
-        "sweep_root:stage2_synthsaebench16k_test",
         f"method:{spec.method}",
     ]
     wandb_config = captured["config"]

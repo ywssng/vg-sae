@@ -234,7 +234,9 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path):
         name=spec.run_id,
         group=sweep_root,
         job_type=spec.method,
-        tags=[f"stage:{stage}", f"sweep_root:{sweep_root}", f"method:{spec.method}"],
+        # The full sweep root remains filterable in config/group; W&B tags are
+        # limited to 64 characters and resolved sweep directory names can exceed it.
+        tags=[f"stage:{stage}", f"method:{spec.method}"],
         config={
             **bundle,
             "exp_id": exp_id,

@@ -78,8 +78,9 @@ when training with CLI overrides, pass its resolved directory to eval with
 `--sweep-dir`. Training sweeps require authenticated W&B online logging. W&B
 stores this ID as the top-level `exp_id`, the configured stage as `stage`, and
 the actual sweep-directory basename as `sweep_root`. The latter
-is also the W&B group; stage, sweep root, and method are tags, so custom output
-directories remain directly filterable.
+is also the W&B group; stage and method are tags. The full sweep root stays in
+config/group rather than a tag because W&B limits individual tags to 64
+characters, so long custom output directories remain directly filterable.
 
 One output directory represents one fixed data condition. Sweep seeds with
 `--seeds 0,1,2` and add repeatable controls such as

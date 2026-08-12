@@ -186,7 +186,6 @@ def test_wandb_is_forced_online_with_filterable_sweep_identity(
     assert captured["force"] is True
     assert captured["tags"] == [
         "stage:stage1_custom_baseline_fast",
-        "sweep_root:custom-output",
         "method:vgsae",
     ]
     assert captured["config"]["exp_id"] == exp_id
