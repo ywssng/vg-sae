@@ -632,8 +632,23 @@ def test_synth_eval_rejects_mixed_beta_modes(tmp_path) -> None:
             },
         )
 
-    with pytest.raises(ValueError, match="different VG beta modes"):
+    with pytest.raises(ValueError, match="exactly one VG beta mode"):
         synth_eval_runner._aggregate(tmp_path, run_dirs, run_dirs)
+
+
+def test_synth_eval_rejects_unsupported_beta_mode(tmp_path) -> None:
+    run_dir = tmp_path / "runs" / "vgsae" / "vg"
+    write_json(
+        run_dir / "eval" / "last" / "metrics.json",
+        {
+            "beta_mode": "fixed",
+            "train_source_fingerprint": "source",
+            "train_pipeline_fingerprint": "pipeline",
+        },
+    )
+
+    with pytest.raises(ValueError, match="unsupported beta_mode.*fixed"):
+        synth_eval_runner._aggregate(tmp_path, [run_dir], [run_dir])
 
 
 def test_rolling_checkpoint_restores_trainer_and_exact_stream_rng(

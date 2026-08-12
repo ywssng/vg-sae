@@ -14,6 +14,19 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
+VALID_BETA_MODES = frozenset({"profiled", "learned"})
+
+
+def validate_beta_modes(values: Iterable[Any], *, context: str) -> str:
+    modes = {str(value) for value in values}
+    unsupported = sorted(modes - VALID_BETA_MODES)
+    if unsupported:
+        raise ValueError(f"{context} contains unsupported beta_mode values: {unsupported}")
+    if len(modes) != 1:
+        raise ValueError(f"{context} must contain exactly one VG beta mode, got {sorted(modes)}")
+    return next(iter(modes))
+
+
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
@@ -131,4 +144,14 @@ def manifest_run_dirs(sweep_dir: Path) -> list[Path]:
 
 def aggregate_csv(run_dirs: Iterable[Path], relative_path: Path, destination: Path) -> None:
     rows = [row for run_dir in run_dirs for row in read_rows(run_dir / relative_path)]
+    rows_with_mode = [row for row in rows if "beta_mode" in row]
+    if rows_with_mode:
+        if len(rows_with_mode) != len(rows):
+            raise ValueError(
+                f"{relative_path} mixes rows with and without beta_mode metadata."
+            )
+        validate_beta_modes(
+            (row["beta_mode"] for row in rows_with_mode),
+            context=str(relative_path),
+        )
     write_rows(destination, rows)

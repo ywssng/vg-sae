@@ -41,13 +41,49 @@ def _validate_beta_mode(beta_mode: str, *, source: str) -> str:
     return beta_mode
 
 
-def _validate_frame_beta_modes(frame: pd.DataFrame, *, source: str) -> None:
+def _frame_beta_modes(frame: pd.DataFrame, *, source: str) -> set[str]:
     if "beta_mode" not in frame:
-        return
+        return set()
     observed = {str(value) for value in frame["beta_mode"].dropna()}
     invalid = sorted(observed - VALID_BETA_MODES)
     if invalid:
         raise ValueError(f"{source} contains invalid beta_mode values: {invalid}")
+    if len(observed) > 1:
+        raise ValueError(f"{source} mixes beta_mode values: {sorted(observed)}")
+    return observed
+
+
+def _resolve_root_beta_mode(
+    root: Path,
+    metrics: pd.DataFrame,
+    history: pd.DataFrame,
+    *,
+    source: str,
+    explicit: str | None = None,
+) -> str:
+    candidates: dict[str, str] = {}
+    if explicit is not None:
+        candidates["explicit"] = _validate_beta_mode(explicit, source="explicit")
+    config_path = root / "sweep_config.json"
+    if config_path.exists():
+        config_mode = json.loads(config_path.read_text()).get("training", {}).get(
+            "beta_mode"
+        )
+        if config_mode is not None:
+            candidates["sweep config"] = _validate_beta_mode(
+                str(config_mode), source=f"{source} sweep config"
+            )
+    metric_modes = _frame_beta_modes(metrics, source=f"{source} metrics")
+    history_modes = _frame_beta_modes(history, source=f"{source} history")
+    if metric_modes:
+        candidates["metrics"] = next(iter(metric_modes))
+    if history_modes:
+        candidates["history"] = next(iter(history_modes))
+    observed = set(candidates.values())
+    if len(observed) > 1:
+        details = ", ".join(f"{key}={value}" for key, value in candidates.items())
+        raise ValueError(f"{source} beta_mode metadata conflicts: {details}")
+    return next(iter(observed)) if observed else "profiled"
 
 
 def load_sweep_results(
@@ -69,27 +105,13 @@ def load_comparison_results(
 
     root = Path(sweep_dir)
     metrics, history = load_sweep_results(root, checkpoint_kind)
-    _validate_frame_beta_modes(metrics, source="primary metrics")
-    _validate_frame_beta_modes(history, source="primary history")
-    mode = (
-        _validate_beta_mode(beta_mode, source="explicit")
-        if beta_mode is not None
-        else None
+    mode = _resolve_root_beta_mode(
+        root,
+        metrics,
+        history,
+        source="primary",
+        explicit=beta_mode,
     )
-    if mode is None:
-        config_path = root / "sweep_config.json"
-        if config_path.exists():
-            mode = json.loads(config_path.read_text()).get("training", {}).get(
-                "beta_mode"
-            )
-            if mode is not None:
-                mode = _validate_beta_mode(str(mode), source="sweep config")
-    if mode is None:
-        observed = {
-            str(value)
-            for value in metrics.get("beta_mode", pd.Series(dtype=str)).dropna()
-        }
-        mode = next(iter(observed)) if len(observed) == 1 else "profiled"
     if "beta_mode" not in metrics:
         metrics["beta_mode"] = mode
     else:
@@ -109,8 +131,12 @@ def load_comparison_results(
     baseline_metrics, baseline_history = load_sweep_results(
         baseline_root, checkpoint_kind
     )
-    _validate_frame_beta_modes(baseline_metrics, source="baseline metrics")
-    _validate_frame_beta_modes(baseline_history, source="baseline history")
+    baseline_mode = _resolve_root_beta_mode(
+        baseline_root,
+        baseline_metrics,
+        baseline_history,
+        source="baseline",
+    )
     primary_data = json.loads((root / "sweep_config.json").read_text())["data"]
     baseline_data = json.loads(
         (baseline_root / "sweep_config.json").read_text()
@@ -133,6 +159,15 @@ def load_comparison_results(
     baseline_history = baseline_history[
         ~baseline_history["method"].astype(str).isin(present_methods)
     ].copy()
+    retained_vg = bool(
+        (baseline_metrics["method"].astype(str) == "vgsae").any()
+        or (baseline_history["method"].astype(str) == "vgsae").any()
+    )
+    if retained_vg and baseline_mode != mode:
+        raise ValueError(
+            "Cannot backfill VG-SAE from a baseline root with a different beta_mode: "
+            f"primary={mode}, baseline={baseline_mode}."
+        )
     for frame in (baseline_metrics, baseline_history):
         if "beta_mode" not in frame:
             frame["beta_mode"] = mode
@@ -196,12 +231,17 @@ def load_sweep_plot_context(
 def aggregate_seed_metrics(
     metrics: pd.DataFrame, beta_mode: str | None = None
 ) -> pd.DataFrame:
-    _validate_frame_beta_modes(metrics, source="metrics")
+    metric_modes = _frame_beta_modes(metrics, source="metrics")
     mode = (
         _validate_beta_mode(beta_mode, source="explicit")
         if beta_mode is not None
-        else "profiled"
+        else (next(iter(metric_modes)) if metric_modes else "profiled")
     )
+    if metric_modes and next(iter(metric_modes)) != mode:
+        raise ValueError(
+            "beta_mode metadata conflicts: "
+            f"explicit={mode}, metrics={next(iter(metric_modes))}"
+        )
     if "beta_mode" not in metrics:
         metrics = metrics.assign(beta_mode=mode)
     else:

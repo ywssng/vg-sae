@@ -20,6 +20,7 @@ from runs._sweep_io import (  # noqa: E402
     resolve_devices,
     runtime_provenance,
     utc_now,
+    validate_beta_modes,
     write_json,
     write_rows,
 )
@@ -280,20 +281,19 @@ def _aggregate(
     metric_rows = [
         read_json(_eval_dir(run_dir) / "metrics.json") for run_dir in run_dirs
     ]
+    beta_mode = validate_beta_modes(
+        (row["beta_mode"] for row in metric_rows),
+        context="Stage-2 evaluation metrics",
+    )
     metric_rows.sort(key=_metric_sort_key)
     train_fingerprints = {row["train_source_fingerprint"] for row in metric_rows}
     train_pipeline_fingerprints = {
         row["train_pipeline_fingerprint"] for row in metric_rows
     }
-    beta_modes = {row["beta_mode"] for row in metric_rows}
     if len(train_fingerprints) != 1 or len(train_pipeline_fingerprints) != 1:
         raise ValueError(
             "Refusing to aggregate runs trained by different source or package versions. "
             "Use a new sweep directory or retrain every method with --force."
-        )
-    if len(beta_modes) != 1:
-        raise ValueError(
-            "Refusing to aggregate different VG beta modes in one sweep directory."
         )
     checkpoint_summary = summary_dir / "last"
     write_rows(checkpoint_summary / "final_metrics.csv", metric_rows)
@@ -304,7 +304,7 @@ def _aggregate(
             "checkpoint_kind": "last",
             "n_evaluated_runs": len(run_dirs),
             "methods": sorted({row["method"] for row in metric_rows}),
-            "beta_mode": next(iter(beta_modes)),
+            "beta_mode": beta_mode,
             "train_source_fingerprint": next(iter(train_fingerprints)),
             "train_pipeline_fingerprint": next(iter(train_pipeline_fingerprints)),
             "eval_fingerprint": eval_status["eval_fingerprint"],

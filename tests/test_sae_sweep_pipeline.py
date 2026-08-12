@@ -24,7 +24,7 @@ from src.sae_sweep import (
     sweep_experiment_id,
 )
 from src.sae_train import fit_sae
-from runs._sweep_io import write_json, write_rows
+from runs._sweep_io import aggregate_csv, write_json, write_rows
 from runs.run_CustomData_sweep import (
     _preflight_wandb,
     _run_metadata,
@@ -429,6 +429,28 @@ def test_stage1_eval_summary_and_csv_retain_beta_mode(tmp_path: Path) -> None:
     assert "beta_mode" in (
         tmp_path / "summary" / "last" / "final_metrics_seed_mean.csv"
     ).read_text().splitlines()[0]
+
+
+def test_stage1_aggregation_rejects_unsupported_beta_mode(tmp_path: Path) -> None:
+    run_dir = tmp_path / "runs" / "vgsae" / "vg"
+    write_json(
+        run_dir / "eval" / "last" / "metrics.json",
+        {
+            "beta_mode": "fixed",
+            "train_source_fingerprint": "source",
+            "train_pipeline_fingerprint": "pipeline",
+        },
+    )
+    with pytest.raises(ValueError, match="unsupported beta_mode.*fixed"):
+        _aggregate(tmp_path, [run_dir], [run_dir], "last")
+
+    write_rows(run_dir / "training_history.csv", [{"beta_mode": "fixed"}])
+    with pytest.raises(ValueError, match="unsupported beta_mode.*fixed"):
+        aggregate_csv(
+            [run_dir],
+            Path("training_history.csv"),
+            tmp_path / "summary" / "training_curves.csv",
+        )
 
 
 @pytest.mark.parametrize("beta_mode", ["profiled", "learned"])

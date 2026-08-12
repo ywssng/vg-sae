@@ -160,6 +160,58 @@ def test_plot_aggregation_rejects_invalid_beta_mode() -> None:
         aggregate_seed_metrics(pd.DataFrame([{"beta_mode": "fixed"}]))
 
 
+def test_comparison_loader_always_validates_root_modes(tmp_path) -> None:
+    primary = tmp_path / "primary"
+    baseline = tmp_path / "baseline"
+    for root in (primary, baseline):
+        (root / "summary" / "last").mkdir(parents=True)
+        pd.DataFrame([{"method": "vgsae", "run_id": root.name}]).to_csv(
+            root / "summary" / "last" / "final_metrics.csv", index=False
+        )
+        pd.DataFrame([{"method": "vgsae", "run_id": root.name}]).to_csv(
+            root / "summary" / "training_curves.csv", index=False
+        )
+    (primary / "sweep_config.json").write_text(
+        json.dumps({"data": {}, "training": {"beta_mode": "fixed"}})
+    )
+    with pytest.raises(ValueError, match="primary sweep config beta_mode.*fixed"):
+        load_comparison_results(primary, beta_mode="profiled")
+
+    (primary / "sweep_config.json").write_text(
+        json.dumps({"data": {}, "training": {"beta_mode": "profiled"}})
+    )
+    (baseline / "sweep_config.json").write_text(
+        json.dumps({"data": {}, "training": {"beta_mode": "fixed"}})
+    )
+    with pytest.raises(ValueError, match="baseline sweep config beta_mode.*fixed"):
+        load_comparison_results(primary, baseline_sweep_dir=baseline)
+
+
+def test_comparison_loader_rejects_mixed_or_conflicting_modes(tmp_path) -> None:
+    root = tmp_path / "sweep"
+    (root / "summary" / "last").mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {"method": "vgsae", "run_id": "a", "beta_mode": "profiled"},
+            {"method": "vgsae", "run_id": "b", "beta_mode": "learned"},
+        ]
+    ).to_csv(root / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame([{"method": "vgsae", "run_id": "a"}]).to_csv(
+        root / "summary" / "training_curves.csv", index=False
+    )
+    with pytest.raises(ValueError, match="primary metrics mixes beta_mode"):
+        load_comparison_results(root)
+
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "a", "beta_mode": "learned"}]
+    ).to_csv(root / "summary" / "last" / "final_metrics.csv", index=False)
+    (root / "sweep_config.json").write_text(
+        json.dumps({"training": {"beta_mode": "profiled"}})
+    )
+    with pytest.raises(ValueError, match="primary beta_mode metadata conflicts"):
+        load_comparison_results(root)
+
+
 def test_legacy_primary_mode_survives_baseline_merge_and_aggregation(
     tmp_path,
 ) -> None:
@@ -235,6 +287,32 @@ def test_baseline_vg_never_gets_invariant_mode_label(tmp_path) -> None:
     assert metrics.loc[
         metrics["method"] == "vgsae", "beta_mode"
     ].item() == "profiled"
+
+
+def test_comparison_loader_rejects_cross_mode_vg_backfill(tmp_path) -> None:
+    primary = tmp_path / "primary"
+    baseline = tmp_path / "baseline"
+    data = {"kind": "same", "n_test": 4}
+    for root, mode in ((primary, "learned"), (baseline, "profiled")):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "sweep_config.json").write_text(
+            json.dumps({"data": data, "training": {"beta_mode": mode}})
+        )
+    pd.DataFrame(
+        [{"method": "topk", "run_id": "topk-new", "beta_mode": "learned"}]
+    ).to_csv(primary / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame(
+        [{"method": "topk", "run_id": "topk-new", "beta_mode": "learned"}]
+    ).to_csv(primary / "summary" / "training_curves.csv", index=False)
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-old", "beta_mode": "profiled"}]
+    ).to_csv(baseline / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-old", "beta_mode": "profiled"}]
+    ).to_csv(baseline / "summary" / "training_curves.csv", index=False)
+
+    with pytest.raises(ValueError, match="backfill VG-SAE.*different beta_mode"):
+        load_comparison_results(primary, baseline_sweep_dir=baseline)
 
 
 def _all_method_metrics() -> pd.DataFrame:
