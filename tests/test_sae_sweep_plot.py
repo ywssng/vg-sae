@@ -251,6 +251,24 @@ def test_synth_metric_figures_use_official_panels(plotter, expected_labels) -> N
     plt.close(figure)
 
 
+def test_synth_sparsity_identity_line_stays_within_swept_density_band() -> None:
+    metrics = _all_method_synth_metrics()
+    target_density = 35.0 / 4_096
+    figure = plot_sparsity_diagnostics(
+        metrics,
+        target_model_density=target_density,
+        sae_width=4_096,
+    )
+
+    identity_x = np.asarray(figure.axes[0].lines[-1].get_xdata(), dtype=float)
+    expected_min = min(target_density, float(metrics["rho_model"].min()))
+    expected_max = max(target_density, float(metrics["rho_model"].max()))
+    assert identity_x.min() == pytest.approx(expected_min)
+    assert identity_x.max() == pytest.approx(expected_max)
+    assert figure.axes[0].get_xlim()[1] < 0.5
+    plt.close(figure)
+
+
 def test_vg_posterior_figure_separates_hard_and_expected_paths() -> None:
     figure = plot_vg_posterior_diagnostics(
         _all_method_synth_metrics(),

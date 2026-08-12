@@ -361,7 +361,18 @@ def plot_sparsity_diagnostics(
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
         _finish_metric_axis(ax, target_model_density, sae_width, label)
-    density = np.arange(1, sae_width + 1) / sae_width
+    observed_density = table["rho_model"].to_numpy(dtype=float)
+    observed_density = observed_density[
+        np.isfinite(observed_density) & (observed_density > 0.0)
+    ]
+    identity_bounds = np.append(observed_density, target_model_density)
+    density_min = float(identity_bounds.min())
+    density_max = float(identity_bounds.max())
+    density = (
+        np.asarray([density_min])
+        if density_min == density_max
+        else np.geomspace(density_min, density_max, num=100)
+    )
     identity_axes = axes[:1] if is_synthsaebench else axes[2:]
     for ax in identity_axes:
         ax.plot(density, density, color="black", linestyle="--", linewidth=1, alpha=0.6)
