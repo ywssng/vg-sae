@@ -61,6 +61,7 @@ from src.synthsaebench_sweep import (
     CALIBRATION_CONTROLS,
     DEFAULT_MAX_PER_DEVICE,
     FINAL_CONTROLS,
+    FINAL_VG_CONTROLS_BY_BETA_MODE,
     SAELENS_REVISION,
     SynthSAEBenchDataConfig,
     SynthSAEBenchRunSpec,
@@ -70,6 +71,7 @@ from src.synthsaebench_sweep import (
     build_specs,
     default_sweep_config,
     default_sweep_dir,
+    final_controls_for_beta_mode,
     load_benchmark_model,
     load_checkpoint,
     save_checkpoint,
@@ -135,7 +137,7 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     assert config.controls["topk"] == [15, 20, 25, 30, 35, 40, 45]
     assert config.controls == FINAL_CONTROLS
     assert config.experiment_name == "stage2_synthsaebench16k_l0calibrated"
-    assert config.controls["vgsae"] == [0.77, 0.82, 0.88, 0.96, 1.07, 1.17, 1.39]
+    assert config.controls["vgsae"] == [1.64, 1.72, 1.84, 2.01, 2.26, 2.84, 6.12]
     assert config.controls["l1"] == [0.99, 1.07, 1.17, 1.36, 1.69, 2.42, 4.26]
     assert config.controls["jumprelu"] == [0.41, 0.46, 0.52, 0.61, 0.78, 1.16, 1.8]
     assert config.controls["gated"] == [1.07, 1.1, 1.21, 1.38, 1.7, 2.17, 3.28]
@@ -147,9 +149,18 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     assert default_sweep_dir(Path("/project"), config) == (
         Path("/project") / "outputs" / "runs" / expected_id
     )
-    learned_raw = config.to_dict()
-    learned_raw["training"]["beta_mode"] = "learned"
-    learned = SynthSAEBenchSweepConfig.from_dict(learned_raw)
+    learned = default_sweep_config(beta_mode="learned")
+    assert learned.training.beta_mode == "learned"
+    assert learned.controls["vgsae"] == [
+        1.63,
+        1.71,
+        1.82,
+        1.99,
+        2.22,
+        2.80,
+        6.00,
+    ]
+    assert learned.controls["l1"] == config.controls["l1"]
     assert sweep_experiment_id(learned) == expected_id.replace(
         "beta_profiled", "beta_learned"
     )
@@ -160,6 +171,21 @@ def test_default_protocol_fixes_pretrained_generator_and_exact_eighth() -> None:
     calibration = default_sweep_config(calibration=True)
     assert calibration.controls == CALIBRATION_CONTROLS
     assert calibration.experiment_name.endswith("_calibration")
+
+
+def test_final_vg_controls_are_mode_specific_independent_copies() -> None:
+    profiled = final_controls_for_beta_mode("profiled")
+    learned = final_controls_for_beta_mode("learned")
+
+    assert profiled["vgsae"] == FINAL_VG_CONTROLS_BY_BETA_MODE["profiled"]
+    assert learned["vgsae"] == FINAL_VG_CONTROLS_BY_BETA_MODE["learned"]
+    assert profiled["vgsae"] != learned["vgsae"]
+    assert profiled["l1"] == learned["l1"]
+    profiled["vgsae"].append(999.0)
+    assert 999.0 not in FINAL_VG_CONTROLS_BY_BETA_MODE["profiled"]
+
+    with pytest.raises(ValueError, match="profiled or learned"):
+        final_controls_for_beta_mode("fixed")  # type: ignore[arg-type]
 
 
 def test_generator_identity_and_dimensions_cannot_be_overridden() -> None:
@@ -226,6 +252,7 @@ def test_cli_training_budget_derives_exact_one_eighth_test_and_direct_grid() -> 
     assert config.controls["l1"] == [3.0, 6.0, 10.0]
     assert config.training.lr_decay_fraction == pytest.approx(1.0 / 3.0)
     assert config.training.beta_mode == "learned"
+    assert config.controls["vgsae"] == FINAL_VG_CONTROLS_BY_BETA_MODE["learned"]
 
 
 def test_synth_sweep_wandb_is_forced_online_with_filterable_identity(

@@ -44,23 +44,34 @@ def load_comparison_results(
     sweep_dir: Path | str,
     checkpoint_kind: str = "last",
     baseline_sweep_dir: Path | str | None = None,
+    beta_mode: str | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, dict[tuple[str, str], Path]]:
     """Load one sweep, optionally filling absent methods from a baseline root."""
 
     root = Path(sweep_dir)
     metrics, history = load_sweep_results(root, checkpoint_kind)
+    mode = beta_mode
+    if mode is None:
+        config_path = root / "sweep_config.json"
+        if config_path.exists():
+            mode = json.loads(config_path.read_text()).get("training", {}).get(
+                "beta_mode"
+            )
+    if mode not in {"profiled", "learned"}:
+        observed = {
+            str(value)
+            for value in metrics.get("beta_mode", pd.Series(dtype=str)).dropna()
+            if str(value) in {"profiled", "learned"}
+        }
+        mode = next(iter(observed)) if len(observed) == 1 else "profiled"
     if "beta_mode" not in metrics:
-        metrics["beta_mode"] = "legacy_unspecified"
+        metrics["beta_mode"] = mode
     else:
-        metrics["beta_mode"] = metrics["beta_mode"].fillna(
-            "legacy_unspecified"
-        )
+        metrics["beta_mode"] = metrics["beta_mode"].fillna(mode)
     if "beta_mode" not in history:
-        history["beta_mode"] = "legacy_unspecified"
+        history["beta_mode"] = mode
     else:
-        history["beta_mode"] = history["beta_mode"].fillna(
-            "legacy_unspecified"
-        )
+        history["beta_mode"] = history["beta_mode"].fillna(mode)
     run_roots = {
         (str(row.method), str(row.run_id)): root
         for row in metrics[["method", "run_id"]].itertuples(index=False)
@@ -96,14 +107,13 @@ def load_comparison_results(
     ].copy()
     for frame in (baseline_metrics, baseline_history):
         if "beta_mode" not in frame:
-            frame["beta_mode"] = "legacy_unspecified"
+            frame["beta_mode"] = mode
         else:
-            frame["beta_mode"] = frame["beta_mode"].fillna(
-                "legacy_unspecified"
-            )
-        frame.loc[frame["method"] != "vgsae", "beta_mode"] = (
-            "baseline_invariant"
-        )
+            frame["beta_mode"] = frame["beta_mode"].fillna(mode)
+        # Baseline methods are beta-invariant, but beta_mode remains a valid
+        # experiment-axis value so every stored/result table uses the same
+        # profiled-or-learned vocabulary as the train/eval interfaces.
+        frame.loc[frame["method"] != "vgsae", "beta_mode"] = mode
     run_roots.update(
         {
             (str(row.method), str(row.run_id)): baseline_root
@@ -155,12 +165,15 @@ def load_sweep_plot_context(
     }
 
 
-def aggregate_seed_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
+def aggregate_seed_metrics(
+    metrics: pd.DataFrame, beta_mode: str | None = None
+) -> pd.DataFrame:
+    mode = beta_mode if beta_mode in {"profiled", "learned"} else "profiled"
     if "beta_mode" not in metrics:
-        metrics = metrics.assign(beta_mode="legacy_unspecified")
+        metrics = metrics.assign(beta_mode=mode)
     else:
         metrics = metrics.assign(
-            beta_mode=metrics["beta_mode"].fillna("legacy_unspecified")
+            beta_mode=metrics["beta_mode"].fillna(mode)
         )
     numeric = [
         column

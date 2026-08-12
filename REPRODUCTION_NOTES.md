@@ -105,17 +105,19 @@ the paper leaves details open.
   on the evaluation stream, and the original VG grid ended at L0 `60.95--92.82`.
   Consequently, a complete 42-run 200M sweep plus twelve 200M corrective
   anchors were used to invert calibration-stream L0 curves toward targets
-  `[45,40,35,30,25,20,15]`. The resulting rounded historical static grids are VG gamma
+  `[45,40,35,30,25,20,15]`. The resulting rounded historical static grids were
+  VG gamma
   `[.77,.82,.88,.96,1.07,1.17,1.39]`, L1
   `[.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
   `[.41,.46,.52,.61,.78,1.16,1.80]`, and Gated
   `[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`; TopK and BatchTopK use the direct
-  targets. The VG grid was calibrated under the now-removed precision mode; it
-  is not reused as a definitive profiled/learned grid without a separate
-  mode-specific calibration. Rounded interpolation is not an L0 controller, so achieved
-  calibration-stream L0 remains authoritative. VG gamma `1.39` is specifically
-  a power-law extrapolation beyond the largest 200M anchor (`1.15`), predicting hard L0
-  around `14--16`; it is not an observed interpolation. The fixed evaluation
+  targets. Mode-specific 20M sweeps and 50M anchor runs now select VG gamma
+  `[1.64,1.72,1.84,2.01,2.26,2.84,6.12]` for `profiled` and
+  `[1.63,1.71,1.82,1.99,2.22,2.80,6.00]` for `learned` for the definitive 200M
+  runs; the runner selects the matching grid and mode-specific sweep root
+  together. The removed-mode VG grid
+  remains historical only. Rounded interpolation is not an L0 controller, so
+  achieved calibration-stream L0 remains authoritative. The fixed evaluation
   stream was reused to choose these controls and therefore serves as a
   calibration stream rather than an untouched test set. The default is one seed
   (`0`) rather than the paper's five;
@@ -151,7 +153,9 @@ the paper leaves details open.
   `sae_width=1024`, and `support_density=0.01` (expected true L0 `10.24`). Its
   calibrated TopK and BatchTopK grids currently span `k<=128`. Sweep output
   directories and W&B groups include the precision mode, for example
-  `stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0`. Training sweep runners require
+  `stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0` and its
+  `stage1_beta_learned_...` counterpart. Both modes are definitive Stage-1
+  sweep axes rather than ablations stored in one result root. Training sweep runners require
   W&B online mode and verified authentication; offline and disabled bypasses
   are not exposed. W&B records the resolved ID as `exp_id`, the experiment
   family as `stage`, and the actual `outputs/runs/` child directory as

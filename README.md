@@ -58,6 +58,8 @@ uv run python -B runs/run_CustomData_sweep_eval.py \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 16
+
+# Repeat both commands with --beta-mode learned; it gets its own root/group.
 ```
 
 The Stage-1 data is a noiseless linear mixture of an overcomplete random unit
@@ -132,6 +134,7 @@ uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
   --max-per-device 2
 
 # Full default: about 200M train samples and exactly one-eighth as held-out test.
+# beta_mode selects both the VG objective and its calibrated gamma grid/root.
 uv run python -B runs/run_SynthSAEBench_sweep.py \
   --beta-mode profiled \
   --methods vgsae \
@@ -143,6 +146,8 @@ uv run python -B runs/run_SynthSAEBench_sweep_eval.py \
   --methods vgsae \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
   --max-per-device 2
+
+# Repeat the two commands with --beta-mode learned for the learned-beta grid/root.
 ```
 
 This runner always loads `decoderesearch/synth-sae-bench-16k-v1` at revision
@@ -173,20 +178,23 @@ heatmap from its source root.
 
 The default one-seed method grid has seven controls per method. TopK and
 BatchTopK use target `k=[15,20,25,30,35,40,45]`. Full 200M-sample calibration
-runs were used to invert the calibration-stream hard-L0 curves toward the same targets.
-The historical VG-SAE gamma grid `[0.77,0.82,0.88,0.96,1.07,1.17,1.39]` was
-calibrated under a removed precision mode, so each supported beta mode must be
-recalibrated before its definitive VG sweep. The other calibrated grids are L1
+runs were used to invert the calibration-stream hard-L0 curves toward the same
+targets.
+Mode-specific 20M sweeps plus 50M anchor runs select VG-SAE gamma
+`[1.64,1.72,1.84,2.01,2.26,2.84,6.12]` for `profiled` and
+`[1.63,1.71,1.82,1.99,2.22,2.80,6.00]` for `learned` for the definitive 200M
+runs; choosing `--beta-mode` selects the matching grid as well as a separate
+sweep root. The other calibrated
+grids are L1
 `[0.99,1.07,1.17,1.36,1.69,2.42,4.26]`, JumpReLU
 `[0.41,0.46,0.52,0.61,0.78,1.16,1.80]`, and Gated
 `[1.07,1.10,1.21,1.38,1.70,2.17,3.28]`. These are empirically calibrated static
 controls, not the official L0 autotuner; rounded interpolation means achieved
 L0 remains the authoritative comparison axis. The same fixed evaluation stream
 was used for calibration and the final tables, so it is a calibration stream,
-not an untouched test set. VG gamma `1.39` is a power-law extrapolation beyond
-the largest 200M calibration anchor (`1.15`), with predicted hard L0 about
-`14--16` in that historical calibration and is not assumed to transfer to
-`profiled` or `learned`. VG-SAE therefore reports and plots
+not an untouched test set. The removed-mode VG grid
+`[0.77,0.82,0.88,0.96,1.07,1.17,1.39]` is historical only and is not used by
+either supported mode. VG-SAE therefore reports and plots
 hard and posterior-expected L0/reconstruction separately; a short pilot showed
 a large hard/expected gap. Interrupted jobs write an exact rolling resume
 checkpoint every 10,000 updates. The official study used five seeds; the local

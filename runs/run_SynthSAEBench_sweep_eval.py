@@ -381,11 +381,10 @@ def main(args: argparse.Namespace) -> int:
         return 0
 
     default_config = default_sweep_config(
-        args.fast_dev_run, calibration=args.calibration_grid
+        args.fast_dev_run,
+        calibration=args.calibration_grid,
+        beta_mode=args.beta_mode,
     )
-    default_raw = default_config.to_dict()
-    default_raw["training"]["beta_mode"] = args.beta_mode
-    default_config = SynthSAEBenchSweepConfig.from_dict(default_raw)
     sweep_dir = (
         args.sweep_dir or default_sweep_dir(PROJECT_ROOT, default_config)
     ).resolve()

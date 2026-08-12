@@ -248,7 +248,7 @@ are both 128, so
 \end{equation}
 This is an expected count, not a fixed per-sample cardinality.
 
-The completed calibration uses seed 1, 1000 optimization steps, batch size
+Each completed precision-mode calibration uses seed 1, 1000 optimization steps, batch size
 128, learning rate $10^{-2}$, gradient-norm clipping at 1, and the final
 (\texttt{last}) checkpoint; metrics are recorded every 25 steps.  The dead
 feature window is 100 steps, the evaluation dead threshold is $10^{-6}$, and
@@ -257,8 +257,9 @@ L1/ReLU, 128 TopK, 41 BatchTopK, 32 JumpReLU, and 23 Gated SAE control values.
 Within each architecture, control values share the data, initialization seed,
 and batch order.  The five baselines use the pinned SAELens v6.47 training
 implementations.  VG-SAE uses its Bernoulli variance term, unit entropy
-coefficient, and profiled precision; the stored $\beta=1$ is not a fixed
-precision in this mode.  This single-seed sweep is a calibration, not an
+coefficient.  VG-SAE is evaluated in separate profiled- and learned-precision
+sweeps; the stored $\beta=1$ is an initialization/reporting value, not a fixed
+precision.  Each single-seed sweep is a calibration, not an
 uncertainty estimate.  In the confirmatory study, each data seed fixes the
 dictionary and held-out inputs across optimization repetitions; curves are
 estimated after decoder alignment and then aggregated across data seeds on a

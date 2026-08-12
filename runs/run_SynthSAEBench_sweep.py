@@ -166,12 +166,14 @@ def _one_eighth_train(train_samples: int, batch_size: int) -> int:
 
 
 def configured_sweep(args: argparse.Namespace) -> SynthSAEBenchSweepConfig:
+    beta_mode = getattr(args, "beta_mode", None)
     base = (
         read_json(args.config)
         if args.config is not None
         else default_sweep_config(
             fast=args.fast_dev_run,
             calibration=getattr(args, "calibration_grid", False),
+            beta_mode=beta_mode or "profiled",
         ).to_dict()
     )
     raw = SynthSAEBenchSweepConfig.from_dict(base).to_dict()
@@ -187,7 +189,6 @@ def configured_sweep(args: argparse.Namespace) -> SynthSAEBenchSweepConfig:
     batch_size = getattr(args, "batch_size", None)
     if batch_size is not None:
         raw["training"]["batch_size"] = batch_size
-    beta_mode = getattr(args, "beta_mode", None)
     if beta_mode is not None:
         raw["training"]["beta_mode"] = beta_mode
     training_samples = getattr(args, "training_samples", None)

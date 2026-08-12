@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -78,9 +79,43 @@ def test_comparison_loader_fills_only_absent_methods_from_baseline_root(
     assert set(history["run_id"]) == {"vg-new", "topk-old"}
     assert metrics.loc[
         metrics["method"] == "topk", "beta_mode"
-    ].item() == "baseline_invariant"
+    ].item() == "learned"
     assert roots[("vgsae", "vg-new")] == vg_root
     assert roots[("topk", "topk-old")] == baseline_root
+
+
+def test_comparison_loader_labels_invariant_baselines_with_primary_mode(
+    tmp_path: Path,
+) -> None:
+    vg_root = tmp_path / "vg"
+    baseline_root = tmp_path / "baseline"
+    for root in (vg_root, baseline_root):
+        (root / "summary" / "last").mkdir(parents=True)
+        (root / "summary").mkdir(exist_ok=True)
+    data = {"kind": "same", "input_dim": 4}
+    (vg_root / "sweep_config.json").write_text(
+        json.dumps({"data": data, "training": {"beta_mode": "learned"}})
+    )
+    (baseline_root / "sweep_config.json").write_text(json.dumps({"data": data}))
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-new", "beta_mode": "learned"}]
+    ).to_csv(vg_root / "summary" / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame(
+        [{"method": "vgsae", "run_id": "vg-new", "beta_mode": "learned"}]
+    ).to_csv(vg_root / "summary" / "training_curves.csv", index=False)
+    pd.DataFrame([{"method": "topk", "run_id": "topk-old"}]).to_csv(
+        baseline_root / "summary" / "last" / "final_metrics.csv", index=False
+    )
+    pd.DataFrame([{"method": "topk", "run_id": "topk-old"}]).to_csv(
+        baseline_root / "summary" / "training_curves.csv", index=False
+    )
+
+    metrics, history, _ = load_comparison_results(
+        vg_root, baseline_sweep_dir=baseline_root
+    )
+
+    assert set(metrics["beta_mode"]) == {"learned"}
+    assert set(history["beta_mode"]) == {"learned"}
 
 
 def test_comparison_loader_rejects_different_data_conditions(tmp_path) -> None:
@@ -147,7 +182,7 @@ def test_legacy_primary_mode_survives_baseline_merge_and_aggregation(
     assert set(table["method"]) == {"vgsae", "topk"}
     assert metrics.loc[
         metrics["method"] == "vgsae", "beta_mode"
-    ].item() == "legacy_unspecified"
+    ].item() == "profiled"
 
 
 def test_baseline_vg_never_gets_invariant_mode_label(tmp_path) -> None:

@@ -47,7 +47,7 @@ BENCHMARK_SAE_WIDTH = 4_096
 BENCHMARK_SCALE_CHILDREN_BY_PARENT = False
 DEFAULT_MAX_PER_DEVICE = 2
 
-# Broad range-scout controls.  Use the 200M-calibrated FINAL_CONTROLS for the
+# Broad range-scout controls.  Use ``final_controls_for_beta_mode`` for the
 # definitive full-budget comparison.
 CALIBRATION_CONTROLS: dict[str, list[float | int]] = {
     "vgsae": [0.4, 0.5, 0.55, 0.6, 0.65, 0.75],
@@ -58,17 +58,41 @@ CALIBRATION_CONTROLS: dict[str, list[float | int]] = {
     "gated": [1.0, 1.35, 1.5, 2.0, 3.0, 4.0, 5.0],
 }
 
-# One-seed 200M calibration runs invert each method's measured calibration-stream
-# hard-L0 curve toward the benchmark comparison targets [45, 40, ..., 15].  The
-# final x-axis remains achieved hard L0, never coefficient order.
+# The static controls invert measured calibration-stream hard-L0 curves toward
+# the benchmark comparison targets [45, 40, ..., 15].  The non-VG methods came
+# from one-seed 200M runs; the mode-specific VG controls came from 20M sweeps and
+# 50M anchors before the definitive 200M runs.  The final x-axis remains achieved
+# hard L0, never coefficient order.  VG-SAE needs separate controls because
+# profiling beta and learning beta produce different gamma-to-L0 curves.
+FINAL_VG_CONTROLS_BY_BETA_MODE: dict[BetaMode, list[float]] = {
+    "profiled": [1.64, 1.72, 1.84, 2.01, 2.26, 2.84, 6.12],
+    "learned": [1.63, 1.71, 1.82, 1.99, 2.22, 2.80, 6.00],
+}
+
+# ``FINAL_CONTROLS`` remains the complete default-profiled grid for callers that
+# imported it before beta modes were split.  Use ``final_controls_for_beta_mode``
+# whenever the beta mode is selected dynamically.
 FINAL_CONTROLS: dict[str, list[float | int]] = {
-    "vgsae": [0.77, 0.82, 0.88, 0.96, 1.07, 1.17, 1.39],
+    "vgsae": list(FINAL_VG_CONTROLS_BY_BETA_MODE["profiled"]),
     "l1": [0.99, 1.07, 1.17, 1.36, 1.69, 2.42, 4.26],
     "topk": [15, 20, 25, 30, 35, 40, 45],
     "batchtopk": [15.0, 20.0, 25.0, 30.0, 35.0, 40.0, 45.0],
     "jumprelu": [0.41, 0.46, 0.52, 0.61, 0.78, 1.16, 1.80],
     "gated": [1.07, 1.10, 1.21, 1.38, 1.70, 2.17, 3.28],
 }
+
+
+def final_controls_for_beta_mode(
+    beta_mode: BetaMode,
+) -> dict[str, list[float | int]]:
+    """Return an independent copy of the calibrated final grid for one mode."""
+
+    if beta_mode not in FINAL_VG_CONTROLS_BY_BETA_MODE:
+        raise ValueError("SynthSAEBench VG beta_mode must be profiled or learned.")
+    controls = {name: list(values) for name, values in FINAL_CONTROLS.items()}
+    controls["vgsae"] = list(FINAL_VG_CONTROLS_BY_BETA_MODE[beta_mode])
+    return controls
+
 
 FAST_CONTROLS: dict[str, list[float | int]] = {
     "vgsae": [0.0, 1.0],
@@ -205,9 +229,7 @@ class SynthSAEBenchSweepConfig:
     seeds: list[int] = field(default_factory=lambda: [0])
     methods: list[str] = field(default_factory=lambda: list(METHOD_ORDER))
     controls: dict[str, list[float | int]] = field(
-        default_factory=lambda: {
-            name: list(values) for name, values in FINAL_CONTROLS.items()
-        }
+        default_factory=lambda: final_controls_for_beta_mode("profiled")
     )
     wandb_project: str = "vg-sae"
 
@@ -342,7 +364,9 @@ class SynthSAEBenchRunSpec:
 
 
 def default_sweep_config(
-    fast: bool = False, calibration: bool = False
+    fast: bool = False,
+    calibration: bool = False,
+    beta_mode: BetaMode = "profiled",
 ) -> SynthSAEBenchSweepConfig:
     data = (
         SynthSAEBenchDataConfig(n_train=2_048, n_test=256)
@@ -358,14 +382,19 @@ def default_sweep_config(
             n_batches_for_norm_estimate=2,
             heatmap_samples=16,
             resume_every=1,
+            beta_mode=beta_mode,
         )
         if fast
-        else SynthSAEBenchTrainingConfig()
+        else SynthSAEBenchTrainingConfig(beta_mode=beta_mode)
     )
     controls = (
         FAST_CONTROLS
         if fast
-        else CALIBRATION_CONTROLS if calibration else FINAL_CONTROLS
+        else (
+            CALIBRATION_CONTROLS
+            if calibration
+            else final_controls_for_beta_mode(beta_mode)
+        )
     )
     return SynthSAEBenchSweepConfig(
         experiment_name=(
@@ -630,6 +659,7 @@ __all__ = [
     "DEFAULT_MAX_PER_DEVICE",
     "FAST_CONTROLS",
     "FINAL_CONTROLS",
+    "FINAL_VG_CONTROLS_BY_BETA_MODE",
     "METHOD_LABELS",
     "METHOD_ORDER",
     "SAELENS_REVISION",
@@ -643,6 +673,7 @@ __all__ = [
     "capture_rng_state",
     "default_sweep_config",
     "default_sweep_dir",
+    "final_controls_for_beta_mode",
     "load_benchmark_model",
     "load_checkpoint",
     "run_directory",
