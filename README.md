@@ -175,13 +175,19 @@ paper's generator description and creation script use `true`. Manifests store
 the pinned revision, model-config SHA-256, and SAELens source revision so
 fixed-artifact results are not mistaken for a regenerated paper variant.
 Evaluation accumulates the official
-MCC, uniqueness, classifier, L0, dead-latent, shrinkage, and explained-variance
+Mean Correlation Coefficient (MCC), uniqueness, classifier, L0, dead-latent,
+shrinkage, and explained-variance
 metrics in streaming form. Only a small preview is cached for heatmaps. Point
 `VGSAE_SWEEP_DIR` at a completed Stage-2 directory and run notebook 10 to draw
-the SynthSAEBench-specific panels with the same artifact-only workflow. Its
-eighth figure, `vg_posterior_diagnostics.png`, compares VG hard inference with
+the SynthSAEBench-specific panels with the same artifact-only workflow.
+`vg_posterior_diagnostics.png` compares VG hard inference with
 the posterior expectation; Stage-1 CustomData artifacts skip that unavailable
-panel without error. For a VG-only mode root, also set
+panel without error. For Stage-2 artifacts, notebook 10 and `plot_all` also
+write four additive `stage1_style_*.png` diagnostics using the Stage-1 panel
+columns. These retain Stage-2 matching semantics: decoder recovery is the MCC
+alias, classifier metrics are per-latent macro averages, and unmatched
+ground-truth features are not scored through Stage-1's rectangular union. For
+a VG-only mode root, also set
 `VGSAE_BASELINE_SWEEP_DIR` to the preserved 35-run non-VG Stage-2 root; the
 notebook fills only methods absent from the primary root and resolves each
 heatmap from its source root.

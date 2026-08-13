@@ -1266,6 +1266,26 @@ def parallel_sweep_results_notebook() -> dict:
                 final_df.head()
                 """
             ),
+            md(
+                r"""
+                ## How to read the Stage-2 metric panels
+
+                This section applies when `final_df` contains SynthSAEBench results. Every metric panel uses achieved hard activation density
+                $\rho_\mathrm{model}=\mathrm{SAE\ L0}/d_\mathrm{sae}$ on a log x-axis; the vertical dashed line is empirical $\mathrm{True\ L0}/d_\mathrm{sae}$, not ground-truth feature density. Curves connect controls after sorting by achieved density. Points are seed means, but the current definitive sweep has one seed and the plot does not draw its computed SEM.
+
+                - **Explained variance ($R^2$, higher is better):** $1-\mathbb E\lVert x-\hat x\rVert_2^2/(\mathbb E\lVert x\rVert_2^2-\lVert\mathbb E x\rVert_2^2)$. It measures reconstruction of input variance.
+                - **Shrinkage:** $\mathbb E[\lVert\hat x\rVert_2/\lVert x\rVert_2]$ over nonzero-norm samples. One preserves average norm; below one contracts it and above one amplifies it. It is not latent-amplitude shrinkage.
+                - **MCC (higher is better):** Mean Correlation Coefficient, not Matthews correlation. It is the mean absolute decoder/ground-truth cosine under optimal one-to-one Hungarian matching.
+                - **Uniqueness (higher is better):** fraction of SAE latents whose independently best-matched ground-truth feature is distinct. It detects duplicate feature recovery but does not impose a cosine-quality threshold.
+                - **Classifier precision, recall, F1, and accuracy (higher is better):** each SAE latent is a binary classifier for its independently best-matched ground-truth feature; the displayed value is the macro mean over SAE latents. Accuracy can be inflated by abundant true negatives.
+                - **SAE L0 / $d_\mathrm{sae}$:** mean number of hard-firing SAE latents per sample, normalized by SAE width; it duplicates the x-coordinate as a diagnostic identity check.
+                - **True L0 / $d_\mathrm{sae}$:** mean number of active features among the full ground-truth dictionary, normalized by SAE width so it can be compared with model capacity. It is not normalized by ground-truth width.
+                - **Dead latent fraction (lower is better):** fraction of SAE latents that never fire over the evaluation stream.
+                - **Expected L0 / $d_\mathrm{sae}$:** for VG-SAE, the mean sum of posterior gate probabilities divided by SAE width; for non-VG methods it equals hard SAE L0. The VG posterior figure likewise contrasts hard-code and posterior-expected $R^2$ and L0.
+                - **Training curves:** raw method-specific loss is not comparable across architectures; reconstruction MSE is lower-is-better minibatch MSE; train rho is minibatch hard density. The x-axis is optimizer step, not epoch.
+                - **Mask heatmap selection error (lower is better):** macro mean of $(FP+FN)/N$ for the same per-latent classifiers, equal to one minus macro accuracy.
+                """
+            ),
             md("## Synthetic data overview"),
             code(
                 """
@@ -1311,6 +1331,55 @@ def parallel_sweep_results_notebook() -> dict:
                     density_mode=DENSITY_MODE,
                 )
                 plt.show()
+                """
+            ),
+            md(
+                r"""
+                ## Stage-1-style diagnostics on Stage-2 results
+
+                SynthSAEBench evaluation also stores the columns used by the Stage-1 figures. The four plots below expose those diagnostics without replacing the official Stage-2 panels:
+
+                - **Reconstruction:** $R^2$ (higher) and relative reconstruction error $\lVert\hat x-x\rVert_F/\lVert x\rVert_F$ (lower).
+                - **Recovery:** relative latent-code error $\lVert h-z_\mathrm{match}\rVert_F/\lVert z_\mathrm{match}\rVert_F$ (lower) and dictionary cosine similarity (higher).
+                - **Support:** F1, average precision (AP), precision, and recall (higher). Stage 2 computes these as per-latent macro classifier scores; its binary-score AP uses the precision/recall point plus the prevalence tail.
+                - **Sparsity:** selection error and dead fraction (lower), plus hard average L0 and posterior-expected L0 normalized by SAE width.
+
+                These are deliberately titled **Stage-1-style diagnostics on Stage-2 matching**. They retain Stage 2's independently best-matched ground-truth feature per latent: dictionary cosine is the MCC alias, support scores are macro-averaged over SAE latents, and latent-code error omits unmatched ground-truth features. They therefore do not reproduce Stage 1's rectangular-Hungarian-union semantics.
+                """
+            ),
+            code(
+                """
+                if "benchmark_model_id" in final_df.columns:
+                    stage1_style_plots = (
+                        (
+                            plot_reconstruction_metrics,
+                            "stage1_style_reconstruction_metrics.png",
+                        ),
+                        (
+                            plot_recovery_metrics,
+                            "stage1_style_recovery_metrics.png",
+                        ),
+                        (
+                            plot_support_metrics,
+                            "stage1_style_support_metrics.png",
+                        ),
+                        (
+                            plot_sparsity_diagnostics,
+                            "stage1_style_sparsity_diagnostics.png",
+                        ),
+                    )
+                    for plotter, filename in stage1_style_plots:
+                        plotter(
+                            final_df,
+                            target_model_density=TARGET_MODEL_DENSITY,
+                            sae_width=plot_context["sae_width"],
+                            output_path=FIGURE_DIR / filename,
+                            density_mode=DENSITY_MODE,
+                            metric_suite="stage1",
+                        )
+                    plt.show()
+                else:
+                    print("Stage-1 data already uses the Stage-1 metric suite.")
                 """
             ),
             md(
@@ -1439,9 +1508,11 @@ def write_notebooks() -> None:
             or the corresponding SynthSAEBench runners, keeps
             ground-truth feature count separate from SAE width. Reported mode uses
             expected true L0 for CustomData, while hard mode uses finite-test-set
-            empirical true L0 as the model-density reference. SynthSAEBench additionally writes an eighth
-            `vg_posterior_diagnostics.png` panel comparing hard inference with the VG
-            posterior expectation; CustomData skips that unavailable panel.
+            empirical true L0 as the model-density reference. SynthSAEBench additionally
+            writes four `stage1_style_*` figures with an explicit Stage-2-matching
+            caveat and a `vg_posterior_diagnostics.png` figure comparing hard
+            inference with the VG posterior expectation; CustomData skips those
+            unavailable additions.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """

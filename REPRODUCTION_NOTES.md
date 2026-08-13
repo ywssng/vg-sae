@@ -102,10 +102,15 @@ the paper leaves details open.
   not apply to the infinite activation stream. The executable public runner
   configs use constant Adam learning rate 3e-4, which is the local default;
   the paper's final-third linear decay is available as an explicit override.
-  Official MCC, uniqueness, per-latent best-match classification, hard L0,
-  dead-latent, shrinkage, and explained-variance definitions are kept separate
-  from Stage-1's rectangular-union metrics. Only an 80-row classifier-aligned
-  preview is cached for heatmaps. L1, JumpReLU, VG, and Gated are compared via
+  Official Mean Correlation Coefficient (MCC), uniqueness, per-latent
+  best-match classification, hard L0, dead-latent, shrinkage, and
+  explained-variance definitions are kept separate from Stage-1's
+  rectangular-union metrics. The optional `stage1_style_*` figures select the
+  Stage-1 panel columns already stored by Stage 2, but do not change this
+  matching policy: decoder recovery is an MCC alias, support metrics remain
+  per-latent macro averages, and latent-code error covers only best-matched
+  features. Only an 80-row classifier-aligned preview is cached for heatmaps.
+  L1, JumpReLU, VG, and Gated are compared via
   direct coefficient controls rather than the paper repository's L0 autotuner,
   so measured hard L0—not coefficient order—is the comparison axis. Initial
   20M-sample BF16 pilots did not predict the 200M endpoint: for example, L1

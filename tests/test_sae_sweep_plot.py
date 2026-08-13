@@ -667,6 +667,73 @@ def test_synth_metric_figures_use_official_panels(plotter, expected_labels) -> N
     plt.close(figure)
 
 
+@pytest.mark.parametrize(
+    ("plotter", "expected_labels", "value_axis", "expected_value"),
+    [
+        (
+            plot_reconstruction_metrics,
+            [r"$R^2$", "Recon. error"],
+            1,
+            0.2,
+        ),
+        (
+            plot_recovery_metrics,
+            ["Latent-code rel. error", "Dict. Cos sim."],
+            0,
+            0.1,
+        ),
+        (
+            plot_support_metrics,
+            ["F1", "AP", "Precision", "Recall"],
+            0,
+            0.4,
+        ),
+        (
+            plot_sparsity_diagnostics,
+            [
+                "Selection error",
+                "dead latent fraction",
+                r"Avg. L0 / $d_\mathrm{sae}$",
+                r"Exp. L0 / $d_\mathrm{sae}$",
+            ],
+            0,
+            0.2,
+        ),
+    ],
+)
+def test_synth_metric_figures_can_add_stage1_style_panels(
+    plotter, expected_labels, value_axis, expected_value
+) -> None:
+    figure = plotter(
+        _all_method_synth_metrics(),
+        target_model_density=35.0 / 4_096,
+        sae_width=4_096,
+        metric_suite="stage1",
+    )
+
+    assert [axis.get_ylabel() for axis in figure.axes] == expected_labels
+    assert figure.axes[value_axis].lines[0].get_ydata()[0] == pytest.approx(
+        expected_value
+    )
+    assert figure._suptitle.get_text() == (
+        "Stage-1-style diagnostics on Stage-2 matching"
+    )
+    if plotter is plot_support_metrics:
+        assert all(axis.get_ylim()[1] == pytest.approx(1.02) for axis in figure.axes)
+    _assert_single_bottom_legend(figure)
+    plt.close(figure)
+
+
+def test_metric_figures_reject_unknown_metric_suite() -> None:
+    with pytest.raises(ValueError, match="metric_suite must be one of"):
+        plot_reconstruction_metrics(
+            _all_method_synth_metrics(),
+            target_model_density=35.0 / 4_096,
+            sae_width=4_096,
+            metric_suite="stage3",
+        )
+
+
 def test_synth_sparsity_identity_line_stays_within_swept_density_band() -> None:
     metrics = _all_method_synth_metrics()
     target_density = 35.0 / 4_096

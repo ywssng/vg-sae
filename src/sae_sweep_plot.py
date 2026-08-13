@@ -31,6 +31,7 @@ GROUP_COLUMNS = [
 ]
 VALID_BETA_MODES = frozenset({"profiled", "learned"})
 VALID_DENSITY_MODES = frozenset({"reported", "hard"})
+VALID_METRIC_SUITES = frozenset({"auto", "stage1", "stage2"})
 CUSTOM_HARD_METRIC_MAP = {
     "explained_variance": "hard_explained_variance",
     "reconstruction_error": "hard_reconstruction_error",
@@ -42,6 +43,26 @@ CUSTOM_HARD_METRIC_MAP = {
     "support_recall": "hard_support_recall",
     "support_roc_auc": "hard_support_roc_auc",
 }
+
+
+def _resolve_metric_suite(metrics: pd.DataFrame, metric_suite: str) -> str:
+    """Choose Stage-1 diagnostics or the official Stage-2 metric panels."""
+
+    if metric_suite not in VALID_METRIC_SUITES:
+        choices = ", ".join(sorted(VALID_METRIC_SUITES))
+        raise ValueError(
+            f"metric_suite must be one of {{{choices}}}, got {metric_suite!r}"
+        )
+    if metric_suite == "auto":
+        return "stage2" if "benchmark_model_id" in metrics.columns else "stage1"
+    return metric_suite
+
+
+def _annotate_stage1_style_on_stage2(
+    fig, *, metric_suite: str, is_synthsaebench: bool
+) -> None:
+    if metric_suite == "stage1" and is_synthsaebench:
+        fig.suptitle("Stage-1-style diagnostics on Stage-2 matching", fontsize=9)
 
 
 def apply_density_axis(
@@ -529,6 +550,7 @@ def plot_reconstruction_metrics(
     support_density: float | None = None,
     n_features: int | None = None,
     density_mode: str = "reported",
+    metric_suite: str = "auto",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
@@ -538,9 +560,10 @@ def plot_reconstruction_metrics(
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
+    resolved_suite = _resolve_metric_suite(metrics, metric_suite)
     panels = (
         [("explained_variance", r"$R^2$"), ("shrinkage", "Shrinkage")]
-        if is_synthsaebench
+        if resolved_suite == "stage2"
         else [
             ("explained_variance", r"$R^2$"),
             ("reconstruction_error", "Recon. error"),
@@ -572,10 +595,15 @@ def plot_reconstruction_metrics(
         _finish_metric_axis(
             ax, target_model_density, sae_width, label, density_mode
         )
-    if not is_synthsaebench:
+    if resolved_suite == "stage1":
         axes[1].set_yscale("log")
     axes[0].yaxis.set_minor_formatter(ticker.NullFormatter())
     _add_bottom_method_legend(fig, table)
+    _annotate_stage1_style_on_stage2(
+        fig,
+        metric_suite=resolved_suite,
+        is_synthsaebench=is_synthsaebench,
+    )
     _save(fig, output_path)
     return fig
 
@@ -589,6 +617,7 @@ def plot_recovery_metrics(
     support_density: float | None = None,
     n_features: int | None = None,
     density_mode: str = "reported",
+    metric_suite: str = "auto",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
@@ -598,9 +627,10 @@ def plot_recovery_metrics(
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
+    resolved_suite = _resolve_metric_suite(metrics, metric_suite)
     panels = (
         [("mcc", "MCC"), ("uniqueness", "Uniqueness")]
-        if is_synthsaebench
+        if resolved_suite == "stage2"
         else [
             ("generalization_error", "Latent-code rel. error"),
             ("decoder_recovery_cosine", "Dict. Cos sim."),
@@ -632,10 +662,15 @@ def plot_recovery_metrics(
             ax, target_model_density, sae_width, label, density_mode
         )
         ax.yaxis.set_minor_formatter(ticker.NullFormatter())
-    if not is_synthsaebench:
+    if resolved_suite == "stage1":
         axes[0].set_yscale("log")
     axes[1].set_ylim(top=1.01)
     _add_bottom_method_legend(fig, table)
+    _annotate_stage1_style_on_stage2(
+        fig,
+        metric_suite=resolved_suite,
+        is_synthsaebench=is_synthsaebench,
+    )
     _save(fig, output_path)
     return fig
 
@@ -649,6 +684,7 @@ def plot_support_metrics(
     support_density: float | None = None,
     n_features: int | None = None,
     density_mode: str = "reported",
+    metric_suite: str = "auto",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
@@ -658,6 +694,7 @@ def plot_support_metrics(
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
+    resolved_suite = _resolve_metric_suite(metrics, metric_suite)
     panels = (
         [
             ("classification_f1", "F1"),
@@ -665,7 +702,7 @@ def plot_support_metrics(
             ("classification_recall", "Recall"),
             ("classification_accuracy", "Accuracy"),
         ]
-        if is_synthsaebench
+        if resolved_suite == "stage2"
         else [
             ("support_f1", "F1"),
             ("support_average_precision", "AP"),
@@ -694,10 +731,15 @@ def plot_support_metrics(
         )
         ax.set_ylim(-0.02, 1.02)
     for ax in axes[0]:
-        if not is_synthsaebench:
+        if resolved_suite == "stage1" and not is_synthsaebench:
             ax.set_ylim(-0.01, 0.61)
         ax.set_xlabel("")
     _add_bottom_method_legend(fig, table)
+    _annotate_stage1_style_on_stage2(
+        fig,
+        metric_suite=resolved_suite,
+        is_synthsaebench=is_synthsaebench,
+    )
     _save(fig, output_path)
     return fig
 
@@ -711,6 +753,7 @@ def plot_sparsity_diagnostics(
     support_density: float | None = None,
     n_features: int | None = None,
     density_mode: str = "reported",
+    metric_suite: str = "auto",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
@@ -720,6 +763,7 @@ def plot_sparsity_diagnostics(
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
+    resolved_suite = _resolve_metric_suite(metrics, metric_suite)
     panels = (
         [
             ("sae_l0", r"SAE L0 / $d_\mathrm{sae}$"),
@@ -727,7 +771,7 @@ def plot_sparsity_diagnostics(
             ("dead_fraction", "Dead latent fraction"),
             ("expected_l0", r"Expected L0 / $d_\mathrm{sae}$"),
         ]
-        if is_synthsaebench
+        if resolved_suite == "stage2"
         else [
             ("selection_error", "Selection error"),
             ("dead_fraction", "dead latent fraction"),
@@ -773,10 +817,15 @@ def plot_sparsity_diagnostics(
         if density_min == density_max
         else np.geomspace(density_min, density_max, num=100)
     )
-    identity_axes = axes[:1] if is_synthsaebench else axes[2:]
+    identity_axes = axes[:1] if resolved_suite == "stage2" else axes[2:]
     for ax in identity_axes:
         ax.plot(density, density, color="black", linestyle="--", linewidth=1, alpha=0.6)
     _add_bottom_method_legend(fig, table)
+    _annotate_stage1_style_on_stage2(
+        fig,
+        metric_suite=resolved_suite,
+        is_synthsaebench=is_synthsaebench,
+    )
     _save(fig, output_path)
     return fig
 
@@ -1050,6 +1099,47 @@ def plot_all(
         ),
         "training": plot_training_curves(history, destination("training_curves.png")),
     }
+    if "benchmark_model_id" in metrics.columns:
+        figures.update(
+            {
+                "stage1_reconstruction": plot_reconstruction_metrics(
+                    metrics,
+                    target_model_density=target_density,
+                    sae_width=context["sae_width"],
+                    output_path=destination(
+                        "stage1_style_reconstruction_metrics.png"
+                    ),
+                    density_mode=density_mode,
+                    metric_suite="stage1",
+                ),
+                "stage1_recovery": plot_recovery_metrics(
+                    metrics,
+                    target_model_density=target_density,
+                    sae_width=context["sae_width"],
+                    output_path=destination("stage1_style_recovery_metrics.png"),
+                    density_mode=density_mode,
+                    metric_suite="stage1",
+                ),
+                "stage1_support": plot_support_metrics(
+                    metrics,
+                    target_model_density=target_density,
+                    sae_width=context["sae_width"],
+                    output_path=destination("stage1_style_support_metrics.png"),
+                    density_mode=density_mode,
+                    metric_suite="stage1",
+                ),
+                "stage1_sparsity": plot_sparsity_diagnostics(
+                    metrics,
+                    target_model_density=target_density,
+                    sae_width=context["sae_width"],
+                    output_path=destination(
+                        "stage1_style_sparsity_diagnostics.png"
+                    ),
+                    density_mode=density_mode,
+                    metric_suite="stage1",
+                ),
+            }
+        )
     heatmap, representatives = plot_mask_heatmaps(
         root,
         metrics,
