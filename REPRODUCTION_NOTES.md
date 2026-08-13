@@ -171,6 +171,11 @@ the paper leaves details open.
   whereas baseline `rho_model` values are hard inference densities. Therefore
   VG peak locations on this soft-density axis are not directly hard-L0 matched;
   `average_l0 / sae_width` is the corresponding hard-density diagnostic.
+  Plot-only comparisons can set `density_mode="hard"`; this preserves the
+  reported value as `rho_model_reported` and uses thresholded average L0 divided
+  by SAE width as the x-coordinate for every method. Stored evaluation metrics
+  are unchanged, so Stage-1 VG `selection_error` remains its posterior-
+  probability metric even when displayed against the hard-density axis.
 - **Rectangular recovery matching:** decoder atoms use rectangular Hungarian
   matching. Unmatched ground-truth features remain zero predictions (false
   negatives), while unmatched learned latents are appended against zero targets

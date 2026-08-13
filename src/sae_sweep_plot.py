@@ -30,6 +30,58 @@ GROUP_COLUMNS = [
     "control_value",
 ]
 VALID_BETA_MODES = frozenset({"profiled", "learned"})
+VALID_DENSITY_MODES = frozenset({"reported", "hard"})
+
+
+def apply_density_axis(
+    metrics: pd.DataFrame,
+    *,
+    sae_width: int,
+    density_mode: str = "reported",
+) -> pd.DataFrame:
+    """Return metrics with ``rho_model`` set to the requested plotting density.
+
+    Stage-1 VG reports the posterior occupancy ``mean(m)`` while its baselines
+    report binary activation densities.  ``hard`` makes the comparison
+    homogeneous by using thresholded average L0 for every method.  The original
+    reported value is retained in ``rho_model_reported``.
+    """
+
+    if density_mode not in VALID_DENSITY_MODES:
+        choices = ", ".join(sorted(VALID_DENSITY_MODES))
+        raise ValueError(
+            f"density_mode must be one of {{{choices}}}, got {density_mode!r}"
+        )
+    if not isinstance(sae_width, (int, np.integer)) or sae_width <= 0:
+        raise ValueError("sae_width must be a positive integer.")
+    if "rho_model" not in metrics and "rho_model_reported" not in metrics:
+        raise ValueError("Metrics do not contain a reported rho_model column.")
+
+    transformed = metrics.copy()
+    if "rho_model_reported" not in transformed:
+        transformed["rho_model_reported"] = transformed["rho_model"]
+    if density_mode == "reported":
+        transformed["rho_model"] = transformed["rho_model_reported"]
+        transformed["density_axis"] = "reported"
+        return transformed
+
+    hard_l0: pd.Series | None = None
+    if "average_l0" in transformed:
+        hard_l0 = pd.to_numeric(transformed["average_l0"], errors="coerce")
+    elif "sae_l0" in transformed:
+        hard_l0 = pd.to_numeric(transformed["sae_l0"], errors="coerce")
+    if hard_l0 is None:
+        raise ValueError(
+            "Hard-density plots require average_l0 (or SynthSAEBench sae_l0)."
+        )
+    values = hard_l0.to_numpy(dtype=float)
+    if not np.isfinite(values).all():
+        raise ValueError("Hard L0 values must all be finite.")
+    if ((values < 0.0) | (values > float(sae_width))).any():
+        raise ValueError("Hard L0 values must lie between zero and sae_width.")
+    transformed["rho_model"] = hard_l0 / float(sae_width)
+    transformed["density_axis"] = "hard"
+    return transformed
 
 
 def _validate_beta_mode(beta_mode: str, *, source: str) -> str:
@@ -300,12 +352,21 @@ def _metric_line(ax, table: pd.DataFrame, method: str, metric: str, sae_width: i
 
 
 def _finish_metric_axis(
-    ax, target_model_density: float, sae_width: int, ylabel: str
+    ax,
+    target_model_density: float,
+    sae_width: int,
+    ylabel: str,
+    density_mode: str = "reported",
 ) -> None:
     ax.axvline(
         target_model_density, color="black", linestyle="--", linewidth=1, alpha=0.6
     )
-    ax.set(xlabel=r"$\rho_\text{model}$", ylabel=ylabel)
+    xlabel = (
+        r"Hard activation density (L0 / $d_\mathrm{sae}$)"
+        if density_mode == "hard"
+        else r"$\rho_\text{model}$"
+    )
+    ax.set(xlabel=xlabel, ylabel=ylabel)
     ax.set_xscale("log")
     # The benchmark's useful density band is less than one decade wide.  The
     # default log formatter labels every minor tick there, which makes the
@@ -406,9 +467,13 @@ def plot_reconstruction_metrics(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     n_features: int | None = None,
+    density_mode: str = "reported",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
+    )
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
@@ -421,7 +486,9 @@ def plot_reconstruction_metrics(
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
-        _finish_metric_axis(ax, target_model_density, sae_width, label)
+        _finish_metric_axis(
+            ax, target_model_density, sae_width, label, density_mode
+        )
     if not is_synthsaebench:
         axes[1].set_yscale("log")
     axes[0].yaxis.set_minor_formatter(ticker.NullFormatter())
@@ -438,9 +505,13 @@ def plot_recovery_metrics(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     n_features: int | None = None,
+    density_mode: str = "reported",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
+    )
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
@@ -448,7 +519,7 @@ def plot_recovery_metrics(
         [("mcc", "MCC"), ("uniqueness", "Uniqueness")]
         if is_synthsaebench
         else [
-            ("generalization_error", "Gen. error"),
+            ("generalization_error", "Latent-code rel. error"),
             ("decoder_recovery_cosine", "Dict. Cos sim."),
         ]
     )
@@ -456,7 +527,9 @@ def plot_recovery_metrics(
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
-        _finish_metric_axis(ax, target_model_density, sae_width, label)
+        _finish_metric_axis(
+            ax, target_model_density, sae_width, label, density_mode
+        )
         ax.yaxis.set_minor_formatter(ticker.NullFormatter())
     if not is_synthsaebench:
         axes[0].set_yscale("log")
@@ -474,9 +547,13 @@ def plot_support_metrics(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     n_features: int | None = None,
+    density_mode: str = "reported",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
+    )
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
@@ -499,7 +576,9 @@ def plot_support_metrics(
     for ax, (metric, label) in zip(axes.ravel(), panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
-        _finish_metric_axis(ax, target_model_density, sae_width, label)
+        _finish_metric_axis(
+            ax, target_model_density, sae_width, label, density_mode
+        )
         ax.set_ylim(-0.02, 1.02)
     for ax in axes[0]:
         if not is_synthsaebench:
@@ -518,9 +597,13 @@ def plot_sparsity_diagnostics(
     output_path: Path | str | None = None,
     support_density: float | None = None,
     n_features: int | None = None,
+    density_mode: str = "reported",
 ):
     target_model_density, sae_width = _plot_axes(
         target_model_density, sae_width, support_density, n_features
+    )
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
     )
     table = aggregate_seed_metrics(metrics)
     is_synthsaebench = "benchmark_model_id" in metrics.columns
@@ -543,7 +626,12 @@ def plot_sparsity_diagnostics(
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
             _metric_line(ax, table, method, metric, sae_width)
-        _finish_metric_axis(ax, target_model_density, sae_width, label)
+        _finish_metric_axis(
+            ax, target_model_density, sae_width, label, density_mode
+        )
+    if density_mode == "hard":
+        for ax in axes:
+            ax.set_xlabel(r"Hard density (L0/$d_\mathrm{sae}$)")
     observed_density = table["rho_model"].to_numpy(dtype=float)
     observed_density = observed_density[
         np.isfinite(observed_density) & (observed_density > 0.0)
@@ -570,12 +658,16 @@ def plot_vg_posterior_diagnostics(
     target_model_density: float,
     sae_width: int,
     output_path: Path | str | None = None,
+    density_mode: str = "reported",
 ):
     """Show whether VG hard inference agrees with its variational expectation."""
 
     required = {"vg_expected_explained_variance", "vg_expected_l0"}
     if not required.issubset(metrics.columns):
         raise ValueError("VG posterior diagnostic columns are absent from metrics.")
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
+    )
     table = aggregate_seed_metrics(metrics)
     subset = table[table["method"] == "vgsae"].sort_values("rho_model")
     if subset.empty:
@@ -607,10 +699,18 @@ def plot_vg_posterior_diagnostics(
         label="Posterior expectation",
     )
     _finish_metric_axis(
-        axes[0], target_model_density, sae_width, r"VG explained variance ($R^2$)"
+        axes[0],
+        target_model_density,
+        sae_width,
+        r"VG explained variance ($R^2$)",
+        density_mode,
     )
     _finish_metric_axis(
-        axes[1], target_model_density, sae_width, r"VG L0 / $d_\mathrm{sae}$"
+        axes[1],
+        target_model_density,
+        sae_width,
+        r"VG L0 / $d_\mathrm{sae}$",
+        density_mode,
     )
     axes[1].set_yscale("log")
     handles, labels = axes[0].get_legend_handles_labels()
@@ -685,11 +785,20 @@ def plot_mask_heatmaps(
     support_density: float | None = None,
     representative_seed: int | None = None,
     run_roots: dict[tuple[str, str] | str, Path | str] | None = None,
+    sae_width: int | None = None,
+    density_mode: str = "reported",
 ) -> tuple[Any, pd.DataFrame]:
     if target_model_density is None:
         if support_density is None:
             raise TypeError("target_model_density is required.")
         target_model_density = support_density
+    if sae_width is None:
+        if density_mode == "hard":
+            raise TypeError("sae_width is required for hard-density mask selection.")
+    else:
+        metrics = apply_density_axis(
+            metrics, sae_width=sae_width, density_mode=density_mode
+        )
     representatives = _mask_representatives(
         metrics, target_model_density, representative_seed
     )
@@ -713,7 +822,11 @@ def plot_mask_heatmaps(
         axes[row_index, 0].imshow(support, aspect="auto", interpolation="nearest", vmin=0, vmax=1)
         axes[row_index, 0].set(ylabel=row["method_label"], title="true support")
         axes[row_index, 1].imshow(mask, aspect="auto", interpolation="nearest", vmin=0, vmax=1)
-        axes[row_index, 1].set_title(f"mask, rho={row['rho_model']:.3f}, sel err={row['selection_error']:.3f}")
+        density_name = "hard rho" if density_mode == "hard" else "rho"
+        axes[row_index, 1].set_title(
+            f"mask, {density_name}={row['rho_model']:.3f}, "
+            f"reported sel err={row['selection_error']:.3f}"
+        )
         matching_policy = str(row.get("matching_policy", ""))
         ground_truth_width = int(row.get("ground_truth_num_features", support.shape[1]))
         if support.shape[1] > ground_truth_width and "per_latent_best" not in matching_policy:
@@ -741,8 +854,9 @@ def plot_all(
     checkpoint_kind: str = "last",
     output_dir: Path | str | None = None,
     baseline_sweep_dir: Path | str | None = None,
+    density_mode: str = "reported",
 ) -> tuple[dict[str, Any], pd.DataFrame]:
-    """Reproduce every visual from plot-only notebook 10 with collision-free names."""
+    """Reproduce notebook-10 visuals on the reported or hard-density x-axis."""
 
     root = Path(sweep_dir)
     metrics, history, run_roots = load_comparison_results(
@@ -757,25 +871,29 @@ def plot_all(
             metrics,
             target_model_density=context["target_model_density"],
             sae_width=context["sae_width"],
-            output_path=destination("reconstruction_metrics.png")
+            output_path=destination("reconstruction_metrics.png"),
+            density_mode=density_mode,
         ),
         "recovery": plot_recovery_metrics(
             metrics,
             target_model_density=context["target_model_density"],
             sae_width=context["sae_width"],
-            output_path=destination("recovery_metrics.png")
+            output_path=destination("recovery_metrics.png"),
+            density_mode=density_mode,
         ),
         "support": plot_support_metrics(
             metrics,
             target_model_density=context["target_model_density"],
             sae_width=context["sae_width"],
-            output_path=destination("support_metrics.png")
+            output_path=destination("support_metrics.png"),
+            density_mode=density_mode,
         ),
         "sparsity": plot_sparsity_diagnostics(
             metrics,
             target_model_density=context["target_model_density"],
             sae_width=context["sae_width"],
-            output_path=destination("sparsity_diagnostics.png")
+            output_path=destination("sparsity_diagnostics.png"),
+            density_mode=density_mode,
         ),
         "training": plot_training_curves(history, destination("training_curves.png")),
     }
@@ -786,6 +904,8 @@ def plot_all(
         checkpoint_kind=checkpoint_kind,
         output_path=destination("mask_heatmaps.png"),
         run_roots=run_roots,
+        sae_width=int(context["sae_width"]),
+        density_mode=density_mode,
     )
     figures["masks"] = heatmap
     if "vg_expected_l0" in metrics.columns and (metrics["method"] == "vgsae").any():
@@ -794,5 +914,6 @@ def plot_all(
             target_model_density=float(context["target_model_density"]),
             sae_width=int(context["sae_width"]),
             output_path=destination("vg_posterior_diagnostics.png"),
+            density_mode=density_mode,
         )
     return figures, representatives

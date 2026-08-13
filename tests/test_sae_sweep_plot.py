@@ -13,8 +13,10 @@ from src.sae_sweep import METHOD_LABELS, METHOD_ORDER
 from src.sae_sweep_plot import (
     _mask_representatives,
     aggregate_seed_metrics,
+    apply_density_axis,
     load_sweep_plot_context,
     load_comparison_results,
+    plot_all,
     plot_data_overview,
     plot_reconstruction_metrics,
     plot_recovery_metrics,
@@ -24,6 +26,80 @@ from src.sae_sweep_plot import (
     plot_vg_posterior_diagnostics,
     plot_mask_heatmaps,
 )
+
+
+def test_apply_density_axis_uses_hard_l0_and_preserves_reported_rho() -> None:
+    metrics = pd.DataFrame(
+        {
+            "rho_model": [0.04, 0.08],
+            "average_l0": [2.0, 6.0],
+            # average_l0 is the canonical cross-method hard inference count.
+            "sae_l0": [1.0, 1.0],
+        }
+    )
+
+    transformed = apply_density_axis(
+        metrics, sae_width=8, density_mode="hard"
+    )
+
+    assert transformed is not metrics
+    assert transformed["rho_model_reported"].tolist() == [0.04, 0.08]
+    assert transformed["rho_model"].tolist() == pytest.approx([0.25, 0.75])
+    assert set(transformed["density_axis"]) == {"hard"}
+    assert metrics["rho_model"].tolist() == [0.04, 0.08]
+    assert "rho_model_reported" not in metrics
+
+
+def test_apply_density_axis_falls_back_to_sae_l0() -> None:
+    metrics = pd.DataFrame(
+        {
+            "rho_model": [0.9, 0.8],
+            "sae_l0": [1.0, 4.0],
+        }
+    )
+
+    transformed = apply_density_axis(
+        metrics, sae_width=8, density_mode="hard"
+    )
+
+    assert transformed["rho_model"].tolist() == pytest.approx([0.125, 0.5])
+    assert transformed["rho_model_reported"].tolist() == [0.9, 0.8]
+
+
+def test_apply_density_axis_reported_mode_preserves_existing_axis() -> None:
+    metrics = pd.DataFrame({"rho_model": [0.04, 0.08]})
+
+    transformed = apply_density_axis(
+        metrics, sae_width=8, density_mode="reported"
+    )
+
+    assert transformed["rho_model"].tolist() == [0.04, 0.08]
+    assert transformed["rho_model_reported"].tolist() == [0.04, 0.08]
+    assert set(transformed["density_axis"]) == {"reported"}
+
+
+@pytest.mark.parametrize(
+    "metrics",
+    [
+        pd.DataFrame({"rho_model": [0.1]}),
+        pd.DataFrame({"rho_model": [0.1], "average_l0": [np.nan]}),
+        pd.DataFrame({"rho_model": [0.1], "average_l0": [np.inf]}),
+        pd.DataFrame({"rho_model": [0.1], "average_l0": [-1.0]}),
+        pd.DataFrame({"rho_model": [0.1], "average_l0": [9.0]}),
+        # Do not silently replace an invalid canonical column with sae_l0.
+        pd.DataFrame(
+            {
+                "rho_model": [0.1],
+                "average_l0": [np.nan],
+                "sae_l0": [1.0],
+            }
+        ),
+    ],
+    ids=["missing", "nan", "infinite", "negative", "above-width", "no-row-fallback"],
+)
+def test_apply_density_axis_rejects_invalid_hard_l0(metrics) -> None:
+    with pytest.raises(ValueError, match="hard|L0|average_l0|sae_l0"):
+        apply_density_axis(metrics, sae_width=8, density_mode="hard")
 
 
 def test_comparison_loader_fills_only_absent_methods_from_baseline_root(
@@ -488,6 +564,41 @@ def test_l0_diagnostics_are_normalized_by_sae_width() -> None:
     plt.close(figure)
 
 
+def test_recovery_plot_hard_density_uses_hard_x_and_explicit_label() -> None:
+    metrics = pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "method_label": "VG-SAE",
+                "control_name": "gamma",
+                "control_value": control,
+                "seed": 0,
+                "rho_model": reported_rho,
+                "average_l0": hard_l0,
+                "generalization_error": error,
+                "decoder_recovery_cosine": cosine,
+            }
+            for control, reported_rho, hard_l0, error, cosine in (
+                (1.0, 0.05, 1.0, 0.4, 0.6),
+                (2.0, 0.10, 3.0, 0.2, 0.8),
+            )
+        ]
+    )
+
+    figure = plot_recovery_metrics(
+        metrics,
+        target_model_density=0.25,
+        sae_width=4,
+        density_mode="hard",
+    )
+
+    for axis in figure.axes:
+        assert "Hard activation density" in axis.get_xlabel()
+        assert "L0" in axis.get_xlabel()
+        assert axis.lines[0].get_xdata().tolist() == pytest.approx([0.25, 0.75])
+    plt.close(figure)
+
+
 @pytest.mark.parametrize(
     "plotter",
     [
@@ -633,6 +744,36 @@ def test_mask_representatives_use_one_common_seed() -> None:
     assert representatives["seed"].tolist() == [0, 0]
 
 
+def test_mask_representatives_select_by_transformed_hard_density() -> None:
+    metrics = pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "run_id": "reported-near",
+                "seed": 0,
+                "rho_model": 0.25,
+                "average_l0": 3.0,
+            },
+            {
+                "method": "vgsae",
+                "run_id": "hard-near",
+                "seed": 0,
+                "rho_model": 0.90,
+                "average_l0": 1.0,
+            },
+        ]
+    )
+    hard_metrics = apply_density_axis(
+        metrics, sae_width=4, density_mode="hard"
+    )
+
+    representatives = _mask_representatives(hard_metrics, 0.25, None)
+
+    assert representatives["run_id"].tolist() == ["hard-near"]
+    assert representatives["rho_model"].item() == pytest.approx(0.25)
+    assert representatives["rho_model_reported"].item() == pytest.approx(0.90)
+
+
 def test_mask_heatmaps_can_resolve_rows_from_multiple_sweep_roots(tmp_path) -> None:
     primary = tmp_path / "primary"
     corrective = tmp_path / "corrective"
@@ -681,3 +822,97 @@ def test_mask_heatmaps_can_resolve_rows_from_multiple_sweep_roots(tmp_path) -> N
 
     assert representatives["run_id"].tolist() == ["vg-primary", "l1-corrective"]
     plt.close(figure)
+
+
+def test_plot_all_hard_density_selects_hard_nearest_mask_and_labels_axes(
+    tmp_path,
+) -> None:
+    summary = tmp_path / "summary"
+    (summary / "last").mkdir(parents=True)
+    (tmp_path / "sweep_config.json").write_text(
+        json.dumps(
+            {
+                "data": {
+                    "input_dim": 2,
+                    "ground_truth_num_features": 4,
+                    "sae_width": 4,
+                    "support_density": 0.25,
+                },
+                "training": {"beta_mode": "learned"},
+            }
+        )
+    )
+    np.savez_compressed(
+        summary / "data_preview.npz",
+        feature_probabilities=np.full(4, 0.25),
+        dictionary=np.eye(2, 4),
+        z0=np.asarray([1.0, 0.0, 0.0, 0.0]),
+    )
+    metrics = pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "method_label": "VG-SAE",
+                "run_id": run_id,
+                "control_name": "gamma",
+                "control_value": control,
+                "seed": 0,
+                "rho_model": reported_rho,
+                "average_l0": hard_l0,
+                "expected_l0": hard_l0 + 0.5,
+                "explained_variance": 0.7,
+                "reconstruction_error": 0.3,
+                "generalization_error": 0.4,
+                "decoder_recovery_cosine": 0.6,
+                "support_f1": 0.5,
+                "support_average_precision": 0.5,
+                "support_precision": 0.5,
+                "support_recall": 0.5,
+                "selection_error": 0.2,
+                "dead_fraction": 0.1,
+            }
+            for run_id, control, reported_rho, hard_l0 in (
+                ("reported-near", 1.0, 0.25, 3.0),
+                ("hard-near", 2.0, 0.90, 1.0),
+            )
+        ]
+    )
+    metrics.to_csv(summary / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "method": "vgsae",
+                "run_id": run_id,
+                "step": 0,
+                "loss": 1.0,
+                "reconstruction_mse": 0.5,
+                "rho": reported_rho,
+            }
+            for run_id, reported_rho in (
+                ("reported-near", 0.25),
+                ("hard-near", 0.90),
+            )
+        ]
+    ).to_csv(summary / "training_curves.csv", index=False)
+    for run_id in ("reported-near", "hard-near"):
+        cache_dir = tmp_path / "runs" / "vgsae" / run_id / "eval" / "last"
+        cache_dir.mkdir(parents=True)
+        np.savez_compressed(
+            cache_dir / "cache.npz",
+            true_support=np.zeros((2, 4)),
+            mask=np.zeros((2, 4)),
+        )
+
+    figures, representatives = plot_all(tmp_path, density_mode="hard")
+
+    try:
+        assert "Hard activation density" in figures["recovery"].axes[0].get_xlabel()
+        assert figures["recovery"].axes[0].lines[0].get_xdata().tolist() == pytest.approx(
+            [0.25, 0.75]
+        )
+        assert representatives["run_id"].tolist() == ["hard-near"]
+        assert representatives["rho_model"].item() == pytest.approx(0.25)
+        assert representatives["rho_model_reported"].item() == pytest.approx(0.90)
+    finally:
+        for figure in figures.values():
+            plt.close(figure)
