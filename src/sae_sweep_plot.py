@@ -31,6 +31,17 @@ GROUP_COLUMNS = [
 ]
 VALID_BETA_MODES = frozenset({"profiled", "learned"})
 VALID_DENSITY_MODES = frozenset({"reported", "hard"})
+CUSTOM_HARD_METRIC_MAP = {
+    "explained_variance": "hard_explained_variance",
+    "reconstruction_error": "hard_reconstruction_error",
+    "generalization_error": "hard_generalization_error",
+    "selection_error": "hard_selection_error",
+    "support_f1": "hard_support_f1",
+    "support_average_precision": "hard_support_average_precision",
+    "support_precision": "hard_support_precision",
+    "support_recall": "hard_support_recall",
+    "support_roc_auc": "hard_support_roc_auc",
+}
 
 
 def apply_density_axis(
@@ -251,17 +262,41 @@ def load_sweep_plot_context(
 
     root = Path(sweep_dir)
     data = json.loads((root / "sweep_config.json").read_text())["data"]
+    data_kind = str(data.get("kind", "synthetic_sparse_coding"))
     with np.load(root / "summary" / "data_preview.npz") as preview:
         probabilities = preview["feature_probabilities"]
-        expected_true_l0 = float(
+        probability_expected_l0 = float(probabilities.sum())
+        empirical_true_l0 = float(
             preview["empirical_true_l0"]
             if "empirical_true_l0" in preview
-            else probabilities.sum()
+            else probability_expected_l0
         )
-        target_model_density = float(
+        width = int(data.get("sae_width", len(probabilities)))
+        legacy_target = float(
             preview["target_model_density"]
             if "target_model_density" in preview
-            else expected_true_l0 / int(data.get("sae_width", len(probabilities)))
+            else probability_expected_l0 / width
+        )
+        target_model_density_expected = float(
+            preview["target_model_density_expected"]
+            if "target_model_density_expected" in preview
+            else legacy_target
+        )
+        target_model_density_empirical = float(
+            preview["target_model_density_empirical"]
+            if "target_model_density_empirical" in preview
+            else (
+                empirical_true_l0 / width
+                if "empirical_true_l0" in preview
+                else target_model_density_expected
+            )
+        )
+        # SynthSAEBench's official finite evaluation stream defines its target
+        # empirically; retain the legacy context value for existing consumers.
+        expected_true_l0 = (
+            empirical_true_l0
+            if data_kind == "synthsaebench_pretrained"
+            else probability_expected_l0
         )
     legacy_width = data.get("n_features", len(probabilities))
     ground_truth_num_features = int(
@@ -275,8 +310,11 @@ def load_sweep_plot_context(
             data.get("support_density", expected_true_l0 / ground_truth_num_features)
         ),
         "expected_true_l0": expected_true_l0,
-        "target_model_density": target_model_density,
-        "data_kind": str(data.get("kind", "synthetic_sparse_coding")),
+        "empirical_true_l0": empirical_true_l0,
+        "target_model_density": target_model_density_expected,
+        "target_model_density_expected": target_model_density_expected,
+        "target_model_density_empirical": target_model_density_empirical,
+        "data_kind": data_kind,
     }
 
 
@@ -349,6 +387,26 @@ def _metric_line(ax, table: pd.DataFrame, method: str, metric: str, sae_width: i
         color=METHOD_COLORS[method],
         label=label,
     )
+
+
+def _metric_for_density(
+    metrics: pd.DataFrame,
+    metric: str,
+    *,
+    density_mode: str,
+    is_synthsaebench: bool,
+) -> str:
+    """Resolve plot y-values without mixing a hard x-axis with native codes."""
+
+    if density_mode != "hard" or is_synthsaebench:
+        return metric
+    resolved = CUSTOM_HARD_METRIC_MAP.get(metric, metric)
+    if resolved != metric and resolved not in metrics.columns:
+        raise ValueError(
+            f"Hard-density plot requires {resolved!r}; rerun Stage-1 evaluation "
+            "with the current metric schema."
+        )
+    return resolved
 
 
 def _finish_metric_axis(
@@ -480,8 +538,30 @@ def plot_reconstruction_metrics(
     panels = (
         [("explained_variance", r"$R^2$"), ("shrinkage", "Shrinkage")]
         if is_synthsaebench
-        else [("explained_variance", r"$R^2$"), ("reconstruction_error", "Recon. error")]
+        else [
+            ("explained_variance", r"$R^2$"),
+            ("reconstruction_error", "Recon. error"),
+        ]
     )
+    panels = [
+        (
+            _metric_for_density(
+                metrics,
+                metric,
+                density_mode=density_mode,
+                is_synthsaebench=is_synthsaebench,
+            ),
+            (
+                {
+                    "explained_variance": r"Hard-code $R^2$",
+                    "reconstruction_error": "Hard-code recon. error",
+                }[metric]
+                if density_mode == "hard" and not is_synthsaebench
+                else label
+            ),
+        )
+        for metric, label in panels
+    ]
     fig, axes = plt.subplots(1, 2, figsize=(5.5, 2), sharex=False)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
@@ -523,6 +603,24 @@ def plot_recovery_metrics(
             ("decoder_recovery_cosine", "Dict. Cos sim."),
         ]
     )
+    panels = [
+        (
+            _metric_for_density(
+                metrics,
+                metric,
+                density_mode=density_mode,
+                is_synthsaebench=is_synthsaebench,
+            ),
+            (
+                "Hard latent-code rel. error"
+                if density_mode == "hard"
+                and not is_synthsaebench
+                and metric == "generalization_error"
+                else label
+            ),
+        )
+        for metric, label in panels
+    ]
     fig, axes = plt.subplots(1, 2, figsize=(5.5, 2), sharex=False)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
@@ -572,6 +670,18 @@ def plot_support_metrics(
             ("support_recall", "Recall"),
         ]
     )
+    panels = [
+        (
+            _metric_for_density(
+                metrics,
+                metric,
+                density_mode=density_mode,
+                is_synthsaebench=is_synthsaebench,
+            ),
+            label,
+        )
+        for metric, label in panels
+    ]
     fig, axes = plt.subplots(2, 2, figsize=(5.5, 4.5), sharex=True)
     for ax, (metric, label) in zip(axes.ravel(), panels, strict=True):
         for method in METHOD_ORDER:
@@ -622,6 +732,22 @@ def plot_sparsity_diagnostics(
             ("expected_l0", r"Exp. L0 / $d_\mathrm{sae}$"),
         ]
     )
+    panels = [
+        (
+            _metric_for_density(
+                metrics,
+                metric,
+                density_mode=density_mode,
+                is_synthsaebench=is_synthsaebench,
+            ),
+            "Hard selection error"
+            if density_mode == "hard"
+            and not is_synthsaebench
+            and metric == "selection_error"
+            else label,
+        )
+        for metric, label in panels
+    ]
     fig, axes = plt.subplots(1, 4, figsize=(8.4, 2.4), sharex=True)
     for ax, (metric, label) in zip(axes, panels, strict=True):
         for method in METHOD_ORDER:
@@ -818,14 +944,31 @@ def plot_mask_heatmaps(
                 cache_root = Path(run_roots[legacy_key])
         cache_path = cache_root / "runs" / row["method"] / row["run_id"] / "eval" / checkpoint_kind / "cache.npz"
         with np.load(cache_path) as cache:
-            support, mask = cache["true_support"][:n_show], cache["mask"][:n_show]
+            support = cache["true_support"][:n_show]
+            if density_mode == "hard":
+                if "hard_mask" not in cache:
+                    raise ValueError(
+                        f"Hard-density heatmap requires hard_mask in {cache_path}; "
+                        "rerun Stage-1 evaluation with the current metric schema."
+                    )
+                mask = cache["hard_mask"][:n_show]
+            else:
+                mask = cache["mask"][:n_show]
         axes[row_index, 0].imshow(support, aspect="auto", interpolation="nearest", vmin=0, vmax=1)
         axes[row_index, 0].set(ylabel=row["method_label"], title="true support")
         axes[row_index, 1].imshow(mask, aspect="auto", interpolation="nearest", vmin=0, vmax=1)
         density_name = "hard rho" if density_mode == "hard" else "rho"
+        selection_metric = (
+            "hard_selection_error" if density_mode == "hard" else "selection_error"
+        )
+        if selection_metric not in row:
+            raise ValueError(
+                f"Hard-density heatmap requires {selection_metric!r}; rerun evaluation."
+            )
+        selection_name = "hard sel err" if density_mode == "hard" else "sel err"
         axes[row_index, 1].set_title(
             f"mask, {density_name}={row['rho_model']:.3f}, "
-            f"reported sel err={row['selection_error']:.3f}"
+            f"{selection_name}={row[selection_metric]:.3f}"
         )
         matching_policy = str(row.get("matching_policy", ""))
         ground_truth_width = int(row.get("ground_truth_num_features", support.shape[1]))
@@ -863,34 +1006,41 @@ def plot_all(
         root, checkpoint_kind, baseline_sweep_dir
     )
     context = load_sweep_plot_context(root)
+    target_density = float(
+        context[
+            "target_model_density_empirical"
+            if density_mode == "hard"
+            else "target_model_density_expected"
+        ]
+    )
     outputs = Path(output_dir) if output_dir is not None else None
     destination = lambda name: outputs / name if outputs is not None else None
     figures = {
         "data_overview": plot_data_overview(root, destination("data_overview.png")),
         "reconstruction": plot_reconstruction_metrics(
             metrics,
-            target_model_density=context["target_model_density"],
+            target_model_density=target_density,
             sae_width=context["sae_width"],
             output_path=destination("reconstruction_metrics.png"),
             density_mode=density_mode,
         ),
         "recovery": plot_recovery_metrics(
             metrics,
-            target_model_density=context["target_model_density"],
+            target_model_density=target_density,
             sae_width=context["sae_width"],
             output_path=destination("recovery_metrics.png"),
             density_mode=density_mode,
         ),
         "support": plot_support_metrics(
             metrics,
-            target_model_density=context["target_model_density"],
+            target_model_density=target_density,
             sae_width=context["sae_width"],
             output_path=destination("support_metrics.png"),
             density_mode=density_mode,
         ),
         "sparsity": plot_sparsity_diagnostics(
             metrics,
-            target_model_density=context["target_model_density"],
+            target_model_density=target_density,
             sae_width=context["sae_width"],
             output_path=destination("sparsity_diagnostics.png"),
             density_mode=density_mode,
@@ -900,7 +1050,7 @@ def plot_all(
     heatmap, representatives = plot_mask_heatmaps(
         root,
         metrics,
-        target_model_density=context["target_model_density"],
+        target_model_density=target_density,
         checkpoint_kind=checkpoint_kind,
         output_path=destination("mask_heatmaps.png"),
         run_roots=run_roots,
@@ -911,7 +1061,7 @@ def plot_all(
     if "vg_expected_l0" in metrics.columns and (metrics["method"] == "vgsae").any():
         figures["vg_posterior"] = plot_vg_posterior_diagnostics(
             metrics,
-            target_model_density=float(context["target_model_density"]),
+            target_model_density=target_density,
             sae_width=int(context["sae_width"]),
             output_path=destination("vg_posterior_diagnostics.png"),
             density_mode=density_mode,

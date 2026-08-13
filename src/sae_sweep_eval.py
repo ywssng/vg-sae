@@ -138,6 +138,41 @@ def _reconstruct(model: torch.nn.Module, x: torch.Tensor) -> torch.Tensor:
     return model(x)["x_hat"]
 
 
+@torch.no_grad()
+def _hard_latents(
+    model: torch.nn.Module,
+    x: torch.Tensor,
+    native_h: torch.Tensor,
+    mask_values: torch.Tensor,
+    threshold: float,
+) -> torch.Tensor:
+    """Return the operational hard code paired with thresholded mask density.
+
+    VG's native code is the posterior mean ``m * a``.  Its hard inference code
+    must instead be ``1[m >= threshold] * a``.  The L1 baseline's mask is the
+    train-fitted GMM decision, so multiplying by that mask removes sub-threshold
+    ReLU activations.  Other SAELens baselines already return zero outside their
+    native hard support; the multiplication is therefore an explicit no-op.
+    """
+
+    hard_mask = (mask_values >= threshold).to(native_h)
+    if isinstance(model, VariationalGarroteSAE):
+        _, amplitudes, _ = model.encode(x)
+        return hard_mask * amplitudes
+    return hard_mask * native_h
+
+
+@torch.no_grad()
+def _decode_latents(model: torch.nn.Module, h: torch.Tensor) -> torch.Tensor:
+    """Decode externally supplied latents with the evaluation-time decoder."""
+
+    if isinstance(model, TrainingSAE):
+        return _inference_model(model, h).decode(h)
+    if isinstance(model, VariationalGarroteSAE):
+        return model.decode(h)
+    raise TypeError(f"Unsupported model type: {type(model).__name__}")
+
+
 def _support_metrics(mask: np.ndarray, target: np.ndarray, threshold: float):
     from sklearn.metrics import average_precision_score, roc_auc_score
 
@@ -172,12 +207,23 @@ def evaluate_model(
     test_h, test_mask, test_info = _latents_and_masks(
         model, test_data.x, l1_threshold=train_info.get("l1_gmm_threshold")
     )
+    hard_test_h = _hard_latents(
+        model,
+        test_data.x,
+        test_h,
+        test_mask,
+        threshold,
+    )
     reconstruction = _reconstruct(model, test_data.x)
+    hard_reconstruction = _decode_latents(model, hard_test_h)
     learned_idx, true_idx, signs, recovery = _decoder_matching(model, test_data.dictionary)
     mask, support, union_learned_idx, union_true_idx = _rectangular_union(
         test_mask, test_data.support, learned_idx, true_idx
     )
     h, z, _, _ = _rectangular_union(test_h, test_data.z, learned_idx, true_idx, signs)
+    hard_h, _, _, _ = _rectangular_union(
+        hard_test_h, test_data.z, learned_idx, true_idx, signs
+    )
     raw_mask = test_mask.detach().cpu().numpy()
     raw_h = test_h.detach().cpu().numpy()
     ground_truth_support = test_data.support.detach().cpu().numpy()
@@ -193,9 +239,30 @@ def evaluate_model(
         if probabilities is not None
         else float(ground_truth_support.sum(1).mean())
     )
+    empirical_true_l0 = float(ground_truth_support.sum(1).mean())
     precision, recall, f1, average_precision, roc_auc = _support_metrics(mask, support, threshold)
     active = z > 1e-8
     amplitude_ratio = h[active] / np.maximum(z[active], 1e-8) if active.any() else np.array([])
+    hard_amplitude_ratio = (
+        hard_h[active] / np.maximum(z[active], 1e-8)
+        if active.any()
+        else np.array([])
+    )
+    hard_mask = (mask >= threshold).astype(np.float64)
+    (
+        hard_precision,
+        hard_recall,
+        hard_f1,
+        hard_average_precision,
+        hard_roc_auc,
+    ) = _support_metrics(hard_mask, support, 0.5)
+    hard_generalization_error = float(
+        np.sqrt(np.sum((hard_h - z) ** 2) / max(np.sum(z**2), 1e-12))
+    )
+    hard_code_kind = {
+        "vgsae": "posterior_thresholded_amplitude",
+        "l1": "gmm_thresholded_relu",
+    }.get(spec.method, "native_nonzero_activation")
 
     row: dict[str, Any] = {
         "run_id": run_id or spec.run_id,
@@ -217,7 +284,10 @@ def evaluate_model(
         "sae_width": sae_width,
         "ground_truth_num_features": ground_truth_num_features,
         "ground_truth_expected_l0": expected_true_l0,
+        "ground_truth_empirical_l0": empirical_true_l0,
         "target_model_density": expected_true_l0 / sae_width,
+        "target_model_density_expected": expected_true_l0 / sae_width,
+        "target_model_density_empirical": empirical_true_l0 / sae_width,
         "matched_latent_count": matched_latent_count,
         "union_width": union_width,
         "unmatched_ground_truth_features": ground_truth_num_features - matched_latent_count,
@@ -226,11 +296,32 @@ def evaluate_model(
         "sae_latent_match_coverage": matched_latent_count / sae_width,
         "matching_policy": "rectangular_hungarian_union",
         "generalization_error": float(np.sqrt(np.sum((h - z) ** 2) / max(np.sum(z**2), 1e-12))),
+        "hard_generalization_error": hard_generalization_error,
         "reconstruction_error": _relative_error(reconstruction, test_data.x),
         "clean_reconstruction_error": _relative_error(reconstruction, test_data.clean_x),
         "explained_variance": _explained_variance(reconstruction, test_data.x),
         "reconstruction_mse": float((reconstruction - test_data.x).pow(2).mean()),
         "selection_error": selection_error(mask, support),
+        "hard_reconstruction_error": _relative_error(hard_reconstruction, test_data.x),
+        "hard_clean_reconstruction_error": _relative_error(
+            hard_reconstruction, test_data.clean_x
+        ),
+        "hard_explained_variance": _explained_variance(
+            hard_reconstruction, test_data.x
+        ),
+        "hard_reconstruction_mse": float(
+            (hard_reconstruction - test_data.x).pow(2).mean()
+        ),
+        "hard_selection_error": selection_error(hard_mask, support),
+        "hard_support_precision": hard_precision,
+        "hard_support_recall": hard_recall,
+        "hard_support_f1": hard_f1,
+        "hard_support_average_precision": hard_average_precision,
+        "hard_support_roc_auc": hard_roc_auc,
+        "hard_paper_style_sigma_sel": selection_uncertainty(hard_mask),
+        "hard_metric_schema_version": 1,
+        "hard_code_threshold": float(threshold),
+        "hard_code_kind": hard_code_kind,
         "mask_uncertainty": float(np.mean(mask * (1 - mask))),
         "paper_style_sigma_sel": selection_uncertainty(mask),
         "support_precision": precision,
@@ -246,8 +337,13 @@ def evaluate_model(
         "decoder_recovery_sae": recovery * matched_latent_count / sae_width,
         "dead_fraction": float((train_h.mean(0) <= config.training.dead_threshold).float().mean()),
         "amplitude_shrinkage": float(amplitude_ratio.mean()) if amplitude_ratio.size else np.nan,
+        "hard_amplitude_shrinkage": (
+            float(hard_amplitude_ratio.mean()) if hard_amplitude_ratio.size else np.nan
+        ),
         "mean_activation": float(test_h.mean()),
+        "hard_mean_activation": float(hard_test_h.mean()),
         "average_l0": float((raw_mask >= threshold).sum(1).mean()),
+        "rho_model_hard": float((raw_mask >= threshold).mean()),
         "expected_l0": float(raw_mask.sum(1).mean()),
     }
     row.update({key: value for key, value in train_info.items() if not isinstance(value, str)})
@@ -272,6 +368,7 @@ def evaluate_model(
         "mask": mask,
         "true_support": support,
         "h": h,
+        "hard_mask": hard_mask.astype(np.uint8),
         "true_latents": z,
         "raw_mask": raw_mask,
         "raw_h": raw_h,

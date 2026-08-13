@@ -1191,7 +1191,7 @@ def parallel_sweep_results_notebook() -> dict:
                 """
                 # Experiment 10: Reproduce Experiment 07 from Saved Sweep Artifacts
 
-                This notebook does no training or evaluation. It loads per-run results produced by `runs/run_CustomData_sweep.py` plus `runs/run_CustomData_sweep_eval.py`, or by their `run_SynthSAEBench_*` counterparts, then recreates the corresponding comparison figures. The default is the `last` checkpoint because notebook 07 evaluated the final training step; set `VGSAE_CHECKPOINT_KIND=best` only for CustomData best-training-loss analysis.
+                This notebook does no training or evaluation. It loads per-run results produced by `runs/run_CustomData_sweep.py` plus `runs/run_CustomData_sweep_eval.py`, or by their `run_SynthSAEBench_*` counterparts, then recreates the corresponding comparison figures. The default is the `last` checkpoint because notebook 07 evaluated the final training step; set `VGSAE_CHECKPOINT_KIND=best` only for CustomData best-training-loss analysis. Set `VGSAE_DENSITY_MODE=hard` to use thresholded codes consistently for the density axis, reconstruction/recovery/support metrics, masks, and the empirical finite-test-set reference line.
                 """
             ),
             code(
@@ -1239,10 +1239,25 @@ def parallel_sweep_results_notebook() -> dict:
                     Path(BASELINE_SWEEP_DIR_RAW) if BASELINE_SWEEP_DIR_RAW else None
                 )
                 CHECKPOINT_KIND = os.environ.get("VGSAE_CHECKPOINT_KIND", "last")
-                FIGURE_DIR = SWEEP_DIR / "figures" / CHECKPOINT_KIND
+                DENSITY_MODE = os.environ.get(
+                    "VGSAE_DENSITY_MODE", "reported"
+                ).lower()
+                if DENSITY_MODE not in {"reported", "hard"}:
+                    raise ValueError(
+                        "VGSAE_DENSITY_MODE must be 'reported' or 'hard'."
+                    )
+                FIGURE_DIR = SWEEP_DIR / "figures"
+                if DENSITY_MODE == "hard":
+                    FIGURE_DIR = FIGURE_DIR / "hard_density"
+                FIGURE_DIR = FIGURE_DIR / CHECKPOINT_KIND
                 FIGURE_DIR.mkdir(parents=True, exist_ok=True)
 
                 plot_context = load_sweep_plot_context(SWEEP_DIR)
+                TARGET_MODEL_DENSITY = plot_context[
+                    "target_model_density_empirical"
+                    if DENSITY_MODE == "hard"
+                    else "target_model_density_expected"
+                ]
                 final_df, history_df, RUN_ROOTS = load_comparison_results(
                     SWEEP_DIR, CHECKPOINT_KIND, BASELINE_SWEEP_DIR
                 )
@@ -1263,15 +1278,17 @@ def parallel_sweep_results_notebook() -> dict:
                 """
                 plot_reconstruction_metrics(
                     final_df,
-                    target_model_density=plot_context["target_model_density"],
+                    target_model_density=TARGET_MODEL_DENSITY,
                     sae_width=plot_context["sae_width"],
                     output_path=FIGURE_DIR / "reconstruction_metrics.png",
+                    density_mode=DENSITY_MODE,
                 )
                 plot_recovery_metrics(
                     final_df,
-                    target_model_density=plot_context["target_model_density"],
+                    target_model_density=TARGET_MODEL_DENSITY,
                     sae_width=plot_context["sae_width"],
                     output_path=FIGURE_DIR / "recovery_metrics.png",
+                    density_mode=DENSITY_MODE,
                 )
                 plt.show()
                 """
@@ -1281,15 +1298,17 @@ def parallel_sweep_results_notebook() -> dict:
                 """
                 plot_support_metrics(
                     final_df,
-                    target_model_density=plot_context["target_model_density"],
+                    target_model_density=TARGET_MODEL_DENSITY,
                     sae_width=plot_context["sae_width"],
                     output_path=FIGURE_DIR / "support_metrics.png",
+                    density_mode=DENSITY_MODE,
                 )
                 plot_sparsity_diagnostics(
                     final_df,
-                    target_model_density=plot_context["target_model_density"],
+                    target_model_density=TARGET_MODEL_DENSITY,
                     sae_width=plot_context["sae_width"],
                     output_path=FIGURE_DIR / "sparsity_diagnostics.png",
+                    density_mode=DENSITY_MODE,
                 )
                 plt.show()
                 """
@@ -1313,9 +1332,10 @@ def parallel_sweep_results_notebook() -> dict:
                 ):
                     plot_vg_posterior_diagnostics(
                         final_df,
-                        target_model_density=plot_context["target_model_density"],
+                        target_model_density=TARGET_MODEL_DENSITY,
                         sae_width=plot_context["sae_width"],
                         output_path=FIGURE_DIR / "vg_posterior_diagnostics.png",
+                        density_mode=DENSITY_MODE,
                     )
                     plt.show()
                 else:
@@ -1334,18 +1354,25 @@ def parallel_sweep_results_notebook() -> dict:
                 _, representatives = plot_mask_heatmaps(
                     SWEEP_DIR,
                     final_df,
-                    target_model_density=plot_context["target_model_density"],
+                    target_model_density=TARGET_MODEL_DENSITY,
                     checkpoint_kind=CHECKPOINT_KIND,
                     output_path=FIGURE_DIR / "mask_heatmaps.png",
                     run_roots=RUN_ROOTS,
+                    sae_width=plot_context["sae_width"],
+                    density_mode=DENSITY_MODE,
                 )
                 plt.show()
+                selection_metric = (
+                    "hard_selection_error"
+                    if DENSITY_MODE == "hard"
+                    else "selection_error"
+                )
                 representatives[[
                     "method_label",
                     "control_name",
                     "control_value",
                     "rho_model",
-                    "selection_error",
+                    selection_metric,
                 ]]
                 """
             ),
@@ -1404,14 +1431,15 @@ def write_notebooks() -> None:
             07 from saved parallel train/eval artifacts under `outputs/runs/`. It
             defaults to `last` checkpoints for fidelity and writes collision-free
             figure names; set `VGSAE_SWEEP_DIR`, optional
-            `VGSAE_BASELINE_SWEEP_DIR`, or `VGSAE_CHECKPOINT_KIND` to select a
-            different sweep, fill absent methods from a preserved baseline root, or
-            use the separately tracked `best` results. It reads artifacts
+            `VGSAE_BASELINE_SWEEP_DIR`, `VGSAE_CHECKPOINT_KIND`, or
+            `VGSAE_DENSITY_MODE=hard` to select a different sweep, fill absent
+            methods from a preserved baseline root, use the separately tracked
+            `best` results, or compare consistently thresholded codes. It reads artifacts
             from `runs/run_CustomData_sweep.py`, `runs/run_CustomData_sweep_eval.py`,
             or the corresponding SynthSAEBench runners, keeps
-            ground-truth feature count separate from SAE width, and uses expected true
-            L0 for CustomData or streamed empirical true L0 for SynthSAEBench as the
-            model-density reference. SynthSAEBench additionally writes an eighth
+            ground-truth feature count separate from SAE width. Reported mode uses
+            expected true L0 for CustomData, while hard mode uses finite-test-set
+            empirical true L0 as the model-density reference. SynthSAEBench additionally writes an eighth
             `vg_posterior_diagnostics.png` panel comparing hard inference with the VG
             posterior expectation; CustomData skips that unavailable panel.
 

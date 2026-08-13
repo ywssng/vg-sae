@@ -60,6 +60,14 @@ the paper leaves details open.
   it explicitly. Old local-L1 checkpoints and the old
   `config`/`encoder`/`decoder`/dict-forward interface are not compatible with
   the official `cfg`/`W_enc`/`W_dec`/tensor-forward interface.
+- **Encoder/decoder initialization is not weight tying:** the swept SAELens
+  Standard, TopK, BatchTopK, JumpReLU, and Gated models initialize `W_enc` from
+  a detached clone of `W_dec.T`, then optimize two distinct parameters. The
+  local VG model likewise copies the initial decoder transpose into its
+  amplitude encoder when `tie_encoder_init=True`, but its amplitude encoder,
+  gate encoder, and decoder remain independent parameters. The upstream
+  MatchingPursuit SAE is explicitly tied, but it is not one of the swept
+  baselines.
 - **SAELens VG architecture:** `src.saelens_vg` follows the upstream custom-SAE
   registry/config/trainer/save boundaries. Public `encode` and dead-feature
   statistics use hard posterior support; `training_forward_pass.sae_out` and the
@@ -173,9 +181,16 @@ the paper leaves details open.
   `average_l0 / sae_width` is the corresponding hard-density diagnostic.
   Plot-only comparisons can set `density_mode="hard"`; this preserves the
   reported value as `rho_model_reported` and uses thresholded average L0 divided
-  by SAE width as the x-coordinate for every method. Stored evaluation metrics
-  are unchanged, so Stage-1 VG `selection_error` remains its posterior-
-  probability metric even when displayed against the hard-density axis.
+  by SAE width as the x-coordinate for every method. Current Stage-1 evaluation
+  also stores a versioned hard-code metric family. VG uses
+  `1[m >= mask_threshold] * amplitude`, L1 uses its training-fitted GMM support
+  times the ReLU code, and the other SAELens baselines retain their native hard
+  codes. Hard-density plots use those codes for reconstruction, latent recovery,
+  support, selection, and heatmaps instead of pairing a hard x-coordinate with
+  posterior/native-soft y-values. Their reference line is the realized mean test
+  L0 divided by SAE width; reported-density plots retain the expected data L0
+  reference. Notebook 10 exposes this as `VGSAE_DENSITY_MODE=hard` and writes to
+  `figures/hard_density/<checkpoint>`.
 - **Rectangular recovery matching:** decoder atoms use rectangular Hungarian
   matching. Unmatched ground-truth features remain zero predictions (false
   negatives), while unmatched learned latents are appended against zero targets

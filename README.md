@@ -98,7 +98,10 @@ checkpoint-specific metrics and mask arrays. Sweep-level CSVs are written under
 `summary/`. Evaluation processes both checkpoints by default; pass
 `--checkpoint last` or `--checkpoint best` to select one. Open
 `notebooks/10_exp07_parallel_sweep_results.ipynb` after evaluation; it only
-loads artifacts and draws the notebook-07 figures. `best` means the lowest
+loads artifacts and draws the notebook-07 figures. Set
+`VGSAE_DENSITY_MODE=hard` for a fully hard-code comparison: the x-axis,
+reconstruction/recovery/support metrics, masks, and empirical test-set reference
+line then use the same thresholded inference codes. `best` means the lowest
 full-training objective observed at a history step and is intentionally not
 mixed into the default `last` reproduction.
 

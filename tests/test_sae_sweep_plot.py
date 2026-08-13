@@ -576,6 +576,7 @@ def test_recovery_plot_hard_density_uses_hard_x_and_explicit_label() -> None:
                 "rho_model": reported_rho,
                 "average_l0": hard_l0,
                 "generalization_error": error,
+                "hard_generalization_error": error + 0.5,
                 "decoder_recovery_cosine": cosine,
             }
             for control, reported_rho, hard_l0, error, cosine in (
@@ -596,7 +597,19 @@ def test_recovery_plot_hard_density_uses_hard_x_and_explicit_label() -> None:
         assert "Hard activation density" in axis.get_xlabel()
         assert "L0" in axis.get_xlabel()
         assert axis.lines[0].get_xdata().tolist() == pytest.approx([0.25, 0.75])
+    assert figure.axes[0].lines[0].get_ydata().tolist() == pytest.approx([0.9, 0.7])
+    assert figure.axes[0].get_ylabel() == "Hard latent-code rel. error"
     plt.close(figure)
+
+
+def test_hard_metric_plot_fails_closed_without_hard_eval_schema() -> None:
+    with pytest.raises(ValueError, match="hard_generalization_error.*rerun"):
+        plot_recovery_metrics(
+            _all_method_metrics(),
+            target_model_density=0.1,
+            sae_width=4,
+            density_mode="hard",
+        )
 
 
 @pytest.mark.parametrize(
@@ -847,6 +860,9 @@ def test_plot_all_hard_density_selects_hard_nearest_mask_and_labels_axes(
         feature_probabilities=np.full(4, 0.25),
         dictionary=np.eye(2, 4),
         z0=np.asarray([1.0, 0.0, 0.0, 0.0]),
+        empirical_true_l0=np.asarray(1.2),
+        target_model_density_expected=np.asarray(0.25),
+        target_model_density_empirical=np.asarray(0.3),
     )
     metrics = pd.DataFrame(
         [
@@ -861,14 +877,22 @@ def test_plot_all_hard_density_selects_hard_nearest_mask_and_labels_axes(
                 "average_l0": hard_l0,
                 "expected_l0": hard_l0 + 0.5,
                 "explained_variance": 0.7,
+                "hard_explained_variance": 0.6,
                 "reconstruction_error": 0.3,
+                "hard_reconstruction_error": 0.4,
                 "generalization_error": 0.4,
+                "hard_generalization_error": 0.8,
                 "decoder_recovery_cosine": 0.6,
                 "support_f1": 0.5,
+                "hard_support_f1": 0.45,
                 "support_average_precision": 0.5,
+                "hard_support_average_precision": 0.4,
                 "support_precision": 0.5,
+                "hard_support_precision": 0.35,
                 "support_recall": 0.5,
+                "hard_support_recall": 0.55,
                 "selection_error": 0.2,
+                "hard_selection_error": 0.1,
                 "dead_fraction": 0.1,
             }
             for run_id, control, reported_rho, hard_l0 in (
@@ -901,6 +925,7 @@ def test_plot_all_hard_density_selects_hard_nearest_mask_and_labels_axes(
             cache_dir / "cache.npz",
             true_support=np.zeros((2, 4)),
             mask=np.zeros((2, 4)),
+            hard_mask=np.ones((2, 4), dtype=np.uint8),
         )
 
     figures, representatives = plot_all(tmp_path, density_mode="hard")
@@ -913,6 +938,19 @@ def test_plot_all_hard_density_selects_hard_nearest_mask_and_labels_axes(
         assert representatives["run_id"].tolist() == ["hard-near"]
         assert representatives["rho_model"].item() == pytest.approx(0.25)
         assert representatives["rho_model_reported"].item() == pytest.approx(0.90)
+        assert figures["recovery"].axes[0].lines[0].get_ydata().tolist() == pytest.approx(
+            [0.8, 0.8]
+        )
+        reference_line = next(
+            line
+            for line in figures["recovery"].axes[0].lines
+            if line.get_linestyle() == "--"
+        )
+        assert list(reference_line.get_xdata()) == pytest.approx([0.3, 0.3])
+        np.testing.assert_array_equal(
+            figures["masks"].axes[1].images[0].get_array(),
+            np.ones((2, 4), dtype=np.uint8),
+        )
     finally:
         for figure in figures.values():
             plt.close(figure)

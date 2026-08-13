@@ -557,6 +557,9 @@ def test_notebook_10_is_plot_only_and_compiles(
     assert "fit_sae(" not in source
     assert "evaluate_model(" not in source
     assert 'VGSAE_CHECKPOINT_KIND", "last"' in source
+    assert 'VGSAE_DENSITY_MODE", "reported"' in source
+    assert '"target_model_density_empirical"' in source
+    assert "density_mode=DENSITY_MODE" in source
     assert "plot_vg_posterior_diagnostics" in source
     assert "VGSAE_BASELINE_SWEEP_DIR" in source
     assert "load_comparison_results" in source
@@ -609,7 +612,9 @@ def test_notebook_10_is_plot_only_and_compiles(
         {
             "FIGURE_DIR": tmp_path,
             "final_df": _SynthFrame(),
-            "plot_context": {"target_model_density": 0.1, "sae_width": 8},
+            "TARGET_MODEL_DENSITY": 0.1,
+            "DENSITY_MODE": "hard",
+            "plot_context": {"sae_width": 8},
             "plot_vg_posterior_diagnostics": fake_vg_plot,
             "plt": SimpleNamespace(show=lambda: None),
         },
@@ -620,6 +625,7 @@ def test_notebook_10_is_plot_only_and_compiles(
         "target_model_density": 0.1,
         "sae_width": 8,
         "output_path": tmp_path / "vg_posterior_diagnostics.png",
+        "density_mode": "hard",
     }
 
 

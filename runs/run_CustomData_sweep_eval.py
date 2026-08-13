@@ -324,7 +324,19 @@ def _aggregate(
     )
     config = SweepConfig.from_dict(first_bundle["sweep_config"])
     seed = int(first_bundle["spec"]["seed"])
-    train_data, _ = make_train_test(config, seed, "cpu")
+    train_data, first_test_data = make_train_test(config, seed, "cpu")
+    empirical_true_l0_by_seed = {}
+    for observed_seed in sorted({int(row["seed"]) for row in metric_rows}):
+        test_data = (
+            first_test_data
+            if observed_seed == seed
+            else make_train_test(config, observed_seed, "cpu")[1]
+        )
+        empirical_true_l0_by_seed[observed_seed] = float(
+            test_data.support.sum(dim=1).mean()
+        )
+    empirical_true_l0 = float(np.mean(list(empirical_true_l0_by_seed.values())))
+    expected_true_l0 = float(train_data.feature_probabilities.sum())
     summary_dir.mkdir(parents=True, exist_ok=True)
     np.savez_compressed(
         summary_dir / "data_preview.npz",
@@ -337,9 +349,11 @@ def _aggregate(
         support_density=config.data.support_density,
         frequency_skew=config.data.frequency_skew,
         amplitude_scale=config.data.amplitude_scale,
-        target_model_density=float(
-            train_data.feature_probabilities.sum() / config.data.sae_width
-        ),
+        expected_true_l0=expected_true_l0,
+        empirical_true_l0=empirical_true_l0,
+        target_model_density=expected_true_l0 / config.data.sae_width,
+        target_model_density_expected=expected_true_l0 / config.data.sae_width,
+        target_model_density_empirical=empirical_true_l0 / config.data.sae_width,
     )
 
 

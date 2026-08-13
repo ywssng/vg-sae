@@ -5,6 +5,15 @@ import pytest
 import torch
 
 import src.sae_sweep_eval as sweep_eval
+from src.sae_model import VGSAEConfig, VariationalGarroteSAE
+from src.sae_sweep import (
+    SweepConfig,
+    SyntheticDataConfig,
+    TrainingConfig,
+    build_model,
+    build_specs,
+    make_train_test,
+)
 
 
 class _DummyModel(torch.nn.Module):
@@ -42,6 +51,7 @@ def _evaluate_with_fixed_latents(
 
     monkeypatch.setattr(sweep_eval, "_latents_and_masks", fake_latents)
     monkeypatch.setattr(sweep_eval, "_reconstruct", lambda _model, x: x)
+    monkeypatch.setattr(sweep_eval, "_decode_latents", lambda _model, _h: test_x)
     monkeypatch.setattr(
         sweep_eval,
         "_decoder_matching",
@@ -98,6 +108,8 @@ def test_wider_sae_counts_unmatched_latents_as_false_positives(monkeypatch):
     assert row["support_recall"] == pytest.approx(1.0)
     assert row["support_f1"] == pytest.approx(2 / 3)
     assert row["generalization_error"] == pytest.approx(np.sqrt(2.0))
+    assert row["hard_generalization_error"] == pytest.approx(np.sqrt(2.0))
+    assert row["hard_selection_error"] == pytest.approx(1 / 3)
     assert row["matched_latent_count"] == 2
     assert row["union_width"] == 3
     assert row["unmatched_ground_truth_features"] == 0
@@ -109,6 +121,7 @@ def test_wider_sae_counts_unmatched_latents_as_false_positives(monkeypatch):
     assert arrays["mask"].shape == (2, 3)
     np.testing.assert_array_equal(arrays["true_support"][:, 2], 0.0)
     np.testing.assert_array_equal(arrays["raw_mask"], test_mask.numpy())
+    np.testing.assert_array_equal(arrays["hard_mask"], test_mask.numpy())
     np.testing.assert_array_equal(arrays["union_learned_idx"], [0, 1, 2])
     np.testing.assert_array_equal(arrays["union_true_idx"], [0, 1, -1])
 
@@ -138,6 +151,8 @@ def test_narrower_sae_counts_unmatched_truth_as_false_negatives(monkeypatch):
     assert row["support_recall"] == pytest.approx(2 / 3)
     assert row["support_f1"] == pytest.approx(0.8)
     assert row["generalization_error"] == pytest.approx(np.sqrt(4 / 14))
+    assert row["hard_generalization_error"] == pytest.approx(np.sqrt(4 / 14))
+    assert row["hard_selection_error"] == pytest.approx(1 / 6)
     assert row["matched_latent_count"] == 2
     assert row["union_width"] == 3
     assert row["unmatched_ground_truth_features"] == 1
@@ -149,6 +164,9 @@ def test_narrower_sae_counts_unmatched_truth_as_false_negatives(monkeypatch):
     np.testing.assert_array_equal(arrays["mask"][:, 2], 0.0)
     np.testing.assert_array_equal(arrays["true_support"], support.numpy())
     np.testing.assert_array_equal(arrays["raw_mask"], test_mask.numpy())
+    np.testing.assert_array_equal(
+        arrays["hard_mask"], [[1, 0, 0], [0, 1, 0]]
+    )
     np.testing.assert_array_equal(arrays["union_learned_idx"], [0, 1, -1])
     np.testing.assert_array_equal(arrays["union_true_idx"], [0, 1, 2])
 
@@ -171,3 +189,71 @@ def test_equal_width_union_preserves_original_alignment():
     np.testing.assert_array_equal(union_target, target.numpy())
     np.testing.assert_array_equal(union_learned, [1, 0])
     np.testing.assert_array_equal(union_true, [0, 1])
+
+
+def test_vg_hard_latents_threshold_posterior_before_applying_amplitude():
+    model = VariationalGarroteSAE(
+        VGSAEConfig(input_dim=2, n_latents=2, decoder_bias=False)
+    )
+    x = torch.zeros(1, 2)
+    with torch.no_grad():
+        model.gate_encoder.weight.zero_()
+        model.gate_encoder.bias.copy_(torch.logit(torch.tensor([0.4, 0.75])))
+        model.amplitude_encoder.weight.zero_()
+        model.amplitude_encoder.bias.copy_(
+            torch.log(torch.expm1(torch.tensor([2.0, 3.0])))
+        )
+
+    native_h, mask, _ = sweep_eval._latents_and_masks(model, x)
+    hard_h = sweep_eval._hard_latents(model, x, native_h, mask, threshold=0.5)
+
+    assert torch.allclose(native_h, torch.tensor([[0.8, 2.25]]), atol=1e-6)
+    assert torch.allclose(hard_h, torch.tensor([[0.0, 3.0]]), atol=1e-6)
+
+
+@pytest.mark.parametrize(
+    ("method", "control"),
+    [
+        ("vgsae", 0.5),
+        ("l1", 0.01),
+        ("topk", 2),
+        ("batchtopk", 2),
+        ("jumprelu", 0.01),
+        ("gated", 0.01),
+    ],
+)
+def test_every_stage1_architecture_decodes_its_hard_code(
+    method: str, control: float
+) -> None:
+    config = SweepConfig(
+        data=SyntheticDataConfig(
+            input_dim=3,
+            ground_truth_num_features=5,
+            sae_width=5,
+            n_train=16,
+            n_test=8,
+            support_density=0.2,
+        ),
+        training=TrainingConfig(train_steps=1, history_every=1),
+        methods=[method],
+        controls={method: [control]},
+    )
+    config.validate()
+    spec = build_specs(config)[0]
+    train_data, test_data = make_train_test(config, spec.seed, "cpu")
+
+    row, cache = sweep_eval.evaluate_model(
+        build_model(config, spec), train_data, test_data, config, spec
+    )
+
+    for metric in (
+        "hard_reconstruction_error",
+        "hard_generalization_error",
+        "hard_selection_error",
+        "rho_model_hard",
+    ):
+        assert np.isfinite(row[metric])
+    assert row["rho_model_hard"] == pytest.approx(
+        row["average_l0"] / config.data.sae_width
+    )
+    assert set(np.unique(cache["hard_mask"])) <= {0, 1}
