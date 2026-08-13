@@ -11,7 +11,12 @@ from typing import Any
 
 import torch
 
-from .sae_data import SyntheticSparseCodingConfig, make_synthetic_sparse_coding
+from .sae_data import (
+    AMPLITUDE_MODES,
+    AmplitudeMode,
+    SyntheticSparseCodingConfig,
+    make_synthetic_sparse_coding,
+)
 from .sae_model import (
     BatchTopKSAE,
     BatchTopKSAEConfig,
@@ -104,6 +109,7 @@ class SyntheticDataConfig:
     noise_std: float
     frequency_skew: float
     amplitude_scale: float
+    amplitude_mode: AmplitudeMode
 
     def __init__(
         self,
@@ -119,6 +125,7 @@ class SyntheticDataConfig:
         frequency_skew: float = 0.5,
         amplitude_scale: float = 1.0,
         *,
+        amplitude_mode: AmplitudeMode = "exponential",
         n_features: int | None = None,
     ) -> None:
         if ground_truth_num_features is None:
@@ -142,6 +149,7 @@ class SyntheticDataConfig:
         self.noise_std = noise_std
         self.frequency_skew = frequency_skew
         self.amplitude_scale = amplitude_scale
+        self.amplitude_mode = amplitude_mode
 
     @property
     def n_features(self) -> int:
@@ -226,6 +234,10 @@ class SweepConfig:
             raise ValueError("frequency_skew must be nonnegative.")
         if self.data.amplitude_scale <= 0.0:
             raise ValueError("amplitude_scale must be positive.")
+        if self.data.amplitude_mode not in AMPLITUDE_MODES:
+            raise ValueError(
+                "amplitude_mode must be exponential, constant, or uniform."
+            )
         if not 0.0 <= self.data.coherence < 1.0:
             raise ValueError("coherence must satisfy 0 <= coherence < 1.")
         if self.data.noise_std < 0.0:
@@ -234,10 +246,6 @@ class SweepConfig:
             if self.data.ground_truth_num_features <= self.data.input_dim:
                 raise ValueError(
                     "The simple baseline requires ground_truth_num_features > input_dim."
-                )
-            if self.data.frequency_skew <= 0.0:
-                raise ValueError(
-                    "frequency_skew must be positive for the skewed baseline."
                 )
             n_features = self.data.ground_truth_num_features
             mean_weight = sum(
@@ -320,10 +328,20 @@ def sweep_experiment_id(config: SweepConfig) -> str:
         else "seeds" + "-".join(str(seed) for seed in seeds)
     )
     data = config.data
+    ablation_tokens = []
+    if data.amplitude_mode != "exponential":
+        ablation_tokens.append(f"amp{data.amplitude_mode}")
+    if data.frequency_skew != 0.5:
+        frequency_token = f"{data.frequency_skew:.12g}".replace("-", "m").replace(
+            ".", "p"
+        )
+        ablation_tokens.append(f"fs{frequency_token}")
+    ablation_suffix = "".join(f"_{token}" for token in ablation_tokens)
     return (
         f"{prefix}_beta_{config.training.beta_mode}"
         f"_din{data.input_dim}_gt{data.ground_truth_num_features}"
         f"_sae{data.sae_width}_sd{_density_token(data.support_density)}"
+        f"{ablation_suffix}"
         f"_{seed_token}"
     )
 
@@ -402,6 +420,7 @@ def make_train_test(
             noise_std=data_cfg.noise_std,
             frequency_skew=data_cfg.frequency_skew,
             amplitude_scale=data_cfg.amplitude_scale,
+            amplitude_mode=data_cfg.amplitude_mode,
             seed=seed,
         ),
         device=device,

@@ -149,10 +149,16 @@ the paper leaves details open.
 - **Stage-1 custom baseline:** observations are noiseless linear mixtures of an
   overcomplete random unit dictionary. Feature supports are independent
   Bernoulli draws with marginal probabilities rank-skewed from
-  `support_density` using `frequency_skew=0.5`. Stage-1 configs that would need
-  the generic generator's `0.95` probability cap are rejected so the requested
-  mean remains exact. Nonzero amplitudes are independent `Exponential(scale=1)`
-  draws. The baseline adds no
+  `support_density` using `frequency_skew=0.5` by default; setting
+  `frequency_skew=0` is the uniform-frequency ablation. Stage-1 configs that
+  would need the generic generator's `0.95` probability cap are rejected so
+  the requested mean remains exact. Nonzero amplitudes default to independent
+  `Exponential(scale=1)` draws. The amplitude-law ablations are
+  `constant = sqrt(2) * scale` and
+  `Uniform(scale, ((sqrt(21)-1)/2) * scale)` (upper multiplier
+  `1.791287847...`, displayed as `1.7913`). These match the exponential law's
+  active second moment, `E[A^2]=2*scale^2`, but intentionally do not match its
+  mean or all fixed-dictionary cross terms. The baseline adds no
   dictionary coherence, correlated firing, or hierarchy.
   `ground_truth_num_features` sets the generating dictionary width, while
   `sae_width` independently sets the learned latent width. Legacy `n_features`
@@ -167,9 +173,11 @@ the paper leaves details open.
   W&B online mode and verified authentication; offline and disabled bypasses
   are not exposed. W&B records the resolved ID as `exp_id`, the experiment
   family as `stage`, and the actual `outputs/runs/` child directory as
-  `sweep_root`; the group mirrors the full sweep root while tags mirror stage
-  and method because W&B caps individual tags at 64 characters. The manifest
-  fingerprint remains the guard for config axes omitted from this readable ID.
+  `sweep_root`; `amplitude_mode`, `amplitude_scale`, and `frequency_skew` are
+  also top-level filterable fields. The group mirrors the full sweep root while
+  tags mirror stage and method because W&B caps individual tags at 64
+  characters. The manifest fingerprint remains the guard for config axes
+  omitted from this readable ID.
 - **Width-aware sparsity plots:** `rho_model`, average L0, and expected L0 are
   defined over all `sae_width` learned latents. The data reference line is
   `sum(feature_probabilities) / sae_width`, rather than `support_density`, so it

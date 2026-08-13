@@ -2,12 +2,24 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
+from typing import Literal
 
 import numpy as np
 import torch
 
 from .utils import as_tensor
+
+
+AmplitudeMode = Literal["exponential", "constant", "uniform"]
+AMPLITUDE_MODES: tuple[AmplitudeMode, ...] = (
+    "exponential",
+    "constant",
+    "uniform",
+)
+CONSTANT_AMPLITUDE_RMS_MATCH = math.sqrt(2.0)
+UNIFORM_AMPLITUDE_UPPER = (math.sqrt(21.0) - 1.0) / 2.0
 
 
 @dataclass(init=False)
@@ -27,6 +39,7 @@ class SyntheticSparseCodingConfig:
     noise_std: float
     frequency_skew: float
     amplitude_scale: float
+    amplitude_mode: AmplitudeMode
     seed: int
     dtype: torch.dtype | str
 
@@ -43,6 +56,7 @@ class SyntheticSparseCodingConfig:
         seed: int = 0,
         dtype: torch.dtype | str = torch.float32,
         *,
+        amplitude_mode: AmplitudeMode = "exponential",
         n_features: int | None = None,
     ) -> None:
         if ground_truth_num_features is None:
@@ -59,6 +73,7 @@ class SyntheticSparseCodingConfig:
         self.noise_std = noise_std
         self.frequency_skew = frequency_skew
         self.amplitude_scale = amplitude_scale
+        self.amplitude_mode = amplitude_mode
         self.seed = seed
         self.dtype = dtype
 
@@ -79,6 +94,10 @@ class SyntheticSparseCodingConfig:
             raise ValueError("frequency_skew must be nonnegative.")
         if self.amplitude_scale <= 0.0:
             raise ValueError("amplitude_scale must be positive.")
+        if self.amplitude_mode not in AMPLITUDE_MODES:
+            raise ValueError(
+                "amplitude_mode must be exponential, constant, or uniform."
+            )
         if not 0.0 <= self.coherence < 1.0:
             raise ValueError("coherence must satisfy 0 <= coherence < 1.")
         if self.noise_std < 0.0:
@@ -164,7 +183,20 @@ def make_synthetic_sparse_coding(
     )
     shape = (config.n_samples, config.ground_truth_num_features)
     support = rng.binomial(1, probabilities[None, :], size=shape).astype(np.float64)
-    amplitudes = rng.exponential(scale=config.amplitude_scale, size=shape)
+    if config.amplitude_mode == "exponential":
+        amplitudes = rng.exponential(scale=config.amplitude_scale, size=shape)
+    elif config.amplitude_mode == "constant":
+        amplitudes = np.full(
+            shape,
+            config.amplitude_scale * CONSTANT_AMPLITUDE_RMS_MATCH,
+            dtype=np.float64,
+        )
+    else:
+        amplitudes = rng.uniform(
+            config.amplitude_scale,
+            config.amplitude_scale * UNIFORM_AMPLITUDE_UPPER,
+            size=shape,
+        )
     z = support * amplitudes
     clean_x = z @ dictionary.T
     noise = rng.normal(0.0, config.noise_std, size=clean_x.shape)

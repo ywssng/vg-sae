@@ -78,6 +78,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--ground-truth-num-features", type=int)
     parser.add_argument("--sae-width", type=int)
     parser.add_argument("--support-density", type=float)
+    parser.add_argument("--frequency-skew", type=float)
+    parser.add_argument(
+        "--amplitude-mode",
+        choices=("exponential", "constant", "uniform"),
+        help=(
+            "Active-amplitude law. constant and uniform are RMS-matched to "
+            "the default Exponential(scale)."
+        ),
+    )
     seed = parser.add_mutually_exclusive_group()
     seed.add_argument("--seed", type=int, help="Run one data/initialization seed.")
     seed.add_argument("--seeds", help="Comma-separated seed sweep.")
@@ -101,7 +110,7 @@ def parse_args() -> argparse.Namespace:
         default="cuda:0,cuda:1,cuda:2,cuda:3",
         help="auto, cpu, or cuda:0,cuda:1,...",
     )
-    parser.add_argument("--max-per-device", type=int, default=16)
+    parser.add_argument("--max-per-device", type=int, default=2)
     parser.add_argument("--force", action="store_true", help="Rerun completed jobs.")
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--run-dir", type=Path, help=argparse.SUPPRESS)
@@ -145,6 +154,8 @@ def configured_sweep(args: argparse.Namespace) -> SweepConfig:
         "ground_truth_num_features",
         "sae_width",
         "support_density",
+        "frequency_skew",
+        "amplitude_mode",
     ):
         value = getattr(args, name, None)
         if value is not None:
@@ -253,6 +264,8 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path):
             f"stage:{stage}",
             f"method:{spec.method}",
             f"beta_mode:{config.training.beta_mode}",
+            f"amplitude_mode:{config.data.amplitude_mode}",
+            f"frequency_skew:{config.data.frequency_skew:g}",
         ],
         config={
             **bundle,
@@ -261,6 +274,9 @@ def _wandb_run(bundle: dict, spec: RunSpec, run_dir: Path):
             "sweep_root": sweep_root,
             "method": spec.method,
             "beta_mode": config.training.beta_mode,
+            "amplitude_mode": config.data.amplitude_mode,
+            "amplitude_scale": config.data.amplitude_scale,
+            "frequency_skew": config.data.frequency_skew,
         },
         mode="online",
         force=True,
@@ -298,6 +314,9 @@ def _run_metadata(
         "ground_truth_num_features": data.ground_truth_num_features,
         "sae_width": data.sae_width,
         "support_density": data.support_density,
+        "amplitude_mode": data.amplitude_mode,
+        "amplitude_scale": data.amplitude_scale,
+        "frequency_skew": data.frequency_skew,
         "method": spec.method,
         "method_label": METHOD_LABELS[spec.method],
         "control_name": spec.control_name,

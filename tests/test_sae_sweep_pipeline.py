@@ -54,6 +54,7 @@ def test_default_sweep_uses_current_full_grid_and_paired_initialization() -> Non
     assert config.data.n_test == 1024
     assert config.data.support_density == pytest.approx(0.01)
     assert config.data.frequency_skew == pytest.approx(0.5)
+    assert config.data.amplitude_mode == "exponential"
     assert config.training.beta_mode == "profiled"
     assert len(specs) == 273
     assert counts == {
@@ -117,6 +118,32 @@ def test_current_full_and_fast_experiment_ids_are_distinct() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    ("amplitude_mode", "frequency_skew", "expected_tokens", "absent_tokens"),
+    [
+        ("constant", 0.5, ("_ampconstant",), ("_fs0",)),
+        ("uniform", 0.5, ("_ampuniform",), ("_fs0",)),
+        ("exponential", 0.0, ("_fs0",), ("_ampconstant", "_ampuniform")),
+        ("constant", 0.0, ("_ampconstant", "_fs0"), ()),
+        ("uniform", 0.0, ("_ampuniform", "_fs0"), ()),
+    ],
+)
+def test_ablation_axes_are_encoded_in_experiment_id(
+    amplitude_mode: str,
+    frequency_skew: float,
+    expected_tokens: tuple[str, ...],
+    absent_tokens: tuple[str, ...],
+) -> None:
+    config = default_sweep_config(fast=True)
+    config.data.amplitude_mode = amplitude_mode
+    config.data.frequency_skew = frequency_skew
+
+    experiment_id = sweep_experiment_id(config)
+
+    assert all(token in experiment_id for token in expected_tokens)
+    assert all(token not in experiment_id for token in absent_tokens)
+
+
 def test_wandb_credentials_are_loaded_only_from_local_environment(
     tmp_path: Path, monkeypatch
 ) -> None:
@@ -168,6 +195,9 @@ def test_wandb_is_forced_online_with_filterable_sweep_identity(
             n_train=8,
             n_test=4,
             support_density=0.2,
+            frequency_skew=0.0,
+            amplitude_mode="uniform",
+            amplitude_scale=1.7,
         ),
         training=TrainingConfig(train_steps=2, history_every=1),
         seeds=[2],
@@ -197,12 +227,17 @@ def test_wandb_is_forced_online_with_filterable_sweep_identity(
         "stage:stage1_custom_baseline_fast",
         "method:vgsae",
         "beta_mode:profiled",
+        "amplitude_mode:uniform",
+        "frequency_skew:0",
     ]
     assert captured["config"]["exp_id"] == exp_id
     assert captured["config"]["stage"] == "stage1_custom_baseline_fast"
     assert captured["config"]["sweep_root"] == "custom-output"
     assert captured["config"]["method"] == "vgsae"
     assert captured["config"]["beta_mode"] == "profiled"
+    assert captured["config"]["amplitude_mode"] == "uniform"
+    assert captured["config"]["amplitude_scale"] == pytest.approx(1.7)
+    assert captured["config"]["frequency_skew"] == pytest.approx(0.0)
     metadata = _run_metadata(
         config,
         spec,
@@ -211,6 +246,9 @@ def test_wandb_is_forced_online_with_filterable_sweep_identity(
     )
     assert metadata["exp_id"] == exp_id
     assert metadata["beta_mode"] == "profiled"
+    assert metadata["amplitude_mode"] == "uniform"
+    assert metadata["amplitude_scale"] == pytest.approx(1.7)
+    assert metadata["frequency_skew"] == pytest.approx(0.0)
 
 
 @pytest.mark.parametrize("option", ["--no-wandb", "--wandb-mode=offline"])
@@ -233,6 +271,27 @@ def test_custom_sweep_cli_accepts_beta_mode(
     )
 
     assert parse_args().beta_mode == "learned"
+
+
+def test_custom_sweep_cli_accepts_amplitude_and_frequency_ablation_axes(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_CustomData_sweep.py",
+            "--amplitude-mode",
+            "constant",
+            "--frequency-skew",
+            "0",
+        ],
+    )
+
+    args = parse_args()
+
+    assert args.amplitude_mode == "constant"
+    assert args.frequency_skew == pytest.approx(0.0)
 
 
 def test_custom_sweep_cli_rejects_fixed_beta_mode(
@@ -638,6 +697,8 @@ def test_method_filter_selects_tasks_without_narrowing_saved_config() -> None:
         train_steps=None,
         history_every=None,
         beta_mode=None,
+        amplitude_mode=None,
+        frequency_skew=None,
     )
     config = configured_sweep(args)
     specs = selected_specs(config, args.methods)
@@ -647,7 +708,7 @@ def test_method_filter_selects_tasks_without_narrowing_saved_config() -> None:
     assert {spec.method for spec in specs} == {"vgsae"}
 
 
-def test_stage1_cli_overrides_dimensions_density_control_and_seed() -> None:
+def test_stage1_cli_overrides_data_axes_control_and_seed() -> None:
     args = SimpleNamespace(
         config=None,
         fast_dev_run=True,
@@ -655,6 +716,8 @@ def test_stage1_cli_overrides_dimensions_density_control_and_seed() -> None:
         ground_truth_num_features=7,
         sae_width=5,
         support_density=0.2,
+        amplitude_mode="uniform",
+        frequency_skew=0.0,
         seed=4,
         seeds=None,
         sparsity_controls=["vgsae=-1,0,1", "topk=1,3"],
@@ -669,6 +732,8 @@ def test_stage1_cli_overrides_dimensions_density_control_and_seed() -> None:
     assert config.data.ground_truth_num_features == 7
     assert config.data.sae_width == 5
     assert config.data.support_density == 0.2
+    assert config.data.amplitude_mode == "uniform"
+    assert config.data.frequency_skew == pytest.approx(0.0)
     assert config.seeds == [4]
     assert config.controls["vgsae"] == [-1.0, 0.0, 1.0]
     assert config.controls["topk"] == [1, 3]
@@ -689,6 +754,8 @@ def test_default_topk_grids_follow_overridden_sae_width() -> None:
         train_steps=None,
         history_every=None,
         beta_mode=None,
+        amplitude_mode=None,
+        frequency_skew=None,
     )
 
     config = configured_sweep(args)

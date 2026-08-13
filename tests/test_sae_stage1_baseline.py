@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import math
+
 import numpy as np
 import pytest
 import torch
@@ -39,6 +41,90 @@ def test_stage1_data_is_clean_overcomplete_skewed_and_nonnegative() -> None:
     support_correlation = np.corrcoef(data.support.numpy(), rowvar=False)
     off_diagonal = support_correlation[~np.eye(9, dtype=bool)]
     assert np.abs(off_diagonal).max() < 0.03
+
+
+def test_constant_amplitude_mode_uses_moment_matched_sqrt_two() -> None:
+    scale = 2.0
+    data = make_synthetic_sparse_coding(
+        SyntheticSparseCodingConfig(
+            input_dim=4,
+            ground_truth_num_features=9,
+            n_samples=1_000,
+            support_density=0.2,
+            noise_std=0.0,
+            frequency_skew=0.0,
+            amplitude_mode="constant",
+            amplitude_scale=scale,
+            seed=3,
+        )
+    )
+
+    active_amplitudes = data.z[data.support.bool()]
+    assert active_amplitudes.numel() > 0
+    assert torch.allclose(
+        active_amplitudes,
+        torch.full_like(active_amplitudes, math.sqrt(2.0) * scale),
+    )
+    assert active_amplitudes.square().mean().item() == pytest.approx(
+        2.0 * scale**2
+    )
+
+
+def test_uniform_amplitude_mode_uses_moment_matched_interval() -> None:
+    scale = 2.0
+    upper = (math.sqrt(21.0) - 1.0) / 2.0
+    data = make_synthetic_sparse_coding(
+        SyntheticSparseCodingConfig(
+            input_dim=4,
+            ground_truth_num_features=9,
+            n_samples=20_000,
+            support_density=0.2,
+            noise_std=0.0,
+            frequency_skew=0.0,
+            amplitude_mode="uniform",
+            amplitude_scale=scale,
+            seed=3,
+        )
+    )
+
+    active_amplitudes = data.z[data.support.bool()]
+    assert active_amplitudes.numel() > 0
+    assert active_amplitudes.min().item() >= scale
+    assert active_amplitudes.max().item() <= upper * scale
+    assert active_amplitudes.square().mean().item() == pytest.approx(
+        2.0 * scale**2, rel=0.01
+    )
+
+
+def test_invalid_amplitude_mode_is_rejected() -> None:
+    config = SyntheticSparseCodingConfig(amplitude_mode="gaussian")
+
+    with pytest.raises(ValueError, match="amplitude_mode"):
+        config.validate()
+
+
+def test_amplitude_ablation_keeps_dictionary_and_support_paired() -> None:
+    common = dict(
+        input_dim=4,
+        ground_truth_num_features=9,
+        n_samples=100,
+        support_density=0.2,
+        noise_std=0.0,
+        frequency_skew=0.5,
+        seed=3,
+    )
+    datasets = [
+        make_synthetic_sparse_coding(
+            SyntheticSparseCodingConfig(**common, amplitude_mode=mode)
+        )
+        for mode in ("exponential", "constant", "uniform")
+    ]
+
+    assert all(
+        torch.equal(data.dictionary, datasets[0].dictionary)
+        and torch.equal(data.support, datasets[0].support)
+        for data in datasets[1:]
+    )
 
 
 def test_ground_truth_width_and_sae_width_are_independent() -> None:
@@ -94,6 +180,14 @@ def test_legacy_n_features_sets_both_feature_counts() -> None:
     assert restored.ground_truth_num_features == restored.sae_width == 7
 
 
+def test_amplitude_mode_roundtrips_through_sweep_data_config() -> None:
+    data = SyntheticDataConfig(amplitude_mode="uniform")
+
+    restored = SyntheticDataConfig.from_dict(SweepConfig(data=data).to_dict()["data"])
+
+    assert restored.amplitude_mode == "uniform"
+
+
 def test_legacy_sweep_data_keeps_coherence_noise_and_uniform_frequency() -> None:
     data = SyntheticDataConfig.from_dict(
         {
@@ -134,11 +228,30 @@ def test_generic_generator_preserves_legacy_coherence_and_noise_controls() -> No
     assert torch.allclose(data.feature_probabilities, torch.full((8,), 0.05))
 
 
+def test_stage1_config_allows_uniform_feature_frequency_ablation() -> None:
+    config = SweepConfig(
+        data=SyntheticDataConfig(
+            input_dim=4,
+            ground_truth_num_features=8,
+            frequency_skew=0.0,
+        ),
+        methods=["vgsae"],
+        controls={"vgsae": [0.0]},
+    )
+
+    config.validate()
+    train, _ = make_train_test(config, seed=0)
+
+    assert torch.allclose(
+        train.feature_probabilities,
+        torch.full_like(train.feature_probabilities, config.data.support_density),
+    )
+
+
 @pytest.mark.parametrize(
     "override, message",
     [
         ({"ground_truth_num_features": 4}, "ground_truth_num_features > input_dim"),
-        ({"frequency_skew": 0.0}, "frequency_skew must be positive"),
         ({"support_density": 0.9}, "too high to preserve its requested mean"),
         ({"coherence": 0.1}, "does not add dictionary coherence"),
         ({"noise_std": 0.1}, "does not add observation noise"),

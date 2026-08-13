@@ -50,14 +50,14 @@ uv run python -B runs/run_CustomData_sweep.py \
   --beta-mode profiled \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 16
+  --max-per-device 2
 
 # Evaluate both `last` and `best`; plotting still defaults to Notebook 07's `last`.
 uv run python -B runs/run_CustomData_sweep_eval.py \
   --beta-mode profiled \
   --methods all \
   --devices cuda:0,cuda:1,cuda:2,cuda:3 \
-  --max-per-device 16
+  --max-per-device 2
 
 # Repeat both commands with --beta-mode learned; it gets its own root/group.
 ```
@@ -66,8 +66,13 @@ The Stage-1 data is a noiseless linear mixture of an overcomplete random unit
 dictionary. Marginal firing probabilities are rank-skewed from the requested
 mean `support_density` with the default Stage-1 exponent `frequency_skew=0.5`
 while preserving that mean; settings that would require probability clipping
-are rejected. Supports are independent, and active
-amplitudes are nonnegative `Exponential(scale=1)` draws. There is no added
+are rejected. `--frequency-skew 0` is the homogeneous-frequency ablation.
+Supports are independent, and active amplitudes default to nonnegative
+`Exponential(scale=1)` draws. `--amplitude-mode constant` uses
+`sqrt(2) * scale`, while `--amplitude-mode uniform` uses
+`Uniform(scale, ((sqrt(21)-1)/2) * scale)`, whose upper multiplier is about
+`1.7913`. All three laws have the same active second moment
+`E[amplitude^2] = 2 * scale^2`. There is no added
 dictionary coherence, correlated firing, or hierarchy.
 `ground_truth_num_features` controls the data dictionary while `sae_width`
 independently controls the learned latent width. Their defaults are
@@ -82,10 +87,12 @@ overrides it. The no-argument eval command resolves the same default config;
 when training with CLI overrides, pass its resolved directory to eval with
 `--sweep-dir`. Training sweeps require authenticated W&B online logging. W&B
 stores this ID as the top-level `exp_id`, the configured stage as `stage`, and
-the actual sweep-directory basename as `sweep_root`. The latter
-is also the W&B group; stage, method, and beta mode are tags. The full sweep root stays in
-config/group rather than a tag because W&B limits individual tags to 64
-characters, so long custom output directories remain directly filterable.
+the actual sweep-directory basename as `sweep_root`; the latter is also the W&B
+group. `amplitude_mode`, `amplitude_scale`, and `frequency_skew` are stored as
+top-level filterable fields and tags alongside stage, method, and beta mode. The
+full sweep root stays in config/group rather than a tag because W&B limits
+individual tags to 64 characters, so long custom output directories remain
+directly filterable.
 
 One output directory represents one fixed data condition. Sweep seeds with
 `--seeds 0,1,2` and add repeatable controls such as

@@ -309,6 +309,9 @@ def load_sweep_plot_context(
         "support_density": float(
             data.get("support_density", expected_true_l0 / ground_truth_num_features)
         ),
+        "amplitude_mode": str(data.get("amplitude_mode", "exponential")),
+        "amplitude_scale": float(data.get("amplitude_scale", 1.0)),
+        "frequency_skew": float(data.get("frequency_skew", 0.0)),
         "expected_true_l0": expected_true_l0,
         "empirical_true_l0": empirical_true_l0,
         "target_model_density": target_model_density_expected,

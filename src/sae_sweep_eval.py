@@ -278,6 +278,21 @@ def evaluate_model(
             if data_config is not None
             else float(ground_truth_support.mean())
         ),
+        "amplitude_mode": (
+            str(data_config.amplitude_mode)
+            if data_config is not None
+            else "unknown"
+        ),
+        "amplitude_scale": (
+            float(data_config.amplitude_scale)
+            if data_config is not None
+            else float("nan")
+        ),
+        "frequency_skew": (
+            float(data_config.frequency_skew)
+            if data_config is not None
+            else float("nan")
+        ),
         "train_steps": config.training.train_steps,
         "dead_feature_window": config.training.dead_feature_window,
         "rho_model": float(raw_mask.mean()),

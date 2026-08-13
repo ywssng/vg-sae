@@ -71,7 +71,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--methods", default="all", help="Comma-separated methods, or all.")
     parser.add_argument("--devices", default="cuda:0,cuda:1,cuda:2,cuda:3", help="auto, cpu, or cuda:0,cuda:1,...")
-    parser.add_argument("--max-per-device", type=int, default=16)
+    parser.add_argument("--max-per-device", type=int, default=2)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument("--run-dir", type=Path, help=argparse.SUPPRESS)
@@ -280,6 +280,9 @@ def _aggregate(
         "ground_truth_num_features",
         "sae_width",
         "support_density",
+        "amplitude_mode",
+        "amplitude_scale",
+        "frequency_skew",
         "beta_mode",
     ]
     groups = [
@@ -349,6 +352,7 @@ def _aggregate(
         support_density=config.data.support_density,
         frequency_skew=config.data.frequency_skew,
         amplitude_scale=config.data.amplitude_scale,
+        amplitude_mode=config.data.amplitude_mode,
         expected_true_l0=expected_true_l0,
         empirical_true_l0=empirical_true_l0,
         target_model_density=expected_true_l0 / config.data.sae_width,
