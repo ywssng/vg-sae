@@ -237,6 +237,38 @@ checkpoint every 10,000 updates. The official study used five seeds; the local
 default is seed 0, and `--seeds 0,1,2,3,4` requests the full five-seed repeat at
 five times the compute.
 
+Run Stage 3 on the pinned *Sparse but Wrong* main-model activation targets:
+
+```bash
+# Gemma-2-2B layers 5/12 and Llama-3.2-1B layer 7; evaluation is automatic.
+uv run python -B runs/run_RealActivation_sweep.py \
+  --targets all \
+  --methods all \
+  --devices cuda:0,cuda:1,cuda:2,cuda:3 \
+  --max-per-device 1
+```
+
+Stage 3 sweeps VG-SAE (always learned beta), L1/ReLU, BatchTopK, and JumpReLU
+at width 32,768 over the paper-main seed scope: seeds 0/1/2 for Gemma layer 5
+and Llama layer 7, and seed 0 for the public Gemma layer-12 comparison. It
+streams pinned tokenizer-specific Pile tokens through pinned Gemma/Llama
+revisions instead of creating a multi-terabyte activation cache. Target-specific
+paper K grids drive BatchTopK; Stage-2 learned-beta VG and L1 density curves are
+interpolated/extrapolated at those K densities, avoiding a separate
+real-activation calibration sweep. Gemma layer 5 and Llama layer 7 use the
+paper's 500M request (500,002,816 effective
+full-batch tokens), while the main Gemma layer-12 architecture comparison uses
+1B (1,000,001,536 effective tokens).
+
+After every selected training job completes, the launcher automatically runs
+held-out reconstruction/sparsity/dead-feature/VG diagnostics, CE/KL model
+interventions, and exact blockwise decoder pairwise cosine, then writes CSVs
+and plots. Ground-truth-only Stage-1/2 fields remain explicit nulls because a
+real activation stream has no known support or generating dictionary. See
+[`docs/stage3_real_activations.md`](docs/stage3_real_activations.md) for target
+grids, provenance choices, incremental commands, metrics, and access
+requirements.
+
 Cache GPT-2 small layer-8 residual-stream activations, then sweep VG-SAE:
 
 ```bash
@@ -287,9 +319,9 @@ caches into deterministic SAELens data providers. Normalization is a single
 SAELens-compatible scale fitted on training data only. Arrow activation-cache
 rows can be kept together during splitting and selected token IDs can be removed;
 for Pythia-scale runs, use a bounded cache slice or a native streaming store.
-The parallel sweep keeps data selection behind a serialized `kind` boundary so
-SynthSAEBench streams or real activation stores can be added without changing
-the scheduler, checkpoint layout, or plot-only notebook.
+The sweep stack keeps data selection behind serialized `kind` boundaries;
+Stage 2 and Stage 3 add SynthSAEBench and real-activation adapters without
+changing the established Stage-1 runner or outputs.
 
 ## What Is Improved
 

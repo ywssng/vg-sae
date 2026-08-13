@@ -151,6 +151,60 @@ the paper leaves details open.
   EV was `0.847--0.831`. Stage-2 therefore persists posterior probability
   quantiles and plots hard-versus-expected L0 and EV explicitly instead of
   presenting hard-L0 matching as a sufficient VG comparison.
+- **Stage-3 real-model activations:** this is an isolated runner and artifact
+  schema; no Stage-1/2 method order, default, evaluator, or existing output is
+  changed. The main-paper targets are Gemma-2-2B layers 5 and 12 and
+  Llama-3.2-1B layer 7, using direct Hugging Face proxy hooks
+  `model.layers.{5,12,7}` (the TransformerLens names recorded by the paper are
+  `blocks.N.hook_resid_post`). Model and tokenizer-specific pretokenized Pile
+  revisions are immutable in the config: both Gemma targets use the published
+  `abbrv-2B` artifact and Llama uses `abbrv-1B`. Gemma L5 and Llama L7 retain the
+  paper's requested 500M-token budget and its effective complete-batch count
+  500,002,816; the main Gemma L12 architecture comparison retains the requested
+  1B and effective 1,000,001,536. SAE width is 32,768. The default seed scope
+  follows available main evidence: `[0,1,2]` for the L5/L7 Figure 9 comparisons
+  and `[0]` for L12, whose public artifacts expose only seed 0. `--seeds` can
+  request a larger robustness repeat. Activations are produced online to
+  avoid a multi-terabyte cache. The rolling checkpoint serializes model,
+  optimizer, coefficient schedulers, RNG, and the activation mixing/serving
+  buffers so a resumed worker continues at the exact stream position with the
+  same buffered batches and shuffle RNG. Remote-source order and pinned
+  revisions are fixed; bitwise identity of future GPU BF16 activations still
+  depends on deterministic backend execution. Shard-aware Parquet seeking
+  bounds prefix replay to one immutable dataset shard instead of replaying the
+  full training prefix. Language-model weights remain float32, matching the
+  paper runner's empty `from_pretrained` dtype override, while CUDA forward
+  passes use BF16 autocast;
+  extracted values are copied into float32 activation buffers as in SAELens.
+
+  The compared architectures are learned-beta VG-SAE, L1/ReLU, BatchTopK, and
+  JumpReLU. BatchTopK uses the distinct K coordinates in each main figure.
+  Published configs set the BatchTopK decoder initialization norm to `0.1` for
+  all three targets. JumpReLU threshold and decoder initialization also start
+  at `0.1`, following the public Gemma layer-12 artifacts.
+  JumpReLU uses the paper-text learning rate `2e-4`, constant LR, 100M-token
+  coefficient warmup, tanh scale 4, bandwidth 2, and pre-activation auxiliary
+  coefficient `3e-6`. Public JumpReLU artifacts are labeled 500M tokens and
+  learning rate `7e-5`, while the main comparison text describes 1B and
+  Appendix H gives `2e-4`; the paper-text budget/LR choice is deliberate and
+  recorded. VG and L1 controls are preregistered density hypotheses, not fitted
+  real-activation controls: linear interpolation/extrapolation is performed in
+  log10 density from the queued Stage-2 26-point learned-beta/L1 curves at every
+  target K divided by 32,768. Achieved held-out hard L0 remains the sole common
+  sparsity axis.
+
+  The held-out activation range is disjoint from training. Evaluation retains
+  all applicable reconstruction, sparsity, dead-feature, norm, learned-beta,
+  and VG posterior/expected-code diagnostics and adds exact blockwise
+  `mean_{i<j}|cos(W_dec[i],W_dec[j])|`. A 16,384-token prefix of that same
+  held-out range supplies SAELens CE/KL replacement and zero-ablation metrics.
+  Real activations provide no true sparse code, support, or generating
+  dictionary, so Stage-1/2 recovery/support/MCC/uniqueness/classifier/clean-code
+  fields are JSON null with explicit unavailability reasons. No proxy is
+  mislabeled as ground truth. Evaluation launches automatically after every
+  selected training checkpoint is complete unless `--skip-eval` is passed.
+  Subset runs evaluate only the selected methods and then rebuild shared
+  summaries from every current completed evaluation in the manifest.
 - **Stage-1 custom baseline:** observations are noiseless linear mixtures of an
   overcomplete random unit dictionary. Feature supports are independent
   Bernoulli draws with marginal probabilities rank-skewed from
