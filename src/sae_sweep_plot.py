@@ -32,6 +32,8 @@ GROUP_COLUMNS = [
 VALID_BETA_MODES = frozenset({"profiled", "learned"})
 VALID_DENSITY_MODES = frozenset({"reported", "hard"})
 VALID_METRIC_SUITES = frozenset({"auto", "stage1", "stage2"})
+DECODER_PAIRWISE_METRIC = "decoder_pairwise_cosine_similarity"
+DECODER_PAIRWISE_SIDECAR = "decoder_pairwise_cosine_metrics.csv"
 CUSTOM_HARD_METRIC_MAP = {
     "explained_variance": "hard_explained_variance",
     "reconstruction_error": "hard_reconstruction_error",
@@ -175,6 +177,28 @@ def load_sweep_results(
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     root = Path(sweep_dir)
     metrics = pd.read_csv(root / "summary" / checkpoint_kind / "final_metrics.csv")
+    sidecar_path = root / "summary" / checkpoint_kind / DECODER_PAIRWISE_SIDECAR
+    if DECODER_PAIRWISE_METRIC not in metrics.columns and sidecar_path.exists():
+        sidecar = pd.read_csv(sidecar_path)
+        join_columns = ["method", "run_id"]
+        required = {*join_columns, DECODER_PAIRWISE_METRIC}
+        if not required.issubset(sidecar.columns):
+            missing = ", ".join(sorted(required - set(sidecar.columns)))
+            raise ValueError(f"Decoder diagnostic sidecar is missing: {missing}")
+        if sidecar.duplicated(join_columns).any():
+            raise ValueError("Decoder diagnostic sidecar contains duplicate runs.")
+        metric_keys = set(map(tuple, metrics[join_columns].astype(str).to_numpy()))
+        sidecar_keys = set(map(tuple, sidecar[join_columns].astype(str).to_numpy()))
+        if metric_keys != sidecar_keys:
+            raise ValueError(
+                "Decoder diagnostic sidecar does not cover exactly the evaluated runs."
+            )
+        metrics = metrics.merge(
+            sidecar[[*join_columns, DECODER_PAIRWISE_METRIC]],
+            on=join_columns,
+            how="left",
+            validate="one_to_one",
+        )
     history = pd.read_csv(root / "summary" / "training_curves.csv")
     return metrics, history
 
@@ -898,6 +922,52 @@ def plot_vg_posterior_diagnostics(
     return fig
 
 
+def plot_decoder_pairwise_cosine_similarity(
+    metrics: pd.DataFrame,
+    *,
+    target_model_density: float | None = None,
+    sae_width: int | None = None,
+    output_path: Path | str | None = None,
+    support_density: float | None = None,
+    n_features: int | None = None,
+    density_mode: str = "hard",
+):
+    """Plot Sparse but Wrong Eq. (4) against operational SAE density."""
+
+    target_model_density, sae_width = _plot_axes(
+        target_model_density, sae_width, support_density, n_features
+    )
+    if DECODER_PAIRWISE_METRIC not in metrics.columns:
+        raise ValueError(
+            "Decoder pairwise cosine similarity is absent from metrics; "
+            "backfill it from the saved checkpoints."
+        )
+    metrics = apply_density_axis(
+        metrics, sae_width=sae_width, density_mode=density_mode
+    )
+    table = aggregate_seed_metrics(metrics)
+    fig, ax = plt.subplots(1, 1, figsize=(4.4, 2.7))
+    for method in METHOD_ORDER:
+        _metric_line(
+            ax,
+            table,
+            method,
+            DECODER_PAIRWISE_METRIC,
+            sae_width,
+        )
+    _finish_metric_axis(
+        ax,
+        target_model_density,
+        sae_width,
+        r"Decoder pairwise cosine $c_\mathrm{dec}$",
+        density_mode,
+    )
+    ax.set_title("Sparse but Wrong, Eq. (4) · lower = less alignment", fontsize=9)
+    _add_bottom_method_legend(fig, table)
+    _save(fig, output_path)
+    return fig
+
+
 def plot_training_curves(history: pd.DataFrame, output_path: Path | str | None = None):
     panels = [
         ("loss", "method-specific training loss"),
@@ -1099,6 +1169,20 @@ def plot_all(
         ),
         "training": plot_training_curves(history, destination("training_curves.png")),
     }
+    if DECODER_PAIRWISE_METRIC in metrics.columns:
+        figures["decoder_pairwise_cosine"] = (
+            plot_decoder_pairwise_cosine_similarity(
+                metrics,
+                target_model_density=float(
+                    context["target_model_density_empirical"]
+                ),
+                sae_width=context["sae_width"],
+                output_path=destination(
+                    "decoder_pairwise_cosine_similarity.png"
+                ),
+                density_mode="hard",
+            )
+        )
     if "benchmark_model_id" in metrics.columns:
         figures.update(
             {

@@ -1214,6 +1214,7 @@ def parallel_sweep_results_notebook() -> dict:
                     load_sweep_plot_context,
                     load_comparison_results,
                     plot_data_overview,
+                    plot_decoder_pairwise_cosine_similarity,
                     plot_mask_heatmaps,
                     plot_reconstruction_metrics,
                     plot_recovery_metrics,
@@ -1383,6 +1384,38 @@ def parallel_sweep_results_notebook() -> dict:
                 """
             ),
             md(
+                r"""
+                ## Decoder pairwise cosine similarity
+
+                *Sparse but Wrong*, Eq. (4), defines
+                $c_\mathrm{dec}=\binom{h}{2}^{-1}\sum_{i<j}|\cos(W_{\mathrm{dec},i},W_{\mathrm{dec},j})|$ over every unordered pair of L2-normalized learned decoder atoms, including dead latents. Lower values indicate more nearly orthogonal decoder directions and provide a ground-truth-free proxy for shared-feature mixing. This is learned-vs-learned similarity, unlike Stage-1 decoder recovery or Stage-2 MCC, which compare learned atoms with ground truth.
+
+                The plot always uses operational hard L0 / SAE width and the empirical true-L0 reference, even when the other Stage-1 figures use reported posterior occupancy. Interpret a broad minimum or low-L0 elbow together with recovery/MCC and reconstruction quality rather than treating the global minimum as a standalone optimum. Compare only within a stage; Stage-1 and Stage-2 raw values have different input dimensions and random-cosine floors.
+                """
+            ),
+            code(
+                """
+                if "decoder_pairwise_cosine_similarity" in final_df.columns:
+                    plot_decoder_pairwise_cosine_similarity(
+                        final_df,
+                        target_model_density=plot_context[
+                            "target_model_density_empirical"
+                        ],
+                        sae_width=plot_context["sae_width"],
+                        output_path=(
+                            FIGURE_DIR / "decoder_pairwise_cosine_similarity.png"
+                        ),
+                        density_mode="hard",
+                    )
+                    plt.show()
+                else:
+                    print(
+                        "Decoder pairwise cosine is unavailable; run "
+                        "scripts/backfill_decoder_pairwise_cosine.py first."
+                    )
+                """
+            ),
+            md(
                 """
                 ## VG posterior diagnostics (SynthSAEBench)
 
@@ -1512,7 +1545,9 @@ def write_notebooks() -> None:
             writes four `stage1_style_*` figures with an explicit Stage-2-matching
             caveat and a `vg_posterior_diagnostics.png` figure comparing hard
             inference with the VG posterior expectation; CustomData skips those
-            unavailable additions.
+            unavailable additions. When its checkpoint-only sidecar is present,
+            both stages also write `decoder_pairwise_cosine_similarity.png`
+            using *Sparse but Wrong* Eq. (4) against hard L0 / SAE width.
 
         Run notebooks from the project root or from this directory. Outputs are written under `outputs/notebooks/`.
         """

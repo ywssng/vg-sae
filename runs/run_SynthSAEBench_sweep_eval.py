@@ -50,6 +50,7 @@ EVAL_SOURCE_FILES = (
     "src/model.py",
     "src/sae_baselines.py",
     "src/sae_model.py",
+    "src/sae_evaluate.py",
     "src/sae_sweep.py",
     "src/saelens_vg.py",
     "src/synthsaebench_eval.py",

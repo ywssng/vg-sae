@@ -16,6 +16,7 @@ from src.sae_sweep_plot import (
     apply_density_axis,
     load_sweep_plot_context,
     load_comparison_results,
+    load_sweep_results,
     plot_all,
     plot_data_overview,
     plot_reconstruction_metrics,
@@ -24,6 +25,7 @@ from src.sae_sweep_plot import (
     plot_support_metrics,
     plot_training_curves,
     plot_vg_posterior_diagnostics,
+    plot_decoder_pairwise_cosine_similarity,
     plot_mask_heatmaps,
 )
 
@@ -405,6 +407,7 @@ def _all_method_metrics() -> pd.DataFrame:
                 "reconstruction_error": 0.2,
                 "generalization_error": 0.1,
                 "decoder_recovery_cosine": 0.7,
+                "decoder_pairwise_cosine_similarity": 0.08 + index / 100,
                 "support_f1": 0.4,
                 "support_average_precision": 0.5,
                 "support_precision": 0.6,
@@ -429,6 +432,7 @@ def _all_method_synth_metrics() -> pd.DataFrame:
     metrics["classification_recall"] = 0.89
     metrics["classification_accuracy"] = 0.95
     metrics["sae_l0"] = 32.0
+    metrics["average_l0"] = metrics["sae_l0"]
     metrics["true_l0"] = 35.0
     metrics["shrinkage"] = 0.85
     metrics["vg_expected_l0"] = metrics["sae_l0"]
@@ -765,6 +769,52 @@ def test_vg_posterior_figure_separates_hard_and_expected_paths() -> None:
     ]
     assert figure.axes[1].get_yscale() == "log"
     plt.close(figure)
+
+
+def test_decoder_pairwise_cosine_uses_hard_density_and_alignment_title() -> None:
+    metrics = _all_method_synth_metrics()
+    figure = plot_decoder_pairwise_cosine_similarity(
+        metrics,
+        target_model_density=35.0 / 4_096,
+        sae_width=4_096,
+    )
+
+    assert figure.axes[0].get_ylabel() == (
+        r"Decoder pairwise cosine $c_\mathrm{dec}$"
+    )
+    assert "less alignment" in figure.axes[0].get_title()
+    assert figure.axes[0].lines[0].get_ydata()[0] == pytest.approx(0.08)
+    assert figure.axes[0].lines[0].get_xdata()[0] == pytest.approx(32 / 4_096)
+    _assert_single_bottom_legend(figure)
+    plt.close(figure)
+
+
+def test_load_sweep_results_merges_decoder_diagnostic_sidecar(tmp_path: Path) -> None:
+    summary = tmp_path / "summary"
+    (summary / "last").mkdir(parents=True)
+    pd.DataFrame(
+        [{"method": "topk", "run_id": "topk-1", "rho_model": 0.1}]
+    ).to_csv(summary / "last" / "final_metrics.csv", index=False)
+    pd.DataFrame([{"method": "topk", "run_id": "topk-1", "step": 0}]).to_csv(
+        summary / "training_curves.csv", index=False
+    )
+    pd.DataFrame(
+        [
+            {
+                "method": "topk",
+                "run_id": "topk-1",
+                "decoder_pairwise_cosine_similarity": 0.123,
+            }
+        ]
+    ).to_csv(
+        summary / "last" / "decoder_pairwise_cosine_metrics.csv", index=False
+    )
+
+    metrics, _ = load_sweep_results(tmp_path)
+
+    assert metrics["decoder_pairwise_cosine_similarity"].item() == pytest.approx(
+        0.123
+    )
 
 
 def test_training_curves_use_one_bottom_legend() -> None:

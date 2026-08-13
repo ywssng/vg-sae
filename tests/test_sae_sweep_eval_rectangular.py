@@ -77,8 +77,10 @@ def _evaluate_with_fixed_latents(
         control_name="control",
         control_value=1.0,
     )
+    model = _DummyModel()
+    model.W_dec = torch.eye(test_h.shape[1])
     return sweep_eval.evaluate_model(
-        _DummyModel(), train_data, test_data, config, spec, run_id="fixed"
+        model, train_data, test_data, config, spec, run_id="fixed"
     )
 
 
@@ -118,6 +120,7 @@ def test_wider_sae_counts_unmatched_latents_as_false_positives(monkeypatch):
     assert row["sae_latent_match_coverage"] == pytest.approx(2 / 3)
     assert row["decoder_recovery_cosine"] == pytest.approx(0.6)
     assert row["matched_decoder_recovery_cosine"] == pytest.approx(0.9)
+    assert row["decoder_pairwise_cosine_similarity"] == pytest.approx(0.0)
     assert arrays["mask"].shape == (2, 3)
     np.testing.assert_array_equal(arrays["true_support"][:, 2], 0.0)
     np.testing.assert_array_equal(arrays["raw_mask"], test_mask.numpy())

@@ -633,6 +633,7 @@ def test_notebook_10_is_plot_only_and_compiles(
         "training_curves.png",
         "mask_heatmaps.png",
         "vg_posterior_diagnostics.png",
+        "decoder_pairwise_cosine_similarity.png",
         "stage1_style_reconstruction_metrics.png",
         "stage1_style_recovery_metrics.png",
         "stage1_style_support_metrics.png",
@@ -644,6 +645,9 @@ def test_notebook_10_is_plot_only_and_compiles(
     assert "Mean Correlation Coefficient, not Matthews correlation" in source
     assert "Expected L0 / $d_\\mathrm{sae}$" in source
     assert "do not reproduce Stage 1's rectangular-Hungarian-union semantics" in source
+    assert "Sparse but Wrong" in source
+    assert "plot_decoder_pairwise_cosine_similarity" in source
+    assert 'density_mode="hard"' in source
     for index, cell in enumerate(notebook["cells"]):
         if cell["cell_type"] == "code":
             compile("".join(cell["source"]), f"notebook-10-cell-{index}", "exec")

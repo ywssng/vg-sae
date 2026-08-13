@@ -1,0 +1,8 @@
+method,run_id,seed,control_name,control_value,checkpoint_kind,metric_schema_version,checkpoint_size,checkpoint_mtime_ns,metric_definition,decoder_pairwise_cosine_similarity
+vgsae,vgsae_gamma=1.63_seed=0,0,gamma,1.63,last,1,37791915,1786581339312318469,Sparse but Wrong Eq. (4),0.02557251692936418
+vgsae,vgsae_gamma=1.71_seed=0,0,gamma,1.71,last,1,37791915,1786581345696397233,Sparse but Wrong Eq. (4),0.026037834970431894
+vgsae,vgsae_gamma=1.82_seed=0,0,gamma,1.82,last,1,37791915,1786581346308404785,Sparse but Wrong Eq. (4),0.025904751250147573
+vgsae,vgsae_gamma=1.99_seed=0,0,gamma,1.99,last,1,37791915,1786579247192255492,Sparse but Wrong Eq. (4),0.0268461146666381
+vgsae,vgsae_gamma=2.22_seed=0,0,gamma,2.22,last,1,37791915,1786581355408517074,Sparse but Wrong Eq. (4),0.027363777346115916
+vgsae,vgsae_gamma=2.8_seed=0,0,gamma,2.8,last,1,37791915,1786581348596433016,Sparse but Wrong Eq. (4),0.028473959804322463
+vgsae,vgsae_gamma=6.0_seed=0,0,gamma,6.0,last,1,37791915,1786581351140464408,Sparse but Wrong Eq. (4),0.06290154430497119

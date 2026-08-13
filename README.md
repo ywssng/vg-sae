@@ -112,6 +112,18 @@ line then use the same thresholded inference codes. `best` means the lowest
 full-training objective observed at a history step and is intentionally not
 mixed into the default `last` reproduction.
 
+To add *Sparse but Wrong* Eq. (4) without rerunning data evaluation, backfill
+the decoder-only diagnostic from saved checkpoints, then rerun notebook 10:
+
+```bash
+uv run python -B scripts/backfill_decoder_pairwise_cosine.py \
+  --sweep-dir outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0
+```
+
+The script writes `summary/<checkpoint>/decoder_pairwise_cosine_metrics.csv`.
+Notebook 10 merges it automatically and writes
+`decoder_pairwise_cosine_similarity.png` against hard L0 / SAE width.
+
 ```text
 outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/
 ├── sweep_config.json, manifest.json
@@ -191,6 +203,14 @@ a VG-only mode root, also set
 `VGSAE_BASELINE_SWEEP_DIR` to the preserved 35-run non-VG Stage-2 root; the
 notebook fills only methods absent from the primary root and resolves each
 heatmap from its source root.
+The same checkpoint-only backfill adds decoder pairwise cosine
+$c_{\mathrm{dec}}$, the mean absolute cosine over all distinct learned-decoder
+atom pairs. Lower values suggest less shared-direction mixing. This is distinct
+from MCC and decoder recovery because it never uses ground truth. Compare curve
+shape within a stage rather than raw Stage-1 versus Stage-2 values: their input
+dimensions (128 versus 768) imply different random-cosine floors. Treat a broad
+minimum or low-L0 elbow as a diagnostic, not a standalone model-selection rule;
+read it together with recovery/MCC and reconstruction quality.
 
 The default one-seed method grid has seven controls per method. TopK and
 BatchTopK use target `k=[15,20,25,30,35,40,45]`. Full 200M-sample calibration

@@ -94,6 +94,56 @@ def decoder_recovery_cosine(learned_dictionary: torch.Tensor, true_dictionary: t
 
 
 @torch.no_grad()
+def decoder_pairwise_cosine_similarity(
+    decoder_atoms: torch.Tensor,
+    *,
+    block_size: int = 256,
+) -> float:
+    """Return Eq. (4)'s mean absolute cosine over decoder-atom pairs.
+
+    ``decoder_atoms`` must use one row per SAE latent.  Blocks keep the exact
+    computation practical for wide decoders without materializing the full
+    square Gram matrix and its upper-triangle mask at once.
+    """
+
+    if decoder_atoms.ndim != 2:
+        raise ValueError("decoder_atoms must be a two-dimensional tensor.")
+    if not isinstance(block_size, int) or block_size <= 0:
+        raise ValueError("block_size must be a positive integer.")
+    width = int(decoder_atoms.shape[0])
+    if width < 2:
+        raise ValueError("decoder pairwise cosine requires at least two atoms.")
+    atoms = decoder_atoms.detach().float()
+    norms = atoms.norm(dim=1, keepdim=True)
+    if not torch.isfinite(atoms).all() or not torch.isfinite(norms).all():
+        raise ValueError("decoder atoms and their L2 norms must be finite.")
+    # This matches the paper's Appendix-M F.normalize convention: an exactly
+    # zero decoder row stays zero and contributes zero similarity to its pairs.
+    atoms = torch.nn.functional.normalize(atoms, p=2.0, dim=1)
+    pair_sum = torch.zeros((), dtype=torch.float64, device=atoms.device)
+    for start in range(0, width, block_size):
+        stop = min(start + block_size, width)
+        within = atoms[start:stop] @ atoms[start:stop].T
+        pair_sum += within.triu(diagonal=1).abs().sum(dtype=torch.float64)
+        if stop < width:
+            across = atoms[start:stop] @ atoms[stop:].T
+            pair_sum += across.abs().sum(dtype=torch.float64)
+    pair_count = width * (width - 1) // 2
+    return float((pair_sum / pair_count).cpu())
+
+
+def decoder_atoms_from_model(model: torch.nn.Module) -> torch.Tensor:
+    """Return decoder atoms row-wise for local VG and SAELens SAE models."""
+
+    if isinstance(model, VariationalGarroteSAE):
+        return model.decoder.weight.T
+    atoms = getattr(model, "W_dec", None)
+    if isinstance(atoms, torch.Tensor):
+        return atoms
+    raise TypeError(f"Unsupported model type: {type(model).__name__}")
+
+
+@torch.no_grad()
 def support_precision_recall(
     model: VariationalGarroteSAE,
     x: torch.Tensor,

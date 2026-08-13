@@ -12,6 +12,7 @@ from sae_lens.util import cosine_similarities
 from scipy.optimize import linear_sum_assignment
 
 from .sae_baselines import to_inference_sae
+from .sae_evaluate import decoder_pairwise_cosine_similarity
 from .saelens_vg import VGSAE
 from .synthsaebench_sweep import (
     METHOD_LABELS,
@@ -50,6 +51,7 @@ def evaluate_model(
     )
     model.eval()
     decoder = model.W_dec.float()
+    decoder_pairwise_cosine = decoder_pairwise_cosine_similarity(decoder)
     ground_truth_dictionary = synthetic.feature_dict.feature_vectors.float()
     cosine = cosine_similarities(decoder, ground_truth_dictionary).abs()
     best_matches = cosine.argmax(dim=1)
@@ -234,6 +236,7 @@ def evaluate_model(
         / max(reconstruction_element_count, 1),
         "generalization_error": generalization_error,
         "mcc": mcc,
+        "decoder_pairwise_cosine_similarity": decoder_pairwise_cosine,
         "uniqueness": uniqueness,
         # These aliases retain notebook-10's tabular seam; Synth plots label and
         # interpret them using the official definitions rather than Stage-1 union metrics.

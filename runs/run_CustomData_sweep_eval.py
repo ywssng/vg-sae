@@ -48,6 +48,7 @@ EVAL_SOURCE_FILES = (
     "src/sae_baselines.py",
     "src/sae_data.py",
     "src/sae_model.py",
+    "src/sae_evaluate.py",
     "src/sae_sweep.py",
     "src/sae_sweep_eval.py",
 )

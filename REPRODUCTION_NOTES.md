@@ -209,6 +209,19 @@ the paper leaves details open.
   negatives), while unmatched learned latents are appended against zero targets
   (false positives). Support and latent-recovery metrics use this union; raw
   model density and L0 always use every SAE latent.
+- **Decoder pairwise cosine:** the optional
+  `decoder_pairwise_cosine_similarity` follows *Sparse but Wrong* Eq. (4): L2
+  normalize all learned decoder atoms, take the absolute cosine for every
+  unordered off-diagonal pair, then average. Dead latents are retained. It is
+  computed checkpoint-only and plotted against hard L0 / SAE width with the
+  empirical true-L0 reference, so no activation stream is reread. Lower values
+  indicate more nearly orthogonal decoder directions, but the metric is a
+  mixing proxy rather than ground-truth recovery; its global minimum is not
+  treated as a standalone optimum, and the curve/elbow is interpreted with
+  recovery and reconstruction metrics. Exact zero decoder rows follow the
+  paper's normalization pseudocode and contribute zero similarity. Raw Stage-1
+  and Stage-2 values are not directly comparable because their input dimensions
+  and random-cosine floors differ.
 - **Multi-seed mask panels:** representative heatmaps use the lowest seed shared
   by every plotted method, so all rows visualize the same regenerated dataset.
 - **Experiment 07 controls:** L1's GMM mask threshold is fitted on training

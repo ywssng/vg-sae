@@ -10,6 +10,10 @@ from sae_lens import TrainingSAE
 
 from .evaluate import selection_error, selection_uncertainty
 from .sae_baselines import to_inference_sae
+from .sae_evaluate import (
+    decoder_atoms_from_model,
+    decoder_pairwise_cosine_similarity,
+)
 from .sae_model import StandardSAE, VariationalGarroteSAE
 from .sae_sweep import METHOD_LABELS, RunSpec, SweepConfig
 
@@ -217,6 +221,9 @@ def evaluate_model(
     reconstruction = _reconstruct(model, test_data.x)
     hard_reconstruction = _decode_latents(model, hard_test_h)
     learned_idx, true_idx, signs, recovery = _decoder_matching(model, test_data.dictionary)
+    decoder_pairwise_cosine = decoder_pairwise_cosine_similarity(
+        decoder_atoms_from_model(model)
+    )
     mask, support, union_learned_idx, union_true_idx = _rectangular_union(
         test_mask, test_data.support, learned_idx, true_idx
     )
@@ -346,6 +353,7 @@ def evaluate_model(
         "support_roc_auc": roc_auc,
         "decoder_recovery_cosine": recovery * matched_latent_count / union_width,
         "matched_decoder_recovery_cosine": recovery,
+        "decoder_pairwise_cosine_similarity": decoder_pairwise_cosine,
         "decoder_recovery_ground_truth": (
             recovery * matched_latent_count / ground_truth_num_features
         ),

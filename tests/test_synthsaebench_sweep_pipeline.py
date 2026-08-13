@@ -48,6 +48,7 @@ import runs.run_SynthSAEBench_sweep_eval as synth_eval_runner
 from runs.run_SynthSAEBench_sweep_eval import parse_args as parse_eval_args
 from runs._sweep_io import write_json, write_rows
 from src.sae_baselines import to_inference_sae
+from src.sae_evaluate import decoder_pairwise_cosine_similarity
 from src.saelens_vg import VGTrainingSAE
 from src.synthsaebench_eval import evaluate_model
 from src.synthsaebench_sweep import (
@@ -845,6 +846,9 @@ def test_streaming_evaluator_matches_official_core_metrics_and_caps_cache(
     )
     assert row["mcc"] == pytest.approx(official.mcc, abs=1.0e-6)
     assert row["uniqueness"] == pytest.approx(official.uniqueness, abs=1.0e-6)
+    assert row["decoder_pairwise_cosine_similarity"] == pytest.approx(
+        decoder_pairwise_cosine_similarity(inference.W_dec)
+    )
     assert row["classification_precision"] == pytest.approx(
         official.classification.precision, abs=1.0e-6
     )
