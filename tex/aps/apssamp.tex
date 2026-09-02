@@ -29,22 +29,42 @@
 \date{\today}
 
 \begin{abstract}
-Sparse autoencoders (SAEs) are usually selected on a sparsity--reconstruction
-frontier, treating the mean number of active latents, $L_0$, as an operating
-point.  This is insufficient for feature recovery: at an incorrectly low
-$L_0$, an SAE can mix correlated features and reconstruct better than a model
-constrained to the ground-truth directions at the same sparsity.  We formulate
-an SAE as a statistical-mechanical system with input-dependent binary
-occupations.  A mean-field posterior over these occupations turns the Gaussian
-reconstruction energy, its Bernoulli
-fluctuation correction, the support prior, and the posterior entropy into a
-Variational Garrote free energy.  Its posterior expectation defines a soft
-occupation conditional on the sparsity field, rather than a prescribed Top-$K$
-budget.  We propose a three-stage program to test whether density-sweep
-transitions locate the feature-recovery regime on a controlled sparse-coding
-model, the official SynthSAEBench generator, and real language-model
-activations, including settings where reconstruction alone can favor an
-incorrect representation.
+Reproducing a superposition does not guarantee recovering its components.
+Sparse autoencoders (SAEs) are commonly selected on a
+sparsity--reconstruction frontier, treating the mean active-latent count,
+$L_0$, as a free operating point.  At an incorrectly low $L_0$, an SAE can mix
+correlated features and reconstruct better than ground-truth directions at the
+same sparsity.  We therefore treat $L_0$, conditional on a specified feature
+model and granularity, as an inferential target rather than a sparsity budget.
+
+We introduce the Variational Garrote Sparse Autoencoder (VG-SAE), a
+statistical-mechanical formulation with input-dependent Bernoulli occupations
+and deterministic nonnegative amplitudes.  A mean-field posterior defines a
+variational free-energy objective comprising expected Gaussian reconstruction
+energy, its exact diagonal Bernoulli fluctuation correction, a normalized
+sparse-support prior, posterior entropy, and the precision-dependent Gaussian
+normalization.  The sparsity field $\gamma$ is conjugate to occupation, the
+precision $\beta$ is analogous to inverse temperature, and posterior mean
+occupation acts as an order parameter.  Precision is either learned or
+analytically profiled.  Sweeping $\gamma$ produces conditional soft and
+thresholded hard equations of state rather than imposing Top-$K$.
+
+We evaluate VG-SAE on controlled sparse coding and in a 200-million-sample
+study using a pinned released SynthSAEBench artifact, comparing established
+SAELens baselines at measured hard $L_0$; we also provide a staged protocol for
+streamed language-model activations.  Initial single-seed calibrations reveal
+systematic trade-offs among hard occupation, reconstruction, and recovery,
+together with substantial gaps between posterior-mean and thresholded codes.
+VG-SAE is competitive in selected low-density regimes but not uniformly
+superior to established baselines.  Thus current evidence supports its
+diagnostic value, not automatic density identification.  The decisive
+falsifiable hypothesis---that density-response and cross-realization
+uncertainty transitions co-localize with feature recovery even when
+reconstruction favors an incorrect representation---requires multi-seed
+confirmation.  Because $\gamma$ remains external, amplitudes have neither a
+prior nor a posterior, and real activations provide no observable ground-truth
+dictionary or $L_0$, VG-SAE is a sweep-based, model-conditional framework
+rather than a parameter-free identifier.
 \end{abstract}
 
 \maketitle
