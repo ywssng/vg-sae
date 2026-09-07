@@ -1,0 +1,2 @@
+# Default Codex model for this repository.
+model = "gpt-6-astra"
