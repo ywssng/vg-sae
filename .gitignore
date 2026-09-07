@@ -28,8 +28,9 @@ notebooks/
 # OS metadata
 .DS_Store
 
-# Local agent instructions
+# Share root project instructions; keep nested local instructions ignored
 AGENTS.md
+!/AGENTS.md
 
 # Generated experiment artifacts that can become large
 logs/
