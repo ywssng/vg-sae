@@ -1,0 +1,84 @@
+{
+  "run_id": "vg-sae-20260919",
+  "executor_model": "codex-gpt-6-astra",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": true
+  },
+  "created": "2026-09-19T02:28:11Z",
+  "updated": "2026-09-19T03:15:49Z",
+  "gates": {
+    "idea-discovery-evidence": {
+      "verdict": "PASS",
+      "reasons": [],
+      "updated": "2026-09-19T03:15:49Z"
+    }
+  },
+  "phases": [
+    {
+      "phase": "research-lit",
+      "status": "done",
+      "artifact": "idea-stage/IDEA_REPORT.md#literature-landscape",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-19T02:54:07Z"
+    },
+    {
+      "phase": "idea-creator",
+      "status": "done",
+      "artifact": "idea-stage/IDEA_REPORT.md#ranked-ideas",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-19T02:54:07Z"
+    },
+    {
+      "phase": "novelty-check",
+      "status": "provisional",
+      "artifact": "idea-stage/IDEA_REPORT.md#novelty-verification",
+      "verdict_id": "/root/novelty_ultra",
+      "reviewer": "gpt-6-astra",
+      "reviewer_family": "openai",
+      "review_independence": "same-family",
+      "acceptance_status": "provisional",
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-19T02:54:08Z"
+    },
+    {
+      "phase": "research-review",
+      "status": "provisional",
+      "artifact": "idea-stage/IDEA_REPORT.md#external-critical-review",
+      "verdict_id": "/root/critical_ultra",
+      "reviewer": "gpt-6-astra",
+      "reviewer_family": "openai",
+      "review_independence": "same-family",
+      "acceptance_status": "provisional",
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-19T02:56:27Z"
+    },
+    {
+      "phase": "research-refine-pipeline",
+      "status": "done",
+      "artifact": "refine-logs/FINAL_PROPOSAL.md",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-19T03:12:03Z"
+    }
+  ]
+}

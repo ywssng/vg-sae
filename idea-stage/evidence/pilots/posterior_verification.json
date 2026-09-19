@@ -1,0 +1,54 @@
+{
+  "tests": {
+    "command": "CUBLAS_WORKSPACE_CONFIG=:4096:8 CUDA_VISIBLE_DEVICES=2 OMP_NUM_THREADS=1 .venv/bin/python -m pytest tests/test_idea_discovery_posterior.py -q",
+    "passed": 4,
+    "warnings": "One existing TransformerLens utils deprecation warning",
+    "seconds": 5.85
+  },
+  "kernel_witness": {
+    "shape": [
+      8,
+      8
+    ],
+    "finite": true,
+    "device": "NVIDIA RTX A6000",
+    "seed": 0
+  },
+  "full_pilot_first_16_independent_model_vs_enumeration_error": {
+    "orthogonal": 1.7763568394002505e-15,
+    "coherent095": 0.0
+  },
+  "summary_brier_and_exact_marginal_mse_reproduced_from_raw_arrays": true,
+  "csv_data_rows": {
+    "summary.csv": 6,
+    "samples.csv": 12288,
+    "marginals.csv": 32768,
+    "training.csv": 32
+  },
+  "artifacts": {
+    "marginals.csv": {
+      "sha256": "f611cd8facc6c35f0474a80a115b07156b62e76fa10da01154a80e217489d879",
+      "bytes": 2775507
+    },
+    "summary.csv": {
+      "sha256": "1a9a9b93c06da513287c5fa0caeeeffc32f8d9201f30ffe43d544c47ae3749d7",
+      "bytes": 3293
+    },
+    "raw_arrays.npz": {
+      "sha256": "2329550d6c31e133e814b5da927b13ddbf26bcaca275a8dabed424d86a489f37",
+      "bytes": 10329702
+    },
+    "training.csv": {
+      "sha256": "0c57e4279f8afa70bf485a5f0b65bb330c8746c4d1ccb5298887d03b4da92c49",
+      "bytes": 1769
+    },
+    "samples.csv": {
+      "sha256": "a4e2af4fa0c406c6af89b745f1d47a57eb95b7168bd743619ba651740a363506",
+      "bytes": 4334551
+    },
+    "results.json": {
+      "sha256": "0ba6ce8a390a0c8545f30c39064aaf12037ad8614231b3fc7af31daeeaa83bda",
+      "bytes": 22371
+    }
+  }
+}

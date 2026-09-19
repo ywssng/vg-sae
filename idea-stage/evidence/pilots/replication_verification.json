@@ -1,0 +1,20 @@
+{
+  "test_command": ".venv/bin/python -B -m pytest -p no:cacheprovider tests/test_idea_discovery_replication.py -q",
+  "exit_code": 0,
+  "tests_passed": 20,
+  "tests_failed": 0,
+  "pytest_reported_seconds": 6.07,
+  "warnings": [
+    "SAELens imports deprecated transformer_lens.utils; one dependency DeprecationWarning, unrelated to pilot checks."
+  ],
+  "pilot_exit_code": 0,
+  "pilot_cases_passed": 16,
+  "pilot_checks_passed": 16,
+  "pilot_runtime_note": "results.json runtime_seconds measures deterministic case construction, evaluation, and check time after Python/module import; it is not end-to-end process wall time.",
+  "artifact_verification": {
+    "source_script_test_protocol_sha256_match": true,
+    "csv_rows_match_json_rows": true
+  },
+  "environment_note": "Repository .venv Python 3.14.0 / PyTorch 2.13.0+cu126 used on CPU. The default shell python is 3.11.9 without torch and was not used for experiments. No packages were installed.",
+  "gpu_hours": 0
+}

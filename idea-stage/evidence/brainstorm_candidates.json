@@ -1,0 +1,548 @@
+{
+  "schema_version": "1.0",
+  "shard_id": "brainstorm_ultra",
+  "generator": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "ultra",
+    "role": "unranked_generation",
+    "review_status": "same-family provisional; not accepted"
+  },
+  "generated_date": "2026-09-19",
+  "scope": "VG-SAE idea-discovery의 후보 생성 전용. 후보 순서는 순위가 아니며 어떤 후보도 이 shard에서 탈락시키지 않았다.",
+  "candidate_count": 11,
+  "source_context": {
+    "inspected_local_files": [
+      "AGENTS.md",
+      ".agents/project-memory.md",
+      ".agents/skills/idea-creator/SKILL.md",
+      "src/sae_model.py",
+      "src/sae_loss.py",
+      "REPRODUCTION_NOTES.md"
+    ],
+    "code_facts": [
+      "m=sigmoid(linear(x)); a=softplus(linear(x)); h=m*a",
+      "full variance energy=0.5*Σm(1−m)a²||d||²",
+      "unit entropy weight의 support cost는 normalized Bernoulli prior와 entropy의 차이",
+      "deployment code=1[m>threshold]*a; 기본 threshold=0.5",
+      "learned 및 profiled beta가 있으며 entropy off/weight 변경은 objective ablation"
+    ],
+    "supplied_observation": "parent가 전달한 Stage 2 관측은 한 seed와 calibration stream 재사용 조건이다. gamma 1.99에서 hard L0 약 30.25, expected L0 약 543.17, hard/expected EV 약 0.775/0.861; 같은 L0의 JumpReLU EV 약 0.804. 본 shard는 수치를 독립 재검산하지 않았다.",
+    "literature_status": "Analysis of Variational SAE, Probabilistic TopK, vsPAIR, Variational Garrote Sparse Inverse Problems 등의 관련성은 parent의 별도 literature shard가 검증 중이다. 이 파일은 문헌 신규성을 판정하지 않는다."
+  },
+  "pilot_rules": {
+    "max_candidates_to_pilot": 3,
+    "max_hours_per_gpu_per_pilot": 2,
+    "max_total_gpu_hours": 8,
+    "estimates_are_unmeasured": true,
+    "positive_negative_null_are_predeclared_discriminators_not_publication_claims": true
+  },
+  "candidates": [
+    {
+      "payload": {
+        "id": "B01",
+        "lens": "decision_and_hard_code",
+        "method": [
+          "저장된 모델에서 gate 확률, amplitude, posterior 평균 코드와 경성 코드를 같은 입력에 계산한다.",
+          "prior 근처 gate를 amplitude 크기별로 나누고 각 묶음을 실제로 제거해 재구성 변화와 경성 전환 오차를 잰다.",
+          "폭과 gamma가 다른 체크포인트에서 gate 개수, 확률적 재구성 분산, decoded hardening distortion를 함께 비교한다."
+        ],
+        "title": "큰 expected L0가 무해한 prior floor인지, 합쳐서 정보를 운반하는 코드인지 판별",
+        "hypothesis": "expected L0와 배포 시 손실의 관계는 gate 개수보다 amplitude와 decoder 상관에 좌우되므로, prior 근처 gate를 합산한 실제 재구성 기여를 측정해야 두 현상을 구분할 수 있다.",
+        "mechanism": "동일 모델의 prior 근처 gate를 묶음 단위로 제거하는 개입",
+        "analytic_anchor": "π=σ(−γ); a_j=0이면 최적 m_j=π. 반면 V=Σ_j m_j(1−m_j)a_j²||d_j||² 및 H=||D[(1[m>.5]−m)⊙a]||²는 amplitude와 decoder를 반영한다. Σ 개별 squared contribution으로 묶음 제거 효과를 대체하면 decoder 교차항을 놓친다.",
+        "cheap_pilot": {
+          "data": "기존 Stage 2 checkpoint의 별도 holdout 2,048개; 없으면 작은 Stage 1 모델 1개",
+          "design": "|m−π| 구간 및 amplitude 분위수를 미리 정하고 묶음 제거 곡선과 정확한 H를 계산한다. hard/expected EV와 실제 평균 L0를 같이 보고한다.",
+          "controls": [
+            "개수 동일한 무작위 gate 묶음",
+            "동일 Σ(ma) 또는 Σ(ma)² 수준의 묶음",
+            "입력 에너지로 정규화한 decoded 기여"
+          ],
+          "gpu_minutes_estimate": 5,
+          "implementation_days_estimate": 1
+        },
+        "discriminating_outcome": {
+          "positive": "큰 expected L0의 다수는 제거 효과가 작고, 소수의 amplitude가 큰 불확실 gate가 경성 전환 손실을 설명한다. count 기반 평가를 수정할 직접 근거가 된다.",
+          "negative": "prior 근처 gate 전체를 제거하면 상당한 정보가 사라진다. 개별 amplitude가 작다는 이유로 floor를 무해하다고 볼 수 없다는 진단 결과다.",
+          "null": "비교 폭/seed가 없거나 서로 상쇄되는 decoder 기여 때문에 묶음 정의마다 결론이 바뀐다. 일반화 주장은 보류한다."
+        },
+        "contribution": [
+          "diagnostic",
+          "empirical finding"
+        ],
+        "risk": "LOW",
+        "named_risk": "평가 규약 개선만으로는 방법 논문의 기여가 부족할 수 있다. positive/negative 모두 현재 VG-SAE 해석을 바꾸는지 확인해야 한다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.083,
+          "pilot_elapsed_minutes": 15,
+          "full_study_effort": "1–2주"
+        },
+        "so_what": "확률적 support count를 결정적 SAE의 실제 활성 개수와 비교할 때 어떤 추가 증거가 필요한지 명확해진다.",
+        "novelty_note": "측정량과 수식은 표준 분산 및 hardening 오차다. 새로운 지표 이름 자체가 아니라 실제 VG-SAE 결론을 뒤집는 판별 결과가 기여여야 한다."
+      },
+      "dedup_key": "vg_sae|prior_floor_group_ablation|amplitude_weighted_hardening"
+    },
+    {
+      "payload": {
+        "id": "B02",
+        "lens": "decision_and_hard_code",
+        "method": [
+          "학습된 decoder와 gate·amplitude를 고정하고 posterior 평균 재구성 μ=D(ma)를 계산한다.",
+          "정해진 feature 수 안에서 μ에 가장 가까운 경성 코드 D(a⊙z)를 찾는 간단한 선택·교환 절차를 적용한다.",
+          "원래 m>.5, 확률 순위, ma 순위, 입력 x에 직접 맞춘 선택과 같은 sparsity에서 비교한다."
+        ],
+        "title": "decoder 상관을 반영해 posterior를 경성 코드로 바꾸기",
+        "hypothesis": "일반 decoder에서는 각 gate를 독립적으로 0.5에서 자르는 결정과 재구성 손실을 최소화하는 경성 결정이 다르며, 이 차이가 같은 학습 표현에서 회수 가능한 성능 격차를 만든다.",
+        "mechanism": "posterior 평균에 대한 재구성 손실을 최소화하는 support 결정",
+        "analytic_anchor": "고정 a의 binary action z에서 E_q||D(sa)−D(za)||²=||D(ma−za)||²+Σ_j m_j(1−m_j)a_j²||d_j||². 직교 D이고 sparsity 제약이 없을 때만 좌표별 0.5 기준이 squared-loss action으로 바로 나온다. 고정 K에서도 amplitude가 선택 비용에 들어간다.",
+        "cheap_pilot": {
+          "data": "기존 Stage 2 holdout와 L≤16의 열거 가능한 작은 synthetic 사전",
+          "design": "원래 gate의 입력별 K_i와 전역 고정 K를 각각 맞춘다. tiny 문제의 exact binary search로 heuristic의 최적화 오차를 먼저 분리한다.",
+          "controls": [
+            "topK(m)와 topK(ma), 동일한 a readout",
+            "μ에 맞추는 projection와 x에 맞추는 sparse fit 구분",
+            "입력별 K_i 및 전역 K 모두 보고",
+            "JumpReLU/TopK의 동일 decoder 후처리"
+          ],
+          "gpu_minutes_estimate": 15,
+          "implementation_days_estimate": 2
+        },
+        "discriminating_outcome": {
+          "positive": "실제 L0와 decoder를 고정한 상태에서 hardening distortion와 holdout 재구성이 함께 개선되고, 단순 ma 순위만으로 설명되지 않는 상관 의존 효과가 나타난다.",
+          "negative": "x 기반 sparse fit만 좋아지거나 모든 baseline에서 같은 정도로 좋아진다. 이 경우 VG posterior에 특유한 이점은 지지되지 않는다.",
+          "null": "gate가 거의 이진이거나 decoder가 거의 직교여서 두 결정이 일치한다. 상관 높은 조건에서 다시 판별해야 한다."
+        },
+        "contribution": [
+          "new method",
+          "theoretical characterization"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "일반적인 sparse approximation 및 pursuit와 가까우며, 추가 inference 비용으로 얻은 이득일 수 있다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.25,
+          "pilot_elapsed_minutes": 30,
+          "full_study_effort": "2–3주"
+        },
+        "so_what": "현재 학습 결과의 한계가 표현 자체인지, posterior에서 경성 action을 만드는 결정인지 분리한다.",
+        "novelty_note": "topK, NNLS, Bayes decision 원리 자체를 신규성으로 주장하지 않는다. 최근 probabilistic SAE의 실제 readout과 비교가 필요하다."
+      },
+      "dedup_key": "vg_sae|dictionary_aware_binary_posterior_projection|fixed_support_budget"
+    },
+    {
+      "payload": {
+        "id": "B03",
+        "lens": "decision_and_hard_code",
+        "method": [
+          "m>.5가 고른 support를 그대로 고정한다.",
+          "그 support에서 원래 a, posterior 평균 ma, 입력에 맞춰 다시 구한 nonnegative amplitude를 각각 사용한다.",
+          "동일한 amplitude 재적합을 deterministic baseline에도 적용하고 support 회복과 재구성 개선을 따로 기록한다."
+        ],
+        "title": "VG-SAE의 경성 성능 저하는 support 선택과 amplitude 해석 중 어디에서 오는가",
+        "hypothesis": "확률적 학습에서 얻은 a를 경성 support에 그대로 붙이는 것이 재구성 격차의 일부를 만들며, 선택한 feature를 바꾸지 않아도 그 부분을 회수할 수 있다.",
+        "mechanism": "선택 support를 고정한 amplitude readout 교환",
+        "analytic_anchor": "학습에서는 ma가 평균 코드이고 분산 항도 a의 최적값에 영향을 준다. m을 0/1로 바꾼 뒤 같은 a가 고정 support least-squares 최적값일 이유는 없다.",
+        "cheap_pilot": {
+          "data": "기존 Stage 2 checkpoint holdout 1,024개",
+          "design": "A=1[m>.5]a, B=1[m>.5]ma, C=동일 support의 NNLS를 비교한다. decoder bias와 입력 정규화는 동일하게 처리한다.",
+          "controls": [
+            "모든 비교에서 support와 입력별 K_i 동일",
+            "baseline도 동일 횟수 projected-gradient refit",
+            "NNLS 수렴 오차 및 wall time 기록"
+          ],
+          "gpu_minutes_estimate": 10,
+          "implementation_days_estimate": 1
+        },
+        "discriminating_outcome": {
+          "positive": "support가 완전히 같은 상태에서 재구성 격차의 큰 부분이 닫힌다. support 학습이 나쁘다는 해석보다 amplitude readout 불일치가 직접 원인이라는 근거가 된다.",
+          "negative": "amplitude를 재적합해도 격차가 거의 남는다. support 선택 또는 dictionary 자체를 바꿔야 한다.",
+          "null": "hard support가 너무 작거나 solver가 수렴하지 않아 refit 잠재력을 판단할 수 없다."
+        },
+        "contribution": [
+          "diagnostic",
+          "empirical finding"
+        ],
+        "risk": "LOW",
+        "named_risk": "NNLS 후처리 자체는 새 방법이 아니며 baseline도 같은 이득을 얻을 수 있다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.167,
+          "pilot_elapsed_minutes": 20,
+          "full_study_effort": "1주"
+        },
+        "so_what": "다음 실험을 gate 학습, decoder 학습, amplitude 학습 중 어디에 집중할지 결정할 수 있다.",
+        "novelty_note": "독립 방법 신규성 대신 실패 원인을 통제된 개입으로 분해하는 후보다."
+      },
+      "dedup_key": "vg_sae|fixed_support_amplitude_refit|hard_code_gap_decomposition"
+    },
+    {
+      "payload": {
+        "id": "B04",
+        "lens": "probability_correlation_identifiability",
+        "method": [
+          "하나의 입력 방향을 동일한 decoder 열 r개로 복제하고 gate를 prior 확률에 고정한다.",
+          "동일한 posterior 평균 재구성이 나오도록 총 amplitude를 r개에 나누어 목적함수와 경성 코드를 계산한다.",
+          "이어 작은 synthetic 학습에서 폭만 늘려 비슷한 복제·분산 패턴이 실제로 생기는지 검사한다."
+        ],
+        "title": "feature 복제가 gate를 우회하는 정보 경로를 만드는가",
+        "hypothesis": "고정 Bernoulli prior에서 decoder와 amplitude를 복제하면 gate에 입력별 증거를 넣지 않아도 stochastic variance 비용을 줄일 수 있으며, 이 구조가 좋은 soft 재구성과 나쁜 hard 재구성을 동시에 허용한다.",
+        "mechanism": "동일 decoder 방향 사이의 amplitude 분할",
+        "analytic_anchor": "x=A d, ||d||=1, r개 decoder 열=d, 모든 m=π=σ(−γ)<0.5, 모든 a=A/(rπ)이면 Dma=x, Σ KL(q_j||p_j)=0, variance energy=A²(1−π)/(2rπ), hard output=0. 고정 precision의 Gaussian-normalizer를 제외한 비용은 1/r로 감소한다. profiled precision의 log-energy도 eps floor에 닿기 전 감소한다. 이 construction은 목적함수가 허용하는 해의 증거이며 SGD의 일반적 행동을 증명하지 않는다.",
+        "cheap_pilot": {
+          "data": "analytic construction의 상수 A 입력과 one-factor nonnegative synthetic 데이터; r=1,2,4,8,16,32",
+          "design": "먼저 원래 free_energy 구현으로 exact construction의 1/r 곡선과 hard output=0을 검증한다. constant-A arm은 decoder_bias=False, gate weight=0/bias=−γ, amplitude weight=0/bias=inverse_softplus(A/(rπ))로 정확히 구현한다. 이후 같은 seed/step에서 learned dictionary 또는 복제 고정 dictionary를 학습한다. varying-A arm에서 linear-softplus encoder의 정확한 amplitude scaling 표현 가능성을 가정하지 않는다.",
+          "controls": [
+            "fixed β와 profiled/learned β 분리",
+            "폭별 동일 총 prior occupancy π=k0/r 대조",
+            "hard-threshold 출력과 expected 출력 구분",
+            "decoder cosine similarity와 feature별 KL 기록"
+          ],
+          "gpu_minutes_estimate": 20,
+          "implementation_days_estimate": 1
+        },
+        "discriminating_outcome": {
+          "positive": "수식의 폭 의존성이 구현에서 재현되고, 실제 학습도 낮은 gate KL·분산된 amplitude·높은 decoder 중복 쪽으로 이동한다. 목적함수와 배포 코드 사이의 구조적 문제라는 증거다.",
+          "negative": "구성은 성립하지만 실제 학습은 관련 영역에 접근하지 않거나 hardening 문제가 생기지 않는다. 이때는 일반적 실험 실패 원인이 아니라 목적함수의 보장 부재로 범위를 한정한다.",
+          "null": "finite-step 미수렴 또는 eps clamp/정규화 차이로 폭 추세가 가려진다. 수학적 construction와 optimizer 결과를 별도 보고한다."
+        },
+        "contribution": [
+          "theoretical result",
+          "diagnostic",
+          "empirical finding"
+        ],
+        "risk": "HIGH",
+        "named_risk": "단순한 counterexample이 실제 SAE 폭과 데이터에서 나타나는지는 미확인이다. amplitude가 입력 의존적인 모델이므로 gate KL만으로 전체 표현 정보량을 통제할 수 없다는 사실은 일반적인 latent bypass 논의와도 대조해야 한다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.333,
+          "pilot_elapsed_minutes": 40,
+          "full_study_effort": "2–4주"
+        },
+        "so_what": "확률적 gate가 sparse information bottleneck을 제공한다는 주장에 필요한 조건을 드러내며, 높은 expected L0를 무조건 무해한 floor로 해석하는 오류도 막는다.",
+        "novelty_note": "복제로 variance penalty를 줄이는 일반 원리는 Cavazza et al. (AISTATS 2018) Sec. 4 Eq. 13 및 Proposition 1에 이미 있다. 따라서 generic replication theorem은 신규성 대상이 아니다. 남은 후보 차이는 VG의 normalized gate KL이 0인 채로 학습 amplitude가 정보를 운반하고 threshold readout이 비게 되는 현상이 실제 SAE 학습에서 나타나는지다.",
+        "verified_prior_work": [{"title": "Dropout as a Low-Rank Regularizer for Matrix Factorization", "authors": "Cavazza et al.", "year": 2018, "url": "https://proceedings.mlr.press/v84/cavazza18a.html", "pdf_url": "https://proceedings.mlr.press/v84/cavazza18a/cavazza18a.pdf", "locator": "Section 4, Equation 13, Proposition 1", "overlap": "동일 factor 복제로 dropout regularizer를 줄일 수 있고 폭이 가변이면 infimum이 0이 된다는 기존 결과", "verification": "primary PDF inspected"}]
+      },
+      "dedup_key": "vg_sae|replicated_decoder_amplitude_dilution|gate_information_bypass"
+    },
+    {
+      "payload": {
+        "id": "B05",
+        "lens": "probability_correlation_identifiability",
+        "method": [
+          "작은 알려진 dictionary와 고정 nonzero amplitude로 데이터를 만들고 모든 support를 열거해 정답 posterior를 구한다.",
+          "그 데이터에서 VG gate 확률을 학습해 정답 support posterior와 비교한다.",
+          "서로 거의 같은 feature를 늘리면서 개별 feature 확률과 구별 가능한 feature 묶음의 확률을 따로 평가한다."
+        ],
+        "title": "VG gate 확률은 무엇의 불확실성을 나타내는가",
+        "hypothesis": "gate 확률의 보정 상태는 decoder 식별가능성과 amplitude 처리에 의존하며, 개별 feature의 불확실성과 동등한 feature 묶음의 불확실성을 구별해야 확률 출력의 실제 이점을 평가할 수 있다.",
+        "mechanism": "알려진 생성모형의 exact posterior를 기준으로 한 support probability 검증",
+        "analytic_anchor": "고정 D와 고정 활성 amplitude의 작은 Gaussian spike model에서는 p(s|x)∝p(s)exp[−β||x−D(a⊙s)||²/2]를 열거할 수 있다. 현재 learned a(x)의 gate는 이 알려진 모형과 다른 조건부 대상을 근사할 수 있으므로 amplitude 고정/학습을 구분한다.",
+        "cheap_pilot": {
+          "data": "d=8, L=10–12, holdout 512개, orthogonal에 가까운 조건과 유사 feature 쌍 조건",
+          "design": "exact marginal, exact group inclusion probability와 비교해 Brier score, reliability diagram, log score를 계산한다. fixed-amplitude 조건을 먼저 실행한다.",
+          "controls": [
+            "feature permutation 정렬 및 식별불가능 쌍 묶음 평가",
+            "같은 validation set으로 보정한 deterministic encoder score",
+            "correct β와 estimated β 구분",
+            "동일 dictionary에서 fixed amplitude와 learned amplitude 비교"
+          ],
+          "gpu_minutes_estimate": 25,
+          "implementation_days_estimate": 2
+        },
+        "discriminating_outcome": {
+          "positive": "gate 또는 묶음 확률이 exact posterior와 잘 맞고 불확실 사례를 구분한다. VG의 확률 출력이 reconstruction 이상의 실질적 정보를 가진다.",
+          "negative": "재구성이 좋아도 gate가 오보정되거나 참 feature에 과신한다. posterior probability라는 해석의 범위를 축소해야 한다.",
+          "null": "개별 feature의 permutation/동등성 때문에 calibration 대상이 불명확하거나 enumeration reference가 부정확하다. group-level 판별 또는 더 작은 exact case가 필요하다."
+        },
+        "contribution": [
+          "diagnostic",
+          "empirical finding"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "작은 알려진 생성모형에서의 calibration이 real activation의 의미 feature 확률로 이어지지는 않는다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.417,
+          "pilot_elapsed_minutes": 45,
+          "full_study_effort": "2–3주"
+        },
+        "so_what": "VG-SAE가 제공하는 확률이 단순한 smooth gate인지, 실제로 믿고 사용할 uncertainty인지 정면으로 검사한다.",
+        "novelty_note": "variational approximation의 calibration 자체는 오래된 질문이다. 최근 variational SAE 및 probabilistic TopK가 어떤 calibration target을 이미 검증했는지 확인해야 한다."
+      },
+      "dedup_key": "vg_sae|exact_support_posterior_calibration|identifiability_group_control"
+    },
+    {
+      "payload": {
+        "id": "B06",
+        "lens": "probability_correlation_identifiability",
+        "method": [
+          "서로 유사한 두 feature가 경쟁하는 작은 synthetic 데이터를 만든다.",
+          "그 두 gate만 독립 Bernoulli 대신 네 가지 joint state의 확률로 표현한다.",
+          "나머지 architecture와 prior를 맞춘 뒤 정확한 covariance 항을 포함한 재구성 loss로 학습하고 독립 gate와 비교한다."
+        ],
+        "title": "경쟁 feature의 상관 하나를 허용하면 mean-field의 손실이 줄어드는가",
+        "hypothesis": "유사한 decoder 중 하나만 참인 상황에서 posterior의 음의 상관을 표현하지 못하는 점이 VG의 분산 비용과 support recovery를 제한한다.",
+        "mechanism": "미리 정한 feature 쌍에 대한 4-state joint posterior",
+        "analytic_anchor": "한 쌍의 Gaussian energy에는 독립 근사에서 빠진 Cov(s_i,s_j)a_i a_j d_iᵀd_j 항이 있다. 동일한 Bernoulli prior에 대해 4-state KL과 entropy를 정확히 계산해 posterior family만 바꾼다.",
+        "cheap_pilot": {
+          "data": "d=16, L=32; 유사도 0.0/0.8/0.98인 알려진 쌍; 배타적·독립·공동활성 데이터",
+          "design": "첫 pilot에서는 쌍 배정을 oracle로 제공해 family 한계만 테스트한다. learned pairing 문제는 결과가 확인된 후 별도 범위로 남긴다.",
+          "controls": [
+            "동일 marginal prior와 precision",
+            "fixed true dictionary 조건",
+            "쌍당 parameter 증가를 기록하고 동일 크기 encoder 대조",
+            "배타성 없는 negative control"
+          ],
+          "gpu_minutes_estimate": 35,
+          "implementation_days_estimate": 3
+        },
+        "discriminating_outcome": {
+          "positive": "음의 posterior correlation이 필요한 고유사도 조건에서만 분산 비용과 support recovery가 개선된다. mean-field 한계라는 원인별 근거가 된다.",
+          "negative": "exact pair posterior도 이득이 없거나 개선이 encoder 크기만으로 설명된다. 단순 상관 누락이 주원인이라는 가설을 약화한다.",
+          "null": "두 feature가 사실상 완전히 식별불가능해 individual recovery가 의미 없거나, 데이터가 원하는 posterior 상관을 만들지 못한다."
+        },
+        "contribution": [
+          "new method",
+          "empirical finding"
+        ],
+        "risk": "HIGH",
+        "named_risk": "oracle pair의 성공만으로 자동으로 묶음을 찾는 real SAE 방법을 주장할 수 없다. structured variational SAE와 중복 가능성이 높다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.583,
+          "pilot_elapsed_minutes": 60,
+          "full_study_effort": "3–5주"
+        },
+        "so_what": "더 큰 encoder나 훈련량을 쓰기 전에 independent gate 가정 자체가 성능을 제한하는지 알 수 있다.",
+        "novelty_note": "structured variational family와 상관 support 자체는 신규성이 아니다. 어떤 SAE failure regime를 해결하는지가 차별점이어야 한다."
+      },
+      "dedup_key": "vg_sae|pairwise_joint_support_posterior|negative_correlation_variance"
+    },
+    {
+      "payload": {
+        "id": "B07",
+        "lens": "probability_correlation_identifiability",
+        "method": [
+          "학습된 decoder, amplitude와 learned precision을 고정한다.",
+          "encoder가 낸 gate 확률에 정확한 VG 좌표 갱신을 1회, 3회, 10회 적용한다.",
+          "같은 입력에서 loss, 경성 재구성, support 회복의 변화를 측정하고 동일 계산량 amplitude refit과 비교한다."
+        ],
+        "title": "VG-SAE의 병목은 objective인가 한 번의 선형 gate 추론인가",
+        "hypothesis": "단일 linear-sigmoid encoder가 dictionary 경쟁을 반영하지 못해 큰 amortization gap이 생기며, 짧은 posterior refinement가 이를 분리해 드러낸다.",
+        "mechanism": "고정 모델에서 gate posterior만 coordinate minimization",
+        "analytic_anchor": "entropy weight=1 및 fixed β에서 r_−j=x−Σ_{k≠j}m_k a_k d_k일 때 m_j←σ[β a_j d_jᵀr_−j−β a_j²||d_j||²/2−γ]. 순차 exact coordinate update는 해당 고정 free energy를 증가시키지 않는다. profiled β를 섞으면 같은 보장을 그대로 주장할 수 없다.",
+        "cheap_pilot": {
+          "data": "Stage 2 checkpoint의 holdout 512개 및 Stage 1의 coherent dictionary 조건",
+          "design": "learned β를 freeze한 뒤 Gauss–Seidel 갱신 횟수별 free-energy와 hard/expected 성능을 기록한다. 초기 m, frozen a, decoder, bias, gamma를 저장한다.",
+          "controls": [
+            "gate refinement 없는 원래 encoder",
+            "동일 시간 budget의 support 고정 amplitude refit",
+            "m refinement 후 원래 threshold 및 L0를 맞춘 readout 둘 다",
+            "작은 문제의 fully converged coordinate fixed point"
+          ],
+          "gpu_minutes_estimate": 20,
+          "implementation_days_estimate": 2
+        },
+        "discriminating_outcome": {
+          "positive": "몇 번의 갱신이 free energy뿐 아니라 고정 L0의 support/재구성도 개선한다. objective를 바꾸기 전에 amortization을 개선할 근거다.",
+          "negative": "free energy는 내려가지만 support와 경성 성능이 나빠진다. objective 자체와 배포 목표의 불일치라는 더 강한 진단이다.",
+          "null": "초기 encoder가 이미 coordinate optimum에 가깝거나 제한된 update 수가 실제 gap에 비해 부족하다."
+        },
+        "contribution": [
+          "diagnostic",
+          "new method"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "iterative sparse inference와 매우 가까우며 추가 계산량을 사용한 일반적 이득일 수 있다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.333,
+          "pilot_elapsed_minutes": 40,
+          "full_study_effort": "2–3주"
+        },
+        "so_what": "모형 변경과 encoder 개선 중 어느 쪽에 투자해야 하는지를 직접 판별한다.",
+        "novelty_note": "coordinate VG update 자체는 원래 VG 방법의 일부다. SAE에서 gap이 언제 중요하고 어떤 손실로 이어지는지가 기여다."
+      },
+      "dedup_key": "vg_sae|fixed_dictionary_gate_coordinate_refinement|amortization_gap"
+    },
+    {
+      "payload": {
+        "id": "B08",
+        "lens": "prior_and_data_efficiency",
+        "method": [
+          "폭 L에 관계없이 기대하는 전체 support 수 k0를 정한다.",
+          "각 폭에서 prior 확률을 k0/L, gamma를 log((L−k0)/k0)로 설정하고 같은 데이터로 학습한다.",
+          "고정 gamma 방식과 비교해 폭 변화 때 실제 sparsity·recovery·경성 전환 오차가 얼마나 변하는지 본다."
+        ],
+        "title": "모델 폭에 맞춰 총 support prior를 유지하기",
+        "hypothesis": "고정 gamma는 폭이 커질수록 prior 활성 개수도 선형으로 늘리므로, 고정 총 occupancy prior가 폭 변화에 따른 gate floor와 feature 분할 유인을 줄일 수 있다.",
+        "mechanism": "폭에 따른 Bernoulli prior 확률의 단일 재설정",
+        "analytic_anchor": "고정 γ에서는 E_p[K]=Lσ(−γ). π_L=k0/L이면 E_p[K]=k0이다. replicated feature construction에서 variance A²(1−π)/(2Lπ)는 고정 π일 때 1/L이지만 π=k0/L일 때 A²(1−k0/L)/(2k0)로 가므로 해당 희석 경로의 폭 이득이 사라진다. hard L0가 k0가 된다는 보장은 없다.",
+        "cheap_pilot": {
+          "data": "동일 ground-truth sparse coding 데이터, learned width 64/128/256/512, seed 1개",
+          "design": "고정 gamma와 고정 prior occupancy의 작은 폭 sweep을 실행한다. 일반 sparsity retuning으로도 설명되는지 보기 위해 각 폭에서 제한된 gamma search 대조를 둔다.",
+          "controls": [
+            "같은 train tokens와 optimizer schedule",
+            "실제 hard L0가 맞는 비교점",
+            "동일 dictionary replication toy",
+            "폭별 parameter·시간 budget 보고"
+          ],
+          "gpu_minutes_estimate": 35,
+          "implementation_days_estimate": 2
+        },
+        "discriminating_outcome": {
+          "positive": "고정 occupancy가 적은 재보정으로 폭 전반에 안정적인 support/reconstruction을 보이고 replication 유인이 약해진다.",
+          "negative": "prior floor만 낮아지고 실제 회복이나 hardening은 개선되지 않거나 rare features가 사라진다. count 보정과 학습 문제를 구분한다.",
+          "null": "폭별 학습 정도 또는 실제 L0 차이 때문에 prior scaling 효과를 독립적으로 식별할 수 없다."
+        },
+        "contribution": [
+          "new method",
+          "theoretical characterization"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "Bayesian variable selection의 multiplicity adjustment와 사실상 같은 원리이며, gamma 튜닝을 바꾼 것 이상의 SAE-specific 결과가 필요하다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.583,
+          "pilot_elapsed_minutes": 60,
+          "full_study_effort": "2–3주"
+        },
+        "so_what": "VG-SAE의 폭 증가를 공정하게 비교하고 고정 gamma의 숨은 모델 크기 의존성을 제거할 수 있다.",
+        "novelty_note": "Cavazza et al. (AISTATS 2018) Sec. 5 Eq. 15는 retain probability를 폭에 따라 줄여 replication 문제를 교정한다. 이 후보의 k0/L과 완전히 같은 식은 아니지만, 폭 의존 retention 교정 원리는 이미 알려져 있다. generic width-scaling remedy가 아닌 VG의 gate prior·KL·hard readout에서의 효과만 미검증 후보로 남는다.",
+        "verified_prior_work": [{"title": "Dropout as a Low-Rank Regularizer for Matrix Factorization", "authors": "Cavazza et al.", "year": 2018, "url": "https://proceedings.mlr.press/v84/cavazza18a.html", "pdf_url": "https://proceedings.mlr.press/v84/cavazza18a/cavazza18a.pdf", "locator": "Section 5, Equation 15", "overlap": "폭에 따라 retention probability를 낮춰 dropout replication degeneracy를 교정하는 원리", "verification": "primary PDF inspected"}]
+      },
+      "dedup_key": "vg_sae|fixed_total_occupancy_prior|width_scaling"
+    },
+    {
+      "payload": {
+        "id": "B09",
+        "lens": "prior_and_data_efficiency",
+        "method": [
+          "일부 feature는 흔하고 일부는 드문 알려진 sparse coding 데이터를 만든다.",
+          "각 feature의 등장 빈도 prior를 학습 데이터에서 추정하되 Beta prior로 작은 데이터의 추정치를 완화한다.",
+          "전체 빈도가 같은 단일 prior 및 정답 빈도 prior와 비교해 데이터 수에 따른 rare-feature 회복을 잰다."
+        ],
+        "title": "빈도별 prior가 적은 데이터에서 feature 회복을 돕는가",
+        "hypothesis": "모든 feature에 같은 prior를 주는 것이 발생 빈도가 비대칭인 데이터에서 손실을 만들지만, 학습된 feature prior는 적은 데이터에서 rare feature를 억제할 위험도 있다.",
+        "mechanism": "feature별 Bernoulli prior의 shrinkage 추정",
+        "analytic_anchor": "feature별 π_j를 학습할 때 gamma_j m_j만 바꾸면 안 되고 normalized Bernoulli prior와 Beta hyperprior를 모두 포함해야 한다. 먼저 true dictionary를 고정해 feature identity와 prior 추정을 분리한다.",
+        "cheap_pilot": {
+          "data": "d=32, L=64, 균일 및 power-law occurrence; N=512/2,048/8,192",
+          "design": "global π, train-only smoothed empirical π_j, oracle π_j를 비교한다. hyperprior mean와 concentration은 pilot 전에 고정한다.",
+          "controls": [
+            "동일 expected total occupancy",
+            "빈도 구간별 macro recovery와 aggregate reconstruction 함께 보고",
+            "holdout에서 prior를 재추정하지 않음",
+            "oracle prior로 inference/sample-complexity 한계 분리"
+          ],
+          "gpu_minutes_estimate": 40,
+          "implementation_days_estimate": 3
+        },
+        "discriminating_outcome": {
+          "positive": "동일 데이터 수에서 feature별 prior가 특히 약한 rare-feature 신호를 구분하고 oracle-prior 이득의 일부를 회수한다.",
+          "negative": "common feature 쏠림이 강화되며 rare feature 회복이 나빠진다. 빈도 추정과 feature 학습의 자기강화 편향이라는 진단 결과다.",
+          "null": "모든 방법이 표본 부족으로 rare feature를 거의 관찰하지 못하거나 oracle prior에도 이득이 없다."
+        },
+        "contribution": [
+          "new method",
+          "empirical finding"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "learned dictionary에서 feature splitting과 permutation 때문에 빈도 prior가 안정된 대상을 가리키지 못할 수 있다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.667,
+          "pilot_elapsed_minutes": 70,
+          "full_study_effort": "3–4주"
+        },
+        "so_what": "확률적 prior를 도입하는 실익이 있는 데이터 조건과, prior가 오히려 약한 feature를 지우는 조건을 구분한다.",
+        "novelty_note": "empirical Bayes/Beta-Bernoulli 자체는 표준 도구다. SAE에서 rare-feature 데이터 효율과 prior 피드백의 관계가 기여여야 한다."
+      },
+      "dedup_key": "vg_sae|feature_frequency_empirical_bayes|rare_feature_sample_efficiency"
+    },
+    {
+      "payload": {
+        "id": "B10",
+        "lens": "prior_and_data_efficiency",
+        "method": [
+          "입력마다 참 feature 수가 크게 달라지는 synthetic 데이터를 만든다.",
+          "각 입력의 support 비율에 Beta prior를 두고, 그 비율 아래에서 gate가 Bernoulli가 되는 간단한 계층 prior를 사용한다.",
+          "평균 support 수를 맞춘 단일 Bernoulli prior와 비교해 쉬운 입력과 복잡한 입력에 배분되는 feature 수를 평가한다."
+        ],
+        "title": "입력마다 다른 sparsity를 prior가 허용하도록 하기",
+        "hypothesis": "일정한 개별 gate prior가 입력별 support 수의 큰 변동을 제대로 표현하지 못해, 같은 전체 sparsity에서도 쉬운 입력에는 낭비하고 복잡한 입력에는 부족하게 할 수 있다.",
+        "mechanism": "입력별 활성 비율 하나를 적분하거나 변분 제거하는 Beta-Bernoulli count prior",
+        "analytic_anchor": "q(s)=∏Bern(m_j), p(θ)=Beta(α0,b0), p(s|θ)에서 최적 q(θ)=Beta(α0+Σm,b0+L−Σm)를 대입한 support 비용은 log B(α0,b0)−log B(α0+Σm,b0+L−Σm)−ΣH(m_j)이다. 이는 E_s log p(s)를 log p(E_sK)로 치환하는 heuristic와 다르다.",
+        "cheap_pilot": {
+          "data": "d=32, L=64, support count 고정 조건 및 2/8/16 혼합 조건; N=8,192",
+          "design": "prior mean를 같게 두고 concentration만 사전 지정한 2개 값으로 비교한다. input complexity별 L0와 recovery를 따로 평가한다.",
+          "controls": [
+            "global average actual L0 일치",
+            "고정-count 데이터 negative control",
+            "같은 decoder·encoder 크기",
+            "BatchTopK처럼 평균 budget을 공유하는 baseline"
+          ],
+          "gpu_minutes_estimate": 35,
+          "implementation_days_estimate": 3
+        },
+        "discriminating_outcome": {
+          "positive": "평균 L0는 같은데 복잡한 입력의 recovery와 전체 재구성이 좋아지고, 고정-count 조건에서는 효과가 작다.",
+          "negative": "prior가 모두 켜짐/꺼짐 같은 극단을 유도하거나 변화가 실제 정보량과 무관하다. 계층 prior의 positive dependence가 부적절하다는 결과다.",
+          "null": "관측한 입력별 L0 변화가 단지 다른 평균 sparsity 때문에 발생하거나 learned gate가 prior 차이를 거의 무시한다."
+        },
+        "contribution": [
+          "new method",
+          "empirical finding"
+        ],
+        "risk": "HIGH",
+        "named_risk": "계층 prior는 기능적으로 adaptive sparsity 방법과 겹치며, mean-field와 결합하면 과도한 집단 활성 유인이 생길 수 있다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.583,
+          "pilot_elapsed_minutes": 60,
+          "full_study_effort": "3–4주"
+        },
+        "so_what": "확률적 prior가 고정 K나 고정 평균 sparsity 이상의 입력 적응성을 제공할 수 있는지 시험한다.",
+        "novelty_note": "Beta-Bernoulli와 adaptive sparsity는 이미 알려진 개념이다. 최신 probabilistic TopK/변분 SAE의 count model 확인이 필요하다."
+      },
+      "dedup_key": "vg_sae|per_example_beta_bernoulli_count_prior|variable_support_complexity"
+    },
+    {
+      "payload": {
+        "id": "B11",
+        "lens": "prior_and_data_efficiency",
+        "method": [
+          "참 observation noise를 아는 데이터에서 noise 수준과 학습 데이터 수를 바꾼다.",
+          "정답 noise precision을 고정한 모델, precision을 학습한 모델, 매번 profile한 모델을 같은 조건으로 학습한다.",
+          "먼저 알려진 dictionary·amplitude 조건에서 확인한 뒤 learned amplitude 조건을 추가해 precision 변화의 원인을 나눈다."
+        ],
+        "title": "VG의 noise precision이 uncertainty와 데이터 부족을 올바르게 구분하는가",
+        "hypothesis": "현재 joint objective에서 추정하는 precision은 잔차와 posterior variance를 함께 보므로, 부정확한 amortized inference나 학습된 amplitude가 있을 때 물리적 noise와 representation error를 혼동할 수 있다.",
+        "mechanism": "known-noise precision을 이용한 noise·inference 오차 분리",
+        "analytic_anchor": "stationary learned precision과 profiled precision은 β=d/[2E(reconstruction energy+variance energy)]를 공유한다. 따라서 두 방식의 차이를 서로 다른 통계적 optimum이라고 해석하지 않는다. exact generative-model posterior 조건에서부터 비교해야 variance 항 자체를 잘못된 항으로 몰지 않는다.",
+        "cheap_pilot": {
+          "data": "d=16, L=32; noise σ=0.03/0.1/0.3; N=512/8,192",
+          "design": "correct frozen β, learned β, profiled β를 비교하고 βσ², gate calibration, true-support recovery를 기록한다. known-dictionary/fixed-amplitude 조건을 먼저 실행한다.",
+          "controls": [
+            "동일 true model에서 충분히 수렴한 gate coordinate inference",
+            "same fixed β의 matched checkpoint control",
+            "learned/profiler optimizer 속도 차이 구분",
+            "no-variance는 별도 objective ablation으로만 표기"
+          ],
+          "gpu_minutes_estimate": 40,
+          "implementation_days_estimate": 3
+        },
+        "discriminating_outcome": {
+          "positive": "known-noise β가 특히 적은 데이터나 부정확한 amortization에서 calibration·회복을 개선하고, exact inference 조건에서는 차이가 줄어든다. precision feedback의 실패 조건을 특정할 수 있다.",
+          "negative": "학습 precision이 정답 noise와 잘 맞고 fixed β에 이득이 없다. precision 추정이 핵심 병목이라는 설명을 약화한다.",
+          "null": "dictionary 미학습이나 비정상 잔차가 precision 차이를 지배해 noise와 inference 효과를 분리하지 못한다."
+        },
+        "contribution": [
+          "diagnostic",
+          "empirical finding"
+        ],
+        "risk": "MEDIUM",
+        "named_risk": "real activation에는 알려진 정답 noise가 없어 직접적인 noise calibration 주장으로 옮기기 어렵다.",
+        "estimate": {
+          "pilot_gpu_hours": 0.667,
+          "pilot_elapsed_minutes": 70,
+          "full_study_effort": "2–3주"
+        },
+        "so_what": "VG의 noise 적응성이 실제 데이터 효율을 주는지, uncertainty 비용과의 피드백이 sparsity를 왜곡하는지 구분한다.",
+        "novelty_note": "variational empirical-Bayes precision 추정의 bias는 일반적인 문제다. 현재 SAE 목적함수에서 발생 조건과 영향이 확인되어야 기여가 된다."
+      },
+      "dedup_key": "vg_sae|known_noise_precision_control|finite_data_uncertainty_feedback"
+    }
+  ]
+}

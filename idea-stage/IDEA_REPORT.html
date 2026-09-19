@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VG-SAE 연구 아이디어 검증</title>
+
+<meta name="generator" content="ARIS render-html (academic, v1)">
+<meta name="aris:source-path" content="idea-stage/IDEA_REPORT.md">
+<meta name="aris:source-sha256" content="e6699cb3031b82ee1100c36f2764f5c19658db93e73de3d5e8f84bc98d84c779">
+<meta name="aris:generated-at" content="2026-09-19 03:15 UTC">
+
+<!-- MathJax 3 -->
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'] }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+<!-- highlight.js -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/styles/atom-one-light.min.css">
+<script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => hljs.highlightAll());</script>
+
+
+<style>
+:root {
+  --bg: #fdfcf7;
+  --bg-soft: #f4f1ea;
+  --bg-code: #f8f5ec;
+  --ink: #1a1a1a;
+  --ink-soft: #4a4a4a;
+  --ink-muted: #6b6b6b;
+  --primary: #1a4a8c;
+  --primary-soft: #2d6cb8;
+  --accent: #b8390e;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --info-bg: #dbeafe;
+  --good-bg: #d1fae5;
+  --good: #065f46;
+  --bad-bg: #fee2e2;
+  --bad: #991b1b;
+  --border: #d6d0c0;
+  --border-soft: #e8e3d5;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: "Source Serif Pro", "Source Serif 4", "Crimson Pro", "Georgia", "Songti SC", "STSong", serif;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+.layout {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 48px;
+  padding: 40px 32px;
+}
+
+nav.toc {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+  font-size: 13px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-right: 1px solid var(--border-soft);
+  padding-right: 16px;
+}
+nav.toc h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+nav.toc ol { list-style: none; padding: 0; margin: 0; counter-reset: toc; }
+nav.toc ol li { margin: 5px 0; counter-increment: toc; }
+nav.toc ol li::before { content: counter(toc) ". "; color: var(--ink-muted); margin-right: 4px; }
+nav.toc a {
+  color: var(--ink-soft);
+  text-decoration: none;
+  border-bottom: 1px dotted transparent;
+}
+nav.toc a:hover { color: var(--primary); border-bottom-color: var(--primary); }
+nav.toc ul { list-style: none; padding-left: 14px; margin: 3px 0; font-size: 12px; }
+nav.toc ul li::before { content: "→ "; color: var(--border); }
+
+main { min-width: 0; }
+
+header.hero {
+  border-bottom: 3px double var(--primary);
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+header.hero .eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+header.hero h1 {
+  font-size: 32px;
+  line-height: 1.2;
+  margin: 0 0 12px;
+  color: var(--ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+header.hero .subtitle {
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin: 0 0 8px;
+  font-style: italic;
+}
+header.hero .byline {
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+header.hero .byline strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+header.hero .meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--ink-muted);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 14px;
+}
+header.hero .meta span strong { color: var(--ink-soft); }
+header.hero .meta code {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 11px;
+  background: var(--bg-soft);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+}
+
+h2 {
+  font-size: 24px;
+  margin: 44px 0 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink);
+  font-weight: 700;
+}
+h2 .num { color: var(--primary); font-weight: 600; margin-right: 8px; }
+h3 { font-size: 19px; margin: 28px 0 10px; color: var(--primary); font-weight: 600; }
+h4 { font-size: 16px; margin: 20px 0 8px; color: var(--ink); font-weight: 600; }
+
+p { margin: 10px 0; }
+ul, ol { padding-left: 22px; margin: 10px 0; }
+ul li, ol li { margin: 4px 0; }
+ul li::marker { color: var(--primary); }
+
+strong { color: var(--accent); font-weight: 600; }
+em { color: var(--ink-soft); }
+
+a { color: var(--primary); }
+a:hover { color: var(--accent); }
+
+code:not(.hljs) {
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", "Consolas", monospace;
+  font-size: 0.86em;
+  background: var(--bg-code);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-soft);
+  color: var(--accent);
+}
+
+pre {
+  background: #fafaf6;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+  padding: 0;
+  overflow-x: auto;
+  border-radius: 4px;
+  margin: 14px 0;
+}
+pre code, pre code.hljs {
+  background: transparent !important;
+  display: block;
+  padding: 14px 18px !important;
+  font-size: 13px;
+  line-height: 1.55;
+  font-family: "JetBrains Mono", "SF Mono", "Menlo", monospace;
+  color: var(--ink);
+}
+pre.diagram {
+  background: #f9f6ed;
+  border-left: 4px solid var(--accent);
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.callout {
+  margin: 16px 0;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border-left: 4px solid;
+  font-size: 15px;
+}
+.callout-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.callout-info { background: var(--info-bg); border-left-color: var(--primary); }
+.callout-info .callout-title { color: var(--primary); }
+.callout-warn { background: var(--warn-bg); border-left-color: var(--warn); }
+.callout-warn .callout-title { color: var(--warn); }
+.callout-good { background: var(--good-bg); border-left-color: var(--good); }
+.callout-good .callout-title { color: var(--good); }
+.callout-bad { background: var(--bad-bg); border-left-color: var(--bad); }
+.callout-bad .callout-title { color: var(--bad); }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+thead { background: var(--primary); color: white; }
+th, td {
+  text-align: left;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: top;
+}
+th { font-weight: 600; font-size: 13px; letter-spacing: 0.02em; }
+tr:last-child td { border-bottom: none; }
+tbody tr:nth-child(even) { background: var(--bg-soft); }
+
+details.qa, details {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  margin: 10px 0;
+  padding: 0;
+}
+details summary {
+  cursor: pointer;
+  padding: 10px 14px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary);
+  list-style: none;
+  user-select: none;
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::before {
+  content: "▸ ";
+  margin-right: 4px;
+  display: inline-block;
+  transition: transform 0.15s;
+}
+details[open] summary::before { transform: rotate(90deg); }
+details[open] summary { border-bottom: 1px solid var(--border-soft); }
+details > :not(summary) { padding: 10px 14px; }
+details p:first-of-type { margin-top: 8px; }
+
+mjx-container[display="true"] { margin: 12px 0 !important; }
+
+footer.aris-footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+footer.aris-footer a { color: var(--ink-muted); border-bottom: 1px dotted var(--border); }
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; gap: 20px; padding: 20px 16px; }
+  nav.toc {
+    position: static;
+    max-height: none;
+    border-right: none;
+    border-bottom: 1px solid var(--border-soft);
+    padding-right: 0;
+    padding-bottom: 14px;
+  }
+  header.hero h1 { font-size: 24px; }
+  h2 { font-size: 20px; }
+}
+@media print {
+  nav.toc { display: none; }
+  .layout { grid-template-columns: 1fr; padding: 0; }
+  body { background: white; }
+  header.hero { border-bottom-color: var(--ink); }
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc">
+  <h3>Contents</h3>
+  <ol>
+<li><a href="#literature-landscape">Literature Landscape</a>
+</li>
+<li><a href="#project-grounding">Project Grounding</a>
+</li>
+<li><a href="#ranked-ideas">Ranked Ideas</a>
+<ul>
+<li><a href="#1-b04--loss---feature">1순위 B04: 복제의 loss 유인과 실제 feature 선택</a></li>
+<li><a href="#b05-gate--support">대안 B05: gate가 근사하는 support 확률의 대상</a></li>
+<li><a href="#b07-objective--hard-feature">대안 B07: objective 개선과 hard feature 품질의 방향</a></li>
+</ul>
+</li>
+<li><a href="#pilot-results">Pilot Results</a>
+<ul>
+<li><a href="#p1--replica">P1: 구성한 replica의 구현 검증</a></li>
+<li><a href="#p2p3---prior--readout">P2/P3: 학습 폭, prior와 단순 readout</a></li>
+<li><a href="#b05-exact-posterior">B05: exact posterior 대안 파일럿</a></li>
+</ul>
+</li>
+<li><a href="#novelty-verification">Novelty Verification</a>
+</li>
+<li><a href="#external-critical-review">External Critical Review</a>
+</li>
+<li><a href="#refined-proposal">Refined Proposal</a>
+</li>
+<li><a href="#section">보류·제외와 다음 행동</a>
+</li>
+<li><a href="#validation-and-scope">Validation and Scope</a>
+</li>
+<li><a href="#evidence-gate">Evidence Gate</a>
+</li>
+</ol>
+</nav>
+
+<main>
+<header class="hero">
+  <div class="eyebrow">Idea Discovery</div>
+  <h1>VG-SAE 연구 아이디어 검증</h1>
+  <p class="subtitle">문헌 28편 · 후보 11개 · 파일럿과 조건부 연구 계획</p>
+
+  <div class="meta">
+    <span><strong>Source:</strong> <code>idea-stage/IDEA_REPORT.md</code></span>
+    <span><strong>SHA256:</strong> <code>e6699cb3031b</code></span>
+    <span><strong>Rendered:</strong> 2026-09-19 03:15 UTC</span>
+
+  </div>
+</header>
+
+<h1 id="vg-sae-idea-discovery-report">VG-SAE Idea Discovery Report</h1>
+<p><strong>방향:</strong> 현재 프로젝트의 VG-SAE 구현에서 검증 가능한 연구 질문을 발굴한다. <strong>날짜:</strong> 2026-09-19 · <strong>run:</strong> <code>vg-sae-20260919</code> · <strong>검토 모델:</strong> GPT-6 Astra / ultra. <strong>진행:</strong> 문헌 → 후보 → 파일럿 → 신규성 → 비판 리뷰 → 방법 구체화·실험 계획.</p>
+<p>현재 1순위는 <strong>VG-SAE에서 feature 복제의 loss 유인과 실제 희소 feature 품질의 관계</strong>다. 학습된 모델을 고정한 작은 개입으로 유무부터 확인한다. 아직 새로운 방법의 우수성이나 실제 학습에서의 유해한 복제를 입증하지 않았다. 정확한 support posterior로 gate의 의미를 검사하는 B05를 독립 대안으로 남긴다.</p>
+<p>28개 문헌과 11개 후보를 검토하고, B04 관련 진단 묶음 및 B05 두 방향을 실제로 검사했다. B01/B03/B08 실험은 B04의 대조군이며 별개의 새 아이디어 3개로 세지 않는다. 일반적인 replication 이론·폭별 prior 규칙은 선행연구로 확인되어 신규성 주장에서 뺐다. 신규성 심사는 <strong>PROCEED WITH CAUTION, 5/10</strong>이며 same-family provisional이다.</p>
+<h2 id="literature-landscape">Literature Landscape</h2>
+<p><a href="evidence/literature_notes.md">문헌 지도</a>와 <a href="evidence/literature_sources.json">28개 출처 JSON</a>에 저자, canonical ID, 읽은 범위, 출판 상태와 검색 기록을 보존했다. 최근6개월 검색 범위는 2026-03-19–09-19이고 arXiv API 30개 결과와 targeted primary-source 검색을 병행했다. 이 결과가 전수조사나 모든 관련 논문 부재를 증명하지는 않는다.</p>
+<table><thead><tr><th>연구 흐름</th><th>직접 관련 선행</th><th>이번 연구에서 피할 주장</th></tr></thead><tbody><tr><td>VG와 variational sparse coding</td><td><a href="https://arxiv.org/abs/1109.0486">원래 VG</a>, <a href="https://arxiv.org/abs/2509.06383">2025 VG</a>, <a href="https://arxiv.org/abs/2603.12562">inverse problems</a>, <a href="https://arxiv.org/abs/2602.02948">vsPAIR</a></td><td>variational/spike-and-slab SAE 최초</td></tr><tr><td>현대 SAE gate/크기 분리</td><td><a href="https://arxiv.org/abs/2404.16014">Gated</a>, <a href="https://arxiv.org/abs/2407.14435">JumpReLU</a>, <a href="https://arxiv.org/abs/2406.04093">TopK</a>, <a href="https://arxiv.org/abs/2412.06410">BatchTopK</a></td><td>selection/amplitude 분리 최초, shrinkage 해결 최초</td></tr><tr><td>확률 gate와 soft code</td><td><a href="https://openreview.net/pdf?id=zMIIHeKivz">Probabilistic TopK</a>, <a href="https://arxiv.org/abs/2509.22994">vSAE 분석</a>, <a href="https://arxiv.org/abs/2605.06610">SoftSAE</a></td><td>확률화가 자동으로 해석가능성·calibration을 개선</td></tr><tr><td>복제와 폭</td><td><a href="https://proceedings.mlr.press/v84/cavazza18a.html">Cavazza2018</a>, <a href="https://arxiv.org/abs/2609.10299">Diffuse Phase2026</a></td><td>복제에 의한 variance dilution 또는 diffuse phase 최초</td></tr><tr><td>확률 추론과 sparse action</td><td><a href="https://arxiv.org/abs/1408.0464">DSS</a>, <a href="https://arxiv.org/abs/1807.08336">MPM</a>, <a href="https://proceedings.mlr.press/v267/o-neill25a.html">amortization gap</a></td><td>posterior sparse projection, iterative inference 자체의 최초성</td></tr><tr><td>실제 feature 평가</td><td><a href="https://arxiv.org/abs/2508.16560">Sparse but Wrong</a>, <a href="https://arxiv.org/abs/2602.14687">SynthSAEBench</a>, <a href="https://arxiv.org/abs/2605.18229">benchmark reliability</a></td><td>reconstruction 개선을 feature recovery 개선으로 대체</td></tr></tbody></table>
+<p>가장 직접적인 중복은 Cavazza2018의 duplication/width scaling과 SoftSAE의 tiny soft weight leakage다. 남는 기여 후보는 <strong>VG의 conditional gate KL와 입력별 amplitude가 함께 있는 실제 학습 상태에서의 loss 선호와 feature 선택 결과</strong>다.</p>
+<p>Probabilistic TopK의 공개 PDF 검색 인덱스는 확인했지만 직접 full-document 접근은 차단됐다. 저자·최종 accept/reject·proper-score calibration 실험 유무는 미확정이다. 로컬 refs 3편도 조사했으며 개인 Zotero/Obsidian 컬렉션에는 접근하지 않았다.</p>
+<h2 id="project-grounding">Project Grounding</h2>
+<p><a href="evidence/code_audit.md">코드·기존 결과 조사</a>에 함수·원본 CSV·조건을 기록했다. 현재 모델은 <code>m=sigmoid(gate(x))</code>, <code>a=softplus(amplitude(x))</code>, mean code=<code>m*a</code>, hard code=<code>1[m&gt;.5]*a</code>다. 학습 reconstruction energy는 posterior-mean 코드의 제곱오차 절반에 <code>0.5*sum(m*(1-m)*a^2*decoder_norm^2)</code>를 더한다.</p>
+<p>진폭이0이면 m의 optimum은 prior pi=sigmoid(-gamma)다. 따라서 큰 sum(m)만으로 정보가 조밀하게 전달된다고 결론내릴 수 없다. 반대로 작은 amplitude라도 집합의 decoded 기여가 클 수 있으므로 평균 offset과 입력에 따른 변화를 따로 측정한다.</p>
+<p>기존 Stage2 gamma1.99 결과는 hard/mean EV .77504/.86096, hard/expected count 30.2536/543.1684다. 그러나 한seed이고 계수 선택에 쓴 stream을 평가에도 재사용했다. 근처 L0의 다른 SAE보다 VG가 전반적으로 우세하다는 근거로 사용하지 않는다.</p>
+<h2 id="ranked-ideas">Ranked Ideas</h2>
+<p><a href="evidence/brainstorm_candidates.json">전체 후보의 방법·가설·반증 조건</a>은 보존했다. 생성 후 독립 reviewer가 전체 후보를 평가했으며, 아래는 그 jury 순서다.</p>
+<table><thead><tr><th style="text-align:right">순위</th><th>후보</th><th>연구 질문</th><th>위험</th><th>현재 역할</th></tr></thead><tbody><tr><td style="text-align:right">1</td><td>B04</td><td>feature 복제가 gate를 우회하는 정보 경로를 만드는가</td><td>HIGH</td><td>조건부 1순위: 실제 learned mechanism 검증 필요</td></tr><tr><td style="text-align:right">2</td><td>B05</td><td>VG gate 확률은 무엇의 불확실성을 나타내는가</td><td>MEDIUM</td><td>독립 대안: oracle diagnostic, calibration 개선 미확정</td></tr><tr><td style="text-align:right">3</td><td>B07</td><td>VG-SAE의 병목은 objective인가 한 번의 선형 gate 추론인가</td><td>MEDIUM</td><td>대안: 학습 부족과 inference 개선 분리 필요</td></tr><tr><td style="text-align:right">4</td><td>B06</td><td>경쟁 feature의 상관 하나를 허용하면 mean-field의 손실이 줄어드는가</td><td>HIGH</td><td>보류: 이번 파일럿 우선순위 밖</td></tr><tr><td style="text-align:right">5</td><td>B02</td><td>decoder 상관을 반영해 posterior를 경성 코드로 바꾸기</td><td>MEDIUM</td><td>보류: 이번 파일럿 우선순위 밖</td></tr><tr><td style="text-align:right">6</td><td>B11</td><td>VG의 noise precision이 uncertainty와 데이터 부족을 올바르게 구분하는가</td><td>MEDIUM</td><td>보류: 이번 파일럿 우선순위 밖</td></tr><tr><td style="text-align:right">7</td><td>B09</td><td>빈도별 prior가 적은 데이터에서 feature 회복을 돕는가</td><td>MEDIUM</td><td>보류: 이번 파일럿 우선순위 밖</td></tr><tr><td style="text-align:right">8</td><td>B10</td><td>입력마다 다른 sparsity를 prior가 허용하도록 하기</td><td>HIGH</td><td>보류: 이번 파일럿 우선순위 밖</td></tr><tr><td style="text-align:right">9</td><td>B01</td><td>큰 expected L0가 무해한 prior floor인지, 합쳐서 정보를 운반하는 코드인지 판별</td><td>LOW</td><td>B04의 원인분해 대조군</td></tr><tr><td style="text-align:right">10</td><td>B03</td><td>VG-SAE의 경성 성능 저하는 support 선택과 amplitude 해석 중 어디에서 오는가</td><td>LOW</td><td>amplitude/readout 대조군</td></tr><tr><td style="text-align:right">11</td><td>B08</td><td>모델 폭에 맞춰 총 support prior를 유지하기</td><td>MEDIUM</td><td>width/prior 대조군; 간단한 처방은 실패</td></tr></tbody></table>
+<h3 id="1-b04--loss---feature">1순위 B04: 복제의 loss 유인과 실제 feature 선택</h3>
+<p>먼저 학습된 checkpoint에서 gate KL와 variance 기여를 잰다. 그다음 atom 하나를 둘로 나누는 개입의 loss 변화를 검사한다. 마지막으로 선호가 존재할 때만 같은 폭·학습 예산의 대조군과 짧게 재학습하여 실제 feature 회복의 손상이 뒤따르는지 본다.</p>
+<p>가설은 'VG의 조건부 확률 비용이 일부 latent의 복제를 허용하거나 선호하고, 그 유인이 희소 feature 품질을 바꾸는 조건이 있다'다. <strong>후반 인과 연결은 미검증</strong>이다. 새 architecture 없이 검증할 수 있다는 점과 반증이 빠르다는 이유로 선택했다. 고위험 후보이며, 알려진 dropout 메커니즘의 단순 특수화로 끝날 위험이 크다.</p>
+<h3 id="b05-gate--support">대안 B05: gate가 근사하는 support 확률의 대상</h3>
+<p>작은 known dictionary/amplitude/noise에서 모든 support를 열거한다. exact posterior, optimized mean-field, amortized gate를 비교한 뒤 learned amplitude를 허용했을 때 어떤 posterior를 뜻하는지 따로 검사한다. 현재 pilot에서는 Brier가 개선되는 동안 NLL은 악화했다. 확률 출력의 품질을 한 점수로 대신하지 않는다.</p>
+<h3 id="b07-objective--hard-feature">대안 B07: objective 개선과 hard feature 품질의 방향</h3>
+<p>학습 decoder·amplitude·beta를 고정하고 gate coordinate update를 적용한다. free energy와 실제 hard-L0를 맞춘 support/reconstruction을 함께 비교한다. 현재 B05의 gain에는 undertraining 영향이 크므로 이를 새 amortization-capacity 결과로 주장하지 않는다. 별도 learned-checkpoint 실험은 아직 실행하지 않았다.</p>
+<h2 id="pilot-results">Pilot Results</h2>
+<p>새 파일럿은 기본 모델·공식 실험 결과를 수정하지 않고 별도 runner로 수행했다. <a href="evidence/pilots/pilot_summary.json">수치 원본</a>, <a href="evidence/pilots/readout_risk_comparison.json">세 readout 비교</a>, <a href="pilots/training_protocol.md">사전 계획</a>, <a href="pilots/convergence_followup.md">수렴 후속 계획</a>을 제공한다.</p>
+<p><strong>세 지표 구분:</strong> mean은 <code>D(m*a)</code>의 point reconstruction이다. sampled risk는 mean squared reconstruction error에 <code>2*variance_energy</code>를 더한다. hard는 <code>D(1[m&gt;.5]*a)</code>다. JSON의 기존 이름 <code>expected_ev</code>는 mean EV를 뜻하며 sampled EV와 다르다.</p>
+<p>다음 값은 같은 data seed의 optimizer seed 0,1 산술평균이다. 통계적 확증이나 independent-dataset replicate로 해석하지 않는다. cal2048은 최초 training pilot에서 사용하지 않았고 train8192/test2048은 동일 dictionary의 서로 다른 표본이다.</p>
+<table><thead><tr><th style="text-align:right">steps</th><th style="text-align:right">폭</th><th>prior</th><th style="text-align:right">mean EV</th><th style="text-align:right">sampled EV</th><th style="text-align:right">hard EV</th><th style="text-align:right">실제 hard L0</th></tr></thead><tbody><tr><td style="text-align:right">1200</td><td style="text-align:right">32</td><td>fixed_pi</td><td style="text-align:right">0.9045</td><td style="text-align:right">0.8547</td><td style="text-align:right">0.8794</td><td style="text-align:right">1.510</td></tr><tr><td style="text-align:right">1200</td><td style="text-align:right">64</td><td>fixed_pi</td><td style="text-align:right">0.9015</td><td style="text-align:right">0.8488</td><td style="text-align:right">0.8720</td><td style="text-align:right">1.322</td></tr><tr><td style="text-align:right">1200</td><td style="text-align:right">128</td><td>fixed_pi</td><td style="text-align:right">0.9023</td><td style="text-align:right">0.8418</td><td style="text-align:right">0.8517</td><td style="text-align:right">1.344</td></tr><tr><td style="text-align:right">1200</td><td style="text-align:right">128</td><td>fixed_count</td><td style="text-align:right">0.8612</td><td style="text-align:right">0.7995</td><td style="text-align:right">0.8094</td><td style="text-align:right">1.055</td></tr><tr><td style="text-align:right">6000</td><td style="text-align:right">32</td><td>fixed_pi</td><td style="text-align:right">0.9440</td><td style="text-align:right">0.9168</td><td style="text-align:right">0.9262</td><td style="text-align:right">2.131</td></tr><tr><td style="text-align:right">6000</td><td style="text-align:right">128</td><td>fixed_pi</td><td style="text-align:right">0.9409</td><td style="text-align:right">0.9111</td><td style="text-align:right">0.9171</td><td style="text-align:right">1.824</td></tr><tr><td style="text-align:right">6000</td><td style="text-align:right">128</td><td>fixed_count</td><td style="text-align:right">0.9225</td><td style="text-align:right">0.8942</td><td style="text-align:right">0.9007</td><td style="text-align:right">1.309</td></tr></tbody></table>
+<h3 id="p1--replica">P1: 구성한 replica의 구현 검증</h3>
+<p>bias를 끈 단일 상수 입력에서 r=4→256일 때 fixed-gamma variance는 .923632→.014432로64배 감소했다. mean 재구성은 수치적으로 정확하고 KL≈0, hard active count0/hard NMSE1이었다. fixed prior count1 control은 .375→.498047이었다. <a href="evidence/pilots/replication_results.json">원본</a>, <a href="pilots/replication_protocol.md">protocol</a>.</p>
+<p>수식과 구현이 일치한다는 판정이다. 알려진 메커니즘이고 stationary point도 아니다. 학습이 실제로 이 구성을 선택한다는 결과가 아니며, 자유 bias의 상수 데이터는 bias-only 해가 가능하다는 한계가 있다.</p>
+<h3 id="p2p3---prior--readout">P2/P3: 학습 폭, prior와 단순 readout</h3>
+<p>1200steps에서 width에 따른 mean-hard gap을 보았지만 variance energy는 오히려 늘었다. 6000steps에서는 gap이 크게 줄었으며 fixed-count prior도 해결책이 아니었다. 따라서 복제 메커니즘의 발생이나 width-scaled prior의 우수성을 입증하지 못했다.</p>
+<p>sampled EV는 모든 초기10개와 후속6개 configuration에서 hard EV보다 낮았다. mean EV가 높다는 이유만으로 학습 loss가 배포에서 실패했다고 주장할 수 없다.</p>
+<p>same-support ma와 top-ma+ma는 같은 표본별 count에서 초기 EV를 약 .011–.014 낮췄다. 이 비교는 ranking과 amplitude 변경을 섞으므로 ranking 실패로 일반화하지 않는다. reviewer의 일부 checkpoint top-ma+원래a 대조도 의미 있는 개선을 보이지 않았으며, 이 제한된 재평가는 정식 preregistered full baseline을 대체하지 않는다.</p>
+<p>후속 near-prior group 제거에서는 폭128의 약102개 gate를 제거한 raw EV 손실이 .027–.028이었지만 train-mean replacement 후 .007–.008로 줄었다. bias 성분과 입력 정보의 분리가 필요하다. <a href="evidence/pilots/exploratory_group_ablation.csv">탐색적 group 표</a>. 이 분석은 초기 결과를 본 뒤 추가했으며 사전등록 효과로 포장하지 않는다.</p>
+<h3 id="b05-exact-posterior">B05: exact posterior 대안 파일럿</h3>
+<p>known d=K=8, amplitude1, prior .15, beta25, coherent pair cosine .95에서 Brier .033355→.015027, KL(q||p) 3.630812→.067174로 개선됐다. 반면 marginal NLL .130688→.160296으로 악화됐다. exact Brier/NLL은 .011172/.036569이다. <a href="evidence/pilots/posterior_report.md">상세 결과</a>, <a href="evidence/pilots/posterior_results.json">원본</a>, <a href="pilots/posterior_protocol.md">protocol</a>.</p>
+<p>직교 정답은 linear gate가 표현 가능하지만 1500-step 학습 weight≈4.9가 정답25에 못 미쳤다. 따라서 architecture 한계와 학습 부족을 혼동하지 않는다. 3starts의 mean-field fixed point도 전역 최적성의 증명은 아니다. 이 결과는 oracle 진단의 유용성을 지지하며 보편적 calibration 개선을 지지하지 않는다.</p>
+<h2 id="novelty-verification">Novelty Verification</h2>
+<p><a href="evidence/novelty_review.md">신규성 원문 리뷰</a>의 실제 reviewer는 <code>/root/novelty_ultra</code>, <code>gpt-6-astra</code>, <code>ultra</code>다. <strong>PROCEED WITH CAUTION, 5/10</strong>은 위의 좁은 진단 연구를 계속할 가치에 대한 판단이다. 같은 모델 계열의 독립 task 검토이므로 <strong>same-family provisional</strong>이며 외부 학계의 승인이나 신규성 확증이 아니다.</p>
+<p>B05는 별도로 PROCEED6/10이다. generic replication theorem/width-scaling cure를 새 결과로 내세우는 scope는 Cavazza2018을 명명한 ABANDON 판정이다. 원래 후보 전체를 선행연구와 가깝다는 이유만으로 버린 것은 아니다.</p>
+<h2 id="external-critical-review">External Critical Review</h2>
+<p><a href="evidence/critical_review.md">비판 리뷰 원문</a>의 reviewer는 <code>/root/critical_ultra</code>, <code>gpt-6-astra</code>, <code>ultra</code>다. <strong>PROCEED WITH CAUTION</strong>이며 연구가치6/10, 구현 가능성9/10, 현재 top-venue 논문 준비도2/10을 구분했다. 이 리뷰의 초기 판정에는 posterior/6000-step 후속 결과가 포함되지 않았으며, 후속 값은 본 보고서에서 원본 파일에 따라 별도로 설명했다.</p>
+<table><thead><tr><th>reviewer 지적</th><th>반영한 조치</th><th>아직 주장할 수 없는 것</th></tr></thead><tbody><tr><td>mean과 stochastic reconstruction 혼동</td><td>세 risk를 원본 variance에서 재계산</td><td>mean-hard 차이만으로 objective failure</td></tr><tr><td>replication 구성은 비정상점이고 실제 학습 근거 없음</td><td>feasibility와 learned prevalence를 분리</td><td>optimizer가 그 해를 선택함</td></tr><tr><td>1200step 미수렴</td><td>별도6000step 후속, gap 감소 기록</td><td>초기 width 차이의 영구성</td></tr><tr><td>prior 근처 기여에 bias가 섞임</td><td>train-mean-preserving group 제거</td><td>모든 near-prior mass가 입력 정보를 운반</td></tr><tr><td>top-ma+ma는 ranking/amplitude 동시 변경</td><td>두 요인의 분리 대조를 필수 계획에 포함</td><td>ranking이나 일반 sparse projection의 실패</td></tr><tr><td>clone 자체는 mean/hard 출력을 보존</td><td>첫 endpoint를 local loss preference로 제한</td><td>cloning 개입만으로 feature 손상</td></tr></tbody></table>
+<p>다음 실험은 learned checkpoint의 local replication preference를 직접 검사하고, 효과가 있을 때만 짧은 matched-control 재학습으로 실용적 영향을 확인한다. reviewer의 우려를 새 trainable module 추가로 해결하지 않는다. 같은 모델 계열의 독립 검토이므로 <strong>same-family provisional</strong>이다.</p>
+<h2 id="refined-proposal">Refined Proposal</h2>
+<p><a href="../refine-logs/FINAL_PROPOSAL.md">최종 제안</a>, <a href="../refine-logs/EXPERIMENT_PLAN.md">실험 계획</a>, <a href="../refine-logs/EXPERIMENT_TRACKER.md">실행 상태</a>, <a href="docs/research_contract.md">연구 계약</a>을 작성했다.</p>
+<p>방법 리뷰는 같은 GPT-6 Astra ultra reviewer와3회 진행하여 8.00 →8.65 →9.10/10, <strong>READY: 연구 계획 준비도만</strong>이라는 판정을 받았다. <a href="../refine-logs/REVIEW_SUMMARY.md">리뷰 요약</a>과 <a href="../refine-logs/round-3-review.md">최종 리뷰 원문</a>에 판단 근거를 남겼다. 이 점수는 신규성5/10 또는 현재 논문 준비도2/10과 평가 대상이 다르다.</p>
+<p>수정의 핵심은 actual clone과 이상적 복제를 분리하고, optimizer 대칭을 통제하며, 복제 직후와 추가 학습의 변화를 비교하는 것이다. AP 순위 손상과 경성 support 손상은 구분하고, 중복 불변 지표·cutoff sensitivity·별도의 최종 holdout을 사용한다. 후속 clone runner 및 C1/C2 확증 실험은 <strong>아직 구현·실행하지 않았다</strong>.</p>
+<p>첫 세 작업은 R001 intervention/metric 구현 검증 → R002 C1 검사 → C1 통과시에만 R003 paired continuation이다. 후속 계획상 compute ceiling은 7.05GPU-hours이고 현재 소비량이 아니다.</p>
+<h2 id="section">보류·제외와 다음 행동</h2>
+<ul><li>새 probabilistic SAE, 새 support/amplitude 분리, 새 duplication 정리라는 주장은 제외한다.</li><li>B08 standalone cure는 이번 작은 실험에서 지지되지 않아 해결책으로 추천하지 않는다.</li><li>B02/B03의 더 강한 NNLS/pursuit는 실행하지 않았으므로 실패했다고 단정하지 않는다.</li><li>B06/B09/B10/B11은 우선순위 밖에 보존한다. 근거 없이 영구 탈락시키지 않는다.</li><li>다음 실행은 큰 real-activation sweep이 아니라 frozen-checkpoint clone preference 검사와 그 결과에 따른 작은 paired continuation이다.</li></ul>
+<h2 id="validation-and-scope">Validation and Scope</h2>
+<ul><li>새 pilot 관련 deterministic/regression tests <strong>28개 통과</strong>, 관련 새 Python 파일의 compileall 및 diff 형식 검사를 수행했다. 전체 저장소 테스트는 실행하지 않았다.</li><li>기록된 GPU 계산 타이머 합계는 약 <strong>0.0721 GPU-hour</strong>다. interpreter import, startup 및 별도 reviewer 검증은 포함하지 않는다. replication 수치 검사는 CPU였다.</li><li><a href="evidence/validation.json">검증 기록</a>, <a href="../refine-logs/EXPERIMENT_TRACKER.md">후속 실행 상태</a>를 확인한다.</li><li>현재 pilot은 한 data seed/작은 모델/제한된 optimizer seeds의 탐색이다. 실제 feature 손상·calibration 일반화·baseline 우위의 확증은 없다.</li><li>외부 메시지나 알림을 보내지 않았고, 대형 checkpoint·raw array는 outputs에 남긴다.</li></ul>
+<p>&lt;!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:START --&gt;</p>
+<h2 id="evidence-gate">Evidence Gate</h2>
+<p><strong>Status:</strong> PASS</p>
+<p>All required stage records, review receipts, artifacts, and report sections are present. &lt;!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:END --&gt;</p>
+
+<footer class="aris-footer">
+  Generated by <a href="https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep/blob/main/skills/render-html/SKILL.md">ARIS <code>/render-html</code></a> ·
+  source path <code>idea-stage/IDEA_REPORT.md</code> ·
+  SHA256 <code>e6699cb3031b</code> ·
+  generated at 2026-09-19 03:15 UTC.
+  This is a generated view — edit the source Markdown, then re-render.
+</footer>
+</main>
+
+</div>
+</body>
+</html>

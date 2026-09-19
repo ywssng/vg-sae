@@ -1,0 +1,249 @@
+# VG-SAE Idea Discovery Report
+
+**방향:** 현재 프로젝트의 VG-SAE 구현에서 검증 가능한 연구 질문을 발굴한다.
+**날짜:** 2026-09-19 · **run:** `vg-sae-20260919` · **검토 모델:** GPT-6 Astra / ultra.
+**진행:** 문헌 → 후보 → 파일럿 → 신규성 → 비판 리뷰 → 방법 구체화·실험 계획.
+
+현재 1순위는 **VG-SAE에서 feature 복제의 loss 유인과 실제 희소 feature 품질의 관계**다.
+학습된 모델을 고정한 작은 개입으로 유무부터 확인한다. 아직 새로운 방법의 우수성이나
+실제 학습에서의 유해한 복제를 입증하지 않았다. 정확한 support posterior로 gate의
+의미를 검사하는 B05를 독립 대안으로 남긴다.
+
+28개 문헌과 11개 후보를 검토하고, B04 관련 진단 묶음 및 B05 두 방향을 실제로
+검사했다. B01/B03/B08 실험은 B04의 대조군이며 별개의 새 아이디어 3개로 세지 않는다.
+일반적인 replication 이론·폭별 prior 규칙은 선행연구로 확인되어 신규성 주장에서 뺐다.
+신규성 심사는 **PROCEED WITH CAUTION, 5/10**이며 same-family provisional이다.
+
+## Literature Landscape
+
+[문헌 지도](evidence/literature_notes.md)와 [28개 출처 JSON](evidence/literature_sources.json)에
+저자, canonical ID, 읽은 범위, 출판 상태와 검색 기록을 보존했다. 최근6개월 검색 범위는
+2026-03-19–09-19이고 arXiv API 30개 결과와 targeted primary-source 검색을 병행했다.
+이 결과가 전수조사나 모든 관련 논문 부재를 증명하지는 않는다.
+
+| 연구 흐름 | 직접 관련 선행 | 이번 연구에서 피할 주장 |
+|---|---|---|
+| VG와 variational sparse coding | [원래 VG](https://arxiv.org/abs/1109.0486), [2025 VG](https://arxiv.org/abs/2509.06383), [inverse problems](https://arxiv.org/abs/2603.12562), [vsPAIR](https://arxiv.org/abs/2602.02948) | variational/spike-and-slab SAE 최초 |
+| 현대 SAE gate/크기 분리 | [Gated](https://arxiv.org/abs/2404.16014), [JumpReLU](https://arxiv.org/abs/2407.14435), [TopK](https://arxiv.org/abs/2406.04093), [BatchTopK](https://arxiv.org/abs/2412.06410) | selection/amplitude 분리 최초, shrinkage 해결 최초 |
+| 확률 gate와 soft code | [Probabilistic TopK](https://openreview.net/pdf?id=zMIIHeKivz), [vSAE 분석](https://arxiv.org/abs/2509.22994), [SoftSAE](https://arxiv.org/abs/2605.06610) | 확률화가 자동으로 해석가능성·calibration을 개선 |
+| 복제와 폭 | [Cavazza2018](https://proceedings.mlr.press/v84/cavazza18a.html), [Diffuse Phase2026](https://arxiv.org/abs/2609.10299) | 복제에 의한 variance dilution 또는 diffuse phase 최초 |
+| 확률 추론과 sparse action | [DSS](https://arxiv.org/abs/1408.0464), [MPM](https://arxiv.org/abs/1807.08336), [amortization gap](https://proceedings.mlr.press/v267/o-neill25a.html) | posterior sparse projection, iterative inference 자체의 최초성 |
+| 실제 feature 평가 | [Sparse but Wrong](https://arxiv.org/abs/2508.16560), [SynthSAEBench](https://arxiv.org/abs/2602.14687), [benchmark reliability](https://arxiv.org/abs/2605.18229) | reconstruction 개선을 feature recovery 개선으로 대체 |
+
+가장 직접적인 중복은 Cavazza2018의 duplication/width scaling과 SoftSAE의 tiny soft
+weight leakage다. 남는 기여 후보는 **VG의 conditional gate KL와 입력별 amplitude가
+함께 있는 실제 학습 상태에서의 loss 선호와 feature 선택 결과**다.
+
+Probabilistic TopK의 공개 PDF 검색 인덱스는 확인했지만 직접 full-document 접근은
+차단됐다. 저자·최종 accept/reject·proper-score calibration 실험 유무는 미확정이다.
+로컬 refs 3편도 조사했으며 개인 Zotero/Obsidian 컬렉션에는 접근하지 않았다.
+
+## Project Grounding
+
+[코드·기존 결과 조사](evidence/code_audit.md)에 함수·원본 CSV·조건을 기록했다.
+현재 모델은 `m=sigmoid(gate(x))`, `a=softplus(amplitude(x))`, mean code=`m*a`,
+hard code=`1[m>.5]*a`다. 학습 reconstruction energy는 posterior-mean 코드의
+제곱오차 절반에 `0.5*sum(m*(1-m)*a^2*decoder_norm^2)`를 더한다.
+
+진폭이0이면 m의 optimum은 prior pi=sigmoid(-gamma)다. 따라서 큰 sum(m)만으로
+정보가 조밀하게 전달된다고 결론내릴 수 없다. 반대로 작은 amplitude라도 집합의
+decoded 기여가 클 수 있으므로 평균 offset과 입력에 따른 변화를 따로 측정한다.
+
+기존 Stage2 gamma1.99 결과는 hard/mean EV .77504/.86096, hard/expected count
+30.2536/543.1684다. 그러나 한seed이고 계수 선택에 쓴 stream을 평가에도 재사용했다.
+근처 L0의 다른 SAE보다 VG가 전반적으로 우세하다는 근거로 사용하지 않는다.
+
+## Ranked Ideas
+
+[전체 후보의 방법·가설·반증 조건](evidence/brainstorm_candidates.json)은 보존했다.
+생성 후 독립 reviewer가 전체 후보를 평가했으며, 아래는 그 jury 순서다.
+
+| 순위 | 후보 | 연구 질문 | 위험 | 현재 역할 |
+|---:|---|---|---|---|
+| 1 | B04 | feature 복제가 gate를 우회하는 정보 경로를 만드는가 | HIGH | 조건부 1순위: 실제 learned mechanism 검증 필요 |
+| 2 | B05 | VG gate 확률은 무엇의 불확실성을 나타내는가 | MEDIUM | 독립 대안: oracle diagnostic, calibration 개선 미확정 |
+| 3 | B07 | VG-SAE의 병목은 objective인가 한 번의 선형 gate 추론인가 | MEDIUM | 대안: 학습 부족과 inference 개선 분리 필요 |
+| 4 | B06 | 경쟁 feature의 상관 하나를 허용하면 mean-field의 손실이 줄어드는가 | HIGH | 보류: 이번 파일럿 우선순위 밖 |
+| 5 | B02 | decoder 상관을 반영해 posterior를 경성 코드로 바꾸기 | MEDIUM | 보류: 이번 파일럿 우선순위 밖 |
+| 6 | B11 | VG의 noise precision이 uncertainty와 데이터 부족을 올바르게 구분하는가 | MEDIUM | 보류: 이번 파일럿 우선순위 밖 |
+| 7 | B09 | 빈도별 prior가 적은 데이터에서 feature 회복을 돕는가 | MEDIUM | 보류: 이번 파일럿 우선순위 밖 |
+| 8 | B10 | 입력마다 다른 sparsity를 prior가 허용하도록 하기 | HIGH | 보류: 이번 파일럿 우선순위 밖 |
+| 9 | B01 | 큰 expected L0가 무해한 prior floor인지, 합쳐서 정보를 운반하는 코드인지 판별 | LOW | B04의 원인분해 대조군 |
+| 10 | B03 | VG-SAE의 경성 성능 저하는 support 선택과 amplitude 해석 중 어디에서 오는가 | LOW | amplitude/readout 대조군 |
+| 11 | B08 | 모델 폭에 맞춰 총 support prior를 유지하기 | MEDIUM | width/prior 대조군; 간단한 처방은 실패 |
+
+### 1순위 B04: 복제의 loss 유인과 실제 feature 선택
+
+먼저 학습된 checkpoint에서 gate KL와 variance 기여를 잰다. 그다음 atom 하나를
+둘로 나누는 개입의 loss 변화를 검사한다. 마지막으로 선호가 존재할 때만 같은
+폭·학습 예산의 대조군과 짧게 재학습하여 실제 feature 회복의 손상이 뒤따르는지 본다.
+
+가설은 'VG의 조건부 확률 비용이 일부 latent의 복제를 허용하거나 선호하고,
+그 유인이 희소 feature 품질을 바꾸는 조건이 있다'다. **후반 인과 연결은 미검증**이다.
+새 architecture 없이 검증할 수 있다는 점과 반증이 빠르다는 이유로 선택했다.
+고위험 후보이며, 알려진 dropout 메커니즘의 단순 특수화로 끝날 위험이 크다.
+
+### 대안 B05: gate가 근사하는 support 확률의 대상
+
+작은 known dictionary/amplitude/noise에서 모든 support를 열거한다.
+exact posterior, optimized mean-field, amortized gate를 비교한 뒤 learned amplitude를
+허용했을 때 어떤 posterior를 뜻하는지 따로 검사한다. 현재 pilot에서는 Brier가
+개선되는 동안 NLL은 악화했다. 확률 출력의 품질을 한 점수로 대신하지 않는다.
+
+### 대안 B07: objective 개선과 hard feature 품질의 방향
+
+학습 decoder·amplitude·beta를 고정하고 gate coordinate update를 적용한다.
+free energy와 실제 hard-L0를 맞춘 support/reconstruction을 함께 비교한다.
+현재 B05의 gain에는 undertraining 영향이 크므로 이를 새 amortization-capacity
+결과로 주장하지 않는다. 별도 learned-checkpoint 실험은 아직 실행하지 않았다.
+
+## Pilot Results
+
+새 파일럿은 기본 모델·공식 실험 결과를 수정하지 않고 별도 runner로 수행했다.
+[수치 원본](evidence/pilots/pilot_summary.json), [세 readout 비교](evidence/pilots/readout_risk_comparison.json),
+[사전 계획](pilots/training_protocol.md), [수렴 후속 계획](pilots/convergence_followup.md)을 제공한다.
+
+**세 지표 구분:** mean은 `D(m*a)`의 point reconstruction이다. sampled risk는
+mean squared reconstruction error에 `2*variance_energy`를 더한다.
+hard는 `D(1[m>.5]*a)`다.
+JSON의 기존 이름 `expected_ev`는 mean EV를 뜻하며 sampled EV와 다르다.
+
+다음 값은 같은 data seed의 optimizer seed 0,1 산술평균이다. 통계적 확증이나
+independent-dataset replicate로 해석하지 않는다. cal2048은 최초 training pilot에서
+사용하지 않았고 train8192/test2048은 동일 dictionary의 서로 다른 표본이다.
+
+| steps | 폭 | prior | mean EV | sampled EV | hard EV | 실제 hard L0 |
+|---:|---:|---|---:|---:|---:|---:|
+| 1200 | 32 | fixed_pi | 0.9045 | 0.8547 | 0.8794 | 1.510 |
+| 1200 | 64 | fixed_pi | 0.9015 | 0.8488 | 0.8720 | 1.322 |
+| 1200 | 128 | fixed_pi | 0.9023 | 0.8418 | 0.8517 | 1.344 |
+| 1200 | 128 | fixed_count | 0.8612 | 0.7995 | 0.8094 | 1.055 |
+| 6000 | 32 | fixed_pi | 0.9440 | 0.9168 | 0.9262 | 2.131 |
+| 6000 | 128 | fixed_pi | 0.9409 | 0.9111 | 0.9171 | 1.824 |
+| 6000 | 128 | fixed_count | 0.9225 | 0.8942 | 0.9007 | 1.309 |
+
+### P1: 구성한 replica의 구현 검증
+
+bias를 끈 단일 상수 입력에서 r=4→256일 때 fixed-gamma variance는
+.923632→.014432로64배 감소했다. mean 재구성은 수치적으로 정확하고 KL≈0,
+hard active count0/hard NMSE1이었다. fixed prior count1 control은 .375→.498047이었다.
+[원본](evidence/pilots/replication_results.json), [protocol](pilots/replication_protocol.md).
+
+수식과 구현이 일치한다는 판정이다. 알려진 메커니즘이고 stationary point도 아니다.
+학습이 실제로 이 구성을 선택한다는 결과가 아니며, 자유 bias의 상수 데이터는
+bias-only 해가 가능하다는 한계가 있다.
+
+### P2/P3: 학습 폭, prior와 단순 readout
+
+1200steps에서 width에 따른 mean-hard gap을 보았지만 variance energy는 오히려
+늘었다. 6000steps에서는 gap이 크게 줄었으며 fixed-count prior도 해결책이 아니었다.
+따라서 복제 메커니즘의 발생이나 width-scaled prior의 우수성을 입증하지 못했다.
+
+sampled EV는 모든 초기10개와 후속6개 configuration에서 hard EV보다 낮았다.
+mean EV가 높다는 이유만으로 학습 loss가 배포에서 실패했다고 주장할 수 없다.
+
+same-support ma와 top-ma+ma는 같은 표본별 count에서 초기 EV를 약 .011–.014
+낮췄다. 이 비교는 ranking과 amplitude 변경을 섞으므로 ranking 실패로 일반화하지
+않는다. reviewer의 일부 checkpoint top-ma+원래a 대조도 의미 있는 개선을 보이지
+않았으며, 이 제한된 재평가는 정식 preregistered full baseline을 대체하지 않는다.
+
+후속 near-prior group 제거에서는 폭128의 약102개 gate를 제거한 raw EV 손실이
+.027–.028이었지만 train-mean replacement 후 .007–.008로 줄었다. bias 성분과
+입력 정보의 분리가 필요하다. [탐색적 group 표](evidence/pilots/exploratory_group_ablation.csv).
+이 분석은 초기 결과를 본 뒤 추가했으며 사전등록 효과로 포장하지 않는다.
+
+### B05: exact posterior 대안 파일럿
+
+known d=K=8, amplitude1, prior .15, beta25, coherent pair cosine .95에서
+Brier .033355→.015027, KL(q||p) 3.630812→.067174로 개선됐다.
+반면 marginal NLL .130688→.160296으로 악화됐다. exact Brier/NLL은
+.011172/.036569이다. [상세 결과](evidence/pilots/posterior_report.md),
+[원본](evidence/pilots/posterior_results.json), [protocol](pilots/posterior_protocol.md).
+
+직교 정답은 linear gate가 표현 가능하지만 1500-step 학습 weight≈4.9가
+정답25에 못 미쳤다. 따라서 architecture 한계와 학습 부족을 혼동하지 않는다.
+3starts의 mean-field fixed point도 전역 최적성의 증명은 아니다.
+이 결과는 oracle 진단의 유용성을 지지하며 보편적 calibration 개선을 지지하지 않는다.
+
+## Novelty Verification
+
+[신규성 원문 리뷰](evidence/novelty_review.md)의 실제 reviewer는
+`/root/novelty_ultra`, `gpt-6-astra`, `ultra`다. **PROCEED WITH CAUTION, 5/10**은
+위의 좁은 진단 연구를 계속할 가치에 대한 판단이다. 같은 모델 계열의 독립 task
+검토이므로 **same-family provisional**이며 외부 학계의 승인이나 신규성 확증이 아니다.
+
+B05는 별도로 PROCEED6/10이다. generic replication theorem/width-scaling cure를
+새 결과로 내세우는 scope는 Cavazza2018을 명명한 ABANDON 판정이다.
+원래 후보 전체를 선행연구와 가깝다는 이유만으로 버린 것은 아니다.
+
+## External Critical Review
+
+[비판 리뷰 원문](evidence/critical_review.md)의 reviewer는 `/root/critical_ultra`,
+`gpt-6-astra`, `ultra`다. **PROCEED WITH CAUTION**이며 연구가치6/10,
+구현 가능성9/10, 현재 top-venue 논문 준비도2/10을 구분했다.
+이 리뷰의 초기 판정에는 posterior/6000-step 후속 결과가 포함되지 않았으며,
+후속 값은 본 보고서에서 원본 파일에 따라 별도로 설명했다.
+
+| reviewer 지적 | 반영한 조치 | 아직 주장할 수 없는 것 |
+|---|---|---|
+| mean과 stochastic reconstruction 혼동 | 세 risk를 원본 variance에서 재계산 | mean-hard 차이만으로 objective failure |
+| replication 구성은 비정상점이고 실제 학습 근거 없음 | feasibility와 learned prevalence를 분리 | optimizer가 그 해를 선택함 |
+| 1200step 미수렴 | 별도6000step 후속, gap 감소 기록 | 초기 width 차이의 영구성 |
+| prior 근처 기여에 bias가 섞임 | train-mean-preserving group 제거 | 모든 near-prior mass가 입력 정보를 운반 |
+| top-ma+ma는 ranking/amplitude 동시 변경 | 두 요인의 분리 대조를 필수 계획에 포함 | ranking이나 일반 sparse projection의 실패 |
+| clone 자체는 mean/hard 출력을 보존 | 첫 endpoint를 local loss preference로 제한 | cloning 개입만으로 feature 손상 |
+
+다음 실험은 learned checkpoint의 local replication preference를 직접 검사하고,
+효과가 있을 때만 짧은 matched-control 재학습으로 실용적 영향을 확인한다.
+reviewer의 우려를 새 trainable module 추가로 해결하지 않는다.
+같은 모델 계열의 독립 검토이므로 **same-family provisional**이다.
+
+## Refined Proposal
+
+[최종 제안](../refine-logs/FINAL_PROPOSAL.md),
+[실험 계획](../refine-logs/EXPERIMENT_PLAN.md),
+[실행 상태](../refine-logs/EXPERIMENT_TRACKER.md),
+[연구 계약](docs/research_contract.md)을 작성했다.
+
+방법 리뷰는 같은 GPT-6 Astra ultra reviewer와3회 진행하여
+8.00 →8.65 →9.10/10, **READY: 연구 계획 준비도만**이라는 판정을 받았다.
+[리뷰 요약](../refine-logs/REVIEW_SUMMARY.md)과
+[최종 리뷰 원문](../refine-logs/round-3-review.md)에 판단 근거를 남겼다.
+이 점수는 신규성5/10 또는 현재 논문 준비도2/10과 평가 대상이 다르다.
+
+수정의 핵심은 actual clone과 이상적 복제를 분리하고, optimizer 대칭을 통제하며,
+복제 직후와 추가 학습의 변화를 비교하는 것이다. AP 순위 손상과 경성 support
+손상은 구분하고, 중복 불변 지표·cutoff sensitivity·별도의 최종 holdout을 사용한다.
+후속 clone runner 및 C1/C2 확증 실험은 **아직 구현·실행하지 않았다**.
+
+첫 세 작업은 R001 intervention/metric 구현 검증 → R002 C1 검사 →
+C1 통과시에만 R003 paired continuation이다. 후속 계획상 compute ceiling은
+7.05GPU-hours이고 현재 소비량이 아니다.
+
+## 보류·제외와 다음 행동
+
+- 새 probabilistic SAE, 새 support/amplitude 분리, 새 duplication 정리라는 주장은 제외한다.
+- B08 standalone cure는 이번 작은 실험에서 지지되지 않아 해결책으로 추천하지 않는다.
+- B02/B03의 더 강한 NNLS/pursuit는 실행하지 않았으므로 실패했다고 단정하지 않는다.
+- B06/B09/B10/B11은 우선순위 밖에 보존한다. 근거 없이 영구 탈락시키지 않는다.
+- 다음 실행은 큰 real-activation sweep이 아니라 frozen-checkpoint clone preference
+  검사와 그 결과에 따른 작은 paired continuation이다.
+
+
+## Validation and Scope
+
+- 새 pilot 관련 deterministic/regression tests **28개 통과**, 관련 새 Python
+  파일의 compileall 및 diff 형식 검사를 수행했다. 전체 저장소 테스트는 실행하지 않았다.
+- 기록된 GPU 계산 타이머 합계는 약 **0.0721 GPU-hour**다. interpreter import,
+  startup 및 별도 reviewer 검증은 포함하지 않는다. replication 수치 검사는 CPU였다.
+- [검증 기록](evidence/validation.json), [후속 실행 상태](../refine-logs/EXPERIMENT_TRACKER.md)를 확인한다.
+- 현재 pilot은 한 data seed/작은 모델/제한된 optimizer seeds의 탐색이다.
+  실제 feature 손상·calibration 일반화·baseline 우위의 확증은 없다.
+- 외부 메시지나 알림을 보내지 않았고, 대형 checkpoint·raw array는 outputs에 남긴다.
+
+<!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:START -->
+## Evidence Gate
+**Status:** PASS
+
+All required stage records, review receipts, artifacts, and report sections are present.
+<!-- ARIS_IDEA_DISCOVERY_EVIDENCE_GATE:END -->

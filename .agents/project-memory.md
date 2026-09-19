@@ -30,6 +30,28 @@
   평가 방식을 함께 확인한다. 메모리에 숫자를 옮길 때도 결과 경로와 조건을
   근거로 남긴다.
 
+## VG-SAE idea-discovery — 2026-09-19
+
+- 사용자는 현재 프로젝트의 구현을 출발점으로 `idea-discovery`를 실행하고,
+  이 작업의 아이디어 생성·신규성·비판·방법 리뷰를 GPT-6 Astra의 `ultra`
+  effort로 수행하도록 지정했다. 프로젝트의 전역 모델 설정을 바꾼 요청은 아니다.
+- 통합 보고서는 [`idea-stage/IDEA_REPORT.md`](../idea-stage/IDEA_REPORT.md),
+  후속 방법과 실험 계획은 [`refine-logs/`](../refine-logs/)에서 확인한다.
+  28개 문헌과 11개 후보를 검토했으며, 리뷰는 same-family provisional이다.
+- 현재 선택은 learned VG checkpoint에서 복제의 loss 선호와 feature 품질의
+  관계를 검사하는 조건부 진단 연구다. 정확한 support posterior를 이용한
+  gate 대상 검증을 대안으로 남겼다. 일반 dropout 복제 원리와 폭별 prior는
+  기존 연구이므로 새 정리나 해결책으로 주장하지 않는다.
+- 파일럿 코드와 사전 계획은 `scripts/idea_discovery_*`, `idea-stage/pilots/`,
+  작은 원본 결과는 `idea-stage/evidence/pilots/`에 보존한다. 기존 Stage-2
+  결과는 한 seed와 calibration stream 재사용 조건을 함께 읽어야 한다.
+- `expected_ev`라는 파일럿 필드는 posterior-mean reconstruction EV다.
+  stochastic reconstruction risk에는 Bernoulli variance가 추가되며 hard
+  inference와도 구분한다. 큰 expected L0나 mean-hard 차이만으로 실제 복제,
+  calibration 실패, objective 실패를 확정하지 않는다.
+- 후속 clone intervention과 duplicate-invariant 평가 구현·확증 실험은 아직
+  계획 단계다. 파일럿의 성공과 후속 C1/C2의 검증 완료를 혼동하지 않는다.
+
 ## 갱신 원칙
 
 - 다음 작업에 도움이 되는 확정된 결정·사용자 정정·재현성 맥락을 갱신한다.

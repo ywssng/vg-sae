@@ -1,0 +1,39 @@
+{
+  "recorded_at": "2026-09-19T03:07:20.589899+00:00",
+  "new_pilot_tests": {
+    "command": "OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=2 .venv/bin/python -B -m pytest -p no:cacheprovider tests/test_idea_discovery_replication.py tests/test_idea_discovery_training.py tests/test_idea_discovery_posterior.py -q",
+    "passed": 28,
+    "failed": 0,
+    "seconds": 5.69,
+    "warnings": "one existing SAELens/TransformerLens import deprecation"
+  },
+  "compileall": {
+    "scope": "four new pilot/analysis scripts and three new test modules",
+    "exit_code": 0
+  },
+  "git_diff_check": {
+    "command": "git diff --cached --check",
+    "exit_code": 0,
+    "scope": "all task files after Markdown whitespace cleanup"
+  },
+  "full_repository_suite_run": false,
+  "core_model_source_modified": false,
+  "measured_gpu_compute_hours": 0.07209847762663331,
+  "gpu_measurement_scope": "sum one-GPU training/evaluation process timers; excludes interpreter import, startup and independent review checks",
+  "replication_cpu_seconds": 0.02153,
+  "limitations": [
+    "one data seed and two training seeds in learned pilots",
+    "one seed in exact-posterior pilot",
+    "same-family provisional model reviews",
+    "follow-up C1/C2 experiments not run"
+  ],
+  "artifact_checks": {
+    "source_sha256": "e6699cb3031b82ee1100c36f2764f5c19658db93e73de3d5e8f84bc98d84c779",
+    "html_source_hash_match": true,
+    "unintended_formula_emphasis_count": 0,
+    "local_links_verified": 47,
+    "evidence_gate": "PASS",
+    "reviewer": "/root/artifact_check_ultra",
+    "render_issue": "multiplication asterisks wrapped in inline code and re-rendered"
+  }
+}

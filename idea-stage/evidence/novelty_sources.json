@@ -1,0 +1,317 @@
+{
+  "schema_version": "1.0",
+  "date": "2026-09-19",
+  "reviewer": {
+    "agent_id": "/root/novelty_ultra",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "ultra",
+    "status": "same-family provisional",
+    "fresh_task": true,
+    "not_blind_to_supplied_prior_work": true
+  },
+  "candidate_pool": "idea-stage/evidence/brainstorm_candidates.json",
+  "candidate_pool_count": 11,
+  "literature_file": "idea-stage/evidence/literature_sources.json",
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "Prior-matched Bernoulli gates and learned amplitudes can yield accurate reconstructions that disappear under thresholding; determine whether replication occurs in learned VG-SAE.",
+      "queries": [
+        "dropout matrix factorization duplication columns regularization Cavazza 2018",
+        "\"dropout\" \"replication\" \"neurons\" regularization",
+        "\"Bernoulli\" \"prior\" \"sparse autoencoder\" collapse",
+        "\"sparse autoencoder\" \"prior\" \"replication\" 2024 2025 2026",
+        "\"sparse autoencoder\" \"prior floor\"",
+        "\"sparse autoencoder\" \"hardening\" probabilistic",
+        "\"SoftSAE\" sparse autoencoder",
+        "\"variational autoencoder\" \"deterministic\" \"bypass\" \"posterior collapse\""
+      ],
+      "closest": [
+        "pmlr:v84:cavazza18a",
+        "arxiv:2605.06610",
+        "arxiv:2609.10299",
+        "doi:10.1214/10-AOS792"
+      ],
+      "verdict": "PROCEED WITH CAUTION",
+      "delta": "Only a causal empirical characterization of learned conditional-amplitude VG-SAE, with prior-floor/bias and stochastic-risk controls, could carry. Replica variance algebra is already published.",
+      "excluded_claim": {
+        "verdict": "ABANDON",
+        "claim": "The 1/r replication variance dilution and width-dependent retain-probability correction are new mathematical results.",
+        "published_paper": "Cavazza et al., Dropout as a Low-Rank Regularizer for Matrix Factorization, AISTATS 2018, §4 Eq13/Proposition1 and §5 Eq15"
+      }
+    },
+    {
+      "id": "C2",
+      "claim": "Calibrate support gate probabilities against exact support posteriors, distinguishing fixed known amplitudes from learned input-dependent amplitudes and identifiable groups.",
+      "queries": [
+        "\"sparse autoencoder\" \"posterior calibration\"",
+        "\"sparse autoencoder\" \"posterior\" \"calibration\" 2024 2025 2026",
+        "\"Bayesian sparse coding\" \"calibration\" support probability",
+        "\"spike-and-slab\" \"amortized\" \"posterior\" \"calibration\"",
+        "\"Probabilistic TopK Sparse Autoencoder\" \"calibration\" site:openreview.net",
+        "\"spike slab\" autoencoder \"deterministic\" \"amplitude\""
+      ],
+      "closest": [
+        "openreview:zMIIHeKivz",
+        "arxiv:2509.22994",
+        "arxiv:2602.02948",
+        "arxiv:2311.01888",
+        "arxiv:2605.31245"
+      ],
+      "verdict": "PROCEED",
+      "delta": "A checkable delta is the controlled separation of exact-generative support posterior, mean-field approximation, linear amortization, and learned-amplitude target mismatch in this VG architecture; no identical study was located.",
+      "limits": "Not proof of absence. Probabilistic TopK full calibration appendix unavailable; real-activation semantic uncertainty remains ungrounded."
+    },
+    {
+      "id": "C3",
+      "claim": "Dictionary-aware sparse decisions or amplitude readout may improve VG hard reconstruction at fixed support budget.",
+      "queries": [
+        "\"spike and slab\" \"posterior mean\" \"median probability model\"",
+        "\"Bayesian sparse coding\" \"decision\" posterior support reconstruction",
+        "\"Decoupling Shrinkage and Selection in Bayesian Linear Models\" arxiv",
+        "\"The Median Probability Model and Correlated Variables\" Barbieri Berger George",
+        "\"Probabilistic TopK Sparse Autoencoder\" \"inference\" site:openreview.net"
+      ],
+      "closest": [
+        "arxiv:1408.0464",
+        "arxiv:1807.08336",
+        "arxiv:2411.13117",
+        "doi:10.52202/079017-0024"
+      ],
+      "verdict": "PROCEED WITH CAUTION",
+      "delta": "Selection/amplitude attribution in learned VG may be informative, but posterior projection, threshold limits, NNLS, and pursuit are established tools; matched-L0 and compute-matched gains must be VG-specific."
+    },
+    {
+      "id": "C4",
+      "claim": "Frozen-model gate refinement separates amortization error from VG objective and hard-code error.",
+      "queries": [
+        "\"sparse autoencoder\" \"amortization gap\"",
+        "\"sparse coding\" \"variational\" \"amortized\" 2024 2025 2026",
+        "\"Compute Optimal Inference and Provable Amortisation Gap\" sparse",
+        "\"The Price of Amortized inference in Sparse Autoencoders\"",
+        "\"paired mean field\" Titsias Lazaro Gredilla spike slab 2012"
+      ],
+      "closest": [
+        "arxiv:2411.13117",
+        "doi:10.1007/s10994-013-5427-7",
+        "arxiv:2311.01888"
+      ],
+      "primary_lead": "https://github.com/wenjie1835/Local_Amotized_SAEs",
+      "verdict": "PROCEED WITH CAUTION",
+      "delta": "Gate-only coordinate descent under an unchanged known VG free energy can test the direction of hard support quality independently of amplitude refitting. Generic inference-time improvement is already established."
+    }
+  ],
+  "rankings": [
+    {
+      "id": "B04",
+      "rank": 1,
+      "information": 9,
+      "upside": 8,
+      "repo_fit": 10,
+      "novelty_score": 5,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Mechanism-plus-occurrence package; exact algebra not new; includes B01 and B08 as controls."
+    },
+    {
+      "id": "B05",
+      "rank": 2,
+      "information": 9,
+      "upside": 8,
+      "repo_fit": 8,
+      "novelty_score": 6,
+      "recommendation": "PROCEED",
+      "reason": "Exact posterior reference and target separation supply highest independent scientific upside."
+    },
+    {
+      "id": "B07",
+      "rank": 3,
+      "information": 8,
+      "upside": 6,
+      "repo_fit": 9,
+      "novelty_score": 5,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Directional diagnostic for unchanged VG objective; generic amortization gap already published."
+    },
+    {
+      "id": "B06",
+      "rank": 4,
+      "information": 6,
+      "upside": 8,
+      "repo_fit": 6,
+      "novelty_score": 5,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "High upside if a specific competition failure is repaired; oracle pairs and general structured VI are not a finished SAE method."
+    },
+    {
+      "id": "B02",
+      "rank": 5,
+      "information": 7,
+      "upside": 6,
+      "repo_fit": 9,
+      "novelty_score": 4,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Sparse posterior projection is known; must beat pursuit/refit and expose a VG-specific phenomenon."
+    },
+    {
+      "id": "B11",
+      "rank": 6,
+      "information": 7,
+      "upside": 6,
+      "repo_fit": 8,
+      "novelty_score": 5,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Useful variance/precision feedback diagnostic; real-activation noise target is unavailable."
+    },
+    {
+      "id": "B09",
+      "rank": 7,
+      "information": 6,
+      "upside": 6,
+      "repo_fit": 7,
+      "novelty_score": 4,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Rare-feature empirical Bayes can reveal feedback failure; prior adaptation itself standard."
+    },
+    {
+      "id": "B10",
+      "rank": 8,
+      "information": 5,
+      "upside": 6,
+      "repo_fit": 6,
+      "novelty_score": 4,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Beta-Bernoulli adaptive counts face BatchTopK, SoftSAE and sparse attention competition."
+    },
+    {
+      "id": "B01",
+      "rank": 9,
+      "information": 10,
+      "upside": 5,
+      "repo_fit": 10,
+      "novelty_score": 4,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Very useful supporting intervention; unlikely independent paper contribution without consequential finding."
+    },
+    {
+      "id": "B03",
+      "rank": 10,
+      "information": 9,
+      "upside": 4,
+      "repo_fit": 10,
+      "novelty_score": 3,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Cheap necessary attribution control, not a new NNLS or amplitude method."
+    },
+    {
+      "id": "B08",
+      "rank": 11,
+      "information": 8,
+      "upside": 5,
+      "repo_fit": 10,
+      "novelty_score": 3,
+      "recommendation": "PROCEED WITH CAUTION",
+      "reason": "Necessary width/prior control; standalone rule is near dropout scaling and multiplicity priors."
+    }
+  ],
+  "ranking_timing": "Top three communicated to root before training pilot results were received; later results narrow feasible claims but do not retroactively change that pre-result jury.",
+  "recent_window": {
+    "from": "2026-03-19",
+    "through": "2026-09-19",
+    "arxiv_api_success": true
+  },
+  "supplementary_queries": [
+    "site:arxiv.org \"sparse autoencoder\" after:2026-03-19 before:2026-09-20 probabilistic",
+    "site:arxiv.org \"sparse autoencoder\" after:2026-03-19 before:2026-09-20 inference sparsity",
+    "site:openreview.net \"sparse autoencoder\" \"2026\" probabilistic",
+    "site:proceedings.neurips.cc/paper_files/paper/2025 \"sparse autoencoder\" uncertainty inference",
+    "site:openreview.net \"ICLR 2025\" \"sparse autoencoder\" probabilistic",
+    "site:semanticscholar.org \"sparse autoencoder\" \"variational\"",
+    "site:scholar.google.com \"sparse autoencoder\" \"posterior\""
+  ],
+  "source_ids": [
+    "arxiv:2509.06383",
+    "arxiv:2603.12562",
+    "arxiv:2508.16560",
+    "arxiv:2602.14687",
+    "arxiv:2505.11756",
+    "arxiv:2509.22994",
+    "arxiv:2602.02948",
+    "arxiv:2605.18229",
+    "doi:10.52202/079017-0024",
+    "arxiv:2407.14435",
+    "arxiv:2406.04093",
+    "arxiv:2412.06410",
+    "arxiv:2411.13117",
+    "arxiv:1408.0464",
+    "arxiv:1807.08336",
+    "arxiv:2605.06610",
+    "arxiv:2609.10299",
+    "arxiv:2605.31245",
+    "arxiv:2605.05341",
+    "arxiv:2604.14925",
+    "arxiv:2606.14990",
+    "arxiv:2503.09532",
+    "arxiv:2311.01888",
+    "doi:10.1007/s10994-013-5427-7",
+    "pmlr:v84:cavazza18a",
+    "openreview:zMIIHeKivz",
+    "doi:10.1214/10-AOS792",
+    "neurips:2014:8927f9b43dbc13ddfa1edf2103f2191f"
+  ],
+  "closest_primary_read_anchors": [
+    {
+      "id": "pmlr:v84:cavazza18a",
+      "url": "https://proceedings.mlr.press/v84/cavazza18a/cavazza18a.pdf",
+      "anchors": [
+        "§4 Eq13",
+        "Proposition1",
+        "§5 Eq15"
+      ]
+    },
+    {
+      "id": "arxiv:2605.06610",
+      "url": "https://arxiv.org/html/2605.06610v1",
+      "anchors": [
+        "§3 Differentiable Dynamic Selection (small nonzero weight bypass, hard-stage mitigation)"
+      ]
+    },
+    {
+      "id": "openreview:zMIIHeKivz",
+      "url": "https://openreview.net/pdf?id=zMIIHeKivz",
+      "anchors": [
+        "indexed original PDF §3 Eqs6–8"
+      ],
+      "limitation": "direct PDF and forum blocked"
+    },
+    {
+      "id": "arxiv:1408.0464",
+      "url": "https://arxiv.org/html/1408.0464",
+      "anchors": [
+        "§1.5 and §2 posterior summary selection"
+      ]
+    }
+  ],
+  "overall": {
+    "recommendation": "PROCEED WITH CAUTION",
+    "score": 5,
+    "scope": "Bounded diagnostic study of gate-probability semantics and mean/stochastic/hard readouts in learned VG-SAE; no new replication theorem, no established width cure, no broad probabilistic-SAE failure claim.",
+    "publication_ready": false
+  },
+  "pilot_caveats": {
+    "independently_read": [
+      "outputs/idea_discovery_20260919/replication/results.json",
+      "outputs/idea_discovery_20260919/training/seed0/results.json",
+      "outputs/idea_discovery_20260919/training/seed1/results.json",
+      "outputs/idea_discovery_20260919/posterior/results.json"
+    ],
+    "findings": "Construction numerically verified; fixed-pi width gap grows, but learned variance increases rather than follows 1/r. Fixed-count prior and tested simple readouts do not establish a cure.",
+    "root_followup_not_independently_recomputed": [
+      "Near-prior group removal includes a substantial constant/bias contribution, reduced under train-mean replacement."
+    ],
+    "interpretation": "Mean reconstruction is not the expected stochastic loss optimized by the model. Mean-vs-hard gap alone is not proof of objective/deployment mismatch. Learned replica mechanism remains unproven.",
+    "independently_recomputed": [
+      "All ten trained configurations have hard EV greater than stochastic reconstruction EV, calculated from mean EV minus 2*variance_energy/test_centered_energy."
+    ],
+    "posterior_pilot": "Orthogonal posterior is representable by the linear sigmoid, so its observed amortized gap includes incomplete optimization. In coherent095, refinement lowers Brier but increases marginal NLL (.13069 to .16030); cannot claim all calibration improves. Fixed known generative model only."
+  }
+}

@@ -1,0 +1,178 @@
+[
+  {
+    "id": "2509.22994",
+    "title": "Analysis of Variational Sparse Autoencoders",
+    "authors": [
+      "Zachary Baker",
+      "Yuxiao Li"
+    ],
+    "published": "2025-09-26",
+    "updated": "2025-10-01",
+    "categories": [
+      "cs.LG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2509.22994.pdf",
+    "abs_url": "https://arxiv.org/abs/2509.22994"
+  },
+  {
+    "id": "2605.08149",
+    "title": "Feature Rivalry in Sparse Autoencoder Representations: A Mechanistic Study of Uncertainty-Driven Feature Competition in LLMs",
+    "authors": [
+      " Harshavardhan"
+    ],
+    "published": "2026-05-03",
+    "updated": "2026-05-03",
+    "categories": [
+      "cs.LG",
+      "cs.CL"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2605.08149.pdf",
+    "abs_url": "https://arxiv.org/abs/2605.08149"
+  },
+  {
+    "id": "2503.04386",
+    "title": "Time-varying Factor Augmented Vector Autoregression with Grouped Sparse Autoencoder",
+    "authors": [
+      "Yiyong Luo",
+      "Brooks Paige",
+      "Jim Griffin"
+    ],
+    "published": "2025-03-06",
+    "updated": "2025-03-06",
+    "categories": [
+      "stat.ML",
+      "cs.LG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2503.04386.pdf",
+    "abs_url": "https://arxiv.org/abs/2503.04386"
+  },
+  {
+    "id": "2506.01197",
+    "title": "Incorporating Hierarchical Semantics in Sparse Autoencoder Architectures",
+    "authors": [
+      "Mark Muchane",
+      "Sean Richardson",
+      "Kiho Park",
+      "Victor Veitch"
+    ],
+    "published": "2025-06-01",
+    "updated": "2025-06-01",
+    "categories": [
+      "cs.CL",
+      "cs.AI",
+      "cs.LG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2506.01197.pdf",
+    "abs_url": "https://arxiv.org/abs/2506.01197"
+  },
+  {
+    "id": "2604.19974",
+    "title": "Are LLM Uncertainty and Correctness Encoded by the Same Features? A Functional Dissociation via Sparse Autoencoders",
+    "authors": [
+      "Het Patel",
+      "Tiejin Chen",
+      "Hua Wei",
+      "Evangelos E. Papalexakis",
+      "Jia Chen"
+    ],
+    "published": "2026-04-21",
+    "updated": "2026-04-21",
+    "categories": [
+      "cs.LG",
+      "cs.CL"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2604.19974.pdf",
+    "abs_url": "https://arxiv.org/abs/2604.19974"
+  },
+  {
+    "id": "2502.03714",
+    "title": "Universal Sparse Autoencoders: Interpretable Cross-Model Concept Alignment",
+    "authors": [
+      "Harrish Thasarathan",
+      "Julian Forsyth",
+      "Thomas Fel",
+      "Matthew Kowal",
+      "Konstantinos G. Derpanis"
+    ],
+    "published": "2025-02-06",
+    "updated": "2026-03-18",
+    "categories": [
+      "cs.CV",
+      "cs.LG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2502.03714.pdf",
+    "abs_url": "https://arxiv.org/abs/2502.03714"
+  },
+  {
+    "id": "2509.02565",
+    "title": "Understanding sparse autoencoder scaling in the presence of feature manifolds",
+    "authors": [
+      "Eric J. Michaud",
+      "Liv Gorton",
+      "Tom McGrath"
+    ],
+    "published": "2025-09-02",
+    "updated": "2025-09-04",
+    "categories": [
+      "cs.LG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2509.02565.pdf",
+    "abs_url": "https://arxiv.org/abs/2509.02565"
+  },
+  {
+    "id": "2602.10388",
+    "title": "Less is Enough: Synthesizing Diverse Data in LLM Feature Space with Sparse Autoencoders",
+    "authors": [
+      "Zhongzhi Li",
+      "Xuansheng Wu",
+      "Yijiang Li",
+      "Lijie Hu",
+      "Ninghao Liu"
+    ],
+    "published": "2026-02-11",
+    "updated": "2026-05-29",
+    "categories": [
+      "cs.CL",
+      "cs.AI"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2602.10388.pdf",
+    "abs_url": "https://arxiv.org/abs/2602.10388"
+  },
+  {
+    "id": "2506.04859",
+    "title": "Sparse Autoencoders, Again?",
+    "authors": [
+      "Yin Lu",
+      "Xuening Zhu",
+      "Tong He",
+      "David Wipf"
+    ],
+    "published": "2025-06-05",
+    "updated": "2025-06-06",
+    "categories": [
+      "cs.LG",
+      "cs.AI"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2506.04859.pdf",
+    "abs_url": "https://arxiv.org/abs/2506.04859"
+  },
+  {
+    "id": "2605.09887",
+    "title": "The Geometric Wall: Manifold Structure Predicts Layerwise Sparse Autoencoder Scaling Laws",
+    "authors": [
+      "Eslam Zaher",
+      "Maciej Trzaskowski",
+      "Quan Nguyen",
+      "Fred Roosta"
+    ],
+    "published": "2026-05-11",
+    "updated": "2026-05-11",
+    "categories": [
+      "cs.LG",
+      "cs.AI",
+      "math.DG"
+    ],
+    "pdf_url": "https://arxiv.org/pdf/2605.09887.pdf",
+    "abs_url": "https://arxiv.org/abs/2605.09887"
+  }
+]
