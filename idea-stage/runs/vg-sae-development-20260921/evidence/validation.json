@@ -1,0 +1,44 @@
+{
+  "run_id": "vg-sae-development-20260921",
+  "timestamp": "2026-09-21T06:12:48.869739+00:00",
+  "new_tests": {
+    "command": ".venv/bin/python -m pytest -q tests/test_vg_development_holdout.py tests/test_vg_development_training.py tests/test_vg_development_refinement.py tests/test_vg_development_parallel_refinement.py",
+    "passed": 14,
+    "seconds": 6.05,
+    "warnings": [
+      "Installed SAELens imports deprecated transformer_lens.utils; no test failure."
+    ]
+  },
+  "compileall": {
+    "files": "four new pilot runners and their four test files",
+    "exit_code": 0
+  },
+  "core_model_changed": false,
+  "full_repository_suite_run": false,
+  "latex_note": "Methods TeX is a document fragment; content/equations inspected, no standalone PDF compile claimed.",
+  "completed_pilot_routes": [
+    "P1 holdout",
+    "P2 beta recipe",
+    "P3 finite correction"
+  ],
+  "exploratory_followup": "P3b vectorized correction, separate fresh split",
+  "future_confirmatory_experiments_started": false,
+  "immutable_anchor_exact_all_rounds": true,
+  "canonical_markdown_links_checked": true,
+  "independent_artifact_review": "/root/vg_final_artifact_audit",
+  "artifact_review_result": "no unresolved actionable issues; minor P1 rounding corrected",
+  "readiness_review_rounds": 2,
+  "readiness_verdict": "READY; same-family provisional; proposal only",
+  "html": {
+    "source_sha256": "7371596afb1aaaa24d69ee3c7e4b9b9085b3baedfdeb970a5e6c3ee7ccb110cf",
+    "required_anchors": [
+      "literature-landscape",
+      "ranked-ideas",
+      "novelty-verification",
+      "external-critical-review"
+    ],
+    "unintended_emphasis_tags": 0,
+    "key_results_present": true,
+    "browser_visual_test_run": false
+  }
+}

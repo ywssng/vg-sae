@@ -1,0 +1,15 @@
+{
+  "completed_at": "2026-09-21T05:53:51.021379+00:00",
+  "status": "complete",
+  "wall_seconds": 2.254541735164821,
+  "device_allocation_hours": 0.0006262617463815129,
+  "unique_checkpoints": 5,
+  "test_arms": 22,
+  "frozen_selection_sha256": "cf4cff158edaabba911e494960ec9bfb71e51d8996cf87bd58cb6d3b2a42a9bc",
+  "script_sha256": "a7199f59e86ec1e13fbf694435497d9fbfd0c876002f5c912cbc708bdf9835f2",
+  "calibration_npz_sha256": "e2673eb53d79975a56b3c45705ceb28ea7029a7567c8001b586e3db559b75395",
+  "test_npz_sha256": "f65e2bc8dd3fd275b5430fa78ca1585dc886bbee85d3f1fd3fdf997883c29061",
+  "test_selection_performed": false,
+  "training_performed": false,
+  "added_parameters": 0
+}

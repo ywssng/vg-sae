@@ -1,0 +1,128 @@
+{
+  "date": "2026-09-21",
+  "scope": "VG-SAE exact implemented method and closest prior methods; primary sources only for substantive conclusions",
+  "web_queries": [
+    {
+      "query": "\"variational garrote\" \"autoencoder\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"Bernoulli\" \"sparse autoencoder\" variational 2026",
+      "status": "completed"
+    },
+    {
+      "query": "\"probabilistic TopK\" sparse autoencoder",
+      "status": "completed"
+    },
+    {
+      "query": "\"Analysis of Variational Sparse Autoencoders\"",
+      "status": "completed"
+    },
+    {
+      "query": "VSEase variational sparse autoencoder Bernoulli",
+      "status": "completed"
+    },
+    {
+      "query": "\"Sparse-Coding Variational Autoencoders\" spike slab",
+      "status": "completed"
+    },
+    {
+      "query": "\"sparse autoencoder\" \"Bernoulli\" \"KL\" gate",
+      "status": "completed"
+    },
+    {
+      "query": "\"sparse autoencoder\" \"garrote\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"Sparse Autoencoders, Again?\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"VSEase\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"Sparse-Coding Variational Autoencoders\" authors",
+      "status": "completed"
+    },
+    {
+      "query": "\"Variational Sparse Coding\" Tonolini Jensen Murray-Smith 2020 pmlr",
+      "status": "completed"
+    },
+    {
+      "query": "site:openreview.net/pdf \"Probabilistic TopK\" \"GPT\" \"tokens\"",
+      "status": "completed"
+    },
+    {
+      "query": "site:openreview.net/pdf \"Probabilistic TopK\" \"Eq\" \"L\" \"binary\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"Variational Sparse Coding with Learned Thresholding\" \"spike\" \"closed\"",
+      "status": "completed"
+    },
+    {
+      "query": "site:openreview.net \"Probabilistic TopK\" \"Equation\" \"inference\"",
+      "status": "completed"
+    },
+    {
+      "query": "site:openreview.net \"Probabilistic TopK\" \"MSE\" \"concrete\"",
+      "status": "completed"
+    },
+    {
+      "query": "\"variational garrote\" \"autoencoder\" before:2026-09-22",
+      "status": "completed"
+    },
+    {
+      "query": "site:arxiv.org \"sparse autoencoder\" \"Bernoulli\" \"2026\" \"variance\"",
+      "status": "completed"
+    }
+  ],
+  "arxiv_api_queries": [
+    {
+      "query": "(all:\"sparse autoencoder\" OR all:\"sparse coding\") AND (all:variational OR all:Bernoulli OR all:probabilistic OR all:\"spike-and-slab\") AND submittedDate:[202603210000 TO 202609212359]",
+      "status": "success",
+      "max_results": 25,
+      "returned": 17,
+      "results_file": "arxiv_targeted_search.json"
+    }
+  ],
+  "backward_chaining": [
+    {
+      "from": "Analysis of Variational Sparse Autoencoders reference 23",
+      "to": "Sparse Autoencoders, Again? / VAEase",
+      "result": "ICML 2025 primary proceedings and method read; VSEase in citing text is not the canonical method name"
+    },
+    {
+      "from": "vsPAIR reference 54",
+      "to": "Variational Sparse Coding, Tonolini et al.",
+      "result": "UAI 2019/PMLR 2020 primary PDF method read"
+    },
+    {
+      "from": "VSC search and entropy-ELBO related work",
+      "to": "Variational Sparse Coding with Learned Thresholding",
+      "result": "ICML 2022 primary PDF method read"
+    },
+    {
+      "from": "variational sparse coding broad query",
+      "to": "Sparse-Coding Variational Autoencoders",
+      "result": "journal primary manuscript/metadata read"
+    }
+  ],
+  "access_limits": [
+    {
+      "url": "https://openreview.net/pdf?id=zMIIHeKivz",
+      "status": "challenge blocked; indexed primary PDF Eq6-8 and Table1 used"
+    },
+    {
+      "url": "https://direct.mit.edu/neco/article/36/12/2571/124821/Sparse-Coding-Variational-Autoencoders",
+      "status": "direct open failed; indexed primary publisher text and PMC author manuscript used"
+    },
+    {
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13377536/",
+      "status": "initial primary manuscript open succeeded; later find requests returned recaptcha"
+    }
+  ],
+  "negative_search_interpretation": "No exact implemented VG-SAE paper was identified; unindexed or differently named literature may exist. Search is not a novelty proof."
+}

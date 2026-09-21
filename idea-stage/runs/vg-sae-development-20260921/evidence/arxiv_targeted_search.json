@@ -1,0 +1,308 @@
+{
+  "date": "2026-09-21",
+  "query": "(all:\"sparse autoencoder\" OR all:\"sparse coding\") AND (all:variational OR all:Bernoulli OR all:probabilistic OR all:\"spike-and-slab\") AND submittedDate:[202603210000 TO 202609212359]",
+  "max_results": 25,
+  "returncode": 0,
+  "stderr": "",
+  "results": [
+    {
+      "id": "2605.09887",
+      "title": "The Geometric Wall: Manifold Structure Predicts Layerwise Sparse Autoencoder Scaling Laws",
+      "authors": [
+        "Eslam Zaher",
+        "Maciej Trzaskowski",
+        "Quan Nguyen",
+        "Fred Roosta"
+      ],
+      "published": "2026-05-11",
+      "updated": "2026-05-11",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "math.DG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2605.09887.pdf",
+      "abs_url": "https://arxiv.org/abs/2605.09887"
+    },
+    {
+      "id": "2604.02685",
+      "title": "Finding Belief Geometries with Sparse Autoencoders",
+      "authors": [
+        "Matthew Levinson"
+      ],
+      "published": "2026-04-03",
+      "updated": "2026-04-03",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2604.02685.pdf",
+      "abs_url": "https://arxiv.org/abs/2604.02685"
+    },
+    {
+      "id": "2606.01479",
+      "title": "Sparse Autoencoders for Interpretable Emotion Control in Text-to-Speech",
+      "authors": [
+        "Hongfei Du",
+        "Jiacheng Shi",
+        "Sidi Lu",
+        "Gang Zhou",
+        "Ye Gao"
+      ],
+      "published": "2026-05-31",
+      "updated": "2026-05-31",
+      "categories": [
+        "cs.CL"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2606.01479.pdf",
+      "abs_url": "https://arxiv.org/abs/2606.01479"
+    },
+    {
+      "id": "2607.01336",
+      "title": "Mechanistic Interpretability and Causal Feature Steering of Neural Quantum States via Sparse Autoencoders",
+      "authors": [
+        "Zihao Qi",
+        "Christopher Earls"
+      ],
+      "published": "2026-07-01",
+      "updated": "2026-07-01",
+      "categories": [
+        "quant-ph",
+        "cond-mat.dis-nn",
+        "cond-mat.str-el",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2607.01336.pdf",
+      "abs_url": "https://arxiv.org/abs/2607.01336"
+    },
+    {
+      "id": "2605.30162",
+      "title": "BioRefusalAudit: Auditing Biosecurity Refusal Depth Using General and Domain-Fine-Tuned Sparse Autoencoders",
+      "authors": [
+        "Caleb DeLeeuw"
+      ],
+      "published": "2026-05-28",
+      "updated": "2026-05-28",
+      "categories": [
+        "cs.AI",
+        "cs.CR",
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2605.30162.pdf",
+      "abs_url": "https://arxiv.org/abs/2605.30162"
+    },
+    {
+      "id": "2605.31518",
+      "title": "On the Relationship Between Activation Outliers and Feature Death in Sparse Autoencoders",
+      "authors": [
+        "Elana Simon",
+        "Etowah Adams",
+        "James Zou"
+      ],
+      "published": "2026-05-29",
+      "updated": "2026-05-29",
+      "categories": [
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2605.31518.pdf",
+      "abs_url": "https://arxiv.org/abs/2605.31518"
+    },
+    {
+      "id": "2605.16339",
+      "title": "Preference Instability in Reward Models: Detection and Mitigation via Sparse Autoencoders",
+      "authors": [
+        "Shunchang Liu",
+        "Xin Chen",
+        "Belen Martin Urcelay",
+        "Francesco Croce"
+      ],
+      "published": "2026-05-07",
+      "updated": "2026-05-07",
+      "categories": [
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2605.16339.pdf",
+      "abs_url": "https://arxiv.org/abs/2605.16339"
+    },
+    {
+      "id": "2607.24645",
+      "title": "Sparse Autoencoders Encode Both Concepts and Functions: The Downstream Geometry of Feature Effects",
+      "authors": [
+        "Phu Gia Hoang",
+        "Anwoy Chatterjee",
+        "Tanmoy Chakraborty",
+        "Iryna Gurevych",
+        "Subhabrata Dutta"
+      ],
+      "published": "2026-07-27",
+      "updated": "2026-07-27",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2607.24645.pdf",
+      "abs_url": "https://arxiv.org/abs/2607.24645"
+    },
+    {
+      "id": "2608.28191",
+      "title": "EXPOSE: Explainable and Domain-Robust Embeddings from Pathology Vision Foundation Models using Sparse Autoencoders",
+      "authors": [
+        "Anja Witte",
+        "Maximilian Lennartz",
+        "Jan Baumbach",
+        "Guido Sauter",
+        "Stefan Bonn",
+        "Patrick Fuhlert",
+        "Marina Zimmermann"
+      ],
+      "published": "2026-08-28",
+      "updated": "2026-08-28",
+      "categories": [
+        "cs.CV",
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2608.28191.pdf",
+      "abs_url": "https://arxiv.org/abs/2608.28191"
+    },
+    {
+      "id": "2607.27404",
+      "title": "ECG-InterpBench: Benchmarking the Interpretability of ECG Foundation Models with Matched-Scale Sparse Autoencoders",
+      "authors": [
+        "Yixuan Duan",
+        "Wei Qiu"
+      ],
+      "published": "2026-07-29",
+      "updated": "2026-07-29",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2607.27404.pdf",
+      "abs_url": "https://arxiv.org/abs/2607.27404"
+    },
+    {
+      "id": "2608.12573",
+      "title": "Prof-K: Probabilistic One-Pass Filtering for Efficient Top-k Selection",
+      "authors": [
+        "Tadeusz Dziarmaga",
+        "Witold Sikora",
+        "Łukasz Struski",
+        "Jacek Tabor",
+        "Marcin Mazur"
+      ],
+      "published": "2026-08-12",
+      "updated": "2026-08-12",
+      "categories": [
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2608.12573.pdf",
+      "abs_url": "https://arxiv.org/abs/2608.12573"
+    },
+    {
+      "id": "2604.05211",
+      "title": "Learned Dictionaries with Total Variation and Non-Negativity for Single-Cell Microscopy: Convergence Theory and Deterministic Multi-Channel Cell Feature Unification",
+      "authors": [
+        "Erdem Altuntac"
+      ],
+      "published": "2026-04-06",
+      "updated": "2026-04-26",
+      "categories": [
+        "math.NA"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2604.05211.pdf",
+      "abs_url": "https://arxiv.org/abs/2604.05211"
+    },
+    {
+      "id": "2607.05615",
+      "title": "A Coin Flip Per Token: Bernoulli Sparse Steering of Large Language Models",
+      "authors": [
+        "Nima Eshraghi",
+        "Lovedeep Gondara",
+        "Yuqing Huang",
+        "Sagarika Suresh",
+        "Leizer Teran",
+        "Jithin Pradeep",
+        "Xiaotong Xu",
+        "Fanny Chevalier"
+      ],
+      "published": "2026-07-06",
+      "updated": "2026-07-06",
+      "categories": [
+        "cs.LG"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2607.05615.pdf",
+      "abs_url": "https://arxiv.org/abs/2607.05615"
+    },
+    {
+      "id": "2606.22352",
+      "title": "On the Sparsity-Storage-Accuracy Tradeoff in Parsimoniously Activated Dictionary Learning",
+      "authors": [
+        "Zihui Zhao",
+        "Yuanbo Tang",
+        "Yang Li"
+      ],
+      "published": "2026-06-21",
+      "updated": "2026-06-21",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2606.22352.pdf",
+      "abs_url": "https://arxiv.org/abs/2606.22352"
+    },
+    {
+      "id": "2607.19386",
+      "title": "Building Fast, Evaluating Slow: Pipeline Choices Dominate Autointerpretability Score Variance",
+      "authors": [
+        "Sinie van der Ben",
+        "Neele Roch",
+        "Anna Hedström",
+        "Mennatallah El-Assady"
+      ],
+      "published": "2026-07-01",
+      "updated": "2026-07-01",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2607.19386.pdf",
+      "abs_url": "https://arxiv.org/abs/2607.19386"
+    },
+    {
+      "id": "2606.06857",
+      "title": "Interpreting Brain Responses to Language with Sparse Features from Language Models",
+      "authors": [
+        "Michael A. Lepori",
+        "Kendrick Kay",
+        "Greta Tuckute"
+      ],
+      "published": "2026-06-05",
+      "updated": "2026-07-05",
+      "categories": [
+        "cs.CL"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2606.06857.pdf",
+      "abs_url": "https://arxiv.org/abs/2606.06857"
+    },
+    {
+      "id": "2608.30462",
+      "title": "Enhancing Low-Resource Language Reasoning via High-Resource Language Feature Transfer",
+      "authors": [
+        "Minju Song",
+        "Hyeon Hwang",
+        "Junhyun Lee",
+        "Jaewoo Kang"
+      ],
+      "published": "2026-08-31",
+      "updated": "2026-08-31",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "pdf_url": "https://arxiv.org/pdf/2608.30462.pdf",
+      "abs_url": "https://arxiv.org/abs/2608.30462"
+    }
+  ]
+}

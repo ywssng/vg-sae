@@ -1,0 +1,32 @@
+{
+  "frozen_at": "2026-09-21T05:53:50.635263+00:00",
+  "test_generated": false,
+  "selected_eta": 0.5,
+  "selected_readout": "count_a",
+  "selected_calibration_row": {
+    "run_id": "vgsae_gamma=3.0_seed=0",
+    "method": "vgsae",
+    "eta": 0.5,
+    "readout": "count_a",
+    "n_samples": 512,
+    "hard_latent_relative_error": 0.6960617037532812,
+    "hard_support_f1": 0.3414206372405729,
+    "hard_explained_variance": 0.4914418139385761,
+    "hard_reconstruction_mse": 0.08196433497366562,
+    "actual_nonzero_l0": 3.234375,
+    "candidate_support_l0": 3.234375,
+    "decoder_recovery_cosine": 0.7513376474380493,
+    "truth_l0": 10.12890625,
+    "tp": 1168.0,
+    "fp": 488.0,
+    "fn": 4018.0,
+    "conditional_free_energy": 24.243134619917107,
+    "conditional_mean_residual_half_sse": 3.041981208471837,
+    "conditional_bernoulli_variance_half_sse": 1.0720692302150032,
+    "conditional_stochastic_half_sse": 4.11405043868684,
+    "conditional_expected_l0": 56.159423792197344,
+    "conditional_metrics_scope": "probability state with original amplitude; no refit/PG coefficients"
+  },
+  "selection_rule": "Cal min count_a latent error subject F1>=base-.01 and mean conditional F<=base+1e-10; tie smaller eta",
+  "calibration_metrics_sha256": "f907a7d0536952d22d26807a6799a4a6df9125aeca6d49ce569770aa60629556"
+}

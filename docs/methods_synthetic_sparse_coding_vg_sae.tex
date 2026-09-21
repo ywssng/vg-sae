@@ -53,6 +53,12 @@ The tensors $(x_\mu, z^\star_\mu, s^\star_\mu, D^\star)$ are retained, allowing
 direct evaluation of reconstruction, dictionary recovery, amplitude shrinkage,
 and support-selection quality.
 
+This describes the reusable generator. The named Stage-1 baseline fixes
+$\kappa=0$ and $\sigma=0$ and validates frequency settings so that clipping does
+not change the requested mean density. Its constant and uniform amplitude
+ablations match the active second moment of the exponential distribution;
+these settings must be recorded separately from the generic noisy generator.
+
 \subsection{VG-SAE}
 \label{sec:vg_sae_method}
 
@@ -101,6 +107,11 @@ over the mean-field Bernoulli posterior gives the per-sample energy
 \end{equation}
 The second term is the Bernoulli variance correction and follows from
 $s_{\mu j}^2=s_{\mu j}$ and independence of the mean-field selectors.
+The expectation is exact conditional on the current amplitudes and dictionary.
+Only the support variables are variational: $a_\mu(x_\mu)$ is an amortized point
+estimate, without an amplitude-prior or amplitude-entropy term. We therefore
+interpret this as a conditional VG objective, rather than claiming a complete
+generative-model ELBO or calibrated semantic support probabilities.
 
 The sparsity prior follows the VG paper:
 \begin{equation}
@@ -173,6 +184,21 @@ Eq.~\eqref{eq:vg_sae_full_beta}.  In the learned mode,
 \end{equation}
 so stationarity recovers the profiled minibatch value.  Entropy weights other
 than one, or disabling entropy, are treated as ablations.
+This per-batch identity does not imply that minimizing the expected minibatch
+log-energy is equivalent to learning a single global precision: the average of
+batch log-energies is generally not the logarithm of the full-data mean energy.
+
+At deployment, the native sparse code is
+\begin{equation}
+  h^{\mathrm{hard}}_{\mu j}
+  =a_{\mu j}\mathbf{1}[m_{\mu j}>\tau],\qquad \tau=0.5.
+\end{equation}
+We distinguish the squared error of the posterior-mean reconstruction,
+the support-averaged squared error (twice Eq.~\eqref{eq:vg_sae_energy}), and
+the hard-code reconstruction error. The historical Stage-1 evaluator uses
+$m\geq\tau$ for its hard metric family, whereas the public inference API uses
+$m>\tau$; protocols must state the tie convention. Sparsity comparisons use
+actual hard-code counts, not the expected Bernoulli count $\sum_jm_j$.
 
 \subsection{SAELens-aligned baselines}
 \label{sec:saelens_baselines}

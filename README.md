@@ -19,6 +19,15 @@ export are not locally reimplemented. The project's `StandardSAE` name aliases
 upstream `StandardTrainingSAE`; `to_inference_sae` returns the corresponding
 upstream inference architecture.
 
+The research objective is to develop a new SAE based on Variational Garrote.
+The [research brief](RESEARCH_BRIEF.md) fixes that objective, and the current
+[development report](idea-stage/IDEA_REPORT.md),
+[method proposal](refine-logs/FINAL_PROPOSAL.md), and
+[experiment roadmap](refine-logs/EXPERIMENT_PLAN.md) refine the existing method
+and validation pipeline. The report includes independently selected holdout
+evaluations and bounded training/inference pilots; it distinguishes completed
+evidence from planned confirmation runs.
+
 ## Quick Start
 
 ```bash

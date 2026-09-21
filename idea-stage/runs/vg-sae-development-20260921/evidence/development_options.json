@@ -1,0 +1,1022 @@
+{
+  "schema_version": "1.0",
+  "created_date": "2026-09-21",
+  "shard_id": "vg_development_options",
+  "review_route": "gpt-6-astra/ultra; same-family provisional idea generation",
+  "immutable_anchor": "현재 Variational Garrote 기반 SAE 자체를 개발한다. 주방법을 다른 주제와 순위 경쟁시키거나 복제/실패진단 논문으로 대체하지 않는다.",
+  "anchor_method": {
+    "steps": [
+      "x를 중심화하고 m=sigmoid(W_g x+b_g), a=softplus(W_a x+b_a)를 계산한다.",
+      "D(m⊙a)의 squared reconstruction과 analytic Bernoulli reconstruction variance를 합친다.",
+      "Bernoulli prior와 entropy(KL)를 더한 VG free energy로 encoder/decoder 및 learned beta를 훈련하거나 beta를 batch-profile한다.",
+      "명시한 threshold의 hard code로 sparse inference를 평가하고 mean/sample 결과를 별도로 보관한다."
+    ],
+    "learned_beta_objective": "F(x)=β/2·(||x−b−D(m⊙a)||²+Σ_j m_j(1−m_j)a_j²||d_j||²)−d/2·log β+KL(product Bern(m_j) || product Bern(sigmoid(−γ)))+constant. Unit entropy일 때만 이 KL 표현과 같다.",
+    "interpretation_boundary": "a(x)는 point estimate다. 구현에 없는 slab posterior/prior를 가정한 full generative ELBO 또는 calibrated semantic posterior로 표현하지 않는다. Vector-output VG, analytic risk, stochastic support, amortization 각 요소의 일반성은 선행을 인정한다. 정확한 현재 조합의 차이는 문헌 검토와 empirical mechanism evidence로 평가한다.",
+    "novelty_status": "방법 개발은 유효한 고정 목표다. related probabilistic SAE의 존재는 배제 기준이 아니며 current exact combination의 신규성 확증도 아직 없다."
+  },
+  "generation_scope": "12개는 동일한 주방법의 개선·검증 경로이며 새로운 연구 주제 목록이 아니다. required pipeline fixes는 선택적 novel extension과 구분한다. 이 shard는 순위·탈락·최종 pilot 선택을 하지 않았다.",
+  "pilot_protocol": {
+    "selection": "후속 jury가 전체 12개를 보고 최대3개 pilot을 선택한다. 아래 비용은 각 선택지 하나의 pilot 예상치이지 모든 옵션을 실행하는 승인이 아니다.",
+    "budget": "pilot당 GPU별 사전 추정≤2h, 총≤8 GPU-hours. GPU 가용성과 50-update 또는 8k-token timing을 launch 직전에 확인한다. 예측 초과 시 grid/샘플을 줄인 사전 계획을 기록한다.",
+    "experimental_hygiene": [
+      "train/cal/test 분리; 정규화는 train에서만 fit.",
+      "실제 achieved hard L0를 비교하고 mean count를 hard cost로 쓰지 않음.",
+      "baseline 공식 pinned 구현, 독립 LR/control tuning 기회와 trial count 기록.",
+      "positive/negative/null threshold는 pilot 의사결정용 practical margin이며 통계적 확증 기준 아님.",
+      "pilot의 optimizer seeds 1–2개는 확증용 multi-seed 결과가 아님.",
+      "같은 run을 재사용하면 config/hash가 동일한 경우에만 중복 compute를 없앤다. 여러 옵션을 한 거대 pilot으로 묶어3개 제한을 우회하지 않음.",
+      "현재 public API/config 변경 없이 별도 runner에서 variant 검증.",
+      "prior scope의 actual negative controls는 해당 조건의 근거로만 인용. 기존 main method의 실패를 선언하는 전제가 아님."
+    ]
+  },
+  "source_registry": {
+    "brief": {
+      "path": "RESEARCH_BRIEF.md",
+      "scope": "전체. 사용자가 정정한 주 연구 목표와 pilot 제약."
+    },
+    "model": {
+      "path": "src/sae_model.py",
+      "scope": "VGSAEConfig, VariationalGarroteSAE._encode_centered, free_energy, encode_inference. 실제 구현 확인."
+    },
+    "train": {
+      "path": "src/sae_train.py",
+      "scope": "fit_sae와 _fit_saelens_sae의 optimizer, history, checkpoint 선택 의미."
+    },
+    "native": {
+      "path": "src/saelens_vg.py",
+      "scope": "posterior/encode_hard, lambda_warm_up_steps, training_forward_pass, beta normalization folding."
+    },
+    "data": {
+      "path": "src/sae_data.py",
+      "scope": "독립 Bernoulli support, frequency_skew, 같은 active second moment의 amplitude 법칙, noise_std."
+    },
+    "readme": {
+      "path": "README.md",
+      "scope": "Stage1/2/3 실행 조건, pinned baselines, calibration/test 재사용, Stage2 200M 조건."
+    },
+    "repro": {
+      "path": "REPRODUCTION_NOTES.md",
+      "scope": "unit entropy의 해석, beta 모드, normalization, 지표·calibration 한계."
+    },
+    "audit": {
+      "path": "idea-stage/runs/vg-sae-development-20260921/evidence/pipeline_evidence.json",
+      "scope": "같은 실행의 병렬 data-audit 산출물. 저장 상태와 현재 실행 여부를 구분; 곡선 최적점은 탐색용."
+    },
+    "s1_exp_skew": {
+      "path": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/summary/last/final_metrics.csv",
+      "scope": "raw source. data-audit가 추출한 test-curve 최저 hard_generalization_error: VG .695009 at L0 3.387695; TopK .733242 at L0 5.918945. matched-L0 비교나 독립 선택 검증이 아님."
+    },
+    "s1_exp_uniform": {
+      "path": "outputs/runs/stage1_ablation3_uniformfreq_beta_profiled_din128_gt1024_sae1024_sd001_seed0/summary/last/final_metrics.csv",
+      "scope": "raw source. test-curve 최저 hard_generalization_error: VG .731427 at L0 2.430664; L1 .794273 at L0 5.074219. 한 seed의 탐색 신호."
+    },
+    "s2_learned": {
+      "path": "outputs/runs/stage2_synthsaebench16k_l0calibrated_sae4096_train200m_test25m_beta_learned_seed0/summary/last/final_metrics.csv",
+      "scope": "200M train, one seed, calibration stream에서 VG hard L0 15.2734/19.2196, EV .774664/.773552, MCC .620424/.717338, mean-hard EV gap .005163/.060133."
+    },
+    "s2_profiled": {
+      "path": "outputs/runs/stage2_synthsaebench16k_l0calibrated_sae4096_train200m_test25m_beta_profiled_seed0/summary/last/final_metrics.csv",
+      "scope": "200M train, one seed, calibration stream에서 VG hard L0 15.1432/19.3444, EV .772420/.778897, MCC .608007/.723992, mean-hard EV gap .004953/.054756."
+    },
+    "convergence": {
+      "path": "idea-stage/pilots/convergence_followup.md",
+      "scope": "이전 1200-step 파일럿 말기에 beta와 loss가 계속 변해 6000-step 후속이 필요했던 맥락. 현 성숙 checkpoint 전체의 미수렴 증거가 아님."
+    },
+    "old_controls": {
+      "path": "idea-stage/pilots/training_protocol.md",
+      "scope": "width/prior-count 및 단순 ma/readout 파일럿의 제한된 조건. 현재 개발 목적의 성공/실패 판정으로 재사용하지 않음."
+    },
+    "old_posterior": {
+      "path": "idea-stage/evidence/pilots/posterior_report.md",
+      "scope": "known-dictionary posterior 파일럿. Brier/NLL tradeoff와 학습 길이 의존 신호; learned SAE semantic calibration으로 일반화 불가."
+    },
+    "stage3": {
+      "path": "docs/stage3_real_activations.md",
+      "scope": "Gemma L5/L12와 Llama L7, width32768, 저장 모델 평가 경로, CE/KL intervention, 실제 support ground truth 부재."
+    },
+    "old_lit": {
+      "path": "idea-stage/evidence/literature_notes.md",
+      "scope": "이전 문헌 조사는 lead로만 사용; 당시 진단 주제 순위/선택은 현재 목표를 규정하지 않음."
+    }
+  },
+  "prior_work_registry": {
+    "vg": {
+      "title": "The Variational Garrote",
+      "url": "https://arxiv.org/abs/1109.0486",
+      "verified_scope": "현재 공식 abstract 직접 확인. mean-field binary support와 point estimate 계수의 기본 원리는 선행."
+    },
+    "entropy_elbo": {
+      "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+      "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+      "verified_scope": "현재 PMLR abstract 직접 확인. analytic objective, noise-related stationary elimination, annealing, amortized sparse coding 일반성은 이미 선행."
+    },
+    "gated": {
+      "title": "Improving Dictionary Learning with Gated Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2404.16014",
+      "verified_scope": "현재 공식 abstract 직접 확인. support/magnitude 분리와 shrinkage 개선 자체는 선행."
+    },
+    "vaease": {
+      "title": "Sparse Autoencoders, Again?",
+      "url": "https://arxiv.org/abs/2506.04859",
+      "verified_scope": "현재 공식 abstract 직접 확인; ICML 2025. sparse SAE/VAE hybrid 및 manifold dimension이 가까운 범위. precise objective 대조는 병렬 문헌 shard로 넘김."
+    },
+    "jump": {
+      "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2407.14435",
+      "verified_scope": "기존 primary-source 문헌 note의 lead; pinned implementation은 현 README/코드 확인."
+    },
+    "batchtopk": {
+      "title": "BatchTopK Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2412.06410",
+      "verified_scope": "기존 primary-source 문헌 note의 lead; 평균 sparsity와 입력별 L0의 baseline."
+    },
+    "synth": {
+      "title": "SynthSAEBench: Evaluating Sparse Autoencoders on Scalable Realistic Synthetic Data",
+      "url": "https://arxiv.org/abs/2602.14687",
+      "verified_scope": "기존 문헌 note의 lead; 현재 runner가 쓰는 pinned generator/설정은 README와 reproduction notes 확인."
+    },
+    "hedging": {
+      "title": "Feature Hedging: Correlated Features Break Narrow Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2505.11756",
+      "verified_scope": "기존 문헌 note의 lead. support correlation과 dictionary 폭 조건을 검사해야 한다는 관련 선행."
+    },
+    "inference": {
+      "title": "Compute Optimal Inference and Provable Amortisation Gap in Sparse Autoencoders",
+      "url": "https://proceedings.mlr.press/v267/o-neill25a.html",
+      "verified_scope": "기존 primary-source 문헌 note의 lead. generic iterative inference/amortization improvement는 새 주장으로 쓰지 않음."
+    },
+    "multiplicity": {
+      "title": "Bayes and empirical-Bayes multiplicity adjustment in the variable-selection problem",
+      "url": "https://arxiv.org/abs/1011.2333",
+      "verified_scope": "기존 문헌 note의 lead. empirical prior/width correction 일반 원리의 선행."
+    },
+    "probtopk": {
+      "title": "Probabilistic TopK Sparse Autoencoder for Interpreting the Activations of Large Language Models",
+      "url": "https://openreview.net/forum?id=zMIIHeKivz",
+      "verified_scope": "기존 논문 본문 검색 lead; authors/final decision 미확인. probabilistic gate 최초 주장을 피해야 하지만 VG 방법을 배제할 근거는 아님."
+    },
+    "saebench": {
+      "title": "SAEBench: A Comprehensive Benchmark for Sparse Autoencoders in Language Model Interpretability",
+      "url": "https://arxiv.org/abs/2503.09532",
+      "verified_scope": "기존 primary-source 문헌 note의 lead. reconstruction 밖 utility 평가 범위의 선행."
+    },
+    "sparsewrong": {
+      "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2508.16560",
+      "verified_scope": "기존 문헌 note의 lead; 현재 Stage3 target 선택 근거."
+    }
+  },
+  "candidates": [
+    {
+      "id": "VG-D01",
+      "dedup_key": "vg_core_variance_entropy_factorial",
+      "generator": "gpt-6-astra/ultra",
+      "title": "현재 VG 목적함수의 variance와 entropy 기여를 분리한다",
+      "payload": {
+        "what_changes": [
+          "기존 두 encoder와 decoder를 고정한 설계로 full VG, variance 제거, entropy 제거, 둘 다 제거를 학습한다.",
+          "각 variant의 gamma를 calibration split에서 같은 실제 hard L0에 맞추고 Gated·JumpReLU·BatchTopK와 비교한다.",
+          "학습에서 사용한 soft mean, Bernoulli-sampled risk, 배포 hard code를 각각 기록하고 recovery/latent error로 무엇이 개선되는지 확인한다."
+        ],
+        "hypothesis": "Bernoulli variance와 unit entropy의 결합이 단순한 두 갈래 encoder보다 support 선택과 폭넓은 amplitude 추정을 개선하는 조건이 존재한다. 어느 항의 효과인지 실험으로 판별한다.",
+        "current_evidence": [
+          {
+            "source": "model",
+            "finding": "두 ablation flag가 이미 존재한다. full objective는 analytic variance와 prior minus unit entropy를 함께 사용한다."
+          },
+          {
+            "source": "s1_exp_skew",
+            "finding": "exponential amplitude의 탐색적 latent-error 신호는 재검증 가치가 있다. 기존 수치는 L0가 다르고 one-seed이다."
+          },
+          {
+            "source": "repro",
+            "finding": "entropy 제거/가중치 변경은 원 VG posterior와 같은 모델의 또 다른 유도가 아니라 ablation이다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=128, ground-truth/learned width=1024, mean true L0=10.24, exponential amplitude, skew=.5, train/cal/test=8192/4096/8192. 기존 Stage1 크기를 유지한다. 2 optimizer seeds, variants 4개×사전 고정 gamma 3개; baseline은 Gated·JumpReLU·BatchTopK에 각 3개 control. 1000 updates와 2000-update endpoint를 같은 run에서 저장한다. Pilot 축소가 필요하면 seed 1개로 진행하되 확증으로 쓰지 않는다.",
+          "primary_metrics": [
+            "calibration 선택 후 test hard latent normalized MSE",
+            "decoder recovery와 support F1",
+            "실제 hard L0",
+            "hard EV"
+          ],
+          "controls": "동일 데이터/초기 decoder/배치 순서, 독립 baseline LR의 소규모 사전 tuning budget, 동일 train samples와 update count. no-variance/no-entropy도 자기 gamma를 조정한다."
+        },
+        "decision_criteria": {
+          "positive": "미리 정한 hard-L0 구간에서 full VG가 가장 강한 ablation보다 latent error를 5% 이상 줄이고 recovery 또는 support F1도 .02 이상 높이며 hard EV 손실은 .01 이내; 두 optimizer seed의 방향이 같다.",
+          "negative": "variance/entropy를 제거한 variant가 동일 조건에서 full VG를 일관되게 우세하게 한다. 해당 항의 실용적 기여 주장을 줄이고 optimization/scale을 점검한다.",
+          "null": "control grid가 같은 L0 구간을 덮지 않거나 endpoint가 계속 움직이거나 효과가 사전 최소크기보다 작다. curve 밖 extrapolation으로 결론내지 않는다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.3–1.5",
+          "gpu": "A6000 48GB 1개 기준 추정; 50-update timing 후 축소",
+          "training_required": true
+        },
+        "pipeline_role": "required_mechanism_evidence; architecture extension 아님",
+        "risk": {
+          "level": "MEDIUM",
+          "named_risks": [
+            "gamma를 고정한 채 항만 빼면 sparsity 변화가 원인처럼 보인다.",
+            "beta 변화가 variance 효과를 상쇄하거나 확대할 수 있다.",
+            "독립 LR tuning 없이 기준선 차이를 objective 효과로 오해할 수 있다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "gated",
+          "entropy_elbo",
+          "vaease"
+        ],
+        "so_what": "VG-SAE의 핵심 기여를 검증한다. 결과가 없으면 원래 방법을 버리는 대신 기여 표현과 학습 설정을 좁힌다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D02",
+      "dedup_key": "vg_beta_estimation_timescale",
+      "generator": "gpt-6-astra/ultra",
+      "title": "beta를 같은 목적함수 안에서 충분히 학습하는 방법을 정한다",
+      "payload": {
+        "what_changes": [
+          "learned beta와 minibatch-profiled beta의 loss, beta, hard L0, held-out 성능 추이를 같은 초기화에서 기록한다.",
+          "learned beta의 optimizer group에만 LR multiplier를 적용한 단순 variant를 비교한다. 초기 residual로 정한 beta 초기화도 calibration 전 고정한다.",
+          "수렴 여부는 beta 숫자 하나보다 held-out metric과 후반 변화로 판단하고, 최종 논문은 global learned precision과 batch profiling의 차이를 명시한다."
+        ],
+        "hypothesis": "현 VG-SAE의 일부 학습 차이는 beta의 추정 시간척도와 초기 scale에서 생기며, encoder/decoder를 바꾸지 않아도 더 적은 update로 같은 또는 더 나은 hard sparse code를 얻을 수 있다.",
+        "current_evidence": [
+          {
+            "source": "model",
+            "finding": "profiled beta는 각 batch의 beta*=Bd/(2 sum energy), learned beta는 log_beta parameter이다. 동일한 최적화 과정이 아니다."
+          },
+          {
+            "source": "convergence",
+            "finding": "이전 작은 파일럿은 beta가 계속 변해 학습 길이 확인이 필요했다. 모든 현재 모델이 미수렴이라는 뜻은 아니다."
+          },
+          {
+            "source": "s2_profiled",
+            "finding": "200M profiled와 learned는 K≈20에서 가까운 성능을 보인다. beta 수정의 이득은 아직 확인되지 않았다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=64, width=256, true L0=4, exponential amplitude, train/cal/test=8192/4096/8192. noise=0과 20dB Gaussian 두 조건, 2 seeds. profile/current learned/learned beta LR×10/learned beta LR×.1의 4 arms. 초기 beta는 1 및 training-only 초기 expected-risk scale 중 하나를 사전 고정하고 별도 전면 grid는 하지 않는다. 1000/3000/6000 update checkpoints.",
+          "primary_metrics": [
+            "test hard latent error와 EV at matched L0",
+            "beta stationarity residual abs(beta*2*mean_energy/d-1)",
+            "후반 beta 및 hard-L0 변화",
+            "50-update 기준 throughput"
+          ],
+          "controls": "고정된 no-noise data에서 beta를 실제 sensor noise 정밀도로 해석하지 않는다. 동일 training tokens, gamma calibration, 별도 normalization을 유지한다."
+        },
+        "decision_criteria": {
+          "positive": "선정 beta optimizer가 current learned 대비 같은 hard quality 도달 update를 25% 이상 줄이거나 6000-step hard latent error를 5% 이상 개선하고 두 seeds 방향이 같으며 안정성을 잃지 않는다.",
+          "negative": "beta 추가 tuning이 이득을 주지 않거나 더 쉽게 발산/희소성 이동을 일으킨다. 현재 모드를 유지하고 학습 budget만 정직하게 보고한다.",
+          "null": "6000까지 모든 arms가 개선 중이거나 sparsity overlap이 부족하다. beta 수렴만으로 충분한 dictionary 학습을 선언하지 않는다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.2–0.8",
+          "gpu": "A6000 48GB 1개; 작은 synthetic",
+          "training_required": true
+        },
+        "pipeline_role": "required_convergence_check + optional_training_update",
+        "risk": {
+          "level": "MEDIUM",
+          "named_risks": [
+            "noise precision이 model misspecification와 amplitude 오차를 흡수한다.",
+            "batch profiling과 global likelihood 최적화는 다른 stochastic objective를 만든다.",
+            "beta optimizer 개선은 독립 신규성의 중심이 아니라 주방법의 재현 가능한 학습 절차다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "entropy_elbo"
+        ],
+        "so_what": "무거운 Stage2/3 반복 전에 비용이 적은 학습 절차를 선택하고, beta가 제공하는 실제 역할을 명료화한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D03",
+      "dedup_key": "vg_gamma_continuation_same_endpoint",
+      "generator": "gpt-6-astra/ultra",
+      "title": "같은 최종 VG 목적함수로 가는 sparsity warmup을 검사한다",
+      "payload": {
+        "what_changes": [
+          "현재 gamma를 처음부터 적용한 run과 초반 20%에만 gamma를 선형 증가시킨 run을 비교한다.",
+          "두 run 모두 나머지 80% 이상을 같은 full variance, unit entropy, 최종 gamma로 학습한다.",
+          "hard metric과 decoder recovery가 함께 개선할 때만 warmup을 채택한다. entropy annealing을 별도로 시험한다면 최종 entropy weight는 반드시 1로 되돌린다."
+        ],
+        "hypothesis": "support gate가 dictionary를 학습하기 전에 굳는 경우, 이미 지원하는 짧은 gamma warmup이 VG-SAE의 basin 선택을 개선할 수 있다.",
+        "current_evidence": [
+          {
+            "source": "native",
+            "finding": "lambda_warm_up_steps와 coefficient schedule 경로가 이미 있다."
+          },
+          {
+            "source": "model",
+            "finding": "sigmoid gate의 bias 초기값은 -2이며 gamma와 reconstruction scale의 초기 경쟁이 존재한다. 실제 조기 collapse가 있었다는 증거는 아직 없음."
+          },
+          {
+            "source": "readme",
+            "finding": "Stage2 짧은 calibration run이 200M endpoint를 예측하지 못했다. 짧은 warmup 성능만으로 최종 우위를 결정하면 안 된다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "D01 크기의 synthetic 한 조건, learned beta, 동일 초기화의 no-warmup vs 20%-warmup, seeds 0/1, 같은 총 6000 updates, gamma 3점. current beta-LR setting은 D02와 독립 고정한다.",
+          "primary_metrics": [
+            "후반 test hard latent error",
+            "dead-latent fraction",
+            "matched hard L0",
+            "decoder recovery와 gate histogram"
+          ],
+          "controls": "warmup에 추가 samples를 주지 않는다. 처음 pilot에서는 gamma schedule 하나만 바꾸어 beta schedule과 결합하지 않는다."
+        },
+        "decision_criteria": {
+          "positive": "동일 budget에서 latent error 5% 또는 recovery .02 이상 개선하고 후반 hard EV 손실≤.01, 두 seeds가 같은 방향이다.",
+          "negative": "후반 성능이 같거나 나빠지면 기존 경로 유지. 초반 loss 개선만은 양성으로 인정하지 않는다.",
+          "null": "학습을 늘리면 차이가 계속 변하거나 post-warmup 구간이 부족하다. 더 긴 학습이 필요한지 기록한다."
+        },
+        "effort": {
+          "implementation_days": "0.25–0.5",
+          "estimated_gpu_hours": "0.1–0.6",
+          "gpu": "A6000 48GB 1개",
+          "training_required": true
+        },
+        "pipeline_role": "optional_training_extension; 새 encoder/module 불필요",
+        "risk": {
+          "level": "LOW",
+          "named_risks": [
+            "annealing 일반 원리는 이미 알려져 있다.",
+            "짧은 학습만 개선되고 충분한 학습에서 사라질 수 있다."
+          ]
+        },
+        "known_prior_work": [
+          "entropy_elbo",
+          "vg"
+        ],
+        "so_what": "구조를 늘리지 않고 현재 방법을 더 안정적으로 훈련할 수 있는지 판단한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D04",
+      "dedup_key": "vg_readout_metric_contract",
+      "generator": "gpt-6-astra/ultra",
+      "title": "학습 posterior와 배포 hard code의 사용 규칙을 확정한다",
+      "payload": {
+        "what_changes": [
+          "주 배포 결과를 h_hard=a·1[m>tau]로 고정하고 모든 hard L0·reconstruction·support·CE/KL에 같은 code를 사용한다.",
+          "h_mean=m·a의 reconstruction과 Bernoulli-sampled expected risk는 별도 metric으로 유지한다.",
+          "tau=.5 기본값과 calibration에서 선택한 한 global tau를 비교하고, 개선이 명확할 때만 calibrated threshold를 method procedure에 포함한다."
+        ],
+        "hypothesis": "posterior의 평균과 sparse decision을 명확히 나누고 threshold를 적절히 보정하면, 이미 학습된 VG-SAE의 일부 성능을 더 충실하게 측정하거나 개선할 수 있다. 모든 조건에서 큰 hardening 문제가 있다는 가정은 하지 않는다.",
+        "current_evidence": [
+          {
+            "source": "native",
+            "finding": "현재 public hard encode와 training expected reconstruction은 이미 구분되어 있다. 전체 평가/논문도 이 의미를 일관되게 따라야 한다."
+          },
+          {
+            "source": "s2_learned",
+            "finding": "성숙 K≈15 checkpoint의 mean-hard EV gap은 .00516이고 K≈19.2는 .06013이다. 초기 작은 pilot의 큰 gap을 일반화할 수 없다."
+          },
+          {
+            "source": "old_controls",
+            "finding": "단순 top(ma) 또는 support-fixed ma는 이전 제한 조건에서 해결책으로 지지되지 않았다. 새 방법으로 반복 포장하지 않는다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "기존 Stage2 learned/profiled checkpoint 각 K≈15,20,35 세 점을 재사용. 새 generator seeds로 cal/test 각각 65536 samples. tau 후보 [.2,.35,.5,.65,.8]를 사전 고정하고, cal에서 target achieved-L0 band 내 hard MSE 최소 tau를 정해 test에 한 번 적용. baseline의 추가 threshold 실험을 허용하면 동일 budget 적용.",
+          "primary_metrics": [
+            "동일 code의 hard L0/MSE/EV",
+            "MCC와 support classifier",
+            "mean reconstruction 및 sampled-risk 항",
+            "threshold 처리 전후 actual L0"
+          ],
+          "controls": "baseline와 비교는 actual L0 overlap에서만 한다. calibration threshold와 gamma 선택에 test를 쓰지 않는다. mean code의 support count를 hard sparse code의 계산 비용으로 사용하지 않는다."
+        },
+        "decision_criteria": {
+          "positive": "같은 hard-L0 band에서 threshold selection이 hard EV .01 이상 개선하고 support F1 감소가 .01 이내인 점이 2개 이상이며 독립 test에서 유지된다.",
+          "negative": "기본 .5와 비슷하거나 품질 손실이 생기면 .5를 유지한다. metric contract 정리는 여전히 완료한다.",
+          "null": "threshold 변경이 sparsity 이동만 일으켜 matched-L0 비교가 안 되면 추가 gamma anchor가 필요하다. mean-hard 차이만으로 objective 실패를 선언하지 않는다."
+        },
+        "effort": {
+          "implementation_days": "0.25–0.5",
+          "estimated_gpu_hours": "0.1–0.5",
+          "gpu": "A6000 48GB 1개; checkpoint eval only",
+          "training_required": false
+        },
+        "pipeline_role": "required_deployment_consistency + optional_threshold_calibration",
+        "risk": {
+          "level": "LOW",
+          "named_risks": [
+            "threshold 보정은 일반적인 decision procedure이며 자체 신규성으로 주장하지 않는다.",
+            "두 가지 tuning knob를 가진 VG에 더 큰 검색 budget을 주지 않는다."
+          ]
+        },
+        "known_prior_work": [
+          "gated",
+          "jump",
+          "batchtopk"
+        ],
+        "so_what": "논문의 성능 숫자와 실제 sparse inference가 같은 대상을 가리키게 한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D05",
+      "dedup_key": "vg_independent_calibration_matched_baselines",
+      "generator": "gpt-6-astra/ultra",
+      "title": "독립 calibration과 같은 sparsity·tuning budget으로 비교한다",
+      "payload": {
+        "what_changes": [
+          "training, coefficient/threshold calibration, final test를 별도 seed/stream으로 고정하고 기존 재사용 stream은 calibration으로 표기한다.",
+          "Gated·JumpReLU·BatchTopK·TopK·L1와 VG를 동일 width, achieved hard L0 구간, training samples에서 비교한다.",
+          "모든 방법에 같은 규모의 LR/control 선택 기회를 주고, 여러 seeds의 전체 curve와 uncertainty를 보고한다."
+        ],
+        "hypothesis": "독립 선택과 평가를 적용했을 때 남는 VG 성능과 조건별 차이가 새로운 SAE 방법의 실질적인 evidence가 된다. 이 절차는 방법이 이기든 지든 필수다.",
+        "current_evidence": [
+          {
+            "source": "readme",
+            "finding": "Stage2 200M runs는 seed0이며 coefficient 선택과 final tables에 같은 evaluation stream을 재사용했다."
+          },
+          {
+            "source": "s1_exp_skew",
+            "finding": "현재 방법별 최소 latent-error 지점은 실제 L0가 다르다."
+          },
+          {
+            "source": "audit",
+            "finding": "Stage1의 12 조건은 많은 control을 포함하지만 각각 한 optimizer seed이다. 선택 최적값을 그대로 확증 결과로 쓰지 않는다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "기존 Stage2 checkpoints 중 method별 K≈15,20,30에 해당하는 최대 3개 control을 고정. new-cal stream에서 control 선택, 별도 new-test stream 131072 samples에서 한 번 평가. VG와 Gated·JumpReLU·BatchTopK를 우선 비교하고 L1·TopK도 같은 eval에서 포함 가능. 이것은 evaluation seed 반복이며 training-seed 반복을 대신하지 않는다.",
+          "primary_metrics": [
+            "hard EV–L0 Pareto curve",
+            "MCC/uniqueness/support classifier",
+            "documented tuning trial count",
+            "block-bootstrap evaluation interval"
+          ],
+          "controls": "Stage1와 Stage2의 matching metric 정의를 유지하며 같은 이름으로 합산하지 않는다. 실제 L0≤5%의 overlap을 우선 사용; interpolation을 쓸 경우 bracket 내부만, 방법·오차를 명시."
+        },
+        "decision_criteria": {
+          "positive": "독립 test에서도 관찰한 곡선 순서와 실용적 차이가 재현된다. 이후 새 training seeds를 추가할 근거다.",
+          "negative": "순서가 반전되거나 차이가 사라지면 기존 우위 표현을 제거하고 calibration 조건 의존성을 반영한다.",
+          "null": "existing grid가 target L0를 bracket하지 않거나 평가 interval이 차이를 덮으면 추가 anchor/seed가 필요하다. 독립 split 도입은 null에도 유지한다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.2–0.8",
+          "gpu": "A6000 48GB 1개; small streamed eval",
+          "training_required": false
+        },
+        "pipeline_role": "required_pipeline_fix; novelty 후보로 점수 경쟁하지 않음",
+        "risk": {
+          "level": "LOW",
+          "named_risks": [
+            "독립 evaluation stream도 generator misspecification이나 training-seed variation을 해결하지 않는다.",
+            "metric별 최적 checkpoint를 따로 고르면 최종 주장 범위가 다시 흔들린다."
+          ]
+        },
+        "known_prior_work": [
+          "synth",
+          "sparsewrong",
+          "saebench"
+        ],
+        "so_what": "현재 주방법을 공정하게 판단할 수 있는 증거 기반을 만든다. 결과 부호와 무관하게 수행한다.",
+        "dependencies": []
+      }
+    },
+    {
+      "id": "VG-D06",
+      "dedup_key": "vg_amplitude_regime_sample_efficiency",
+      "generator": "gpt-6-astra/ultra",
+      "title": "exponential amplitude와 적은 학습표본에서 주방법의 장점을 확인한다",
+      "payload": {
+        "what_changes": [
+          "현재 Stage1의 exponential amplitude와 같은 second moment의 constant control을 같은 dictionary·support로 생성한다.",
+          "각 amplitude 법칙에서 적은 고유 학습표본과 더 많은 학습표본을 비교하고, full VG와 강한 deterministic baselines를 동일 training budget으로 학습한다.",
+          "sparse operating band의 hard latent recovery와 feature recovery를 먼저 평가하고 reconstruction을 함께 보고한다."
+        ],
+        "hypothesis": "support uncertainty와 amplitude를 함께 다루는 VG-SAE는 amplitude 변동이 크고 데이터가 제한될 때 이점을 가질 수 있다. 현재 exponential 신호를 이 가설의 탐색 출발점으로 삼으며 이점이 있다는 결론을 미리 내리지 않는다.",
+        "current_evidence": [
+          {
+            "source": "s1_exp_skew",
+            "finding": "VG .695009 vs TopK .733242의 test-curve 최소 latent error는 탐색 신호다. L0 3.39 vs 5.92라 직접 우위 주장이 아니다."
+          },
+          {
+            "source": "s1_exp_uniform",
+            "finding": "uniform-frequency exponential 조건에도 VG .731427 vs L1 .794273의 비동일-L0 탐색 신호가 있다."
+          },
+          {
+            "source": "data",
+            "finding": "exponential/constant/uniform의 active second moment를 맞추는 생성기가 이미 있다."
+          },
+          {
+            "source": "audit",
+            "finding": "constant/uniform amplitude에서 동일한 일반 우위는 확인되지 않았다. 이를 negative control로 유지한다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=128, width=1024, true L0=10.24, skew=.5, noise=0. train unique N=2048 vs8192, cal4096/test8192, exponential vsconstant의 2×2. full VG/Gated/JumpReLU/BatchTopK 4 methods; 각3 sparsity controls, 1 seed의 48 short runs가 상한. 모든 arms 2000 updates로 고정하여 unique-sample 효과와 compute를 분리. 신호가 있으면 소수 controls만 seed1에서 반복.",
+          "primary_metrics": [
+            "predeclared hard-L0 band [3,6]에서 latent normalized MSE",
+            "dictionary recovery",
+            "support F1 by true amplitude quantile",
+            "noise-free signal EV"
+          ],
+          "controls": "constant는 sqrt(2) amplitude, exponential은 scale1; 같은 expected signal power. training-only normalization. 각 조건에서 coefficient 선택은 calibration만 사용. 낮은 N에서 같은 updates는 반복노출 효과를 포함하므로 token sample-efficiency라는 표현과 구분한다."
+        },
+        "decision_criteria": {
+          "positive": "exponential/low-N에서 VG가 strongest comparator보다 matched-L0 latent error≥5% 낮고 F1 또는 recovery .02 이상 높으며, constant 조건보다 VG 상대이득이 사전 지정 interaction≥.02 error만큼 크다. 재시드로 방향 확인한다.",
+          "negative": "신호가 독립 calibration 뒤 사라지거나 constant에도 동일하면 amplitude-specific 설명을 줄인다. 방법 전체를 폐기하지 않고 다른 evidence/optimization 결과와 통합한다.",
+          "null": "작은 N이 모든 방법을 거의 무학습 상태로 만들거나 control overlap이 없으면 규모/학습 길이 판별력이 부족하다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.4–1.8",
+          "gpu": "A6000 48GB 1개, 초기 timing으로 2h 이하 보장",
+          "training_required": true
+        },
+        "pipeline_role": "main_method_evidence_path; 기존 VG 그대로",
+        "risk": {
+          "level": "MEDIUM",
+          "named_risks": [
+            "data 생성법에 맞는 inductive bias일 수 있으므로 Stage2/3 일반화를 별도 검증한다.",
+            "샘플 수와 training updates를 함께 바꾸면 원인이 섞인다.",
+            "적은 seeds의 interaction은 확증이 아니다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "gated",
+          "synth"
+        ],
+        "so_what": "이미 구현한 주방법에서 어떤 조건이 강점 후보인지 밝히고 무거운 실험의 배치를 결정한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D07",
+      "dedup_key": "vg_noise_correlation_transfer",
+      "generator": "gpt-6-astra/ultra",
+      "title": "noise와 support correlation에서 기본 VG-SAE의 유지 범위를 검사한다",
+      "payload": {
+        "what_changes": [
+          "D06에서 고정한 작은 operating point를 독립 support의 0/20/10dB noise 조건에 적용한다.",
+          "별도 controlled synthetic에서 marginal firing을 유지한 한 쌍의 positive support correlation만 추가한다.",
+          "clean signal recovery와 noisy-input reconstruction을 구분하고, 최종에는 pinned SynthSAEBench에서 같은 질문을 평가한다."
+        ],
+        "hypothesis": "analytic Bernoulli variance와 learned noise scale이 noisy observation에서 feature 선택을 안정화할 수 있으나, mean-field factorization은 강한 support dependence에서 이득을 제한할 수 있다. 이 경계를 실험으로 정한다.",
+        "current_evidence": [
+          {
+            "source": "data",
+            "finding": "noise_std와 깨끗한 latent truth는 이미 제공된다. 독립 support이므로 correlation 조작은 별도 runner가 필요하다."
+          },
+          {
+            "source": "readme",
+            "finding": "Stage1 기본은 noiseless independent supports이며 Stage2는 다른 현실적 구조를 가진다."
+          },
+          {
+            "source": "model",
+            "finding": "조건부 gate posterior는 factorized Bernoulli이다. 실제 correlated-support 성능은 아직 이 식만으로 결정할 수 없다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=32, L=128, true L0=4, exponential amplitude, train8192/cal4096/test8192. VG/Gated/JumpReLU/BatchTopK의 cal-selected 각1 control에 인접 control1개. 독립 support 3 SNR 조건과 같은 marginal의 paired-support 20dB 조건; 2 seeds. beta는 D02 없이도 현재 learned 설정을 유지 가능.",
+          "primary_metrics": [
+            "clean reconstruction/latent error",
+            "support F1 by amplitude",
+            "noisy reconstruction",
+            "precision beta와 known injected noise의 차이"
+          ],
+          "controls": "SNR는 clean training energy로 고정하고 test에는 재보정하지 않는다. marginal activation probability와 total power는 모든 correlation 조건에서 유지. beta를 sensor noise의 일치 추정량으로 요구하지 않는다."
+        },
+        "decision_criteria": {
+          "positive": "noise 증가 시 VG의 clean latent error 열화가 strongest baseline보다 5% 이상 작고 같은 hard L0에서 F1도 유지되면 noise robustness evidence 후보. correlation에서 유지하면 좁은 transfer evidence.",
+          "negative": "VG가 noise fitting이나 correlated-feature mixing을 더 많이 보이면 해당 적용 조건의 약점을 기록하고 base method claim을 좁힌다. correlated posterior module을 자동 추가하지 않는다.",
+          "null": "SNR가 너무 쉬워 ceiling이거나 너무 어려워 모든 모델이 바닥이면 신호가 없다. generator 변경과 SNR를 함께 바꾼 결과로 원인을 단정하지 않는다."
+        },
+        "effort": {
+          "implementation_days": "1–2",
+          "estimated_gpu_hours": "0.3–1.2",
+          "gpu": "A6000 48GB 1개, small synthetic",
+          "training_required": true
+        },
+        "pipeline_role": "optional_generalization_validation; 광범위 noise/structure 주장 전에는 required",
+        "risk": {
+          "level": "MEDIUM",
+          "named_risks": [
+            "mean-field posterior의 한계와 dictionary undercapacity가 섞일 수 있다.",
+            "pinned Stage2와 자체 correlation generator는 서로 대체물이 아니다."
+          ]
+        },
+        "known_prior_work": [
+          "synth",
+          "hedging",
+          "vg"
+        ],
+        "so_what": "구조를 먼저 늘리기 전에 현재 VG 방법의 유효 조건과 실제 수정 필요성을 확인한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D08",
+      "dedup_key": "vg_finite_coordinate_refinement",
+      "generator": "gpt-6-astra/ultra",
+      "title": "기존 VG encoder 뒤에 소수의 정확한 gate 좌표 업데이트를 시험한다",
+      "payload": {
+        "what_changes": [
+          "학습된 decoder와 amplitude, training-fitted beta를 고정하고 encoder의 m을 시작점으로 쓴다.",
+          "한 좌표씩 residual을 갱신하며 m_j=sigmoid(beta·(a_j d_j^T r_{-j}−a_j²||d_j||²/2)−gamma)를 1~3회 적용한다.",
+          "같은 sparse readout과 calibration을 거쳐 hard 품질을 비교하고, 추가 시간과 동일한 budget의 일반 projected-gradient/NNLS control도 기록한다."
+        ],
+        "hypothesis": "원 VG의 analytic local correction이 amortized gate의 유한한 오차를 적은 계산으로 줄여 실제 hard code를 개선할 수 있다. free-energy 감소와 sparse deployment 개선은 별개의 판정이다.",
+        "current_evidence": [
+          {
+            "source": "model",
+            "finding": "fixed a,D,beta와 unit entropy의 현재 objective에서 위 coordinate optimum을 직접 얻는다. 이것은 새 VG 정리가 아니다."
+          },
+          {
+            "source": "old_controls",
+            "finding": "단순 ma readout의 부정 결과는 residual-aware coordinate update의 결과를 예측하지 않는다."
+          },
+          {
+            "source": "s2_learned",
+            "finding": "성숙 checkpoint도 조건별 hard gap이 다르므로 K≈15와 K≈20을 모두 대조군으로 둔다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "우선 기존 d16/L32·128 checkpoint 또는 D01의 작은-width checkpoint, test2048에서 0/1/3 sweeps. 순차 coordinate만 사용; Jacobi 병렬 update에 단조감소를 가정하지 않는다. 첫 algebra/gradient 검사는 CPU float64. 작은 결과가 유망하면 Stage2 4096-latent에서 현재 hard support와 top64 후보의 coordinate만 갱신하는 고정 budget을 별도 pilot로 제한한다.",
+          "primary_metrics": [
+            "original free-energy change",
+            "test hard latent error/support F1 at calibrated L0",
+            "wall latency and extra decoder products",
+            "mean risk vs sampled risk vs hard risk"
+          ],
+          "controls": "profiled checkpoint도 training/calibration에서 미리 추정한 하나의 beta를 고정해 test batch마다 objective가 바뀌지 않게 한다. 동일 시간을 준 non-VG refinement, decoder 고정, test label 미사용."
+        },
+        "decision_criteria": {
+          "positive": "original VG F가 감소하고, matched-L0 hard latent error≥5% 또는 EV≥.01 개선하며 F1 손실≤.01, inference latency가 사전 한도(예: 원 inference의≤3배)를 만족한다.",
+          "negative": "F만 좋아지고 hard quality가 악화되면 inference extension 채택하지 않는다. 이것만으로 base VG 방법 전체를 부정하지 않는다.",
+          "null": "원 encoder가 이미 fixed-point 근처라 변화가 없거나 비용이 bound를 넘으면 base inference 유지. matched-compute generic refinement와 차이가 없으면 VG-specific 이득은 주장하지 않는다."
+        },
+        "effort": {
+          "implementation_days": "1–2",
+          "estimated_gpu_hours": "0.05–0.5",
+          "gpu": "작은 model은 CPU/GPU, Stage2 followup은 A6000 1개",
+          "training_required": false
+        },
+        "pipeline_role": "optional_method_extension; 주방법의 채택 전제 아님",
+        "risk": {
+          "level": "HIGH",
+          "named_risks": [
+            "일반 amortization/refinement는 직접 선행이 있다.",
+            "sequential sweep가 GPU에서 느리다.",
+            "objective 개선이 hard code 개선을 보장하지 않는다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "inference",
+          "entropy_elbo"
+        ],
+        "so_what": "필요하다면 원래 VG 계산을 한 단계 더 활용하는 단순 변형이다. 추가 module의 신규성으로 연구를 꾸미지 않는다.",
+        "dependencies": [
+          "VG-D04",
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D09",
+      "dedup_key": "vg_amplitude_selection_debias",
+      "generator": "gpt-6-astra/ultra",
+      "title": "support 선택 이득과 amplitude shrinkage 이득을 분리한다",
+      "payload": {
+        "what_changes": [
+          "학습된 각 방법의 hard support를 고정하고 원 amplitude의 bias를 true active amplitude 구간별로 평가한다.",
+          "각 방법에 같은 support-fixed nonnegative least-squares 또는 같은 횟수의 projected-gradient amplitude refit을 적용한다.",
+          "refit 전후 latent recovery와 reconstruction을 비교하여 VG의 장점이 support 선택인지 amplitude 추정인지 분리한다."
+        ],
+        "hypothesis": "VG가 보여주는 latent-error 이득의 일부는 L1 amplitude shrinkage 감소일 수 있으나 variance 항도 amplitude를 제약한다. support와 magnitude를 분리해 실제 기여를 확인할 수 있다.",
+        "current_evidence": [
+          {
+            "source": "model",
+            "finding": "a는 softplus encoder이고 gamma는 sum(m)에 작용하지만 variance는 a²에 의존한다. amplitude가 무조건 unbiased라는 주장은 성립하지 않는다."
+          },
+          {
+            "source": "readme",
+            "finding": "Gated는 이미 공식 baseline이며 Stage2에 shrinkage metric이 존재한다."
+          },
+          {
+            "source": "s1_exp_skew",
+            "finding": "exponential 조건의 latent error 신호는 amplitude-specific 분석의 출발점이지만 원인 증거는 아니다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "기존 Stage1 exponential 및 constant checkpoints에서 independent test4096. VG/Gated/JumpReLU/L1/BatchTopK 각각 low-L0 cal-selected1개. 각 support를 고정해 최대20 projected-gradient steps 또는 정확 NNLS를 적용하되 latency를 기록. dictionary alignment는 ground-truth decoder로 한 번 고정하고 amplitude quantile별 active-code error 분석.",
+          "primary_metrics": [
+            "support-fixed latent error gain",
+            "true positive activation bias by amplitude decile",
+            "hard EV",
+            "support F1 unchanged check"
+          ],
+          "controls": "같은 refit budget과 nonnegative 제약을 모든 methods에 적용. refit에 true coefficients/support를 넣지 않음. oracle true-support fitting은 상한선으로만 별도 표시."
+        },
+        "decision_criteria": {
+          "positive": "공통 amplitude refit 뒤에도 VG support의 latent error 이득이 유지되면 selection evidence; 이득이 사라지지만 original amplitude bias가 낮으면 amplitude-estimation evidence로 주장을 좁힌다.",
+          "negative": "VG support가 refit 후 더 나쁘고 원 amplitude 이득도 재현되지 않으면 현재 이점 설명을 보류한다.",
+          "null": "learned atom matching 품질이 낮아 amplitude 오차를 해석하기 어렵거나 refit이 대부분 실패하면 reliable subset만 보조 분석으로 보고한다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.05–0.3",
+          "gpu": "CPU 또는 A6000 1개; checkpoint eval only",
+          "training_required": false
+        },
+        "pipeline_role": "optional_mechanism_validation; shrinkage/selection 주장 시 required",
+        "risk": {
+          "level": "LOW",
+          "named_risks": [
+            "support가 같아도 dictionary quality 차이가 남는다.",
+            "refit 자체는 deployable method로 채택하기 전 latency 검증이 필요하다.",
+            "Gated SAE가 이미 selection/magnitude 분리를 제안했다."
+          ]
+        },
+        "known_prior_work": [
+          "gated",
+          "vg",
+          "jump",
+          "inference"
+        ],
+        "so_what": "기존 방법의 이득을 정확한 부분에 귀속하고 첫 분리/무편향 같은 과장을 피한다.",
+        "dependencies": [
+          "VG-D05"
+        ]
+      }
+    },
+    {
+      "id": "VG-D10",
+      "dedup_key": "vg_train_only_frequency_prior",
+      "generator": "gpt-6-astra/ultra",
+      "title": "희귀 feature 실패가 확인될 때만 feature별 prior를 시험한다",
+      "payload": {
+        "what_changes": [
+          "현재 global gamma 그대로 frequency-skew별 rare/common feature recall을 먼저 측정한다.",
+          "희귀 feature 선택의 특정 문제가 재현되면 training posterior count로 feature별 prior를 천천히 갱신하는 empirical-Bayes variant를 별도 runner에서 만든다.",
+          "Beta hyperprior/pseudo-count와 갱신 주기를 calibration 전에 고정하고 scalar-gamma 재튜닝 및 frozen-prior control과 비교한다."
+        ],
+        "hypothesis": "learned dictionary의 unequal firing rates를 global prior 하나로 표현하는 것이 병목이면, training-only frequency prior가 같은 평균 hard L0에서 rare-feature recovery를 개선할 수 있다. 반대로 frequent-only collapse를 강화할 수도 있다.",
+        "current_evidence": [
+          {
+            "source": "data",
+            "finding": "Stage1은 frequency_skew 0과 .5를 직접 비교할 수 있다."
+          },
+          {
+            "source": "model",
+            "finding": "현재 gamma는 모든 feature에 동일한 scalar다. feature별 prior는 실제 model 변경이다."
+          },
+          {
+            "source": "old_controls",
+            "finding": "이전 fixed-total-prior-count variant는 제한 조건에서 유효한 해결책이 아니었다. 여기서는 폭보정이 아니라 data-conditioned feature-frequency의 다른 질문이다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=64,L256,true L0=4, exponential, skew=0/.5, train/cal/test8192/4096/8192, 2 seeds. current scalar gamma, extra scalar-gamma tuning, feature prior3 arms. 첫 run은 frozen dictionary로 inference dynamics만 검사하고 그 다음 joint training 여부를 결정. initial pi와 total prior mass는 동일, posterior-count EMA rate 하나와 Beta pseudo-count 하나를 사전 고정.",
+          "primary_metrics": [
+            "rare-feature recall at matched hard L0",
+            "common-feature precision",
+            "decoder recovery",
+            "prior occupancy distribution and collapsed features"
+          ],
+          "controls": "true marginal frequencies는 evaluation/oracle reference에만 사용. test data로 prior 갱신하지 않음. global gamma와 같은 optimization budget. latent identity permutation을 넘어서는 의미를 prior index에 부여하지 않음."
+        },
+        "decision_criteria": {
+          "positive": "낮은 frequency quartile recall≥.03 개선, overall latent error≥5% 개선, common precision 손실≤.01, 두 seeds 방향 일치.",
+          "negative": "빈도가 낮은 feature가 더 억제되거나 scalar tuning과 같으면 extension 채택하지 않는다.",
+          "null": "기본 prior가 rare-feature recovery의 병목이라는 신호 자체가 없으면 기존 method 유지하고 파일럿 슬롯을 다른 선택지에 배정한다."
+        },
+        "effort": {
+          "implementation_days": "1–2",
+          "estimated_gpu_hours": "0.2–0.8",
+          "gpu": "A6000 48GB 1개",
+          "training_required": true
+        },
+        "pipeline_role": "optional_method_extension; 관찰된 병목에 의해서만 시작",
+        "risk": {
+          "level": "HIGH",
+          "named_risks": [
+            "empirical Bayes의 rich-get-richer collapse와 non-identifiability.",
+            "새 하이퍼파라미터가 model-selection 비용을 늘린다.",
+            "adaptive prior 자체는 알려진 Bayesian 원리다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "multiplicity"
+        ],
+        "so_what": "global prior의 실제 한계가 확인된 경우에만 좁게 수정한다. 신규성 불안을 보상하기 위한 추가 기능으로 쓰지 않는다.",
+        "dependencies": [
+          "VG-D05",
+          "VG-D06"
+        ]
+      }
+    },
+    {
+      "id": "VG-D11",
+      "dedup_key": "vg_conditional_probability_calibration",
+      "generator": "gpt-6-astra/ultra",
+      "title": "gate 확률에 허용되는 해석의 범위를 검증한다",
+      "payload": {
+        "what_changes": [
+          "작은 known-dictionary constant-amplitude 생성 모델에서 exact support posterior를 열거하고 VG mean-field optimum과 encoder probability를 비교한다.",
+          "그 다음 dictionary와 amplitude를 학습하는 기존 VG-SAE로 옮겨 proper score와 feature recovery가 같이 유지되는지 검사한다.",
+          "학습된 a(x)를 고정한 plug-in energy posterior와 실제 생성 support posterior를 구분하고 real activation에서는 semantic calibration을 주장하지 않는다."
+        ],
+        "hypothesis": "VG gate는 최소한 명시된 conditional support model에서 유용한 inclusion probability를 제공할 수 있다. learned decoder/amplitude에서도 그 해석이 어느 정도 유지되는지는 별도 evidence가 필요하다.",
+        "current_evidence": [
+          {
+            "source": "model",
+            "finding": "q(s|x)는 factorized Bernoulli이고 a(x)는 random slab posterior가 아닌 deterministic point estimate다."
+          },
+          {
+            "source": "old_posterior",
+            "finding": "이전 known-dictionary 파일럿은 Brier/NLL tradeoff와 undertraining 의존을 보여준다. 하나의 score만으로 확률 해석을 확증할 수 없다."
+          },
+          {
+            "source": "brief",
+            "finding": "uncertainty 주장은 proper ground truth가 있을 때만 검증한다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "d=8,L=12, true expected L0=2, fixed nonnegative amplitude sqrt(2), known sigma, independent supports. train16384/cal4096/test4096; 2^12 support enumeration. exact posterior, optimized mean-field, amortized gate의 3 levels. learned amplitude/dictionary는 별도 second arm으로만 추가. Brier/NLL은 지원 labels에 대해, posterior marginal error는 exact posterior에 대해 따로 기록.",
+          "primary_metrics": [
+            "Brier score",
+            "Bernoulli NLL",
+            "exact marginal MAE",
+            "reliability curve with bin counts",
+            "hard support F1"
+          ],
+          "controls": "무조건 marginal-frequency predictor와 temperature-calibrated gate를 대조. calibration은 독립 split에서만. full generative ELBO 및 calibrated semantic posterior라는 이름을 쓰지 않는다."
+        },
+        "decision_criteria": {
+          "positive": "exact-target 대비 mean-field/encoder 오차가 사전 tolerance 이내이고 Brier와 NLL 모두 unconditional prior보다 개선, learned arm에서도 두 proper-score 방향 유지. 결론은 그 생성 조건으로 제한.",
+          "negative": "한 score만 개선하거나 conditional target와 ground truth target가 갈라지면 uncertainty claim을 줄이고 deterministic support/magnitude method로 설명한다.",
+          "null": "training length에 따라 score 순서가 계속 변하거나 exact-target misspecification이 커서 평가가 섞이면 calibration 결론 유보."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0–0.2",
+          "gpu": "CPU exact enumeration 가능; encoder는 A6000 1개",
+          "training_required": true
+        },
+        "pipeline_role": "optional_claim_validation; VG-SAE 주방법 성립의 선결조건 아님",
+        "risk": {
+          "level": "HIGH",
+          "named_risks": [
+            "conditional plug-in posterior와 full generative posterior를 혼동하기 쉽다.",
+            "feature dictionary 정렬이 잘못되면 calibration score가 다른 feature를 비교한다.",
+            "synthetic probability calibration은 real semantic uncertainty를 보장하지 않는다."
+          ]
+        },
+        "known_prior_work": [
+          "vg",
+          "entropy_elbo",
+          "probtopk",
+          "vaease"
+        ],
+        "so_what": "확률적 방법이 실제로 뒷받침하는 주장을 구분하고, 검증되지 않은 uncertainty를 논문의 핵심에 넣지 않는다.",
+        "dependencies": []
+      }
+    },
+    {
+      "id": "VG-D12",
+      "dedup_key": "vg_complete_saved_stage3_evaluation",
+      "generator": "gpt-6-astra/ultra",
+      "title": "저장된 Stage3 모델부터 평가해 현실 activation 증거를 완성한다",
+      "payload": {
+        "what_changes": [
+          "Gemma layer5 seed0의 저장 checkpoint와 provenance를 확인하고 evaluation 가능한 matched-L0 후보를 고른다.",
+          "별도 calibration activation range에서 achieved hard L0를 확인한 뒤, 사전 고정 test range에서 reconstruction과 CE/KL replacement를 평가한다.",
+          "baseline와 VG의 overlap/효과를 확인한 뒤 다음 seed·target·control의 training 순서를 정한다. 전체 미완료 grid를 먼저 새로 돌릴 필요는 없다."
+        ],
+        "hypothesis": "이미 학습한 실제 activation VG-SAE가 sparse reconstruction과 downstream replacement에서 어떤 성능을 보이는지 확인하면, Stage1/2에서 선택한 개발 방향의 실효성을 판단하고 남은 compute를 배치할 수 있다.",
+        "current_evidence": [
+          {
+            "source": "audit",
+            "finding": "저장 manifest 기준 GemmaL5 seed0의 VG15/L1 15/BatchTopK15/JumpReLU9개가 complete, GemmaL12 BatchTopK16개 complete. Stage3 final_metrics는 아직 없다. 저장 running/queued label은 live job 증거가 아니다."
+          },
+          {
+            "source": "stage3",
+            "finding": "실제 activation에는 true support/dictionary가 없으므로 recovery ground truth field가 null이다. CE/KL intervention 경로는 구현되어 있다."
+          },
+          {
+            "source": "readme",
+            "finding": "Stage3 gamma는 Stage2 curve의 interpolation/extrapolation에서 온 target-density 가설이다. real achieved L0를 먼저 측정해야 한다."
+          }
+        ],
+        "minimum_discriminating_pilot": {
+          "design": "GemmaL5의 VG/BatchTopK/JumpReLU/L1 각2개 checkpoint(총8 이하). cal65536 tokens에서 achieved L0만 확인하고 overlap하는 band를 사전 선택; test65536 tokens reconstruction, 그 중16384 tokens CE/KL intervention. pilot에서는 exact all-pair decoder cosine을 생략하거나 별도 시간예산으로 기록. 공식 full evaluation은 이후1,048,576 tokens로 확장.",
+          "primary_metrics": [
+            "achieved hard L0 and EV",
+            "CE-loss/KL replacement versus original and zero ablation",
+            "dead features",
+            "VG mean/sample/hard reconstruction metrics"
+          ],
+          "controls": "calibration과 test의 token ranges를 분리하고 normalization은 training에서 고정. 같은 pinned LM/tokenizer/data revisions. Gated는 현재 Stage3 grid에 없으므로 이 pilot의 경쟁 범위 한계로 명시; 필요시 좁은 후속 Gated anchor를 추가."
+        },
+        "decision_criteria": {
+          "positive": "같은 actual-L0 band에서 VG가 baseline Pareto frontier에 들어가고 CE/KL 손실이 사전 practical margin 안이면 multi-seed/다른 layer 확장 근거.",
+          "negative": "VG가 hard reconstruction과 CE/KL 모두 분명히 열세면 대형 grid 확장을 보류하고 D01/D02/D04의 개발 결과부터 반영한다. synthetic 기여를 지우거나 새 실패분석 주제로 바꾸지 않는다.",
+          "null": "Stage2에서 가져온 control이 actual-L0 overlap을 만들지 못하거나 local model access/throughput으로 budget 내 eval 불가능하면 작은 calibration anchor 또는 별도 평가 budget이 필요. no-results를 성능 실패로 쓰지 않는다."
+        },
+        "effort": {
+          "implementation_days": "0.5–1",
+          "estimated_gpu_hours": "0.5–1.5",
+          "gpu": "A6000 48GB 1개; LM+SAE load 확인과 8k-token timing 후 2h 내 축소",
+          "training_required": false
+        },
+        "pipeline_role": "required_application_evidence; existing_pipeline_completion",
+        "risk": {
+          "level": "MEDIUM",
+          "named_risks": [
+            "model access와 multi-GB checkpoint loading 시간이 wall cost를 지배할 수 있다.",
+            "짧은 token prefix에서의 CE 차이는 문서 variation에 민감하다.",
+            "real support truth가 없어 low CE를 feature correctness로 치환할 수 없다."
+          ]
+        },
+        "known_prior_work": [
+          "saebench",
+          "sparsewrong",
+          "gated",
+          "jump",
+          "batchtopk"
+        ],
+        "so_what": "이미 지출한 training compute를 실제 판단 가능한 evidence로 전환하고 다음 Stage3 작업을 구체화한다.",
+        "dependencies": [
+          "VG-D04",
+          "VG-D05"
+        ]
+      }
+    }
+  ],
+  "mechanical_consolidation": {
+    "generated_count": 12,
+    "unique_dedup_keys": 12,
+    "ranking": null,
+    "rejected": [],
+    "nearby_but_distinct": [
+      {
+        "ids": [
+          "VG-D01",
+          "VG-D09"
+        ],
+        "distinction": "D01은 training objective 항의 causal ablation, D09는 동일 학습 checkpoint에서 support-fixed magnitude refit으로 이득을 귀속한다."
+      },
+      {
+        "ids": [
+          "VG-D02",
+          "VG-D03"
+        ],
+        "distinction": "D02는 noise precision optimizer, D03은 최종 목적함수를 보존한 sparsity curriculum."
+      },
+      {
+        "ids": [
+          "VG-D04",
+          "VG-D08"
+        ],
+        "distinction": "D04는 readout/metric 계약과 global threshold, D08은 fixed-objective coordinate optimization이라는 선택적 inference 변경."
+      },
+      {
+        "ids": [
+          "VG-D05",
+          "VG-D12"
+        ],
+        "distinction": "D05는 전 stage의 선택·평가 독립성, D12는 이미 학습한 real activation 모델의 실제 결과 수집."
+      },
+      {
+        "ids": [
+          "VG-D06",
+          "VG-D07"
+        ],
+        "distinction": "D06은 amplitude 법칙×고유 표본 수, D07은 noise/support dependence라는 별도 일반화 축."
+      }
+    ]
+  },
+  "writes": "이 파일만 작성. 모델/훈련 코드/기존 결과/메모리 수정 및 commit/push 없음."
+}

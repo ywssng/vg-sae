@@ -1,0 +1,88 @@
+{
+  "unit_tests": "3 passed; tests/test_vg_development_holdout.py",
+  "original_evaluator_equivalence": [
+    {
+      "method": "batchtopk",
+      "run_id": "batchtopk_k=4.0_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 2.8632908266601476e-09,
+        "hard_reconstruction_mse": 4.8484850578844885e-09,
+        "hard_explained_variance": 2.0031232339512428e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    },
+    {
+      "method": "gated",
+      "run_id": "gated_l1_coefficient=1.0_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 2.180060021395036e-09,
+        "hard_reconstruction_mse": 5.500105371147868e-10,
+        "hard_explained_variance": 3.916555990635118e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    },
+    {
+      "method": "jumprelu",
+      "run_id": "jumprelu_l0_coefficient=0.5_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 1.230904267401911e-12,
+        "hard_reconstruction_mse": 4.682470244876669e-10,
+        "hard_explained_variance": 4.6417904853157665e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    },
+    {
+      "method": "l1",
+      "run_id": "l1_l1_coefficient=1.0_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 7.492751197268888e-09,
+        "hard_reconstruction_mse": 5.8467323760247325e-09,
+        "hard_explained_variance": 5.300720518075508e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    },
+    {
+      "method": "topk",
+      "run_id": "topk_k=4_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 1.983145314632395e-09,
+        "hard_reconstruction_mse": 1.6167989169701968e-10,
+        "hard_explained_variance": 1.0224312063655816e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    },
+    {
+      "method": "vgsae",
+      "run_id": "vgsae_gamma=3.0_seed=0",
+      "absolute_deltas_vs_saved_stage1": {
+        "hard_generalization_error": 0.0,
+        "hard_reconstruction_mse": 5.687800230802509e-11,
+        "hard_explained_variance": 2.5144030857404687e-08,
+        "hard_support_f1": 0.0,
+        "average_l0": 0.0,
+        "decoder_recovery_cosine": 0.0
+      }
+    }
+  ],
+  "max_allowed_absolute_delta": 2e-06,
+  "calibration_checkpoints": 546,
+  "l1_saved_training_threshold_rows": 32,
+  "l1_fresh_fit_rows": 0,
+  "versions": {
+    "torch": "2.13.0+cu126",
+    "numpy": "2.5.1",
+    "scipy": "1.18.0",
+    "scikit-learn": "1.9.0",
+    "sae-lens": "6.47.0"
+  }
+}

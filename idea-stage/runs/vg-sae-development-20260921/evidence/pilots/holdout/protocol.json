@@ -1,0 +1,45 @@
+{
+  "created_at": "2026-09-21T05:21:42.510556+00:00",
+  "phase": "full",
+  "sources": {
+    "exponential": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0",
+    "constant": "outputs/runs/stage1_ablation2_constant_beta_profiled_din128_gt1024_sae1024_sd001_seed0"
+  },
+  "checkpoint_kind": "last",
+  "training_seed": 0,
+  "conditions": [
+    "exponential",
+    "constant"
+  ],
+  "source_offsets": {
+    "exponential": 0,
+    "constant": 1
+  },
+  "calibration_seed": 2026092101,
+  "test_seed": 2026092102,
+  "rng_components": {
+    "support": 11,
+    "amplitude": 17,
+    "noise": 23
+  },
+  "rng_rule": "NumPy SeedSequence([base_seed, source_offset, component_offset])",
+  "calibration_samples": 2048,
+  "test_samples": 4096,
+  "l0_caps": [
+    4.0,
+    8.0,
+    16.0
+  ],
+  "selection": "Per condition/method/cap: minimum calibration hard latent relative error subject to calibration mean L0 <= cap; tie calibration hard MSE, calibration L0, fixed control order.",
+  "test_access": "Generate and evaluate test only after every calibration decision is serialized and hashed.",
+  "comparison": "Same L0-cap frontier, not exact matched L0; test cap excess is reported without reselection.",
+  "candidate_scope": "Complete original 273-control grid per condition; no old-metric shortlist.",
+  "limitations": [
+    "One frozen training/dictionary seed; fresh examples do not provide training-seed robustness.",
+    "Unequal method control grids and optimizer/parameter budgets; descriptive pilot only.",
+    "Source conditions were chosen after observing historical curves; not an untouched problem-selection test."
+  ],
+  "script_sha256": "76de03d920d5d5bb44417b9e5b5f2e5d42a1499cbedeabc69fdb694a180fd5df",
+  "device": "cuda:2",
+  "max_seconds": 7200.0
+}

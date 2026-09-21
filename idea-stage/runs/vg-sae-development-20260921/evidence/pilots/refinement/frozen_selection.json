@@ -1,0 +1,32 @@
+{
+  "frozen_at": "2026-09-21T05:33:02.825185+00:00",
+  "test_generated": false,
+  "rule": "minimum calibration count_a error with F1 >= sweep0 F1-.01; tie smaller sweep",
+  "selected_sweeps": 1,
+  "selected_readout": "count_a",
+  "selected_calibration_row": {
+    "method": "vgsae",
+    "run_id": "vgsae_gamma=3.0_seed=0",
+    "sweeps": 1,
+    "readout": "count_a",
+    "n_samples": 512,
+    "hard_latent_relative_error": 0.6848765349391824,
+    "hard_support_f1": 0.32682926829268294,
+    "hard_reconstruction_mse": 0.07588727072508518,
+    "hard_explained_variance": 0.5269275034946828,
+    "actual_nonzero_l0": 3.380859375,
+    "candidate_support_l0": 3.380859375,
+    "decoder_recovery_cosine": 0.7513376474380493,
+    "truth_l0": 10.232421875,
+    "tp": 1139.0,
+    "fp": 592.0,
+    "fn": 4100.0,
+    "conditional_free_energy": 12.596153656895526,
+    "conditional_mean_residual_half_sse": 2.784210715594519,
+    "conditional_bernoulli_variance_half_sse": 0.5290258389438223,
+    "conditional_stochastic_half_sse": 3.3132365545383413,
+    "conditional_expected_l0": 57.74799885401153,
+    "conditional_metrics_scope": "refined probability state with ORIGINAL a; independent of hard readout/refit"
+  },
+  "calibration_metrics_sha256": "0304b70f718812526aff1923199f4f76b35b79e7b5640535bfb65172d1c8a9e6"
+}

@@ -1,0 +1,36 @@
+{
+  "decision": "no_deployable_sequential_gate_extension; conditional sparse-quality gap observed; teacher adoption not supported by this pilot",
+  "selected_policy": {
+    "sweeps": 1,
+    "readout": "count_a",
+    "selection_data": "fresh calibration only"
+  },
+  "relative_hard_latent_error_gain": 0.050122656773573415,
+  "hard_EV_gain": 0.08316512140918608,
+  "hard_F1_gain": 0.007392075694855116,
+  "same_actual_nonzero_L0": true,
+  "baseline_actual_L0": 3.185546875,
+  "selected_actual_L0": 3.185546875,
+  "selected_vs_native_latency_ratio": 991.9445524808933,
+  "selected_vs_zero_sweep_same_ranking_latency_ratio": 521.9580288219655,
+  "selected_vs_source_nnls_latency_ratio": 40.27830413318458,
+  "source_nnls_error": 0.6510879115411397,
+  "source_nnls_actual_L0": 3.14453125,
+  "refined_count_nnls_error": 0.6445134225022393,
+  "refined_count_nnls_actual_L0": 3.138671875,
+  "refinement_residual_error_gain_after_same_nnls": 0.010097697902789138,
+  "refinement_residual_EV_gain_after_same_nnls": 0.019314938072317878,
+  "test_all_arms_predeclared": true,
+  "generic_same_wall_budget_control_performed": false,
+  "scope": "one frozen training/dictionary seed, exponential amplitudes, 512 cal + independent 512 test, no added parameters, no retraining",
+  "validation": {
+    "command": ".venv/bin/python -B -m pytest tests/test_vg_development_refinement.py -q -p no:cacheprovider",
+    "passed": 4,
+    "environment_note": "Default shell python has no pytest; project .venv used successfully."
+  },
+  "run_command": ".venv/bin/python -B scripts/run_vg_development_refinement.py --device cuda:2",
+  "calibration_refinement_residual_error_gain_after_same_nnls": -0.009344217770596686,
+  "calibration_source_nnls_error": 0.6291379506622619,
+  "calibration_refined_count_nnls_error": 0.635016752680997,
+  "interpretation_detail": "After the same NNLS, latent-error change has opposite signs on calibration and test. EV/F1 gains remain, so generic refit does not explain every improvement; teacher adoption is unsupported."
+}

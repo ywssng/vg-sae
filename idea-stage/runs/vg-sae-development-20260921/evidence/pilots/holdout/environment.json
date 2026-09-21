@@ -1,0 +1,9 @@
+{
+  "python": "3.14.0",
+  "torch": "2.13.0+cu126",
+  "numpy": "2.5.1",
+  "gpu": "NVIDIA RTX A6000",
+  "cuda": "12.6",
+  "device": "cuda:2",
+  "torch_threads": 4
+}

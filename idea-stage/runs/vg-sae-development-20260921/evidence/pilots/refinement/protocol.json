@@ -1,0 +1,128 @@
+{
+  "created_at": "2026-09-21T05:32:17.525666+00:00",
+  "markdown": "idea-stage/runs/vg-sae-development-20260921/pilots/refinement_protocol.md",
+  "markdown_sha256": "da27c8ffb2f9dd0684ff4c0d29928f828e18f4fdfbe4c9d4ed6dfbf0bb9d8514",
+  "script_sha256": "a1707fcf996507326f64ce1ee0847fefc7170f849d919325e48b838b2a761497",
+  "p1_frozen_selection_sha256": "c9af239490599a9d73cfe72ecb06e4111dc5c0672e461efd657f6e6a208be576",
+  "checkpoint_choices": [
+    {
+      "condition": "exponential",
+      "method": "batchtopk",
+      "l0_cap": 4.0,
+      "supported": true,
+      "eligible_control_count": 12,
+      "evaluated_control_count": 41,
+      "selected_run_id": "batchtopk_k=4.0_seed=0",
+      "selected_checkpoint": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/runs/batchtopk/batchtopk_k=4.0_seed=0/checkpoints/last.pt",
+      "control_value": 4.0,
+      "control_order": 188,
+      "cal_average_l0": 3.6044921875,
+      "cal_hard_generalization_error": 0.8625339817762943,
+      "cal_hard_reconstruction_mse": 0.1036276976610043,
+      "cal_hard_support_f1": 0.20375316277762162,
+      "caps": [
+        4.0,
+        8.0
+      ]
+    },
+    {
+      "condition": "exponential",
+      "method": "jumprelu",
+      "l0_cap": 4.0,
+      "supported": true,
+      "eligible_control_count": 16,
+      "evaluated_control_count": 32,
+      "selected_run_id": "jumprelu_l0_coefficient=0.5_seed=0",
+      "selected_checkpoint": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/runs/jumprelu/jumprelu_l0_coefficient=0.5_seed=0/checkpoints/last.pt",
+      "control_value": 0.5,
+      "control_order": 232,
+      "cal_average_l0": 2.50341796875,
+      "cal_hard_generalization_error": 0.8667364357403199,
+      "cal_hard_reconstruction_mse": 0.11745453890300281,
+      "cal_hard_support_f1": 0.17075684134193353,
+      "caps": [
+        4.0,
+        8.0
+      ]
+    },
+    {
+      "condition": "exponential",
+      "method": "topk",
+      "l0_cap": 4.0,
+      "supported": true,
+      "eligible_control_count": 4,
+      "evaluated_control_count": 128,
+      "selected_run_id": "topk_k=4_seed=0",
+      "selected_checkpoint": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/runs/topk/topk_k=4_seed=0/checkpoints/last.pt",
+      "control_value": 4,
+      "control_order": 52,
+      "cal_average_l0": 3.99267578125,
+      "cal_hard_generalization_error": 0.7520521597818981,
+      "cal_hard_reconstruction_mse": 0.08489223375781291,
+      "cal_hard_support_f1": 0.27527264025161535,
+      "caps": [
+        4.0
+      ]
+    },
+    {
+      "condition": "exponential",
+      "method": "topk",
+      "l0_cap": 8.0,
+      "supported": true,
+      "eligible_control_count": 8,
+      "evaluated_control_count": 128,
+      "selected_run_id": "topk_k=6_seed=0",
+      "selected_checkpoint": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/runs/topk/topk_k=6_seed=0/checkpoints/last.pt",
+      "control_value": 6,
+      "control_order": 54,
+      "cal_average_l0": 5.89453125,
+      "cal_hard_generalization_error": 0.7408335025461885,
+      "cal_hard_reconstruction_mse": 0.07783831689211516,
+      "cal_hard_support_f1": 0.2985578953719906,
+      "caps": [
+        8.0
+      ]
+    },
+    {
+      "condition": "exponential",
+      "method": "vgsae",
+      "l0_cap": 4.0,
+      "supported": true,
+      "eligible_control_count": 11,
+      "evaluated_control_count": 33,
+      "selected_run_id": "vgsae_gamma=3.0_seed=0",
+      "selected_checkpoint": "outputs/runs/stage1_beta_profiled_din128_gt1024_sae1024_sd001_seed0/runs/vgsae/vgsae_gamma=3.0_seed=0/checkpoints/last.pt",
+      "control_value": 3.0,
+      "control_order": 9,
+      "cal_average_l0": 3.05224609375,
+      "cal_hard_generalization_error": 0.6963968175234573,
+      "cal_hard_reconstruction_mse": 0.08107510678479046,
+      "cal_hard_support_f1": 0.32680695333943277,
+      "caps": [
+        4.0,
+        8.0
+      ]
+    }
+  ],
+  "calibration_seed": 2026092192,
+  "test_seed": 2026092193,
+  "n_calibration": 512,
+  "n_test": 512,
+  "batch_size": 128,
+  "sweeps": [
+    0,
+    1,
+    3
+  ],
+  "vg_readouts": [
+    "native_a",
+    "count_a",
+    "count_ma",
+    "native_nnls",
+    "count_nnls"
+  ],
+  "device": "cuda:2",
+  "max_seconds": 7200.0,
+  "training_performed": false,
+  "test_access_policy": "test generated after serialized calibration sweep choice"
+}

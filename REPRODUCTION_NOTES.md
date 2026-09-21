@@ -28,6 +28,13 @@ the paper leaves details open.
   the paper with a squared Euclidean norm. The Bernoulli variance correction
   becomes `sum_j m_j (1-m_j) a_j^2 ||d_j||_2^2 / 2`, which is the direct
   vector-output extension of Eq. (10).
+- **VG-SAE probability scope:** only the Bernoulli support is variational;
+  `a(x)` is an input-dependent point estimate without its own normalized prior
+  or variational entropy. The exact expected quadratic risk is conditional on
+  the current amplitudes and dictionary. It is not, by itself, a complete
+  generative-model ELBO over stochastic amplitudes or a guarantee of calibrated
+  semantic support probabilities. The absence of an amplitude L1 penalty also
+  does not prove that the finite affine/softplus encoder has no estimation bias.
 - **VG-SAE sparsity field:** `lambda_sparsity` is the paper's `gamma` and may be
   any finite real number. The normalized expected negative log prior is
   `gamma * sum(m) + n_latents * softplus(-gamma)` per sample. Positive gamma
@@ -40,6 +47,23 @@ the paper leaves details open.
   accepted. `--beta` does not set the profiled optimum; it is an
   initial/reporting value in profiled mode and the positive-precision
   initialization in learned mode.
+- **Minibatch profiling is a distinct training procedure:** the mean of
+  `log(mean_batch_energy)` is generally different from the log of the full-data
+  mean energy. A per-batch stationarity identity does not make stochastic
+  minibatch profiling equivalent to training one global precision. Record beta
+  mode, batch size, and the precision source in inference-refinement comparisons.
+- **Three reconstruction risks:** posterior-mean reconstruction uses `D(m*a)`,
+  Bernoulli-sampled expected squared error adds twice the reported half-SSE
+  variance energy, and sparse deployment uses the explicit hard code. A
+  mean-versus-hard gap is not evidence that the hard risk exceeds the training
+  distribution's expected risk. Report the three quantities separately.
+- **Development pilot selection (2026-09-21):** the new saved-checkpoint pilot
+  chooses controls using independent calibration samples before generating its
+  test samples. Its L0-cap frontiers are not exact matched-L0 comparisons and
+  fresh evaluation samples do not add training-seed replications. The original
+  Stage-1/2 tables retain their documented selection limitations. Pilot details
+  and the corrected ongoing-method scope are in `RESEARCH_BRIEF.md` and
+  `idea-stage/IDEA_REPORT.md`.
 - **Entropy ablations:** the variational objective has unit entropy weight.
   `entropy_weight != 1` and `use_entropy_term=False` are explicit ablations,
   not alternative derivations of the same posterior.

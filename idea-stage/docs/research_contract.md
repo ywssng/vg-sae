@@ -1,94 +1,74 @@
-# Research Contract: VG-SAE 복제 유인과 feature 선택
+# Research Contract: Variational Garrote 기반 SAE 개발
 
-날짜: 2026-09-19 · source: [IDEA_REPORT의 B04](../IDEA_REPORT.md#ranked-ideas).
-이 문서는 현재 선택한 연구만 유지한다. B05는 별도 대안이며 C1/C2와 합산하지 않는다.
+실행 `vg-sae-development-20260921` · 2026-09-21.
+사용자가 확정한 원래 연구는 **새로운 VG-SAE 방법 개발**이다.
+[RESEARCH_BRIEF](../../RESEARCH_BRIEF.md)가 범위의 기준이다.
+이전 복제 진단 주제의 계약은 [역사 보존본](../runs/vg-sae-development-20260921/prior_scope_snapshot/README.md)에만 남긴다.
 
-## Selected Idea
+## Selected Method
 
-학습된 VG-SAE에서 한 feature를 둘로 나누면 어떤 조건에서 loss가 낮아지는지
-검사하고, 그 초기조건에서 추가 학습한 결과가 실제 feature 선택을 손상하는지
-대조한다. 기존 gate KL와 variance 항을 직접 조작할 수 있어 현재 코드에 잘 맞고,
-짧은 실험으로 가설을 지지하지 않는 경우를 구분할 수 있다는 이유로 선택했다.
-
-기본 replication 대수와 width-dependent prior는 알려진 선행연구다.
-현재 선택은 새 정리·새 architecture·SOTA를 확보했다는 뜻이 아니다.
+입력에서 Bernoulli support 확률 m과 nonnegative point amplitude a를 예측하고,
+learned linear dictionary D로 복원한다. Support를 표본 추출하지 않고 적분한
+quadratic energy와 normalized Bernoulli prior/entropy로 학습한다.
+실제 readout은 hard support × amplitude다. 확률적 support 선택이 유용한 sparse
+code를 학습하도록 하는 것이 중심이며, 진단은 이 방법의 개발과 검증을 돕는다.
 
 ## Core Claims
 
-1. **C1, 미검증:** 실제 학습 checkpoint의 일부 atom에서 parameter로 구현 가능한
-   복제가 normalized gate KL 비용까지 포함해 loss상 유리하고, 출력 drift만으로
-   그 이득을 설명할 수 없다.
-2. **C2, 미검증:** 사전에 정한 clone 개입 뒤 high/low-margin 간 feature-ranking
-   학습 변화의 차이가 variance 항 on/off에 의존하는 조건이 있다. hard support
-   손상은 별도 grouped F1 확인까지 있을 때만 주장한다.
+- **C1, 후속 확증 필요:** 정해진 sparsity 예산 아래 강한 SAE baseline과 비교해
+  유용한 coefficient/feature recovery tradeoff를 제공한다. Actual L0, 입력 fidelity,
+  parameter·학습·추론 비용을 같이 보고한다. 범용적인 모든 지표 우위를 뜻하지 않는다.
+- **C2, 미검증:** 현재 parameterization의 minibatch-profiled beta recipe에서
+  variance와 entropy가 support–amplitude 결합과 hard-code 품질에 기여하는지 각각 판정한다.
+  Variance만, entropy만, 둘 모두, 둘 모두 비지지를 구분하고 지지된 항만 결론에 쓴다.
+  Learned-beta recipe의 C1 결과로 자동 일반화하지 않는다.
+  No-variance의 scale compensation을 고려하며 deletion collapse만으로
+  확률적 방법 전반이나 같은 capacity의 모든 deterministic SAE에 대한 우위를 주장하지 않는다.
 
-이 조건부 주장들은 injected initialization에 대한 것이다. 자연 학습에서의
-자발적 복제, 일반적인 calibration, real-model semantic feature 보장은 포함하지 않는다.
-
-## Method Summary
-
-gate·amplitude·decoder가 학습된 모델에서 atom별 KL와 Bernoulli variance를 잰다.
-고정 beta에서 ideal r-copy loss 변화는 `(r−1)K−beta(1−1/r)V`지만
-linear-softplus amplitude는 정확히 a/r로 바뀌지 않으므로 feasible 개입의
-reconstruction/variance/KL를 실제로 다시 계산한다. 새 trainable module은 없다.
-
-calibration에서 high/low-margin atom pair를 고정하고, 작은 반대 방향 perturbation을
-넣어 동일 clone의 optimizer 대칭을 깬다. 네 arm(high/low × variance on/off)은
-같은 Adam reset·beta·gamma·batch 순서로 추가 학습한다. 주입 직후와 종료 시점의
-변화만 비교하며, duplicate-invariant grouped AP를 primary로 사용한다.
-cutoff 민감도와 grouped hard support F1, hard EV/raw L0는 별도로 확인한다.
+현재 objective는 입력 의존 amplitude의 생성 prior/entropy를 포함하지 않는다.
+따라서 full generative ELBO, unbiased amplitude, calibrated semantic posterior,
+최초 probabilistic SAE/analytic VI를 수식만으로 주장하지 않는다.
+Learned global beta와 minibatch-profiled beta를 다른 stochastic objective로 구분한다.
 
 ## Minimum Convincing Evidence
 
-- C1: 새 holdout에서 ΔF와 `S=beta ΔV+ΔK`가 모두 사전 음수 기준을 통과하고
-  mean/hard drift가 작아야 한다. 실제 perturbed 초기조건에도 같은 검사를 적용한다.
-- C2: source3 data seeds×3optimizer seeds, high/low×variance on/off에서 주입 직후를
-  뺀 paired interaction이 사전 방향·크기 기준을 통과해야 한다. raw L0 증가만으로
-  semantic 손상이라고 부르지 않는다.
-- cal matching·stability·metric coverage가 성립하지 않으면 유보한다.
-  유효한 실험에서 효과가 없으면 검증한 범위의 비지지로 남긴다.
-- B1 gate holdout과 B2 final holdout은 서로 다르다. 조건/threshold 선택에 final test를
-  쓰지 않는다. 상세 수치 규칙은 [FINAL_PROPOSAL](../../refine-logs/FINAL_PROPOSAL.md).
+1. B1: 원래 Stage1 크기, 새 paired training/data worlds 100/101/102, 같은 tuning 및
+   checkpoint 후보 예산. Cal hard latent error와 L0로 모든 방법의 control/checkpoint를
+   고르고 동결 뒤 test 평가. Cap 8 primary, 4/16 secondary. 비교 baseline도 cal에서 고정한다.
+2. B2: 같은 architecture의 variance×entropy 2×2, 같은 beta mode와 selection budget.
+   Mean/sample/hard risk, m/a scale, actual L0를 함께 기록한다. 이 실험의 의미는
+   현재 support–amplitude coupling의 내부 검증이다.
+3. B3: 저장된 SynthSAEBench와 Gemma L5 checkpoint부터 fresh split에서 평가한다.
+   Ground truth가 없는 실제 activation에서는 L0 및 reconstruction/CE로 선택한다.
+   여기서 true support recovery나 semantic calibration을 주장하지 않는다.
 
-## Experiment Design
+상세 grids, job 수, split, 구현 prerequisite, resource cap과 go/no-go는
+[실험 계획](../../refine-logs/EXPERIMENT_PLAN.md)에 둔다. 동일 L0 상한 아래 비교를
+exact matched-L0라 쓰지 않는다. 3-seed screening은 통계적 확증과 구분한다.
 
-- 먼저 independent spike-and-slab synthetic d16/truth32/width128, density2/32,
-  noise.05, train8192/cal2048/B1holdout4096/B2holdout4096.
-- 주 대조는 high/low matched cloning 및 기존 variance 항 삭제다. random expansion이나
-  더 큰 encoder를 동시에 새로운 기여로 넣지 않는다.
-- B1/B2가 성립하면 기존 pinned SynthSAEBench 한 조건으로 외적 반복한다.
-- 새 학습법의 baseline 우위를 주장할 때만 Gated/JumpReLU/BatchTopK를 동일
-  sparsity·계산 예산으로 추가한다. 현재 계약은 superiority 연구가 아니다.
-- 후속 compute ceiling7.05GPUh는 계획상 상한이다. 기존 파일럿에 기록된 GPU 계산은
-  약0.0721GPUh이며 시작/import·독립 검증 시간은 이 수치에 포함하지 않았다.
+## Completed Evidence and Decisions
 
-## Current Results
+| 확인 | 결과와 결정 |
+|---|---|
+| P1: 기존 546 checkpoints의 새 cal/test | Exponential cap 8에서 VG error .69878 대 TopK .73693, EV .47784 대 .51410. 한 training world의 recovery–fidelity 절충이다. |
+| P2: 36개 작은 학습 | Moment beta 초기화의 일관된 이득 없음. 더 긴 학습에서 recovery가 악화된 조건이 있어 cal recovery 기반 checkpoint 선택을 채택한다. |
+| P3: 순차 gate 보정 | Same-count error 약 5.01% 개선, 현재 latency 약 992배. 기본 추론에 채택하지 않는다. |
+| P3b: 탐색 병렬 후속 | Same-count error 약 3.835% 개선, latency 4.3687배로 사전 3배 기준 미달. PG control과의 절충이 남는다. |
+| 문헌·신규성·비판 검토 | 32개 문헌 registry, 실제 fresh ultra review 모두 조건부 진행. Same-family provisional이다. |
 
-| 관찰 | 실제 근거 | 허용되는 해석 |
-|---|---|---|
-| Constructed replication 수식 일치 | [16구성 JSON](../evidence/pilots/replication_results.json) | feasibility와 구현 일치; 학습 원인 미입증 |
-| 큰 폭의 mean-hard gap, 학습 연장 시 감소 | [risk 표](../evidence/pilots/readout_risk_comparison.json) | 최적화 예산의 영향; sampled risk와 구분 |
-| fixed-count prior / 단순 ma readout의 부정 결과 | [파일럿 집계](../evidence/pilots/pilot_summary.json) | 이 작은 조건의 간단한 처방 비지지 |
-| B05 Brier 개선/NLL 악화 | [posterior 결과](../evidence/pilots/posterior_report.md) | oracle 진단의 가치; calibration 전반 개선 아님 |
+새 trainable module을 금지하는 사용자 제약은 없다. 현재 파일럿이 필요성을 뒷받침하지
+않아 기존 architecture와 기본 추론을 후속 비교의 기준으로 유지한다.
 
-C1/C2의 actual clone intervention 결과는 없다. 과거 Stage2 결과도 one-seed와
-calibration stream 재사용 조건 때문에 확증적 baseline 승리로 기록하지 않는다.
+## Current Status
 
-## Key Decisions and Next Pointer
+- [x] 원래 VG-SAE 방법 개발을 anchor로 고정
+- [x] 문헌, 방법 비교와 신규성 검토
+- [x] 세 개발 경로의 파일럿 및 P3b 탐색 후속
+- [x] 비판 검토와 주장 범위 수정
+- [ ] B1의 공정한 새 학습 비교
+- [ ] B2 objective mechanism 검증
+- [ ] B3 fresh benchmark/activation 평가
+- [ ] 논문 수준의 기여 확증과 작성
 
-- 본 실행의 생성·심사는 GPT-6 Astra ultra; 리뷰는 same-family provisional.
-- generic duplication/width-scaling novelty 주장은 철회한다.
-- mean, sampled, hard risk를 분리하고 probability count와 raw firing count를 혼동하지 않는다.
-- 구현 시작점과 예산은 [EXPERIMENT_PLAN](../../refine-logs/EXPERIMENT_PLAN.md),
-  실행 여부는 [EXPERIMENT_TRACKER](../../refine-logs/EXPERIMENT_TRACKER.md)가 기준이다.
-
-## Status
-
-- [x] Idea selected conditionally
-- [x] Literature and novelty review
-- [x] Exploratory pilots and deterministic checks
-- [ ] Clone intervention and duplicate-invariant evaluation implemented
-- [ ] C1 confirmed on new held-out data
-- [ ] C2 confirmed with paired controls
-- [ ] SynthSAEBench external replication
-- [ ] Paper draft
+[통합 보고서](../IDEA_REPORT.md), [최종 제안](../../refine-logs/FINAL_PROPOSAL.md),
+[실행 상태표](../../refine-logs/EXPERIMENT_TRACKER.md)가 다음 작업의 시작점이다.

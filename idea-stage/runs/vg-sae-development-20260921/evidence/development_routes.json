@@ -1,0 +1,462 @@
+{
+  "schema_version": "1.0",
+  "created_date": "2026-09-21",
+  "review_type": "prepilot_selection_jury",
+  "reviewer": {
+    "agent_id": "/root/vg_development_jury",
+    "agent_id_kind": "canonical_task_name",
+    "model": "gpt-6-astra",
+    "reasoning_effort": "ultra",
+    "review_independence": "same-family",
+    "acceptance_status": "provisional"
+  },
+  "immutable_anchor": "현재 Variational Garrote 기반 SAE의 방법·학습·추론·평가를 개발한다. 기본 VG-SAE를 타 주제와 경쟁하는 옵션으로 낮추지 않는다.",
+  "anchor_method_ranked": false,
+  "rank_interpretation": "동일 방법 안에서 다음 정보와 구현 결정을 얻는 실행 순서. 신규성 점수·논문 acceptance 순위가 아니다.",
+  "sources": [
+    "RESEARCH_BRIEF.md",
+    ".agents/project-memory.md",
+    "idea-stage/runs/vg-sae-development-20260921/evidence/pipeline_audit.md",
+    "idea-stage/runs/vg-sae-development-20260921/evidence/pipeline_evidence.json",
+    "idea-stage/runs/vg-sae-development-20260921/evidence/literature_update.md",
+    "idea-stage/runs/vg-sae-development-20260921/evidence/development_options.json",
+    "src/sae_model.py",
+    "src/sae_data.py",
+    "src/sae_sweep_eval.py"
+  ],
+  "raw_response_path": ".aris/traces/idea-creator/2026-09-21_vg-development/001-jury.response.md",
+  "ranking": [
+    {
+      "rank": 1,
+      "id": "VG-D05",
+      "title": "독립 calibration과 같은 sparsity·tuning budget으로 비교한다",
+      "status": "pilot_primary",
+      "pilot": "P1",
+      "reason": "저장 모델의 양성 신호를 새 calibration/test로 확인. method 선택의 근거를 먼저 바로잡는다.",
+      "strongest_objection_or_failure": "한 training seed·불균등 기존 tuning은 남는다.",
+      "risk": "LOW",
+      "next_step": "새 training seeds의 좁은 frontier 평가",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 2,
+      "id": "VG-D02",
+      "title": "beta를 같은 목적함수 안에서 충분히 학습하는 방법을 정한다",
+      "status": "pilot_primary",
+      "pilot": "P2",
+      "reason": "최소 학습 변형으로 beta 초기화와 추정 경로를 구분한다.",
+      "strongest_objection_or_failure": "minibatch profile과 global learned beta는 다른 stochastic objective.",
+      "risk": "MEDIUM",
+      "next_step": "원 Stage1 scale 및 좁은 Stage2 recipe 재검증",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 3,
+      "id": "VG-D08",
+      "title": "기존 VG encoder 뒤에 소수의 정확한 gate 좌표 업데이트를 시험한다",
+      "status": "pilot_primary",
+      "pilot": "P3",
+      "reason": "VG 조건부 업데이트가 sparse code 품질을 회복하는지 직접 검사하는 high-upside 선택.",
+      "strongest_objection_or_failure": "F 감소가 hard quality나 deployable latency를 보장하지 않는다.",
+      "risk": "HIGH",
+      "next_step": "품질·비용 모두 충족할 때 finite correction, 비용만 실패하면 training teacher 후속",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 4,
+      "id": "VG-D04",
+      "title": "학습 posterior와 배포 hard code의 사용 규칙을 확정한다",
+      "status": "mandatory_contract_and_pilot_control",
+      "pilot": "P3",
+      "reason": "mean/sample/hard 지표 계약은 즉시 고정하고 readout control은 P3에서 제한 수행.",
+      "strongest_objection_or_failure": "threshold 변경으로 L0가 바뀐 결과를 matched-L0 이득으로 쓰지 않는다.",
+      "risk": "LOW",
+      "next_step": "필요시 독립 calibration의 global threshold 후속",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 5,
+      "id": "VG-D01",
+      "title": "현재 VG 목적함수의 variance와 entropy 기여를 분리한다",
+      "status": "first_required_mechanism_followup",
+      "pilot": null,
+      "reason": "기본 VG의 variance/entropy 기여를 식별하는 핵심 후속; 새 모듈 필요 없음.",
+      "strongest_objection_or_failure": "ablation별 gamma·beta·학습량 통제가 필요.",
+      "risk": "MEDIUM",
+      "next_step": "P1/P2로 고정한 recipe에서 각 variant 독립 gamma-calibrated factorial",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 6,
+      "id": "VG-D06",
+      "title": "exponential amplitude와 적은 학습표본에서 주방법의 장점을 확인한다",
+      "status": "partial_evidence_reuse_only",
+      "pilot": "P1",
+      "reason": "기존 exponential 양성 단서와 constant 범위 대조를 가장 싸게 재평가.",
+      "strongest_objection_or_failure": "이번 P1은 unique-N factorial이나 amplitude 인과 검증이 아니다.",
+      "risk": "MEDIUM",
+      "next_step": "긍정 operating band에서 training-seed 반복 후 N factorial",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 7,
+      "id": "VG-D12",
+      "title": "저장된 Stage3 모델부터 평가해 현실 activation 증거를 완성한다",
+      "status": "next_application_evaluation",
+      "pilot": null,
+      "reason": "저장된 실제 activation 모델을 먼저 평가해 이미 쓴 compute를 evidence로 전환.",
+      "strongest_objection_or_failure": "local activation/model access와 throughput 미확정; no result는 성능 실패가 아님.",
+      "risk": "MEDIUM",
+      "next_step": "Gemma L5 소수 모델의 fresh range reconstruction/CE/KL",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 8,
+      "id": "VG-D09",
+      "title": "support 선택 이득과 amplitude shrinkage 이득을 분리한다",
+      "status": "pilot_fairness_control",
+      "pilot": "P3",
+      "reason": "공통 support-fixed amplitude refit으로 selection과 magnitude를 구분.",
+      "strongest_objection_or_failure": "dictionary 품질 차이는 남고 모든 방법의 refit 이익은 VG-specific 아님.",
+      "risk": "LOW",
+      "next_step": "P1 source models에 공통 refit, 필요시 amplitude-bin 분석",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 9,
+      "id": "VG-D03",
+      "title": "같은 최종 VG 목적함수로 가는 sparsity warmup을 검사한다",
+      "status": "deferred_training_option",
+      "pilot": null,
+      "reason": "같은 endpoint의 단순 gamma warmup은 beta 절차 다음의 저렴한 선택.",
+      "strongest_objection_or_failure": "초기 collapse 근거가 아직 없고 현재 P2는 warmup을 시험하지 않음.",
+      "risk": "LOW",
+      "next_step": "beta recipe를 고정한 no-warmup vs 20%-warmup paired 비교",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 10,
+      "id": "VG-D07",
+      "title": "noise와 support correlation에서 기본 VG-SAE의 유지 범위를 검사한다",
+      "status": "deferred_generalization",
+      "pilot": null,
+      "reason": "현재 clean independent-support 밖의 유지 범위를 확인.",
+      "strongest_objection_or_failure": "noise와 correlation을 섞으면 원인을 잃음.",
+      "risk": "MEDIUM",
+      "next_step": "고정 recipe의 noise sweep 후 marginal-matched correlation",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 11,
+      "id": "VG-D11",
+      "title": "gate 확률에 허용되는 해석의 범위를 검증한다",
+      "status": "claim_conditional_validation",
+      "pilot": null,
+      "reason": "확률 calibration 주장을 할 경우에만 명시한 conditional model에서 검증.",
+      "strongest_objection_or_failure": "known-D exact posterior가 learned semantic posterior를 보증하지 않음.",
+      "risk": "HIGH",
+      "next_step": "probability claim이 실제 필요할 때 Brier와 NLL 동시 검증",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    },
+    {
+      "rank": 12,
+      "id": "VG-D10",
+      "title": "희귀 feature 실패가 확인될 때만 feature별 prior를 시험한다",
+      "status": "bottleneck_conditional_extension",
+      "pilot": null,
+      "reason": "rare-feature prior 병목이 재현되면 선택적 model 수정 가능.",
+      "strongest_objection_or_failure": "병목 근거가 없고 rich-get-richer collapse·추가 tuning 위험.",
+      "risk": "HIGH",
+      "next_step": "global prior로 rare-feature 실패 원인이 확인된 뒤만 실행",
+      "candidate_hypothesis_unchanged": true,
+      "eliminated": false
+    }
+  ],
+  "rejected_candidates": [],
+  "mandatory_regardless_of_pilot_sign": [
+    "VG-D05 train/cal/test independence and selection logging",
+    "VG-D04 consistent hard/mean/stochastic readout and metric definitions"
+  ],
+  "selected_primary_routes": [
+    "VG-D05",
+    "VG-D02",
+    "VG-D08"
+  ],
+  "pilot_support_routes": {
+    "P1": [
+      "VG-D06 partial existing amplitude evidence only"
+    ],
+    "P2": [],
+    "P3": [
+      "VG-D04 limited readout controls",
+      "VG-D09 common amplitude-refit control"
+    ]
+  },
+  "no_automatic_extension_rule": "기본 방법으로 충분하면 새 module을 추가하지 않는다. 실제 gap과 비용·generic control 근거가 있으면 새 module을 사전 금지하지 않는다.",
+  "budget": {
+    "gpus_available_reported_by_executor": "4 idle A6000 48GB; recheck at launch",
+    "max_pilots": 3,
+    "max_gpu_hours_per_pilot_per_gpu": 2.0,
+    "max_total_gpu_hours": 8.0,
+    "recommended_estimate_gpu_hours": {
+      "P1": [
+        0.25,
+        0.75
+      ],
+      "P2": [
+        0.3,
+        1.0
+      ],
+      "P3": [
+        0.1,
+        0.5
+      ]
+    },
+    "estimate_total_upper_gpu_hours": 2.25,
+    "estimate_status": "provisional until first checkpoint/run timing; does not authorize using all remaining budget",
+    "actual_elapsed_gpu_hours": null,
+    "actual_results_available": false
+  },
+  "pilots": [
+    {
+      "id": "P1",
+      "primary_route": "VG-D05",
+      "name": "새 calibration/test에서 저장 Stage1 모델의 현재 strength 평가",
+      "status": "proposed_not_executed",
+      "training_required": false,
+      "source_conditions": [
+        "exponential amplitude / frequency skew .5",
+        "constant amplitude / frequency skew .5"
+      ],
+      "dimensions": {
+        "input_dim": 128,
+        "true_width": 1024,
+        "sae_width": 1024
+      },
+      "source_training_seeds": [
+        0
+      ],
+      "new_splits": {
+        "calibration_samples": 2048,
+        "test_samples": 4096,
+        "rng": "독립 새 streams; 원 dictionary/probabilities 고정; 실제 seed는 실행 protocol에 저장"
+      },
+      "required_provenance": "dictionary가 checkpoint에 없으면 원 config/seed로 복원 후 저장 true support/z와 일치 확인. training normalization과 L1 train-fitted GMM 보존.",
+      "methods_preferred": [
+        "VG profiled",
+        "L1",
+        "TopK",
+        "BatchTopK",
+        "JumpReLU",
+        "Gated"
+      ],
+      "candidate_grid": "가능하면 complete existing grid. 시간이 부족하면 test를 보기 전에 budget 인접 2–3점을 고정하며 기존 HPO 불균등 기록.",
+      "selection": {
+        "mean_hard_l0_caps": [
+          4,
+          8,
+          16
+        ],
+        "primary": "최소 calibration hard latent error subject to calibration mean hard L0 <= cap",
+        "ties": [
+          "lower calibration hard reconstruction MSE",
+          "lower achieved L0",
+          "fixed control order"
+        ],
+        "no_feasible_candidate": "N/A",
+        "test_rule": "선택 manifest를 저장한 뒤 test 한번"
+      },
+      "comparison_name": "L0 cap-constrained frontier; strict matched-L0라고 자동 명명하지 않음",
+      "primary_metrics": [
+        "hard latent error",
+        "support F1",
+        "decoder recovery",
+        "hard EV",
+        "actual calibration/test hard L0"
+      ],
+      "go": "사전 exponential cap에서 included strongest baseline 대비 hard latent error >=5% 개선, F1 손실 <=.02이면 새 training seeds 후속 우선. 작은 이익은 weak signal.",
+      "negative": "이익이 사라지면 해당 superiority claim을 보류하고 P2/P3/D01로 개발을 계속.",
+      "null": "source 복원 실패·coverage 부족·L0 overlap 부족을 판별 불가로 기록.",
+      "claim_limits": [
+        "one training seed",
+        "기존 unequal HPO/optimizer가 남음",
+        "evaluation samples 반복이 training replication을 대신하지 않음",
+        "constant 대조는 sample efficiency 또는 amplitude 인과 검증이 아님"
+      ]
+    },
+    {
+      "id": "P2",
+      "primary_route": "VG-D02",
+      "name": "beta 초기화와 precision 추정 절차를 구분하는 작은 학습",
+      "status": "proposed_not_executed",
+      "training_required": true,
+      "dimensions": {
+        "input_dim": 16,
+        "true_width": 64,
+        "sae_width": 64
+      },
+      "samples": {
+        "train": 2048,
+        "calibration": 2048,
+        "test": 4096
+      },
+      "recipes": [
+        "learned beta initial 1",
+        "learned beta initialized using train-only initial expected-risk scale",
+        "current minibatch-profiled beta reference"
+      ],
+      "gamma_values": [
+        2,
+        6
+      ],
+      "amplitude_modes": [
+        "exponential",
+        "constant"
+      ],
+      "optimizer_seeds": [
+        0,
+        1,
+        2
+      ],
+      "maximum_training_runs": 36,
+      "updates_per_run": 6000,
+      "early_snapshot_actual_updates": 1001,
+      "must_preregister_in_executor_protocol": [
+        "support density",
+        "noise",
+        "batch size",
+        "LR",
+        "dictionary/data/model seeds and their roles",
+        "train-scale beta exact formula and clamp",
+        "calibration recipe choice rule"
+      ],
+      "paired_control": "same initial encoder/decoder and batch sequence within condition; only learned beta initialization differs for first two arms",
+      "objective_boundary": "learned-init1 vs learned-train-scale: same final objective. Minibatch-profiled is a separate stochastic-objective reference; batch log-energy is not global profiled log-energy.",
+      "selection": "cal-only per gamma/amplitude recipe selection. All predefined arms evaluated once on test; no test winner reselection.",
+      "metrics": [
+        "early/final hard latent error and EV",
+        "support F1",
+        "hard L0",
+        "mean and stochastic risks",
+        "beta trajectory/stationarity",
+        "updates and seconds"
+      ],
+      "go": "train-scale initialization reduces final hard error >=5% or updates to same hard quality >=25%, >=2/3 paired seed directions agree, F1 loss <=.02; L0 movement must be disclosed.",
+      "limited_go": "early-only gain is training speed/initialization evidence.",
+      "negative": "hard quality or stability worsens; retain current recipe.",
+      "null": "all arms still moving or hard-L0 overlap insufficient.",
+      "not_tested": [
+        "gamma warmup",
+        "beta learning-rate multipliers",
+        "variance/entropy factorial",
+        "noise robustness",
+        "full-scale Stage2 convergence"
+      ]
+    },
+    {
+      "id": "P3",
+      "primary_route": "VG-D08",
+      "name": "조건부 VG gate correction의 sparse quality와 비용 비교",
+      "status": "proposed_not_executed",
+      "training_required": false,
+      "preferred_checkpoint_sources": "P1 exponential condition cap 4/8의 cal-selected VG plus JumpReLU/BatchTopK and strongest available baseline",
+      "allowed_smaller_source": "P2 cal-selected VG checkpoints; generic baseline control이 없으면 conditional gap within VG만 결론",
+      "fixed_parameters": [
+        "dictionary D",
+        "amplitude a for gate-only arm",
+        "bias",
+        "training/calibration-fitted single beta",
+        "gamma",
+        "unit entropy"
+      ],
+      "sweeps": [
+        0,
+        1,
+        3
+      ],
+      "update": "sequential coordinate m_j=sigmoid(beta*(a_j*d_j^T*r_minus_j - a_j^2*||d_j||^2/2)-gamma)",
+      "correctness_gate": "small float64 fixed-objective check; sequential residual updates; no monotonicity promise for parallel Jacobi",
+      "readout_controls": [
+        "default amplitude with threshold .5",
+        "fixed native per-input count probability ranking to separate count changes",
+        "same-support a vs ma as amplitude control",
+        "same-a base vs refined ranking as mask control"
+      ],
+      "generic_controls": [
+        "same support-fixed nonnegative amplitude refit for VG and baseline",
+        "equal steps and actual time reported",
+        "latency-matched generic inference control when available"
+      ],
+      "cal_test": "refinement count/readout fixed on calibration before a single untouched test evaluation",
+      "metrics": [
+        "fixed conditional free energy",
+        "mean residual risk",
+        "Bernoulli stochastic risk",
+        "hard error/F1/EV",
+        "candidate support and actual nonzero L0",
+        "warm-up-excluded median latency",
+        "decoder products"
+      ],
+      "deployable_go": {
+        "conditional_free_energy_decreases": true,
+        "hard_error_relative_improvement_min": 0.05,
+        "or_hard_ev_absolute_improvement_min": 0.01,
+        "f1_loss_max": 0.01,
+        "same_achieved_l0_required": true,
+        "recommended_max_latency_multiplier": 3.0,
+        "generic_control_advantage_required": true
+      },
+      "teacher_only_go": "hard gain but sequential latency exceeds bound; justify separate training-only teacher pilot, do not build extra module inside this pilot.",
+      "negative": "only free energy improves, hard quality worsens, or generic matched-compute refit explains all gain; do not adopt extension.",
+      "null": "already near conditional fixed point, insufficient sources, or runtime bound exceeded; retain base inference.",
+      "claim_limits": [
+        "coordinate formula itself is not novel",
+        "generic amortization improvement is prior work",
+        "within-VG improvement is not baseline superiority",
+        "negative extension result does not invalidate VG-SAE"
+      ]
+    }
+  ],
+  "routing_after_pilots": [
+    {
+      "condition": "P1 positive",
+      "next": "새 training seeds의 좁은 operating band와 D01 core factorial"
+    },
+    {
+      "condition": "P2 initialization positive",
+      "next": "explicit reproducible training recipe; 원 Stage1 scale과 좁은 Stage2에서 확인"
+    },
+    {
+      "condition": "P3 quality+cost+generic-control positive",
+      "next": "finite correction의 full-stage/seed 검증"
+    },
+    {
+      "condition": "P3 quality positive but latency negative",
+      "next": "별도 budget의 one-pass teacher/distillation feasibility; automatic module addition 아님"
+    },
+    {
+      "condition": "all optional changes weak/null",
+      "next": "기존 VG recipe와 평가를 완성하고 D01/D06/D12로 다음 병목 확인; 연구 주제 교체 금지"
+    }
+  ],
+  "novelty_and_evidence_boundaries": [
+    "새 probabilistic SAE 최초 주장 금지",
+    "새 coordinate-update 정리 주장 금지",
+    "단일 exact-combination 선행 미발견은 novelty 확증 아님",
+    "point amplitude를 가정 없이 full generative ELBO/slab posterior로 명명하지 않음",
+    "pilot practical margins는 statistical acceptance thresholds가 아님",
+    "아직 pilot 결과 없음"
+  ],
+  "complete_candidate_coverage": true
+}

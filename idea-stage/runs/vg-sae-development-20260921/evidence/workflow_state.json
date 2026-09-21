@@ -1,0 +1,89 @@
+{
+  "run_id": "vg-sae-development-20260921",
+  "executor_model": "codex-gpt-6-astra",
+  "executor_family": "openai",
+  "policy": {
+    "provisional_advances": true
+  },
+  "created": "2026-09-21T05:04:22Z",
+  "updated": "2026-09-21T06:26:27Z",
+  "gates": {
+    "idea-discovery-evidence": {
+      "verdict": "PASS",
+      "reasons": [],
+      "updated": "2026-09-21T06:26:27Z"
+    }
+  },
+  "phases": [
+    {
+      "phase": "research-lit",
+      "status": "done",
+      "artifact": "idea-stage/IDEA_REPORT.md#literature-landscape",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-21T05:28:22Z"
+    },
+    {
+      "phase": "idea-creator",
+      "status": "done",
+      "artifact": "idea-stage/IDEA_REPORT.md#ranked-ideas",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-21T06:12:13Z"
+    },
+    {
+      "phase": "novelty-check",
+      "status": "provisional",
+      "artifact": "idea-stage/IDEA_REPORT.md#novelty-verification",
+      "verdict_id": "/root/vg_method_novelty",
+      "reviewer": "gpt-6-astra",
+      "reviewer_family": "openai",
+      "review_independence": "same-family",
+      "acceptance_status": "provisional",
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-21T06:12:13Z"
+    },
+    {
+      "phase": "research-review",
+      "status": "provisional",
+      "artifact": "idea-stage/IDEA_REPORT.md#external-critical-review",
+      "verdict_id": "/root/vg_pipeline_review",
+      "reviewer": "gpt-6-astra",
+      "reviewer_family": "openai",
+      "review_independence": "same-family",
+      "acceptance_status": "provisional",
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-21T06:12:14Z"
+    },
+    {
+      "phase": "research-refine-pipeline",
+      "status": "done",
+      "artifact": "refine-logs/FINAL_PROPOSAL.md",
+      "verdict_id": null,
+      "reviewer": null,
+      "reviewer_family": null,
+      "review_independence": null,
+      "acceptance_status": null,
+      "executor_model": "codex-gpt-6-astra",
+      "executor_family": "openai",
+      "updated": "2026-09-21T06:26:27Z"
+    }
+  ],
+  "evidence_gate": {
+    "result": "PASS",
+    "command": "python3 Auto-claude-code-research-in-sleep/tools/idea_discovery_gate.py . vg-sae-development-20260921 --report idea-stage/IDEA_REPORT.md",
+    "scope": "artifact and receipt completeness only"
+  }
+}

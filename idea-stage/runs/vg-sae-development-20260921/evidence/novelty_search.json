@@ -1,0 +1,577 @@
+{
+  "schema_version": "1.0",
+  "created_date": "2026-09-21",
+  "reviewer": {
+    "model": "gpt-6-astra",
+    "reasoning_effort": "ultra",
+    "canonical_agent_id": "/root/vg_method_novelty",
+    "route": "fresh_secondary_codex_agent",
+    "status": "same-family provisional"
+  },
+  "anchor": "Develop the user's ongoing Variational Garrote sparse autoencoder; diagnostic work is subordinate to method development.",
+  "review_response_path": ".aris/traces/novelty-check/2026-09-21_vg-development/001-method-novelty.response.md",
+  "inherited_source_registry": "idea-stage/runs/vg-sae-development-20260921/evidence/literature_sources.json",
+  "core_claims": [
+    {
+      "id": "C1",
+      "claim": "Exact combination of input-amortized Bernoulli support and point amplitude with a learned linear dictionary and analytic VG objective.",
+      "verdict": "PROCEED WITH CAUTION",
+      "closest": [
+        "arxiv:1109.0486",
+        "arxiv:1206.6407",
+        "pmlr:v115:tonolini20a",
+        "doi:10.1162/neco_a_01715"
+      ],
+      "delta": "Support-only variational averaging plus input-dependent point amplitude is jointly amortized and trained as a one-pass modern SAE; no exact published duplicate found."
+    },
+    {
+      "id": "C2",
+      "claim": "No support sampling or hard-threshold STE is required for this linear-decoder training objective.",
+      "verdict": "True implementation property; no generic novelty",
+      "closest": [
+        "arxiv:1109.0486",
+        "neurips:2011:b495ce63ede0f4efc9eec62cb947c162",
+        "arxiv:1206.6407",
+        "pmlr:v238:velychko24a"
+      ],
+      "delta": "Estimator route differs from sampled VSC, thresholded VSC and probabilistic TopK; analytic VI is established."
+    },
+    {
+      "id": "C3",
+      "claim": "VG support/amplitude/noise coupling can improve sparse feature quality or the accuracy-cost tradeoff.",
+      "verdict": "Method contribution hypothesis; not yet established",
+      "closest": [
+        "arxiv:2404.16014",
+        "arxiv:2407.14435",
+        "pmlr:v267:lu25w",
+        "arxiv:2412.06410"
+      ],
+      "delta": "Show a measurable effect of Bernoulli inclusion cost and exact support variance beyond known no-shrinkage or adaptive-L0 properties."
+    }
+  ],
+  "search_groups": [
+    {
+      "claim": "C1",
+      "queries": [
+        "\"variational garrote\" \"autoencoder\"",
+        "\"sparse autoencoder\" Bernoulli \"amplitude\"",
+        "\"variational sparse coding\" \"spike-and-slab\" amortized 2024 2025 2026"
+      ]
+    },
+    {
+      "claim": "C2",
+      "queries": [
+        "\"sparse coding\" \"analytic\" \"ELBO\" noise variational",
+        "\"sparse autoencoder\" \"expected reconstruction\" Bernoulli",
+        "\"variational\" \"sparse autoencoder\" \"sampling-free\""
+      ]
+    },
+    {
+      "claim": "C3",
+      "queries": [
+        "\"sparse autoencoder\" \"gated\" shrinkage probabilistic support",
+        "\"sparse autoencoder\" VAEase uncertainty noise 2025",
+        "\"Probabilistic TopK\" autoencoders 2026"
+      ]
+    },
+    {
+      "claim": "recent_six_months",
+      "queries": [
+        "site:arxiv.org \"sparse autoencoder\" Bernoulli after:2026-03-21 before:2026-09-22",
+        "site:arxiv.org \"sparse autoencoder\" \"variational\" after:2026-03-21 before:2026-09-22",
+        "site:arxiv.org \"sparse coding\" \"spike-and-slab\" after:2026-03-21 before:2026-09-22",
+        "site:openreview.net \"sparse autoencoder\" \"probabilistic\" 2026"
+      ]
+    },
+    {
+      "claim": "exact_signature_and_prior_lineage",
+      "queries": [
+        "\"spike and slab sparse coding\" \"Goodfellow\" variational paired mean field",
+        "\"variational garrote\" \"sparse\" \"autoencoder\" 2025 2026",
+        "\"Bernoulli\" \"deterministic\" \"autoencoder\" \"linear\"",
+        "\"sparse autoencoder\" \"SoftSAE\" 2026"
+      ]
+    },
+    {
+      "claim": "PMF_and_recent_arxiv_followup",
+      "queries": [
+        "\"paired mean field\" sparse coding",
+        "\"Variational Garrote\" autoencoder SAE -site:emergentmind.com",
+        "site:arxiv.org \"sparse autoencoder\" \"Bernoulli\" 2026",
+        "site:arxiv.org \"sparse autoencoder\" variational \"2026\""
+      ]
+    },
+    {
+      "claim": "venue_checks",
+      "queries": [
+        "site:openreview.net \"sparse autoencoder\" \"Bernoulli\" \"2025\"",
+        "site:proceedings.neurips.cc \"sparse\" \"variational\" \"2025\" autoencoder",
+        "site:proceedings.mlr.press \"2026\" \"sparse autoencoder\" variational",
+        "site:openreview.net \"ICLR 2026\" \"spike\" \"slab\" autoencoder"
+      ]
+    },
+    {
+      "claim": "primary_method_access_fallbacks",
+      "queries": [
+        "site:openreview.net/pdf \"zMIIHeKivz\" \"3.2\"",
+        "site:openreview.net/pdf \"PROBABILISTIC TOPK\" \"s =\"",
+        "\"Sparse-Coding Variational Autoencoders\" \"noise\" Geadah"
+      ]
+    },
+    {
+      "claim": "exact_signature_final",
+      "queries": [
+        "\"autoencoder\" \"Bernoulli\" \"analytic\" sparse",
+        "\"amortized\" \"garrote\"",
+        "\"sparse coding\" \"point estimate\" \"Bernoulli\" variational",
+        "\"autoencoder\" \"deterministic amplitude\""
+      ]
+    }
+  ],
+  "total_query_formulations": 32,
+  "recent_six_months": {
+    "from": "2026-03-21",
+    "to": "2026-09-21",
+    "checked": true,
+    "limitations": "Search date filters returned some older results; publication/submission dates were distinguished. Not a complete arXiv dump."
+  },
+  "sources": [
+    {
+      "canonical_id": "arxiv:1109.0486",
+      "title": "The Variational Garrote",
+      "url": "https://arxiv.org/pdf/1109.0486",
+      "read_level": "Primary PDF main objective and Appendix C; primary abstract/publisher search",
+      "comparison": "Direct ancestor of support expectation, point coefficients, variance and precision; no current amortized learned-dictionary SAE.",
+      "publication_status": "Machine Learning 2014, DOI 10.1007/s10994-013-5427-7"
+    },
+    {
+      "canonical_id": "neurips:2011:b495ce63ede0f4efc9eec62cb947c162",
+      "title": "Spike and Slab Variational Inference for Multi-Task and Multiple Kernel Learning",
+      "url": "https://papers.nips.cc/paper_files/paper/2011/file/b495ce63ede0f4efc9eec62cb947c162-Paper.pdf",
+      "read_level": "Primary PDF section 3 paired family and analytic EM",
+      "comparison": "Stochastic slab paired with support; analytic VI is prior art.",
+      "publication_status": "NIPS 2011"
+    },
+    {
+      "canonical_id": "arxiv:1206.6407",
+      "title": "Large-Scale Feature Learning With Spike-and-Slab Sparse Coding",
+      "url": "https://arxiv.org/pdf/1206.6407",
+      "read_level": "Primary PDF sections 2–3, variational factors and coordinate/parallel inference",
+      "comparison": "Learned linear dictionary and analytic structured support/slab VI; iterative inference rather than present point-amplitude feedforward encoder.",
+      "publication_status": "ICML 2012; expanded TPAMI 2013 checked via PubMed DOI 10.1109/TPAMI.2012.273"
+    },
+    {
+      "canonical_id": "arxiv:2509.06383",
+      "title": "Variational Garrote for Statistical Physics-based Sparse and Robust Variable Selection",
+      "url": "https://arxiv.org/html/2509.06383v1",
+      "read_level": "Primary HTML abstract and method",
+      "comparison": "Autodifferentiated VG regression ancestor, no exact SAE duplicate found.",
+      "publication_status": "preprint"
+    },
+    {
+      "canonical_id": "arxiv:2603.12562",
+      "title": "Variational Garrote for Sparse Inverse Problems",
+      "url": "https://arxiv.org/html/2603.12562v1",
+      "read_level": "Primary HTML and publisher indexed page",
+      "comparison": "VG inverse-problem work, not amortized sparse autoencoding.",
+      "publication_status": "Publisher indexed result: Journal of Computational Science 2026",
+      "doi": "10.1016/j.jocs.2026.102980",
+      "publisher_url": "https://www.sciencedirect.com/science/article/pii/S1877750326001985",
+      "metadata_update_needed": true
+    },
+    {
+      "canonical_id": "arxiv:2404.16014",
+      "title": "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders",
+      "url": "https://arxiv.org/html/2404.16014v2",
+      "read_level": "Primary HTML methods, shrinkage results and related work",
+      "comparison": "Selection/magnitude separation is prior art; no Bernoulli KL plus exact variance objective.",
+      "publication_status": "NeurIPS 2024"
+    },
+    {
+      "canonical_id": "arxiv:2407.14435",
+      "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+      "url": "https://arxiv.org/html/2407.14435v1",
+      "read_level": "Primary HTML sections 3–4",
+      "comparison": "Hard sparsity and threshold STE; no current probabilistic support objective.",
+      "publication_status": "preprint version checked; final venue not independently checked"
+    },
+    {
+      "canonical_id": "arxiv:2406.04093",
+      "title": "Scaling and evaluating sparse autoencoders",
+      "url": "https://arxiv.org/html/2406.04093v1",
+      "read_level": "Primary HTML plus inherited method table",
+      "comparison": "Per-input TopK and low shrinkage; strong baseline, no VG Bernoulli free energy.",
+      "publication_status": "preprint version checked; final venue not independently checked"
+    },
+    {
+      "canonical_id": "arxiv:2412.06410",
+      "title": "BatchTopK Sparse Autoencoders",
+      "url": "https://arxiv.org/html/2412.06410v1",
+      "read_level": "Primary HTML short paper plus inherited method table",
+      "comparison": "Batch sparsity budget permits variable per-input L0; adaptive L0 not novel.",
+      "publication_status": "preprint version checked"
+    },
+    {
+      "canonical_id": "openreview:zMIIHeKivz",
+      "title": "Probabilistic TopK Sparse Autoencoder for Interpreting the Activations of Large Language Models",
+      "url": "https://openreview.net/pdf?id=zMIIHeKivz",
+      "read_level": "Original PDF search-index extraction section 3.2 Eq. 7–8; direct PDF browser challenge",
+      "comparison": "Binary Concrete score plus magnitude leads to TopK mask; ordinary MSE; no Bernoulli KL or analytic support-averaged risk.",
+      "publication_status": "anonymous ICLR 2026 submission manuscript",
+      "authors_verified": false,
+      "final_decision_verified": false,
+      "access_limit": "Direct PDF and forum blocked; code gradient implementation unverified"
+    },
+    {
+      "canonical_id": "pmlr:v267:lu25w",
+      "title": "Sparse Autoencoders, Again?",
+      "url": "https://arxiv.org/html/2506.04859v2",
+      "read_level": "Primary HTML section 3 Eq. 4, prior VAE objective and Appendix D.3",
+      "comparison": "VAEase uncertainty-derived gate (1-sigma) times Gaussian latent, learned observation variance; no Bernoulli support KL or point amplitude.",
+      "publication_status": "ICML 2025",
+      "canonical_proceedings": "https://proceedings.mlr.press/v267/lu25w.html"
+    },
+    {
+      "canonical_id": "pmlr:v238:velychko24a",
+      "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+      "url": "https://arxiv.org/html/2311.01888v2",
+      "read_level": "Primary HTML sections 2–3 and Appendix D.3",
+      "comparison": "Analytic sparse coding, noise profiling and amortized optimization already exist; Gaussian posterior/Laplace prior differs from Bernoulli/point VG.",
+      "publication_status": "AISTATS 2024",
+      "canonical_proceedings": "https://proceedings.mlr.press/v238/velychko24a.html"
+    },
+    {
+      "canonical_id": "pmlr:v115:tonolini20a",
+      "title": "Variational Sparse Coding",
+      "url": "https://proceedings.mlr.press/v115/tonolini20a/tonolini20a.pdf",
+      "read_level": "Primary PDF section 3, Eq. 5 stochastic reconstruction and Eq. 7 warmup",
+      "comparison": "Amortized spike/slab with stochastic slab, mixture prior and sampling; no exact current point-amplitude combination.",
+      "publication_status": "UAI 2019, proceedings 2020"
+    },
+    {
+      "canonical_id": "pmlr:v162:fallah22a",
+      "title": "Variational Sparse Coding with Learned Thresholding",
+      "url": "https://proceedings.mlr.press/v162/fallah22a/fallah22a.pdf",
+      "read_level": "Primary PDF methods, STE appendix and linear-dictionary experiments",
+      "comparison": "Thresholded continuous latent samples with STE; different risk/gradient route.",
+      "publication_status": "ICML 2022"
+    },
+    {
+      "canonical_id": "doi:10.1162/neco_a_01715",
+      "title": "Sparse-Coding Variational Autoencoders",
+      "url": "https://doi.org/10.1162/neco_a_01715",
+      "read_level": "Primary publisher indexed body sections 2–3 and discussion; metadata via PubMed",
+      "comparison": "Overcomplete linear model with feedforward Gaussian recognition; fixed observation noise in reported experiment; Bernoulli exact-zero posterior absent.",
+      "publication_status": "Neural Computation 36(12), 2024",
+      "access_limit": "Direct PMC browser challenge; official publisher indexed body read"
+    },
+    {
+      "canonical_id": "arxiv:2602.02948",
+      "title": "Variational Sparse Paired Autoencoders (vsPAIR) for Inverse Problems and Uncertainty Quantification",
+      "url": "https://arxiv.org/html/2602.02948v1",
+      "read_level": "Primary HTML sections 2.2–3.1, concrete relaxation and setup",
+      "comparison": "Bernoulli spike plus Gaussian slab and slab KL, hard-concrete/STE and paired nonlinear inverse task.",
+      "publication_status": "preprint"
+    },
+    {
+      "canonical_id": "arxiv:2509.22994",
+      "title": "Analysis of Variational Sparse Autoencoders",
+      "url": "https://arxiv.org/html/2509.22994v1",
+      "read_level": "Primary HTML section 2.2 and abstract",
+      "comparison": "Fixed-unit-variance Gaussian, mean L2 KL and sampled TopK; negative evidence does not transfer to VG automatically.",
+      "publication_status": "preprint"
+    },
+    {
+      "canonical_id": "arxiv:2605.06610",
+      "title": "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders",
+      "url": "https://arxiv.org/html/2605.06610v1",
+      "read_level": "Primary HTML method including Eq. 4–8 and late hard training",
+      "comparison": "Capacity MLP plus SoftTopK; adaptive L0 and soft/hard deployment already studied, no VG free energy.",
+      "publication_status": "preprint",
+      "within_recent_six_months": true
+    },
+    {
+      "canonical_id": "arxiv:2605.05341",
+      "title": "Feature Starvation as Geometric Instability in Sparse Autoencoders",
+      "url": "https://arxiv.org/abs/2605.05341",
+      "read_level": "Primary abstract and metadata",
+      "comparison": "Adaptive elastic-net SAE is adjacent competition for differentiability/shrinkage; no exact Bernoulli VG signature in abstract.",
+      "publication_status": "preprint",
+      "within_recent_six_months": true,
+      "method_equivalence_assessment_scope": "abstract only"
+    },
+    {
+      "canonical_id": "arxiv:2606.14990",
+      "title": "Rational Sparse Autoencoder",
+      "url": "https://arxiv.org/abs/2606.14990",
+      "read_level": "Primary arXiv indexed abstract",
+      "comparison": "Trainable rational activation from existing SAE; competition for encoder improvement, no exact VG signature in abstract.",
+      "publication_status": "preprint/workshop status inherited from source registry; this reviewer only verified abstract",
+      "within_recent_six_months": true,
+      "method_equivalence_assessment_scope": "abstract only"
+    },
+    {
+      "canonical_id": "arxiv:2605.18229",
+      "title": "Are Sparse Autoencoder Benchmarks Reliable?",
+      "url": "https://arxiv.org/abs/2605.18229",
+      "read_level": "Primary arXiv indexed abstract",
+      "comparison": "Evaluation reliability context; not current method duplicate.",
+      "publication_status": "preprint",
+      "within_recent_six_months": true
+    },
+    {
+      "canonical_id": "arxiv:1406.1831",
+      "title": "Analyzing noise in autoencoders and deep networks",
+      "url": "https://arxiv.org/abs/1406.1831",
+      "read_level": "Primary abstract",
+      "comparison": "Older noisy-autoencoder connection; not used to infer an unverified exact objective match.",
+      "publication_status": "preprint version checked"
+    }
+  ],
+  "discovery_headlines": [
+    {
+      "group": "C1",
+      "results": [
+        "JARS-170368SS 16..16 ++ (https://elib.dlr.de/115655/1/Abdi_JARS-170368SS_online.pdf)",
+        "Autoencoders Explained: Denoising, Sparse, and Beyond | Insightful Data Lab (https://insightful-data-lab.com/2025/08/05/autoencoders-representation-learning/)",
+        "MANIFOLD LEARNING OF NEURAL REPRESENTATIONS FOR EFFICIENT (https://repository.gatech.edu/bitstreams/954a9e57-84b1-4cd6-8aa1-2c2e03037c42/download)",
+        "www.ijcrt.org                                                        © 2022 IJCRT | Volume 10, Issue 5 May 2022 | ISSN: 2320-2882 (https://ijcrt.org/papers/IJCRT2205653.pdf)",
+        "Enhancing Interpretability of Sparse Latent Representations with Class Information (https://arxiv.org/abs/2505.14476)",
+        "Natural Statistics as Inference Principles of Auditory Tuning in Biological and Artificial Midbrain Networks | eNeuro (https://www.eneuro.org/content/8/3/ENEURO.0525-20.2021)",
+        "スパース潜在表現の解釈性向上とクラス情報（ENHANCING INTERPRETABILITY OF SPARSE LATENT REPRESENTATIONS WITH CLASS INFORMATION） | AI Benchmark Research (https://aibr.jp/2025/08/17/%E3%82%AF%E3%83%A9%E3%82%B9%E6%83%85%E5%A0%B1%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E7%96%8E%E3%81%AA%E6%BD%9C%E5%9C%A8%E8%A1%A8%E7%8F%BE%E3%81%AE%E8%A7%A3%E9%87%88%E5%8F%AF%E8%83%BD%E6%80%A7%E3%81%AE/)",
+        "Sparse-Coding Variational Autoencoders | Neural Computation | MIT Press (https://doi.org/10.1162%2Fneco_a_01715)",
+        "Variational Sparse Coding Overview (https://www.emergentmind.com/topics/variational-sparse-coding-vsc)",
+        "Smart railways: AI-based track-side monitoring for wheel flat identification (https://sigarra.up.pt/feup/en/pub_geral.show_file?pi_doc_id=478352)",
+        "On scalable inference and learning in spike-and-slab sparse coding (https://depositonce.tu-berlin.de/items/a4a09c54-9247-4457-9007-ed40ed43eee3)",
+        "Variational Sparse Coding (https://proceedings.mlr.press/v115/tonolini20a/tonolini20a.pdf)",
+        "Variational Sparse Coding with Learned Thresholding (https://proceedings.mlr.press/v162/fallah22a/fallah22a.pdf)",
+        "(PDF) Variational Sparse Coding with Learned Thresholding (https://www.researchgate.net/publication/360483994_Variational_Sparse_Coding_with_Learned_Thresholding)",
+        "Variational Sparse Coding (https://proceedings.mlr.press/v115/tonolini20a.html)",
+        "gam-sae 0.3.151 - Docs.rs (https://docs.rs/crate/gam-sae/latest/source/src/manifold/tests_quality_amplitude_1939.rs)",
+        "(PDF) Poisson Variational Autoencoder (https://www.researchgate.net/publication/380821322_Poisson_Variational_Autoencoder)",
+        "Sparse autoencoders find composed features in small toy models  — LessWrong (https://www.lesswrong.com/posts/a5wwqza2cY3W7L9cj/sparse-autoencoders-find-composed-features-in-small-toy)",
+        "Statistical process fault isolation using robust nonnegative garrote (https://ouci.dntb.gov.ua/en/works/lDoWMQg4/)",
+        "Neural coding (https://en.wikipedia.org/wiki/Neural_coding)",
+        "Codificação neural (https://pt.wikipedia.org/wiki/Codifica%C3%A7%C3%A3o_neural)"
+      ]
+    },
+    {
+      "group": "C2",
+      "results": [
+        "Learning Sparse Codes with Entropy-Based ELBOs (https://proceedings.mlr.press/v238/velychko24a.html)",
+        "Variational Sparse Coding (https://auai.org/uai2019/proceedings/papers/239.pdf)",
+        "Learning Sparse Codes with Entropy-Based ELBOs (https://proceedings.mlr.press/v238/velychko24a/velychko24a.pdf)",
+        "Variational Sparse Coding with Learned Thresholding (https://proceedings.mlr.press/v162/fallah22a/fallah22a.pdf)",
+        "From Autoencoder to Beta-VAE | Lil'Log (https://lilianweng.github.io/posts/2018-08-12-vae/)",
+        "R E S C I E N C E C (https://robert-aduviri.github.io/files/%5BRe%5D%20Variational%20Sparse%20Coding.pdf)",
+        "(PDF) Variational Sparse Coding with Learned Thresholding (https://www.researchgate.net/publication/360483994_Variational_Sparse_Coding_with_Learned_Thresholding)",
+        "Spike-and-Slab Sparse Coding (S3C) (https://www.emergentmind.com/topics/spike-and-slab-sparse-coding-s3c)",
+        "Autoencoder - an overview | ScienceDirect Topics (https://www.sciencedirect.com/topics/engineering/autoencoder)",
+        "Autoencoder (https://en.wikipedia.org/wiki/Autoencoder)",
+        "Stacked Denoising Autoencoders: Learning Useful Representations in a Deep Network with a Local Denoising Criterion — Paper Graph (https://paper-graph-ui.vercel.app/p/architecture/denoising-autoencoders-2010-Stacked-Denoising-Autoencoders-Learning-Useful-Representations-in-a-Deep-Network)",
+        "Longitudinal Alzheimer’s Disease Progression Modelling via Hybrid Vision Transformers and Recurrent Neural Networks With Cross‐Modal Feature Fusion - Bahroun - 2026 - Expert Systems - Wiley Online Library (https://onlinelibrary.wiley.com/doi/10.1111/exsy.70191)",
+        "Daily Papers - Hugging Face (https://huggingface.co/papers?q=sparse+masked+autoencoder)",
+        "(PDF) Towards Optimality Conditions for Non-Linear Networks (https://www.researchgate.net/publication/303449245_Towards_Optimality_Conditions_for_Non-Linear_Networks)",
+        "Auto-Encoders in Deep Learning—A Review with New Perspectives (https://www.mdpi.com/2227-7390/11/8/1777)",
+        "[Literature Review] When Pruning Meets Interpretability: Preserving Sparse Autoencoder Robustness in LLMs (https://www.themoonlight.io/en/review/when-pruning-meets-interpretability-preserving-sparse-autoencoder-robustness-in-llms)",
+        "Robust reduced-order machine learning modeling of high-dimensional nonlinear processes using noisy data - ScienceDirect (https://doi.org/10.1016%2Fj.dche.2024.100145)"
+      ]
+    },
+    {
+      "group": "C3",
+      "results": [
+        "Improving Dictionary Learning with Gated Sparse Autoencoders — Google DeepMind (https://deepmind.google/research/publications/88147/)",
+        "Improving Dictionary Learning with Gated Sparse Autoencoders (https://arxiv.org/abs/2404.16014)",
+        "How To Open the Black Box: Modern Models for Mechanistic Interpretability | ICLR Blogposts 2026 (https://iclr-blogposts.github.io/2026/blog/2026/interpret-model/)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf/4aa8500bc5bab9945032ad8bb18af908b414ad52.pdf)",
+        "GitHub - yanis-bencheikh/Steering-to-Safety-Inference-Alignment-of-Transformers-using-Probes-and-GSAEs: Inference-time alignment of LLMs using Linear Probes and Gated Sparse Autoencoders (GSAEs) on a frozen RoBERTa backbone. No retraining required. Discovers interpretable safety-relevant latent atoms, trains steering vectors, and evaluates synergistic probe+SAE interventions on toxicity & jailbreak benchmarks. · GitHub (https://github.com/yanis-bencheikh/Steering-to-Safety-Inference-Alignment-of-Transformers-using-Probes-and-GSAEs)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf?id=zMIIHeKivz)",
+        "Sparse Autoencoders, Again? (https://proceedings.mlr.press/v267/lu25w.html)",
+        "Test-Time Unlearning via Sparse Autoencoder (https://arxiv.org/abs/2609.16229)",
+        "SAE (Interpretability) - EommyDocs (https://eommydocs.com/data-science/sparse-autoencoders/summary/)",
+        "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders (https://openreview.net/pdf?id=zLBlin2zvW)",
+        "gated-sae-tf · PyPI (https://pypi.org/project/gated-sae-tf/)",
+        "Artifact 76281 — Sparse Autoencoders and the Decomposition of Superposition | mehaisi.com (https://mehaisi.com/artifacts/76281)",
+        "A  Improving and evaluating sparse autoencoders (https://proceedings.neurips.cc/paper_files/paper/2024/file/9736acf007760cc2b47948ae3cf06274-Paper-Conference.pdf)",
+        "Paperz (https://paperz.arrangedbits.com/papers/10250805-79b4-422b-979b-e0ef69a833bf)",
+        "[論文評述] Sign-Aware Gated Sparse Autoencoders: Modeling Anticorrelated Features with Bi-Jump-ReLU Activations (https://www.themoonlight.io/tw/review/sign-aware-gated-sparse-autoencoders-modeling-anticorrelated-features-with-bi-jump-relu-activations)",
+        "ai-safety-interpretability-circuits/docs/modules/07-sparse-autoencoders.md at main · Danny0951/ai-safety-interpretability-circuits · GitHub (https://github.mosekj.com/Danny0951/ai-safety-interpretability-circuits/blob/main/docs/modules/07-sparse-autoencoders.md)",
+        "Sparse Autoencoders (SAE) — Belgavi.AI Lab (https://aicassindra.com/blogs/transformer_math/tm_sae_sparse_autoencoder.html)",
+        "Prof-K: Probabilistic One-Pass Filtering for Efficient Top-k Selection (https://arxiv.org/abs/2608.12573)",
+        "Chapter 1: Transformer Interpretability - ARENA (https://learn.arena.education/chapter1_transformer_interp/34_superposition/5-sparse-autoencoders-in-toy-models/)",
+        "<visual_element id=\"e1\"> (https://cdn.openai.com/papers/sparse-autoencoders.pdf)",
+        "When Are Sparse Feature Interventions Actually Localized? Matched Evaluation for SAE-Based Safety Control (https://arxiv.org/abs/2607.10226)",
+        "Autoencoder (https://en.wikipedia.org/wiki/Autoencoder)",
+        "Variational autoencoder (https://en.wikipedia.org/wiki/Variational_autoencoder)",
+        "Sparse autoencoder (https://www.reddit.com/r/learnmachinelearning/comments/1ehqeev)",
+        "The Black Box is Open: My First SAE Training Cycle is Complete (https://www.reddit.com/r/ArtificialSentience/comments/1sm5r5d/the_black_box_is_open_my_first_sae_training_cycle/)",
+        "Neural coding (https://en.wikipedia.org/wiki/Neural_coding)"
+      ]
+    },
+    {
+      "group": "recent_six_months",
+      "results": [
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf/4aa8500bc5bab9945032ad8bb18af908b414ad52.pdf)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf?id=zMIIHeKivz)",
+        "Rational Sparse Autoencoder (https://arxiv.org/abs/2606.14990)",
+        "Are Single-Token Sparse Autoencoder Features Causally Necessary? Layer-Depth and SAE-Family Effects (https://arxiv.org/abs/2607.20596)",
+        "Are Sparse Autoencoder Benchmarks Reliable? (https://arxiv.org/abs/2605.18229)",
+        "Sparse Autoencoder Decomposition of Clinical Sequence Model Representations: Feature Complexity, Task Specialisation, and Mortality Prediction (https://arxiv.org/abs/2605.04072)",
+        "ANALYSIS OF VARIATIONAL SPARSE AUTOENCODERS (https://openreview.net/pdf?id=cRmIcXyAG1)",
+        "ANALYSIS OF VARIATIONAL SPARSE AUTOENCODERS (https://openreview.net/pdf/5fbd57b2d3dfd9c97c8e959a3fea2a389dfe035b.pdf)"
+      ]
+    },
+    {
+      "group": "exact_signature_and_prior_lineage",
+      "results": [
+        "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders (https://arxiv.org/abs/2605.06610)",
+        "GitHub - jordn/autoencoder: Reducing the Dimensionality of Data with Neural Network · GitHub (https://github.com/jordn/autoencoder)",
+        "Spike-and-Slab Sparse Coding for Unsupervised Feature Discovery (https://arxiv.org/abs/1201.3382)",
+        "Category: Learning Algorithms (https://citeseerx.ist.psu.edu/document?doi=a233fccffdd2db27f833841d2cf0dfb338b03509&repid=rep1&type=pdf)",
+        "Universit´e de Montr´eal (https://central.bac-lac.gc.ca/.item?app=Library&id=TC-QMU-11674&oclc_number=1032964916&op=pdf)",
+        "Large-Scale Feature Learning With Spike-and-Slab Sparse Coding (https://arxiv.org/abs/1206.6407)",
+        "Scaling up spike-and-slab models for unsupervised feature learning. (https://pubmed.ncbi.nlm.nih.gov/23787343/)",
+        "Centro de Investigación en Matemáticas, A.C. (https://irvinggomez.com/phd/Random_Forests_and_Autoencoders_with_Missing_Data.pdf)",
+        "Under review as a conference paper at ICLR 2021 (https://openreview.net/references/pdf?id=jeKP8Kx31O)",
+        "Journal of Machine Learning Research 15 (2014) 2653-2687 (https://jmlr.csail.mit.edu/papers/volume15/sheikh14a/sheikh14a.pdf)",
+        "(https://www.deeplearningbook.org/contents/linear_factors.html)",
+        "Journal of Machine Learning Research 15 (2014) 2653-2687 (https://jmlr.org/papers/volume15/sheikh14a/sheikh14a.pdf)",
+        "AdaptiveK Sparse Autoencoders (https://www.emergentmind.com/topics/adaptive-top-k-sparse-autoencoders-adaptivek)",
+        "Spike-and-Slab Sparse Coding (S3C) (https://www.emergentmind.com/topics/spike-and-slab-sparse-coding-s3c)",
+        "dblp: Ian J. Goodfellow (https://dblp.org/pid/43/7940.html)",
+        "(https://www.deeplearningbook.org/contents/autoencoders.html)",
+        "(PDF) GP-Select: Accelerating EM Using Adaptive Subspace Preselection (https://www.researchgate.net/publication/269417776_GP-Select_Accelerating_EM_Using_Adaptive_Subspace_Preselection)",
+        "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders | Cool Papers - Immersive Paper Discovery (https://papers.cool/arxiv/2605.06610)",
+        "Advances in Representation Learning | PDF | Deep Learning | Machine Learning (https://www.scribd.com/document/981406867/1206-5538v3)",
+        "Goodfellow, Ian J. | PUMA (https://puma.ub.uni-stuttgart.de/person/165dc05e42e8e549f1550fb23904f4305/author/0)",
+        "Proceedings of the 29th International Conference on Machine Learning, ICML 2012, Edinburgh, Scotland, UK, June 26 - July 1, 2012 - researchr publication (https://researchr.org/publication/icml-2012)"
+      ]
+    },
+    {
+      "group": "PMF_and_recent_arxiv_followup",
+      "results": [
+        "Rational Sparse Autoencoder (https://arxiv.org/abs/2606.14990)",
+        "Variational Garrote for sparse inverse problems - ScienceDirect (https://www.sciencedirect.com/science/article/pii/S1877750326001985)",
+        "SparsePro: an efficient fine-mapping method integrating summary statistics and functional annotations | bioRxiv (https://www.biorxiv.org/content/10.1101/2021.10.04.463133v3.full)",
+        "The Variational Garrote | Machine Learning | Springer Nature Link (https://link.springer.com/article/10.1007/s10994-013-5427-7)",
+        "Sparse Autoencoders enable Robust and Interpretable Fine-tuning of CLIP models (https://arxiv.org/abs/2605.15961)",
+        "Sparse Autoencoder Decomposition of Clinical Sequence Model Representations: Feature Complexity, Task Specialisation, and Mortality Prediction (https://arxiv.org/abs/2605.04072)",
+        "SparsePro: An efficient fine-mapping method integrating summary statistics and functional annotations - PMC (https://pmc.ncbi.nlm.nih.gov/articles/PMC10781022/)",
+        "Abstract",
+        "SAE-FD: Sparse Autoencoder Feature Distillation for Continual Learning of Large Language Models (https://arxiv.org/abs/2605.25525)",
+        "Mach Learn",
+        "Spike and Slab Variational Inference for Multi-Task (https://papers.nips.cc/paper_files/paper/2011/file/b495ce63ede0f4efc9eec62cb947c162-Paper.pdf)",
+        "SparsePro: an e¨cient genome-wide ¦ne-mapping (https://assets-eu.researchsquare.com/files/rs-1160063/v1_covered.pdf?c=1642110578)",
+        "Hugh Dance, Brooks Paige (https://openreview.net/pdf?id=1xJLPwqTIm)",
+        "(PDF) The Variational Garrote (https://www.researchgate.net/publication/51961944_The_Variational_Garrote)",
+        "(PDF) SparsePro: an efficient genome-wide fine-mapping method integrating summary statistics and functional annotations (https://www.researchgate.net/publication/357817174_SparsePro_an_efficient_genome-wide_fine-mapping_method_integrating_summary_statistics_and_functional_annotations/download)",
+        "A virtual sample generation method based on manifold learning and a generative adversarial network for soft sensor models with limited data - ScienceDirect (https://www.sciencedirect.com/science/article/abs/pii/S1876107023004467)",
+        "Variational Garrote for Sparse Inverse Problems | alphaXiv (https://www.alphaxiv.org/abs/2603.12562v1)",
+        "Monitoring and prediction of big process data with deep latent variable models and parallel computing - ScienceDirect (https://www.sciencedirect.com/science/article/pii/S0959152420302171)",
+        "Garrote Variacional para Problemas Inversos Dispersos | alphaXiv (https://www.alphaxiv.org/es/abs/2603.12562)",
+        "(https://www.snn.ru.nl/~bertk/)",
+        "SparsePro - Bioinformatics Tool | BioinformaticsHome (https://bioinformaticshome.com/db/tool/sparsepro)"
+      ]
+    },
+    {
+      "group": "venue_checks",
+      "results": [
+        "Search (https://proceedings.neurips.cc/papers/search?q=autoencoder)",
+        "Data-Efficient and Robust Trajectory Generation through Pathlet Dictionary Learning (https://proceedings.mlr.press/v328/tang26b.html)",
+        "$\\epsilon$-Seg: Sparsely Supervised Semantic Segmentation of Microscopy Data (https://proceedings.neurips.cc/paper_files/paper/2025/hash/2bece8a80d534c625aa2503871d752ed-Abstract-Conference.html)",
+        "Sparc3D: Sparse Representation and Construction for (https://proceedings.neurips.cc/paper_files/paper/2025/file/abe731f5242ea6d582f859164b6bbd3c-Paper-Conference.pdf)",
+        "Direct3D-S2: Gigascale 3D Generation Made Easy with Spatial Sparse Attention (https://proceedings.neurips.cc/paper_files/paper/2025/hash/f9666a092153f281b5116cd1f64b5c91-Abstract-Conference.html)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf/a9367570a79fbf50bba08d9f36deeaa7109f0a1e.pdf)",
+        "Diffusion-Guided Graph Data Augmentation (https://proceedings.neurips.cc/paper_files/paper/2025/hash/e4e723536170f9c72e04a8cc535cea18-Abstract-Conference.html)",
+        "Mixture of Experts Made Intrinsically Interpretable (https://proceedings.mlr.press/v267/yang25ag.html)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf/25ec30fff3034caf0b5c624c53ba5869a597e117.pdf)",
+        "Book (https://proceedings.neurips.cc/paper_files/paper/2025/vol38-main-conference)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/attachment?id=ZB1UGu55EM&name=supplementary_material)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf?id=3ZDptypV4r)",
+        "Search (https://proceedings.neurips.cc/papers/search?q=transformer)",
+        "Variational Task Vector Composition (https://proceedings.neurips.cc/paper_files/paper/2025/hash/b7685e50e035fc6f35ae031932f45500-Abstract-Conference.html)",
+        "Bayesian Ego-graph Inference for Networked Multi-Agent Reinforcement Learning (https://proceedings.neurips.cc/paper_files/paper/2025/hash/69e68611ec4d8c0ae4a4b2bece165f5f-Abstract-Conference.html)",
+        "ProDAG: Projected Variational Inference for Directed Acyclic Graphs (https://proceedings.neurips.cc/paper_files/paper/2025/hash/ee42c13f231836e914930925f950fc62-Abstract-Conference.html)",
+        "Search (https://proceedings.neurips.cc/papers/search?q=variational+autoencoder)"
+      ]
+    },
+    {
+      "group": "primary_method_access_fallbacks",
+      "results": [
+        "Sparse-Coding Variational Autoencoders | Neural Computation | MIT Press (https://direct.mit.edu/neco/article/36/12/2571/124821/Sparse-Coding-Variational-Autoencoders)",
+        "Sparse-Coding Variational Autoencoders - PubMed (https://pubmed.ncbi.nlm.nih.gov/39383030/)",
+        "Sparse-Coding Variational Autoencoders - PMC (https://pmc.ncbi.nlm.nih.gov/articles/PMC13377536/)",
+        "Sparse-Coding Variational Autoencoders | Neural Computation | MIT Press (https://doi.org/10.1162%2Fneco_a_01715)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf/4aa8500bc5bab9945032ad8bb18af908b414ad52.pdf)",
+        "Under review as a conference paper at ICLR 2026 (https://openreview.net/pdf?id=zMIIHeKivz)",
+        "Sparse-Coding Variational Autoencoders | Request PDF (https://www.researchgate.net/publication/384771491_Sparse-Coding_Variational_Autoencoders)",
+        "dblp: Neural Computation, Volume 36 (https://dblp.org/db/journals/neco/neco36)",
+        "dblp: Jonathan W. Pillow (https://dblp.org/pid/06/3460.html)",
+        "dblp: Jonathan W. Pillow (https://dblp.org/pid/06/3460)",
+        "Schematics of traditional VAE and the sparse-coding VAE. (A) The... | Download Scientific Diagram (https://www.researchgate.net/figure/Schematics-of-traditional-VAE-and-the-sparse-coding-VAE-A-The-traditional-VAE-consists_fig2_384771491)",
+        "The sparse coding model. A sample from the model is generated by first... | Download Scientific Diagram (https://www.researchgate.net/figure/The-sparse-coding-model-A-sample-from-the-model-is-generated-by-first-sampling-the_fig1_384771491)",
+        "Jonathan W. Pillow (https://www.csauthors.net/jonathan-w-pillow/)",
+        "(PDF) Sparse-Coding Variational Auto-Encoders (https://www.researchgate.net/publication/327192428_Sparse-Coding_Variational_Auto-Encoders)",
+        "Variational autoencoder (https://en.wikipedia.org/wiki/Variational_autoencoder)",
+        "Autoencoder (https://en.wikipedia.org/wiki/Autoencoder)",
+        "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders (https://arxiv.org/html/2605.06610v1)",
+        "Variational Sparse Paired Autoencoders (vsPAIR) for Inverse Problems and Uncertainty Quantification (https://arxiv.org/html/2602.02948v1)",
+        "Analysis of Variational Sparse Autoencoders (https://arxiv.org/html/2509.22994v1)",
+        "Variational Garrote for Sparse Inverse Problems (https://arxiv.org/html/2603.12562v1)"
+      ]
+    },
+    {
+      "group": "exact_signature_final",
+      "results": [
+        "Brain-like variational inference - PMC (https://pmc.ncbi.nlm.nih.gov/articles/PMC12132273/)",
+        "Under review as a conference paper at ICLR 2021 (https://openreview.net/references/pdf?id=jeKP8Kx31O)",
+        "Proceedings of the 2013 Uncertainty in Artiﬁcial (https://citeseerx.ist.psu.edu/document?doi=aff2ddff6e20a932207502e19d9a9b2883db84fb&repid=rep1&type=pdf)",
+        "If we define \\(Z = Be(B)\\) as a Bernoulli process with \\(B_\\omega\\) defined as 3, a sample from this process can be drawn as (https://ceur-ws.org/Vol-1024/UAI2013AW2013-complete.pdf)",
+        "Variational probabilistic generative framework for single image super-resolution - ScienceDirect (https://www.sciencedirect.com/science/article/abs/pii/S0165168418303359)",
+        "Autoencoders that don’t overﬁt towards the Identity (https://papers.nips.cc/paper_files/paper/2020/file/e33d974aae13e4d877477d51d8bafdc4-Paper.pdf)",
+        "Under review as a conference paper at ICLR 2020 (https://openreview.net/references/pdf?id=Hk5HsnuvB)",
+        "Analyzing noise in autoencoders and deep networks | alphaXiv (https://www.alphaxiv.org/abs/1406.1831)",
+        "See discussions, stats, and author profiles for this publication at: https://www.researchgate.net/publication/221618878 (https://citeseerx.ist.psu.edu/document?doi=d4e0e08ab5d18fa354eaa12de6b83c06aeaf5ccc&repid=rep1&type=pdf)",
+        "Deep Learning on Graphs: A Comprehensive Guide (https://studylib.net/doc/27640079/dlg-book)",
+        "Nonparametric Bayesian Dictionary Learning for Analysis of Noisy and Incomplete Images - PMC (https://pmc.ncbi.nlm.nih.gov/articles/PMC3601051/)",
+        "Introduction to Variational Autoencoders | PDF | Artificial Neural Network | Probability Distribution (https://www.scribd.com/document/560961039/1906-02691)",
+        "Small-Data Image Classification Via Drop-In Variational Autoencoder | PDF | Statistical Classification | Data (https://www.scribd.com/document/1063519580/s11760-025-04376-1)",
+        "A Deep Learning–Based Decision Support Tool for Precision Risk Assessment of Breast Cancer - PMC (https://pmc.ncbi.nlm.nih.gov/articles/PMC10445790/)",
+        "VAE+DDPG: An Attention‐Enhanced Variational Autoencoder for Deep Reinforcement Learning‐Based Autonomous Navigation in Low‐Light Environments - Lee - 2026 - Advanced Intelligent Systems - Wiley Online Library (https://advanced.onlinelibrary.wiley.com/doi/10.1002/aisy.202500636)",
+        "(PDF) Anomaly detection in aeronautics data with quantum-compatible discrete deep generative model (https://www.researchgate.net/publication/372356611_Anomaly_detection_in_aeronautics_data_with_quantum-compatible_discrete_deep_generative_model)",
+        "Variational Autoencoders — Generative Models — Continuous Function (https://continuousfunction.ai/domains/generative-models/vaes/)"
+      ]
+    }
+  ],
+  "access_limits": [
+    "Direct OpenReview Probabilistic TopK PDF blocked by challenge; original PDF indexed equations read.",
+    "Direct SVAE PMC page challenged; official publisher indexed body and DOI metadata used.",
+    "CVPR dynamic-attention official page open failed; inherited primary source registry retained but no new equivalence claim based on that failed fetch.",
+    "No cross-family review or exhaustive database absence proof."
+  ],
+  "empirical_evidence": {
+    "p1_source": "outputs/vg_sae_development_20260921/holdout/selected_test_metrics.csv",
+    "directly_read": true,
+    "scope": "546 existing checkpoints re-evaluated on new calibration/test samples; one training/dictionary seed, unequal original optimizer/HPO.",
+    "exponential_cap8": {
+      "vg_error": 0.6987807649324153,
+      "topk_error": 0.7369346571213469,
+      "vg_hard_l0": 3.00244140625,
+      "topk_hard_l0": 5.879150390625,
+      "vg_hard_ev": 0.4778408953764327,
+      "topk_hard_ev": 0.5141027371220019,
+      "vg_f1": 0.32708726022840673,
+      "topk_f1": 0.2971000197277569
+    },
+    "p2_p3": "Final results not used in this novelty verdict."
+  },
+  "overall": {
+    "recommendation": "PROCEED WITH CAUTION",
+    "score_out_of_10": 6,
+    "clears_early_gate": true,
+    "exact_duplicate_found": false,
+    "abandon_named_paper": null,
+    "caution_specific_reason": "Remaining methodological delta is the useful deployment of VG's support-only variational/point-amplitude treatment through amortized dictionary learning; current evidence does not yet separate its benefit from known objective plus encoder parameterization. More modules are not required.",
+    "suggested_positioning": "An amortized VG sparse autoencoder with analytically marginalized Bernoulli support risk and point amplitudes, evaluated as a hard sparse representation."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "completed_at": "2026-09-21T05:33:20.485396+00:00",
+  "status": "complete",
+  "wall_seconds": 63.10551383718848,
+  "device_allocation_hours": 0.017529309621960337,
+  "unique_checkpoints": 5,
+  "test_arms": 23,
+  "selection_sha256": "39d0f94f9f5bd43868730f5de034aca4c7395bb87f63aa7f72a7f136da3e6dfd",
+  "script_sha256": "a1707fcf996507326f64ce1ee0847fefc7170f849d919325e48b838b2a761497",
+  "test_selected": false,
+  "test_npz_sha256": "20c92d3282249ddb788bc406037b94291754a30df66c011c99c8c3a51c27cdaa",
+  "calibration_npz_sha256": "e768ce569d3e8cb7f8996bbca69f409056f5b443075d4f11f54b39b6bf335ec8"
+}

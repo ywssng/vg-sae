@@ -1,0 +1,46 @@
+{
+  "frozen_before_test": true,
+  "timestamp": "2026-09-21T05:29:40.134750+00:00",
+  "selection_rule": "minimum final calibration hard latent relative error averaged over 3 seeds per amplitude/gamma; fixed recipe-order ties",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "updates": 6000,
+  "selected": {
+    "exponential|2": {
+      "recipe": "learned",
+      "calibration_mean_errors": {
+        "learned": 1.1115768750508626,
+        "learned_moment": 1.1309696038564045,
+        "profiled": 1.1186425685882568
+      }
+    },
+    "exponential|6": {
+      "recipe": "profiled",
+      "calibration_mean_errors": {
+        "learned": 0.8623797297477722,
+        "learned_moment": 0.8513649702072144,
+        "profiled": 0.8349951306978861
+      }
+    },
+    "constant|2": {
+      "recipe": "profiled",
+      "calibration_mean_errors": {
+        "learned": 1.203381101290385,
+        "learned_moment": 1.1948684851328533,
+        "profiled": 1.1822497447331746
+      }
+    },
+    "constant|6": {
+      "recipe": "learned",
+      "calibration_mean_errors": {
+        "learned": 1.018623948097229,
+        "learned_moment": 1.0190521081288655,
+        "profiled": 1.0199094613393147
+      }
+    }
+  },
+  "no_test_metrics_used": true
+}
