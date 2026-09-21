@@ -20,6 +20,9 @@ upstream `StandardTrainingSAE`; `to_inference_sae` returns the corresponding
 upstream inference architecture.
 
 The research objective is to develop a new SAE based on Variational Garrote.
+The current research motivation is the feature-identity problem in
+[**Sparse but Wrong**](idea-stage/REF_PAPER_SUMMARY.md), evaluated separately
+from reconstruction quality and the choice of sparsity level.
 The [research brief](RESEARCH_BRIEF.md) fixes that objective, and the current
 [development report](idea-stage/IDEA_REPORT.md),
 [method proposal](refine-logs/FINAL_PROPOSAL.md), and

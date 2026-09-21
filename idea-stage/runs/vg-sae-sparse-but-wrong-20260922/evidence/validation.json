@@ -1,0 +1,54 @@
+{
+  "run_id": "vg-sae-sparse-but-wrong-20260922",
+  "common_utility_tests": {
+    "passed": 5,
+    "purpose": "Copula marginals/correlation vs dictionary geometry, split independence, orthogonal proxy counterexample, signed matching, shared batch order/completed updates."
+  },
+  "prior_objective_tests": {
+    "passed": 3,
+    "purpose": "Loss/theta-gradient identity, normalized gamma derivative/self-consistency, finite differences."
+  },
+  "joint_objective_tests": {
+    "passed": 8,
+    "source": "sbw_joint_pilot agent result; enumerate/product identity, factorization, envelope and coordinate checks, fixed beta/shared init."
+  },
+  "baseline_tests": {
+    "passed": 5,
+    "source": "sbw_baseline_pilot agent result; calibration-only selection, infeasibility, paired budget, rescaling controls."
+  },
+  "independent_code_audit": {
+    "agent": "/root/sbw_pilot_code_audit",
+    "model": "gpt-6-astra",
+    "effort": "ultra",
+    "review_independence": "same-family",
+    "verdict": "WARN; no blocking code/math error, interpretation and coverage limits retained"
+  },
+  "plots": {
+    "source": "Frozen P2/P3 results",
+    "inspected": true,
+    "model_selection_changed": false
+  },
+  "full_repository_suite_run": false,
+  "aggregate_final_tests": {
+    "command": "CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 .venv/bin/python -m pytest -q tests/test_sbw_pilot_utils.py tests/test_sbw_prior_pilot.py tests/test_sbw_baseline_pilot.py tests/test_sbw_joint_pilot.py tests/test_sbw_dense_offset.py",
+    "passed": 23,
+    "seconds": 6.16,
+    "warnings": "One installed dependency deprecation warning."
+  },
+  "future_large_experiments_started": false,
+  "dense_offset_tests": 2,
+  "compileall": "PASS:five new scripts andfive test modules",
+  "canonical_links": "PASS",
+  "independent_review": "Scientific PROCEED WITH CAUTION;proposal REVISE7.85;plan-consistency issues resolved",
+  "large_experiments_started": false,
+  "report_render": {
+    "html_source_digest_matches": true,
+    "inline_full_text_preserved": true,
+    "inline_sections": 11,
+    "embedded_figures": 2,
+    "inline_bytes": 323291,
+    "js_syntax": "PASS",
+    "browser_visual_test": false,
+    "plot_visual_inspection": true
+  }
+}

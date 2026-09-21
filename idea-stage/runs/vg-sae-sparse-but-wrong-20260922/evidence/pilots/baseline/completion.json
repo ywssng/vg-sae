@@ -1,0 +1,11 @@
+{
+  "status": "complete",
+  "trained_models": 225,
+  "calibration_checkpoints": 675,
+  "unique_test_checkpoints": 254,
+  "full_final_grid_count": 225,
+  "coverage_failures": 163,
+  "frozen_selection_sha256": "a7c5756964bc4eeced87cef0a1269e28899c62b8326f60b2f07b46bc960ab672",
+  "training_and_snapshot_seconds": 2788.817573459819,
+  "wall_seconds_including_training_calibration_io_test": 2796.9324221564457
+}

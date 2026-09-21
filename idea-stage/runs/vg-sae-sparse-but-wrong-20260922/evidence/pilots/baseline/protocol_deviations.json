@@ -1,0 +1,33 @@
+{
+  "created_phase": "during_training_before_any_test_generation",
+  "scientific_design_changed_after_launch": false,
+  "jury_interpretation_or_implementation_differences": [
+    {
+      "item": "finite_data_batching",
+      "actual": "Cycling shuffled train set, without replacement within each epoch; shared exact private batch stream across methods.",
+      "jury_text": "With replacement from a finite train set.",
+      "resolution": "Actual cycling behavior was explicit in the preregistration before launch; root confirmed it. This affects all methods equally."
+    },
+    {
+      "item": "decoder_norm_training",
+      "actual": "VG unit-column normalization with tangent gradient projection. Baselines retain pinned official training recipes; exported inference folds decoder norms.",
+      "jury_text": "Unit decoder columns and radial-gradient projection consistently across methods.",
+      "resolution": "Root instructed preservation of official baseline training, particularly the Anthropic norm-weighted recipe, before launch. Initial and evaluated training decoder norms are recorded."
+    },
+    {
+      "item": "initial_weight_pairing",
+      "actual": "Common world seed resets for every model/control; architecture-specific initialization and decoder scales are retained.",
+      "jury_text": "Share decoder initialization wherever API permits.",
+      "resolution": "Same seeds do not imply identical initial weights across architectures. This pilot compares existing architecture recipes and does not isolate only the objective."
+    },
+    {
+      "item": "optimization_diagnostics",
+      "actual": "Native achieved L0, recovery and fidelity at 500/1500/3000 updates for every model. VG evaluation objective, beta and floor-distance diagnostics at those checkpoints.",
+      "missing": "Complete per-update beta/floor incidence and official baseline total-loss trajectories.",
+      "resolution": "Do not claim per-update boundary-hit rates or demonstrated convergence. Checkpoint quality trajectories can identify nonstationarity but do not establish training convergence."
+    }
+  ],
+  "serialization_note": "VG model_config dtype is the string torch.float32; strip the torch. prefix before passing it to VGSAEConfig. Model state itself contains float32 tensors.",
+  "baseline_recipe": "Anthropic-style tanh JumpReLU with pre_act_loss_coefficient=3e-6, threshold=.1, bandwidth=2, tanh scale4, sparsity warmup1000, no input normalization. This is not the original paper's full recipe or budget.",
+  "comparison_scope": "Equal controls, checkpoints, width, sample presentations and paired data; architecture-specific parameter counts, initialization and optimizer normalization rules remain part of each method."
+}

@@ -1,0 +1,1117 @@
+{
+  "date": "2026-09-22",
+  "metadata_policy": "No raw abstracts or retrieved full text saved. Metadata and authored synthesis only.",
+  "queries": [
+    {
+      "engine": "arxiv_fetch.py",
+      "query": "all:\"sparse autoencoder\" AND submittedDate:[202603220000 TO 202609222359]",
+      "max_results": 12,
+      "exit_code": 0,
+      "stderr": "",
+      "metadata": [
+        {
+          "id": "2606.14990",
+          "title": "Rational Sparse Autoencoder",
+          "authors": [
+            "Naiyu Yin",
+            "Yue Yu"
+          ],
+          "published": "2026-06-12",
+          "updated": "2026-06-16",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.14990.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.14990"
+        },
+        {
+          "id": "2606.15468",
+          "title": "Analyzing Visual Aircraft Representations with Sparse Autoencoders",
+          "authors": [
+            "Deepshik Sharma"
+          ],
+          "published": "2026-06-13",
+          "updated": "2026-06-13",
+          "categories": [
+            "cs.CV",
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.15468.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.15468"
+        },
+        {
+          "id": "2605.25525",
+          "title": "SAE-FD: Sparse Autoencoder Feature Distillation for Continual Learning of Large Language Models",
+          "authors": [
+            "Mingxu Zhang",
+            "Yuhan Li",
+            "Lujundong Li",
+            "Dazhong Shen",
+            "Hui Xiong",
+            "Ying Sun"
+          ],
+          "published": "2026-05-25",
+          "updated": "2026-05-25",
+          "categories": [
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.25525.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.25525"
+        },
+        {
+          "id": "2605.18229",
+          "title": "Are Sparse Autoencoder Benchmarks Reliable?",
+          "authors": [
+            "David Chanin"
+          ],
+          "published": "2026-05-18",
+          "updated": "2026-05-18",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.18229.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.18229"
+        },
+        {
+          "id": "2609.06968",
+          "title": "Tracing Query Expansion Effects through Sparse Autoencoder Features",
+          "authors": [
+            "Fangan Dong",
+            "Weiran Shi",
+            "Zhiwei Xu",
+            "Xuri Ge",
+            "Ben He",
+            "Xin Xin",
+            "Zhumin Chen",
+            "Ying Zhou"
+          ],
+          "published": "2026-09-07",
+          "updated": "2026-09-07",
+          "categories": [
+            "cs.IR"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2609.06968.pdf",
+          "abs_url": "https://arxiv.org/abs/2609.06968"
+        },
+        {
+          "id": "2609.16229",
+          "title": "Test-Time Unlearning via Sparse Autoencoder",
+          "authors": [
+            "Pingzhi Li",
+            "Jinhao Duan",
+            "Vaishnav Tadiparthi",
+            "Nakul Agarwal",
+            "Kwonjoon Lee",
+            "Ehsan Moradi Pari",
+            "Hossein Nourkhiz Mahjoub",
+            "Sijia Liu",
+            "Tianlong Chen"
+          ],
+          "published": "2026-09-14",
+          "updated": "2026-09-14",
+          "categories": [
+            "cs.LG",
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2609.16229.pdf",
+          "abs_url": "https://arxiv.org/abs/2609.16229"
+        },
+        {
+          "id": "2606.25657",
+          "title": "Steering Vision-Language Models with Joint Sparse Autoencoders",
+          "authors": [
+            "Huizhen Shu",
+            "Xuying Li",
+            "Hongxu Lin",
+            "Wenjie Sun",
+            "Hui Li"
+          ],
+          "published": "2026-06-24",
+          "updated": "2026-06-24",
+          "categories": [
+            "cs.CV",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.25657.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.25657"
+        },
+        {
+          "id": "2605.12225",
+          "title": "On the Interpretability of Whisper Encodings Using Sparse Autoencoders",
+          "authors": [
+            "Dan Pluth",
+            "Zachary Nicholas Houghton",
+            "Yu Zhou",
+            "Vijay K. Gurbani"
+          ],
+          "published": "2026-05-12",
+          "updated": "2026-09-13",
+          "categories": [
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.12225.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.12225"
+        },
+        {
+          "id": "2604.14925",
+          "title": "Improving Sparse Autoencoder with Dynamic Attention",
+          "authors": [
+            "Dongsheng Wang",
+            "Jinsen Zhang",
+            "Dawei Su",
+            "Hui Huang"
+          ],
+          "published": "2026-04-16",
+          "updated": "2026-04-16",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2604.14925.pdf",
+          "abs_url": "https://arxiv.org/abs/2604.14925"
+        },
+        {
+          "id": "2606.08365",
+          "title": "Pre-Intervention Prediction of Sparse Autoencoder Steering Side Effects",
+          "authors": [
+            "Evan Duan"
+          ],
+          "published": "2026-06-06",
+          "updated": "2026-06-06",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.08365.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.08365"
+        },
+        {
+          "id": "2606.18897",
+          "title": "SAERec: Constructing Fine-grained Interpretable Intents Priors via Sparse Autoencoders for Recommendation",
+          "authors": [
+            "Jiangnan Xia",
+            "Xuansheng Wu",
+            "Yu Yang",
+            "Xin Wang",
+            "Ninghao Liu"
+          ],
+          "published": "2026-06-17",
+          "updated": "2026-06-17",
+          "categories": [
+            "cs.IR",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.18897.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.18897"
+        },
+        {
+          "id": "2605.24977",
+          "title": "Universal Boosts, Specific Suppressors: Sparse Autoencoder Steering of Medical Vision-Language Models",
+          "authors": [
+            "Farhad Nooralahzadeh",
+            "Benjamin Gundersen",
+            "Nicolas Deperrois",
+            "Hidetoshi Matsuom",
+            "Mizuho Nishio",
+            "Thomas Frauenfelder",
+            "Ahmed Allam",
+            "Christian Blüthgen",
+            "Michael Moor",
+            "Michael Krauthammer"
+          ],
+          "published": "2026-05-24",
+          "updated": "2026-05-24",
+          "categories": [
+            "cs.CV",
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.24977.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.24977"
+        }
+      ]
+    },
+    {
+      "engine": "arxiv_fetch.py",
+      "query": "all:\"sparse autoencoder\" AND (all:adaptive OR all:identifiable OR all:\"description length\")",
+      "max_results": 12,
+      "exit_code": 0,
+      "stderr": "",
+      "metadata": [
+        {
+          "id": "2605.31245",
+          "title": "Toward Identifiable Sparse Autoencoders",
+          "authors": [
+            "Walter Nelson",
+            "Theofanis Karaletsos",
+            "Francesco Locatello"
+          ],
+          "published": "2026-05-29",
+          "updated": "2026-05-29",
+          "categories": [
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.31245.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.31245"
+        },
+        {
+          "id": "2505.08080",
+          "title": "Beyond Input Activations: Identifying Influential Latents by Gradient Sparse Autoencoders",
+          "authors": [
+            "Dong Shu",
+            "Xuansheng Wu",
+            "Haiyan Zhao",
+            "Mengnan Du",
+            "Ninghao Liu"
+          ],
+          "published": "2025-05-12",
+          "updated": "2025-09-23",
+          "categories": [
+            "cs.LG",
+            "cs.AI",
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2505.08080.pdf",
+          "abs_url": "https://arxiv.org/abs/2505.08080"
+        },
+        {
+          "id": "2502.00127",
+          "title": "Sparse Autoencoder Insights on Voice Embeddings",
+          "authors": [
+            "Daniel Pluth",
+            "Yu Zhou",
+            "Vijay K. Gurbani"
+          ],
+          "published": "2025-01-31",
+          "updated": "2025-01-31",
+          "categories": [
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2502.00127.pdf",
+          "abs_url": "https://arxiv.org/abs/2502.00127"
+        },
+        {
+          "id": "2510.08855",
+          "title": "Time-Aware Feature Selection: Adaptive Temporal Masking for Stable Sparse Autoencoder Training",
+          "authors": [
+            "T. Ed Li",
+            "Junyu Ren"
+          ],
+          "published": "2025-10-09",
+          "updated": "2025-10-09",
+          "categories": [
+            "cs.LG",
+            "cs.AI",
+            "cs.CL"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2510.08855.pdf",
+          "abs_url": "https://arxiv.org/abs/2510.08855"
+        },
+        {
+          "id": "2606.14990",
+          "title": "Rational Sparse Autoencoder",
+          "authors": [
+            "Naiyu Yin",
+            "Yue Yu"
+          ],
+          "published": "2026-06-12",
+          "updated": "2026-06-16",
+          "categories": [
+            "cs.LG",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2606.14990.pdf",
+          "abs_url": "https://arxiv.org/abs/2606.14990"
+        },
+        {
+          "id": "2412.05276",
+          "title": "Sparse autoencoders reveal selective remapping of visual concepts during adaptation",
+          "authors": [
+            "Hyesu Lim",
+            "Jinho Choi",
+            "Jaegul Choo",
+            "Steffen Schneider"
+          ],
+          "published": "2024-12-06",
+          "updated": "2025-03-21",
+          "categories": [
+            "cs.CV",
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2412.05276.pdf",
+          "abs_url": "https://arxiv.org/abs/2412.05276"
+        },
+        {
+          "id": "2503.04386",
+          "title": "Time-varying Factor Augmented Vector Autoregression with Grouped Sparse Autoencoder",
+          "authors": [
+            "Yiyong Luo",
+            "Brooks Paige",
+            "Jim Griffin"
+          ],
+          "published": "2025-03-06",
+          "updated": "2025-03-06",
+          "categories": [
+            "stat.ML",
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2503.04386.pdf",
+          "abs_url": "https://arxiv.org/abs/2503.04386"
+        },
+        {
+          "id": "2507.04644",
+          "title": "SOSAE: Self-Organizing Sparse AutoEncoder",
+          "authors": [
+            "Sarthak Ketanbhai Modi",
+            "Zi Pong Lim",
+            "Yushi Cao",
+            "Yupeng Cheng",
+            "Yon Shin Teo",
+            "Shang-Wei Lin"
+          ],
+          "published": "2025-07-07",
+          "updated": "2025-07-07",
+          "categories": [
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2507.04644.pdf",
+          "abs_url": "https://arxiv.org/abs/2507.04644"
+        },
+        {
+          "id": "2605.25525",
+          "title": "SAE-FD: Sparse Autoencoder Feature Distillation for Continual Learning of Large Language Models",
+          "authors": [
+            "Mingxu Zhang",
+            "Yuhan Li",
+            "Lujundong Li",
+            "Dazhong Shen",
+            "Hui Xiong",
+            "Ying Sun"
+          ],
+          "published": "2026-05-25",
+          "updated": "2026-05-25",
+          "categories": [
+            "cs.LG"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2605.25525.pdf",
+          "abs_url": "https://arxiv.org/abs/2605.25525"
+        },
+        {
+          "id": "2507.20973",
+          "title": "Model-Agnostic Gender Bias Control for Text-to-Image Generation via Sparse Autoencoder",
+          "authors": [
+            "Chao Wu",
+            "Zhenyi Wang",
+            "Kangxian Xie",
+            "Naresh Kumar Devulapally",
+            "Vishnu Suresh Lokhande",
+            "Mingchen Gao"
+          ],
+          "published": "2025-07-28",
+          "updated": "2025-11-21",
+          "categories": [
+            "cs.LG",
+            "cs.CV"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2507.20973.pdf",
+          "abs_url": "https://arxiv.org/abs/2507.20973"
+        },
+        {
+          "id": "2512.07730",
+          "title": "SAVE: Sparse Autoencoder-Driven Visual Information Enhancement for Mitigating Object Hallucination",
+          "authors": [
+            "Sangha Park",
+            "Seungryong Yoo",
+            "Jisoo Mok",
+            "Sungroh Yoon"
+          ],
+          "published": "2025-12-08",
+          "updated": "2025-12-11",
+          "categories": [
+            "cs.CV",
+            "cs.AI"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2512.07730.pdf",
+          "abs_url": "https://arxiv.org/abs/2512.07730"
+        },
+        {
+          "id": "2509.03738",
+          "title": "Mechanistic Interpretability with Sparse Autoencoder Neural Operators",
+          "authors": [
+            "Bahareh Tolooshams",
+            "Ailsa Shen",
+            "Anima Anandkumar"
+          ],
+          "published": "2025-09-03",
+          "updated": "2026-05-07",
+          "categories": [
+            "cs.LG",
+            "cs.AI",
+            "eess.SP",
+            "stat.ML"
+          ],
+          "pdf_url": "https://arxiv.org/pdf/2509.03738.pdf",
+          "abs_url": "https://arxiv.org/abs/2509.03738"
+        }
+      ]
+    },
+    {
+      "engine": "web.run",
+      "query_form": "exact_phrase",
+      "query": "\"Adaptive Feature Allocation\" \"Sparse\" autoencoder",
+      "retained_ids": [],
+      "outcome": "Initial acronym expansion did not identify AFA; corrected to Approximate Feature Activation."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "exact_phrase",
+      "query": "\"MDLSAE\" sparse autoencoder",
+      "retained_ids": [],
+      "outcome": "No usable exact-spelling primary hit; follow-up used Minimum Description Length."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "implementation_variant",
+      "query": "\"JumpReLU\" \"Anthropic\" sparsity penalty",
+      "retained_ids": [
+        "url:transformer-circuits.pub/2025/january-update/index.html"
+      ],
+      "outcome": "Official recipe retrieved."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "time_window",
+      "query": "sparse autoencoder learned sparsity feature recovery after:2026-03-22 before:2026-09-23",
+      "retained_ids": [
+        "openreview:Hl3rEn7S4P"
+      ],
+      "outcome": "Kept relevant indexed primary lead; ignored tutorials and unrelated applications."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "exact_phrase",
+      "query": "\"MDLSAE\"",
+      "retained_ids": [],
+      "outcome": "Alternative spelling required."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "exact_phrase",
+      "query": "\"Adaptive Feature Allocation\" autoencoders",
+      "retained_ids": [],
+      "outcome": "Incorrect expansion; corrected by next query."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "acronym_expansion",
+      "query": "\"sparse autoencoders\" \"AFA\"",
+      "retained_ids": [
+        "arxiv:2503.24277"
+      ],
+      "outcome": "Correct title and Approximate Feature Activation expansion found."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "primary_domain",
+      "query": "site:transformer-circuits.pub JumpReLU tanh",
+      "retained_ids": [
+        "url:transformer-circuits.pub/2025/january-update/index.html"
+      ],
+      "outcome": "Full official recipe and named authors verified."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "mechanism",
+      "query": "sparse autoencoder minimum description length MDL SAE",
+      "retained_ids": [
+        "arxiv:2410.11179"
+      ],
+      "outcome": "Primary arXiv paper retrieved."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "prior_family",
+      "query": "\"Variational Garrote\" \"2026\"",
+      "retained_ids": [
+        "arxiv:2603.12562"
+      ],
+      "outcome": "Publisher DOI lead verified with Crossref."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "time_window",
+      "query": "\"sparse autoencoder\" \"learned sparsity\" after:2026-03-22 before:2026-09-23",
+      "retained_ids": [],
+      "outcome": "No additional primary method promoted to verified core list."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "time_window",
+      "query": "\"sparse autoencoder\" \"adaptive\" \"L0\" after:2026-03-22 before:2026-09-23",
+      "retained_ids": [],
+      "outcome": "Combined with helper adaptive/identifiable search and direct known recent papers."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Toward Identifiable Sparse Autoencoders\" site:icml.cc",
+      "retained_ids": [
+        "arxiv:2605.31245"
+      ],
+      "outcome": "No independent specific poster retrieved; arXiv author comment only."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Feature Hedging\" site:neurips.cc OR site:openreview.net",
+      "retained_ids": [
+        "arxiv:2505.11756"
+      ],
+      "outcome": "Author-named primary PDF says NeurIPS 2025 MI Workshop."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Scaling and evaluating sparse autoencoders\" site:iclr.cc",
+      "retained_ids": [
+        "arxiv:2406.04093"
+      ],
+      "outcome": "ICLR 2025 official proceedings verified."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Interpretability as Compression\" site:openreview.net",
+      "retained_ids": [
+        "arxiv:2410.11179"
+      ],
+      "outcome": "Primary indexed PDFs found; final venue not established."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Toward Identifiable Sparse Autoencoders\" \"ICML\" \"poster\"",
+      "retained_ids": [
+        "arxiv:2605.31245"
+      ],
+      "outcome": "Secondary result identified forum miLK9YcxtA; direct primary forum challenge-blocked, not treated as venue proof."
+    },
+    {
+      "engine": "web.run",
+      "query_form": "venue_verification",
+      "query": "\"Evaluating and Designing Sparse Autoencoders\" \"COLM 2025\"",
+      "retained_ids": [
+        "arxiv:2503.24277"
+      ],
+      "outcome": "Official COLM accepted list and primary PDF header verify venue."
+    }
+  ],
+  "primary_metadata_refresh": [
+    {
+      "arxiv_id": "1109.0486",
+      "metadata": {
+        "citation_title": [
+          "The Variational Garrote"
+        ],
+        "citation_author": [
+          "Kappen, Hilbert J.",
+          "Gómez, Vicenç"
+        ],
+        "citation_date": [
+          "2011/09/02"
+        ],
+        "citation_online_date": [
+          "2012/11/12"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/1109.0486"
+        ],
+        "citation_arxiv_id": [
+          "1109.0486"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2509.06383",
+      "metadata": {
+        "citation_title": [
+          "Variational Garrote for Statistical Physics-based Sparse and Robust Variable Selection"
+        ],
+        "citation_author": [
+          "Soh, Hyungjoon",
+          "Lee, Dongha",
+          "Periwal, Vipul",
+          "Jo, Junghyo"
+        ],
+        "citation_date": [
+          "2025/09/08"
+        ],
+        "citation_online_date": [
+          "2025/09/08"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2509.06383"
+        ],
+        "citation_arxiv_id": [
+          "2509.06383"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2603.12562",
+      "metadata": {
+        "citation_title": [
+          "Variational Garrote for Sparse Inverse Problems"
+        ],
+        "citation_author": [
+          "Lee, Kanghun",
+          "Soh, Hyungjoon",
+          "Jo, Junghyo"
+        ],
+        "citation_date": [
+          "2026/03/13"
+        ],
+        "citation_online_date": [
+          "2026/03/13"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2603.12562"
+        ],
+        "citation_arxiv_id": [
+          "2603.12562"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2404.16014",
+      "metadata": {
+        "citation_title": [
+          "Improving Dictionary Learning with Gated Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Rajamanoharan, Senthooran",
+          "Conmy, Arthur",
+          "Smith, Lewis",
+          "Lieberum, Tom",
+          "Varma, Vikrant",
+          "Kramár, János",
+          "Shah, Rohin",
+          "Nanda, Neel"
+        ],
+        "citation_date": [
+          "2024/04/24"
+        ],
+        "citation_online_date": [
+          "2024/04/30"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2404.16014"
+        ],
+        "citation_arxiv_id": [
+          "2404.16014"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2407.14435",
+      "metadata": {
+        "citation_title": [
+          "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Rajamanoharan, Senthooran",
+          "Lieberum, Tom",
+          "Sonnerat, Nicolas",
+          "Conmy, Arthur",
+          "Varma, Vikrant",
+          "Kramár, János",
+          "Nanda, Neel"
+        ],
+        "citation_date": [
+          "2024/07/19"
+        ],
+        "citation_online_date": [
+          "2024/08/01"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2407.14435"
+        ],
+        "citation_arxiv_id": [
+          "2407.14435"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2406.04093",
+      "metadata": {
+        "citation_title": [
+          "Scaling and evaluating sparse autoencoders"
+        ],
+        "citation_author": [
+          "Gao, Leo",
+          "la Tour, Tom Dupré",
+          "Tillman, Henk",
+          "Goh, Gabriel",
+          "Troll, Rajan",
+          "Radford, Alec",
+          "Sutskever, Ilya",
+          "Leike, Jan",
+          "Wu, Jeffrey"
+        ],
+        "citation_date": [
+          "2024/06/06"
+        ],
+        "citation_online_date": [
+          "2024/06/06"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2406.04093"
+        ],
+        "citation_arxiv_id": [
+          "2406.04093"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2412.06410",
+      "metadata": {
+        "citation_title": [
+          "BatchTopK Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Bussmann, Bart",
+          "Leask, Patrick",
+          "Nanda, Neel"
+        ],
+        "citation_date": [
+          "2024/12/09"
+        ],
+        "citation_online_date": [
+          "2024/12/09"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2412.06410"
+        ],
+        "citation_arxiv_id": [
+          "2412.06410"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2503.24277",
+      "metadata": {
+        "citation_title": [
+          "Evaluating and Designing Sparse Autoencoders by Approximating Quasi-Orthogonality"
+        ],
+        "citation_author": [
+          "Lee, Sewoong",
+          "Davies, Adam",
+          "Canby, Marc E.",
+          "Hockenmaier, Julia"
+        ],
+        "citation_date": [
+          "2025/03/31"
+        ],
+        "citation_online_date": [
+          "2025/08/08"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2503.24277"
+        ],
+        "citation_arxiv_id": [
+          "2503.24277"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2410.11179",
+      "metadata": {
+        "citation_title": [
+          "Interpretability as Compression: Reconsidering SAE Explanations of Neural Activations with MDL-SAEs"
+        ],
+        "citation_author": [
+          "Ayonrinde, Kola",
+          "Pearce, Michael T.",
+          "Sharkey, Lee"
+        ],
+        "citation_date": [
+          "2024/10/15"
+        ],
+        "citation_online_date": [
+          "2024/10/15"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2410.11179"
+        ],
+        "citation_arxiv_id": [
+          "2410.11179"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2505.11756",
+      "metadata": {
+        "citation_title": [
+          "Feature Hedging: Correlated Features Break Narrow Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Chanin, David",
+          "Dulka, Tomáš",
+          "Garriga-Alonso, Adrià"
+        ],
+        "citation_date": [
+          "2025/05/16"
+        ],
+        "citation_online_date": [
+          "2025/09/26"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2505.11756"
+        ],
+        "citation_arxiv_id": [
+          "2505.11756"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2605.06610",
+      "metadata": {
+        "citation_title": [
+          "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Stępień, Jakub",
+          "Mazur, Marcin",
+          "Tabor, Jacek",
+          "Spurek, Przemysław"
+        ],
+        "citation_date": [
+          "2026/05/07"
+        ],
+        "citation_online_date": [
+          "2026/05/08"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2605.06610"
+        ],
+        "citation_arxiv_id": [
+          "2605.06610"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2605.31245",
+      "metadata": {
+        "citation_title": [
+          "Toward Identifiable Sparse Autoencoders"
+        ],
+        "citation_author": [
+          "Nelson, Walter",
+          "Karaletsos, Theofanis",
+          "Locatello, Francesco"
+        ],
+        "citation_date": [
+          "2026/05/29"
+        ],
+        "citation_online_date": [
+          "2026/05/29"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2605.31245"
+        ],
+        "citation_arxiv_id": [
+          "2605.31245"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2609.10299",
+      "metadata": {
+        "citation_title": [
+          "A Dominant Diffuse Phase in the Sparse Autoencoder Phase Diagram"
+        ],
+        "citation_author": [
+          "Plascencia, Alexis D."
+        ],
+        "citation_date": [
+          "2026/09/09"
+        ],
+        "citation_online_date": [
+          "2026/09/09"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2609.10299"
+        ],
+        "citation_arxiv_id": [
+          "2609.10299"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2605.18229",
+      "metadata": {
+        "citation_title": [
+          "Are Sparse Autoencoder Benchmarks Reliable?"
+        ],
+        "citation_author": [
+          "Chanin, David"
+        ],
+        "citation_date": [
+          "2026/05/18"
+        ],
+        "citation_online_date": [
+          "2026/05/18"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2605.18229"
+        ],
+        "citation_arxiv_id": [
+          "2605.18229"
+        ]
+      },
+      "notes": {}
+    },
+    {
+      "arxiv_id": "2507.04644",
+      "metadata": {
+        "citation_title": [
+          "SOSAE: Self-Organizing Sparse AutoEncoder"
+        ],
+        "citation_author": [
+          "Modi, Sarthak Ketanbhai",
+          "Lim, Zi Pong",
+          "Cao, Yushi",
+          "Cheng, Yupeng",
+          "Teo, Yon Shin",
+          "Lin, Shang-Wei"
+        ],
+        "citation_date": [
+          "2025/07/07"
+        ],
+        "citation_online_date": [
+          "2025/07/07"
+        ],
+        "citation_pdf_url": [
+          "https://arxiv.org/pdf/2507.04644"
+        ],
+        "citation_arxiv_id": [
+          "2507.04644"
+        ]
+      },
+      "notes": {}
+    }
+  ],
+  "query_forms": [
+    "acronym_expansion",
+    "exact_phrase",
+    "implementation_variant",
+    "mechanism",
+    "primary_domain",
+    "prior_family",
+    "reference_chaining",
+    "structured_arxiv_date_search",
+    "structured_arxiv_mechanism_search",
+    "time_window",
+    "venue_verification"
+  ],
+  "local_sources": [
+    {
+      "path": "refs/Variational Garrote for Statistical Physics-based Sparse and Robust Variable Selection.pdf",
+      "read": "pages 1-3",
+      "canonical_id": "arxiv:2509.06383"
+    },
+    {
+      "path": "refs/Sparse but Wrong Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders.pdf",
+      "read": "delegated to reference-paper shard; not duplicate-read here",
+      "canonical_id": "arxiv:2508.16560"
+    }
+  ],
+  "metadata_union": {
+    "input_records": 24,
+    "unique_arxiv_ids": [
+      "2412.05276",
+      "2502.00127",
+      "2503.04386",
+      "2505.08080",
+      "2507.04644",
+      "2507.20973",
+      "2509.03738",
+      "2510.08855",
+      "2512.07730",
+      "2604.14925",
+      "2605.12225",
+      "2605.18229",
+      "2605.24977",
+      "2605.25525",
+      "2605.31245",
+      "2606.08365",
+      "2606.14990",
+      "2606.15468",
+      "2606.18897",
+      "2606.25657",
+      "2609.06968",
+      "2609.16229"
+    ],
+    "unique_count": 22
+  },
+  "reference_chaining": [
+    "RESEARCH_BRIEF.md and existing 32-paper registry",
+    "AFA primary paper related work/limitations and official code",
+    "MDL primary paper model-selection section",
+    "SoftSAE primary paper Appendix E target sparsity settings"
+  ],
+  "primary_status_checks": [
+    {
+      "id": "arxiv:2503.24277",
+      "source": "https://colmweb.org/2025/AcceptedPapers.html",
+      "finding": "Title and full authors listed as accepted COLM 2025 paper."
+    },
+    {
+      "id": "arxiv:2406.04093",
+      "source": "https://proceedings.iclr.cc/paper_files/paper/2025/hash/42ef3308c230942d223c411adf182c88-Abstract-Conference.html",
+      "finding": "ICLR 2025 official proceedings, full authors."
+    },
+    {
+      "id": "arxiv:2505.11756",
+      "source": "https://openreview.net/pdf?id=wg0TxhOKLg",
+      "finding": "Indexed primary PDF contains named authors and NeurIPS 2025 MI workshop footer."
+    },
+    {
+      "id": "arxiv:2603.12562",
+      "source": "https://api.crossref.org/works/10.1016/j.jocs.2026.102980",
+      "finding": {
+        "doi": "10.1016/j.jocs.2026.102980",
+        "authors": [
+          "Kanghun Lee",
+          "Hyungjoon Soh",
+          "Junghyo Jo"
+        ],
+        "journal": "Journal of Computational Science",
+        "volume": "100",
+        "article_number": "102980",
+        "print_date": "2026-10",
+        "record_created": "2026-07-22",
+        "online_date": null
+      }
+    },
+    {
+      "id": "arxiv:2605.31245",
+      "source": "https://arxiv.org/abs/2605.31245",
+      "finding": "ICML 2026 in author comment; OpenReview direct verification challenge-blocked."
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+{
+  "device": "cpu",
+  "torch_threads": 2,
+  "probe_updates_per_arm": 100,
+  "gamma": 0,
+  "world": 210,
+  "rho": -0.4,
+  "fits": [
+    {
+      "arm": "optimized_mf",
+      "updates": 100,
+      "sample_presentations": 12800,
+      "first_batch_sha256": "a7a3f9f4e92c86c54bd6349bbd4c4a16c253cdd16e6733095c2221e4590983ff",
+      "training_and_snapshot_seconds": 1.2009033947251737,
+      "trace": [
+        {
+          "update": 1,
+          "batch_free_energy": 8.980637550354004,
+          "elapsed_seconds": 0.2621128559112549
+        },
+        {
+          "update": 50,
+          "batch_free_energy": 1.0765303373336792,
+          "elapsed_seconds": 0.8526037218980491
+        },
+        {
+          "update": 100,
+          "batch_free_energy": -0.9119540452957153,
+          "elapsed_seconds": 1.2008972256444395
+        }
+      ],
+      "failed_batches": [],
+      "solver": {
+        "sample_count": 12800,
+        "failed_samples": 0,
+        "sample_convergence_fraction": 1.0,
+        "batch_count": 100,
+        "failed_batches": 0,
+        "batch_convergence_fraction": 1.0,
+        "per_start_convergence_fraction": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "winning_start_counts": [
+          11971,
+          445,
+          384
+        ],
+        "max_delta": 9.775161743164062e-06,
+        "max_stationarity_residual": 5.692243576049805e-06,
+        "mean_full_sweeps": 10.93
+      },
+      "gradient_semantics": "detached q; envelope for converged samples, fixed-q partial gradient otherwise",
+      "excluded_samples": 0,
+      "skipped_updates": 0
+    },
+    {
+      "arm": "exact32",
+      "updates": 100,
+      "sample_presentations": 12800,
+      "first_batch_sha256": "a7a3f9f4e92c86c54bd6349bbd4c4a16c253cdd16e6733095c2221e4590983ff",
+      "training_and_snapshot_seconds": 0.29208814492449164,
+      "trace": [
+        {
+          "update": 1,
+          "batch_free_energy": 8.964627265930176,
+          "elapsed_seconds": 0.004899078980088234
+        },
+        {
+          "update": 50,
+          "batch_free_energy": 1.0537691116333008,
+          "elapsed_seconds": 0.1458366080187261
+        },
+        {
+          "update": 100,
+          "batch_free_energy": -0.9597246050834656,
+          "elapsed_seconds": 0.2920818370766938
+        }
+      ],
+      "failed_batches": [],
+      "solver": {},
+      "gradient_semantics": "detached q; envelope for converged samples, fixed-q partial gradient otherwise",
+      "excluded_samples": 0,
+      "skipped_updates": 0
+    },
+    {
+      "arm": "amortized",
+      "updates": 100,
+      "sample_presentations": 12800,
+      "first_batch_sha256": "a7a3f9f4e92c86c54bd6349bbd4c4a16c253cdd16e6733095c2221e4590983ff",
+      "training_and_snapshot_seconds": 0.28423210186883807,
+      "trace": [
+        {
+          "update": 1,
+          "batch_free_energy": 9.190444946289062,
+          "elapsed_seconds": 0.0041859326884150505
+        },
+        {
+          "update": 50,
+          "batch_free_energy": 3.708221673965454,
+          "elapsed_seconds": 0.14191098790615797
+        },
+        {
+          "update": 100,
+          "batch_free_energy": 1.6031460762023926,
+          "elapsed_seconds": 0.28422063775360584
+        }
+      ],
+      "failed_batches": [],
+      "solver": {},
+      "gradient_semantics": "detached q; envelope for converged samples, fixed-q partial gradient otherwise",
+      "excluded_samples": 0,
+      "skipped_updates": 0
+    }
+  ],
+  "predicted_training_seconds": 639.8005109466612,
+  "predicted_with_50_percent_eval_overhead_seconds": 959.7007664199919,
+  "gpu_hours": 0.0,
+  "test_accessed": false
+}

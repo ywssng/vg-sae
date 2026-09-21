@@ -1,0 +1,983 @@
+{
+  "raw_candidates": 20,
+  "development_families": 13,
+  "unranked": true,
+  "quality_eliminations": [],
+  "objective_budget_exclusions": [],
+  "generator_policy": "Two independent GPT-6 Astra ultra agents, user effort override of skill alternate-model default. Same-family, not independent model families.",
+  "consolidation": "Near-duplicate families clustered mechanically; every original variant retained. No scientific-quality filtering before jury.",
+  "families": [
+    {
+      "id": "S01",
+      "title": "Original VG feature-identity comparison",
+      "source_ids": [
+        "A01",
+        "B01"
+      ],
+      "variants": [
+        {
+          "id": "A01",
+          "title": "현재 VG의 확률적 support 선택으로 feature identity를 보존하는 SAE",
+          "build_target": "기존 point-amplitude VG를 주 방법으로 유지하고, correlated firing에서 작동하는 학습·추론 recipe를 확정한다.",
+          "method_steps": [
+            "동일 unit decoder, bias, nonnegative amplitude 조건에서 full VG를 학습한다. gamma grid와 실제 native hard readout m>0.5를 사전에 고정한다.",
+            "동일 data worlds와 동일 checkpoint 기회로 L1/ReLU, Gated, BatchTopK, JumpReLU를 학습한다. 고정 regularizer 값 비교와 calibration에서 achieved hard L0가 가까운 비교를 모두 남긴다.",
+            "VG의 variance/entropy를 유지한 기본 recipe와 각 항 제거 control을 좁은 조건에서 비교하고, 실제 feature recovery와 signed mixing으로 필요한 항을 결정한다."
+          ],
+          "hypothesis": "**동일한 achieved hard L0 오지정 구간에서도 full VG는 L1 및 적어도 하나의 Gated/JumpReLU/BatchTopK baseline보다 signed feature recovery와 support F1를 높이며, 그 이득은 낮은 MSE만으로 설명되지 않는다.**",
+          "minimal_pilot": {
+            "data": "5 features, d=20, width=5, p=.4; latent Gaussian hub C0j=-.4,0,+.4; independent train/cal/test; 3 paired worlds. QR orthogonal dictionary를 쓰면 새 controlled pilot라고 명시한다.",
+            "training": "2,000–5,000 steps의 좁은 regularization grid. BatchTopK K=1.8,2.0,2.2; VG/L1/Gated/JumpReLU는 calibration achieved-L0 범위를 덮는 사전 grid. 작은 baseline panel로 시작하고 2 GPUh 이내에 완료 가능한 후보 수를 runtime probe 뒤 고정한다.",
+            "primary": "Matched signed cosine, fraction≥.95, hub signed leakage, support micro/macro F1, actual L0 bias and per-sample count MAE.",
+            "falsifier": "VG의 apparent 이득이 achieved-L0 이동이나 MSE selection에서만 생기거나 JumpReLU/Gated의 회복을 재현하지 못하면 full-VG 우위 가설을 기각한다. Baseline 미수렴이면 비교는 불확정이다."
+          },
+          "selection": "Oracle arm은 calibration ground-truth recovery로 checkpoint를 선택한다. Deployable arm은 사전 고정한 final checkpoint와 native threshold를 쓴다. 전자의 성공을 unknown-L0 해결로 부르지 않는다.",
+          "risk": "현재 variance의 decoder gradient는 unit sphere에서 radial이므로 직접적인 mixing 방지 힘이 없다. Current VG도 잘못된 gamma에서 mixed features를 학습할 수 있다.",
+          "estimate_gpu_hours": 1.8,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2404.16014",
+              "overlap": "Separating feature selection from amplitude estimation and reducing L1 shrinkage are established; use Gated as a required control."
+            },
+            {
+              "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2407.14435",
+              "overlap": "Learned thresholds and sparse nonshrinking activations are established. Sparse but Wrong uses an Anthropic-style tanh sparsity implementation; identify that implementation separately from a generic JumpReLU label."
+            },
+            {
+              "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2508.16560v4",
+              "overlap": "Wrong sparsity can favor mixed dictionaries; c_dec selection and high-to-low sparsity scheduling are already discussed. The paper establishes neither general L1 failure nor VG correctness."
+            }
+          ],
+          "so_what": "양성이면 가장 단순한 기존 VG 자체를 강화할 근거다. 음성이면 L1 제거와 mean-field Bernoulli objective만으로 부족함을 보여 주고, 다음 후보가 고칠 원인을 한정한다. 이 비교가 별도의 진단 논문으로 주 목표를 바꾸지는 않는다.",
+          "novelty_boundary": "Support/amplitude 분리 또는 analytic variance의 최초 주장이 아니라, 해당 VG objective가 배운 dictionary의 feature 복원에 주는 추가 가치가 후보 기여다."
+        },
+        {
+          "id": "B01",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "기본 VG를 feature 복원 중심으로 완성하기",
+          "one_sentence_summary": "현재 VG의 support/amplitude 분리와 analytic risk를 유지한 채, 잘못된 sparsity 설정에서 실제 feature를 보존하는 운영 영역을 L1와 hard-L0 baseline에 대해 규명한다.",
+          "what_we_build": [
+            "동일 correlated toy에서 현재 VG, L1, rescaled L1, Gated, BatchTopK, JumpReLU를 같은 5-control 및 checkpoint 예산으로 학습한다.",
+            "Calibration에서 low/correct/high native-hard L0 operating point를 동결하고 각 방법의 signed dictionary와 support를 fresh test에서 평가한다.",
+            "VG의 full objective와 no-variance control을 작은 두 correlation 조건에서 비교해 generic amplitude 분리 이상의 신호가 있는지 확인한다."
+          ],
+          "bold_falsifiable_hypothesis": "**기본 VG는 양·음의 firing correlation 모두에서 L1와 BatchTopK보다 넓은 realized-L0 구간에서 참 feature를 유지하며, 그 이득 일부는 rescaled L1와 Gated를 통제한 뒤에도 남는다.**",
+          "minimal_pilot": {
+            "design": "Common toy, 3 correlations x 3 paired seeds, 5 controls per method. Share this screen with subsequent selected pilots. A bounded scout may reduce the common grid to 3 controls before result inspection, retaining low/correct/high coverage.",
+            "positive": "At least two paired seeds in each nonzero correlation sign show a >=.05 mean signed cosine gain or >=.20 recovered-feature-fraction gain with lower leakage against L1 and BatchTopK across at least two adjacent attained-L0 points; Gated/JumpReLU comparisons are reported even if they erase the VG margin.",
+            "negative": "Adequately converged VG has no identity/leakage advantage after rescaling/Gated control, or only an MSE advantage; the stronger VG-specific hypothesis fails.",
+            "null": "No model reaches a positive-control recovery region or the coefficient grid fails to bracket L0; repair the protocol before interpreting.",
+            "unlabeled_selection": "Report c_dec minimum as an explicitly fallible fixed comparator and oracle-cal recovery as a separate ceiling; neither is labeled automatic L0 discovery."
+          },
+          "scientific_value_even_if_negative": "A negative result identifies exactly whether the original VG objective needs a mechanism change; it prevents spending the full research budget improving a reconstruction frontier that hides mixed features.",
+          "risk": {
+            "level": "MEDIUM",
+            "named_failure": "VG may merely exchange amplitude shrinkage for density changes; JumpReLU/Gated may match or dominate recovery."
+          },
+          "estimated_gpu_hours": 1.8,
+          "estimated_implementation_effort": "1–2 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Sparse but Wrong",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "Supplies the incorrect-L0/mixing challenge and strong BatchTopK/JumpReLU comparators; does not prove this hypothesis."
+            },
+            {
+              "work": "The Variational Garrote",
+              "url": "https://doi.org/10.1007/s10994-013-5427-7",
+              "relation": "Current VG objective lineage; success would be a learned-dictionary result, not a new variational principle."
+            },
+            {
+              "work": "Gated SAE",
+              "url": "https://arxiv.org/abs/2404.16014",
+              "relation": "Direct control for support/amplitude separation; must not claim that separation alone is new."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S02",
+      "title": "Learned global normalized support prior",
+      "source_ids": [
+        "A02",
+        "B03"
+      ],
+      "variants": [
+        {
+          "id": "A02",
+          "title": "정규화된 Bernoulli prior를 학습하는 VG-SAE",
+          "build_target": "true L0를 입력하지 않고 scalar gamma를 적응시키는 최소 VG 확장.",
+          "method_steps": [
+            "run-local loss에 gamma·sum(m)+J·softplus(-gamma)를 tensor 연산으로 구현하고, gamma 고정 시 기존 objective와 수치 일치를 확인한다.",
+            "gamma를 gradient로 학습하거나 train minibatch의 mean(m)에 따른 detached alternating update로 학습한다. 두 구현을 동시에 새 방법으로 묶지 말고 하나를 사전에 고른다.",
+            "초기 gamma를 세 값으로 바꾸어 같은 recipe를 p=.2,.4,.6 조건으로 전이한다. Native threshold .5와 training budget을 유지하고 support/L0 정답은 update에 쓰지 않는다."
+          ],
+          "hypothesis": "**정규화된 prior 적응은 source에서 고정한 gamma보다 density-transfer에서 feature recovery와 native hard-count 정확도를 함께 보존하며, 세 초기 gamma에 대한 결과 차이를 줄인다.**",
+          "minimal_pilot": {
+            "data": "d=20, g=5, width=5; p=.2,.4,.6; feasible positive/negative Gaussian-copula correlation; 3 paired worlds, independent streams.",
+            "training": "Fixed-gamma transfer, learned-gamma VG, calibration oracle grid ceiling. 3 gamma initializations; objective and hard inference fixed. Narrow positive/negative subsets first; endpoint collapse logged.",
+            "primary": "Transfer recovery, signed leakage, support F1, hard-count MAE, initialization range; track pi, mean(m), entropy and beta.",
+            "falsifier": "pi=mean(m)처럼 자기 일관성만 맞고 hard count·recovery가 틀리거나 초기 gamma에 의해 다른 collapse가 유지되면 실패다."
+          },
+          "selection": "Deployable update and final checkpoint use x only. True-L0/feature based oracle selection is a separately labeled ceiling; no test labels enter gamma learning.",
+          "risk": "Stationarity pi=mean(m)는 unknown true L0 identification 정리가 아니다. Point amplitude, duplicated columns, width와 beta가 자기확증 밀도에 영향을 줄 수 있다.",
+          "estimate_gpu_hours": 1.2,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Bayes and empirical-Bayes multiplicity adjustment in the variable-selection problem",
+              "url": "https://arxiv.org/abs/1011.2333",
+              "overlap": "Learning inclusion probabilities and its multiplicity/degeneracy issues are old; adapting this principle alone is not novel."
+            },
+            {
+              "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2508.16560v4",
+              "overlap": "Wrong sparsity can favor mixed dictionaries; c_dec selection and high-to-low sparsity scheduling are already discussed. The paper establishes neither general L1 failure nor VG correctness."
+            }
+          ],
+          "so_what": "양성이면 sparsity knob 전이 문제를 줄이는 작고 배포 가능한 VG recipe다. 음성이면 scalar empirical-Bayes self-consistency가 feature identity를 고르는 정보를 충분히 제공하지 않는다는 방법 설계 근거다.",
+          "novelty_boundary": "Empirical Bayes 최초 주장 금지. Correlation과 unknown density 아래 VG feature recovery의 조건부 개선이 검증 대상이다."
+        },
+        {
+          "id": "B03",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "정규화된 support prior를 학습하는 VG",
+          "one_sentence_summary": "고정 gamma를 미분 가능한 scalar로 바꿔 density를 데이터와 함께 추정하고, 참 L0 없이 feature 복원이 유지되는지 검증한다.",
+          "what_we_build": [
+            "별도 pilot loss에서 gamma*sum(m)+J*softplus(-gamma)를 tensor로 구현하고 고정 gamma일 때 기존 loss와 일치시킨다.",
+            "같은 encoder/decoder로 gamma를 학습하되 세 초기값을 사용해 자기확인적 density에 갇히는지 측정한다.",
+            "Source에서 정한 학습 규칙을 p=.2/.4/.6의 target toy에 그대로 적용하고 fixed-gamma transfer와 비교한다."
+          ],
+          "bold_falsifiable_hypothesis": "**정규화 prior의 scalar adaptation은 초기 gamma와 marginal firing density가 달라도 fixed-gamma transfer보다 높은 dictionary identity를 보존하며, true-L0 oracle 없이 적정 operating region에 도달한다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4 at p=.4 first, then p=.2/.6 only if the first arms fit the cap; 3 initial gamma values x 3 paired seeds. Compare fixed-gamma source recipe and existing B01 oracle envelope.",
+            "positive": "Unlabeled adapted VG stays within .05 signed cosine of the oracle-cal VG ceiling across initializations and improves target recovery over fixed source gamma; no endpoint collapse.",
+            "negative": "Prior estimates strongly depend on initialization or co-adapt with an incorrect dense/mixed dictionary despite lower loss.",
+            "null": "Gamma reaches clamps or beta/risk floor dominates; this is numerical failure rather than evidence that true L0 is identifiable.",
+            "stationarity": "pi=mean(m) is only self-consistency. Neither that equality nor closeness of expected L0 to 2 is a recovery proof."
+          },
+          "scientific_value_even_if_negative": "Directly tests whether original VG can become usable without a known sparsity budget. Failure exposes self-confirmation rather than suggesting the user abandon VG-SAE.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "Learned density can rationalize a wrong dictionary; prior frequency and true feature identity are not identifiable from stationarity alone."
+          },
+          "estimated_gpu_hours": 0.8,
+          "estimated_implementation_effort": "1 day",
+          "closest_prior_annotations": [
+            {
+              "work": "The Variational Garrote",
+              "url": "https://doi.org/10.1007/s10994-013-5427-7",
+              "relation": "Normalized support prior is established; empirical-Bayes-style fitting is not intrinsically novel."
+            },
+            {
+              "work": "AFA",
+              "url": "https://arxiv.org/abs/2503.24277",
+              "relation": "Adaptive activation-count competitor still has lambda_AFA; compare usable selection, not rhetoric about no k."
+            },
+            {
+              "work": "MDL-SAEs",
+              "url": "https://arxiv.org/abs/2410.11179",
+              "relation": "Existing unlabeled complexity-selection perspective; learned gamma does not replace all model-selection assumptions."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S03",
+      "title": "Feature-frequency prior with shared shrinkage",
+      "source_ids": [
+        "A03"
+      ],
+      "variants": [
+        {
+          "id": "A03",
+          "title": "희귀 feature를 위한 shrinkage된 feature별 VG prior",
+          "build_target": "모든 latent에 같은 gamma를 강제하는 대신 feature별 사용빈도와 전역 희소성 정보를 분리한다.",
+          "method_steps": [
+            "각 latent에 pi_j를 두고 normalized Bernoulli KL을 계산한다. pi_j의 train-only posterior-count update를 공유 전역 pi로 shrink하여 rare/dead feature의 조기 극단화를 막는다.",
+            "처음에는 decoder와 gate를 전역 prior로 warmup한 뒤 per-latent prior를 연다. Shrinkage 강도와 warmup은 source condition에서 고정한다.",
+            "동일 수의 train examples에서 global learned prior, unshrunk independent priors, shrunk priors를 비교한다. 회복한 rare features와 frequent features를 별도로 평가한다."
+          ],
+          "hypothesis": "**약하게 공유된 feature별 prior는 global gamma 대비 빈도 불균형과 correlated firing 조건에서 rare-feature recall을 높이면서 frequent-feature leakage와 false-positive support를 늘리지 않는다.**",
+          "minimal_pilot": {
+            "data": "5-feature toy의 p_j를 .10,.20,.30,.40,.50으로 바꾸고 hub correlation±.4/0를 사용; 3 worlds. Orthogonal true dictionary에서 시작해 frequency와 geometric coherence를 분리한다.",
+            "training": "Global learned prior / independent pi_j / shared-shrinkage pi_j, 2,000–5,000 updates; 2 initial gate biases; fixed recipe.",
+            "primary": "Macro support F1, frequency-quartile recall, signed dictionary coverage, hard L0 distribution and leakage.",
+            "falsifier": "Rare-feature recall 개선 없이 frequent codes만 복제하거나 global sparsity 이동을 맞춘 뒤 이득이 사라지면 실패다."
+          },
+          "selection": "빈도 정답 p_j는 평가에만 사용한다. Prior update는 learned training gates만 사용하고 oracle feature alignment는 cal에서 정한 후 test에 고정한다.",
+          "risk": "희귀하고 아직 찾지 못한 feature는 낮은 posterior count로 더 죽을 수 있다. Beta/pseudocount와 width dependence가 추가되어 tuning-free 주장은 불가능하다.",
+          "estimate_gpu_hours": 1.3,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Bayesian Inference for Structured Spike and Slab Priors",
+              "url": "https://proceedings.neurips.cc/paper_files/paper/2014/hash/8927f9b43dbc13ddfa1edf2103f2191f-Abstract.html",
+              "overlap": "Structured inclusion priors are established. This candidate begins with marginal heterogeneity rather than claiming full support dependence modeling."
+            },
+            {
+              "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2407.14435",
+              "overlap": "Learned thresholds and sparse nonshrinking activations are established. Sparse but Wrong uses an Anthropic-style tanh sparsity implementation; identify that implementation separately from a generic JumpReLU label."
+            }
+          ],
+          "so_what": "양성이면 폭과 빈도가 커질 때 쓸 수 있는 VG prior를 얻는다. 음성이면 feature-frequency adaptation이 rare-feature starvation의 해결책인지, self-reinforcement인지 구분하여 복잡도를 줄일 수 있다.",
+          "novelty_boundary": "Per-feature sparsity thresholds/prior라는 일반 개념은 선행이다. VG normalized probability update의 실제 rare-feature identity 보존이 필요한 추가 증거다."
+        }
+      ]
+    },
+    {
+      "id": "S04",
+      "title": "Sparsity continuation",
+      "source_ids": [
+        "A04",
+        "B02"
+      ],
+      "variants": [
+        {
+          "id": "A04",
+          "title": "동일한 최종 VG objective에 도달하는 support continuation",
+          "build_target": "학습 초기의 과도한 누락이 decoder mixing을 고착하는 현상을 줄이는 VG training recipe.",
+          "method_steps": [
+            "초기 gamma를 낮춰 충분한 support를 허용하고, 정해진 steps 동안 최종 gamma로 증가시킨다. 기본 실험에서는 entropy weight=1과 variance를 유지해 schedule 한 가지부터 검사한다.",
+            "Constant gamma와 continuation을 최종 gamma, 총 steps, final-phase steps 및 checkpoint 후보 수를 명시해 비교한다. 필요하면 더 긴 constant control로 단순 학습량 차이를 점검한다.",
+            "학습 trajectory에서 matched decoder identity와 native L0가 언제 변하는지 기록하고, 최종 25% steps는 동일 stationary objective로 학습한다."
+          ],
+          "hypothesis": "**동일 최종 gamma와 유사한 realized hard L0에서 high-support warmup은 constant-sparsity VG보다 correlated feature mixing을 줄이고, 학습 후반 MSE 개선과 recovery 악화의 동반 발생을 줄인다.**",
+          "minimal_pilot": {
+            "data": "Small 5-feature±.4/0 world, 3 paired seeds; final achieved L0가 약1.8,2.0,2.2 부근이 되는 gamma 세 개를 calibration에서만 보고한다.",
+            "training": "Constant / linear gamma warmup / reverse warmup, same total steps. Ground-truth dictionary initialization은 mechanism-only arm이며 random initialization이 primary다.",
+            "primary": "Final signed recovery and leakage; trajectory identity loss; hard-count error and support F1.",
+            "falsifier": "Final achieved L0 또는 total updates를 맞추면 이득이 사라지거나 reverse schedule도 동등하면 제안한 early-omission 기전을 지지하지 못한다."
+          },
+          "selection": "Schedule은 source condition에서 고정하여 모든 correlation conditions에 적용한다. Final gamma를 true recovery로 고른 arm은 oracle로 분리한다.",
+          "risk": "최종 gamma가 실제로 부적절하면 충분한 후반 학습에서 mixing이 다시 나타날 수 있다. Warmup이 objective의 문제를 잠시 지연시키는 결과일 수 있다.",
+          "estimate_gpu_hours": 0.9,
+          "prior_work": [
+            {
+              "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2508.16560v4",
+              "overlap": "Wrong sparsity can favor mixed dictionaries; c_dec selection and high-to-low sparsity scheduling are already discussed. The paper establishes neither general L1 failure nor VG correctness."
+            },
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2605.06610",
+              "overlap": "Soft-to-hard schedules and adaptive support are nearby work; SoftSAE retains K/k_max/k-loss controls. This candidate does not claim scheduling itself is new."
+            }
+          ],
+          "so_what": "양성이면 architecture 추가 없이 VG feature recovery를 안정화한다. 음성이면 optimizer trajectory만 바꿔서는 최종 sparsity-pressure 실패를 고치기 어렵다는 근거다.",
+          "novelty_boundary": "Sparse but Wrong가 high-to-low L0 scheduling을 이미 다룬다. VG-specific gain과 gamma/entropy 기전의 정량적 차이가 있어야 독립 기여가 된다."
+        },
+        {
+          "id": "B02",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "희소화 강도를 늦게 올리는 VG 학습",
+          "one_sentence_summary": "Decoder가 feature 방향을 먼저 배울 시간을 주고 같은 최종 gamma에 도달하도록 prior 강도만 연속적으로 올린다.",
+          "what_we_build": [
+            "VG의 gamma를 낮은 값에서 시작해 고정한 최종 값으로 선형 또는 단일 smooth schedule로 올린다; 다른 loss term과 head는 유지한다.",
+            "동일 최종 gamma의 처음부터 고정한 학습과 reverse schedule을 같은 sample budget으로 비교한다.",
+            "마지막 25% update는 모든 조건을 최종 objective에 고정하고 dictionary trajectory와 hard recovery를 비교한다."
+          ],
+          "bold_falsifiable_hypothesis": "**동일 최종 gamma와 비슷한 attained hard L0에서도 늦은 희소화는 초기에 생기는 hub mixing을 줄이고, 양·음의 상관 모두에서 최종 true-feature 복원을 개선한다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4, 3 paired seeds, two final gamma values selected by B01 calibration to straddle the low/correct L0 region; 3 schedules, common 2000 updates.",
+            "positive": "Warm-start schedule improves signed matched cosine >=.05 and lowers leakage in at least 2/3 seeds of both signs, with final native-hard L0 within .1 or separately density-matched confirmation.",
+            "negative": "The benefit vanishes during the common final-objective tail or is explained by a different final L0; schedule is not a stable remedy.",
+            "null": "Both schedules remain far from positive-control recovery; do not interpret absent benefit as proof of irreversibility.",
+            "unlabeled_selection": "Start/final fields are fixed from training-independent protocol or source calibration; test true L0 is never used to stop the schedule."
+          },
+          "scientific_value_even_if_negative": "Separates a repairable training-path issue from an objective preference for mixed features, yielding a simpler final VG recipe if positive and clear limits if negative.",
+          "risk": {
+            "level": "MEDIUM",
+            "named_failure": "Dense warmup can itself learn rotated representations; the final sparse objective may eventually recover the same wrong solution."
+          },
+          "estimated_gpu_hours": 0.7,
+          "estimated_implementation_effort": "0.5–1 day",
+          "closest_prior_annotations": [
+            {
+              "work": "Sparse but Wrong §3.5",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "Already studies high-to-low sparsity scheduling; this is a VG-specific implementation/interaction test, not a claim to invent warmup."
+            },
+            {
+              "work": "Variational Sparse Coding",
+              "url": "https://proceedings.mlr.press/v115/tonolini20a.html",
+              "relation": "Spike warm-up is prior art. Differentiate only by evidence about VG free-energy trajectories and feature recovery."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S05",
+      "title": "Residual support teacher amortization",
+      "source_ids": [
+        "A05",
+        "B08"
+      ],
+      "variants": [
+        {
+          "id": "A05",
+          "title": "VG coordinate evidence를 학습 중 gate head에 전달하기",
+          "build_target": "느린 test-time solver 없이 amortized gate가 residual evidence를 더 정확하게 사용하도록 학습한다.",
+          "method_steps": [
+            "현재 decoder와 amplitude를 고정한 coordinate Bernoulli optimum의 logit을 계산한다: beta·(a_j d_j^T r_-j - .5 a_j²||d_j||²)-gamma. Unit entropy 조건에서 deterministic enumeration으로 확인한다.",
+            "매 일부 minibatch마다 simultaneous 또는 순차 한 sweep의 teacher gate를 계산해 detach하고 gate head에 distill한다. 독립 mean-field objective와 teacher approximation의 차이를 명시한다.",
+            "Decoder는 full VG objective로 학습하며 test-time에는 기존 한 번의 encoder만 사용한다. 동일 FLOPs의 추가 training steps와 generic amplitude-only teacher를 비교한다."
+          ],
+          "hypothesis": "**학습 중 한 단계의 VG support-evidence distillation은 inference latency를 거의 유지하면서 gate omission의 residual correlation을 줄여, 단순 추가 학습보다 learned decoder mixing과 support FN를 줄인다.**",
+          "minimal_pilot": {
+            "data": "5-feature positive/negative correlation, p=.4, 3 worlds; random initialization primary.",
+            "training": "Full VG / full VG with one-step gate teacher / extra-step compute control / amplitude-only teacher. Teacher every 4 minibatches부터 고정; prior grid는 작게 유지.",
+            "primary": "Signed recovery, support FN/FP, off-diagonal leakage, per-example inference latency and training FLOPs.",
+            "falsifier": "개선이 fixed-D readout에만 있고 learned dictionary가 좋아지지 않거나 generic amplitude teacher/compute control을 넘지 못하면 VG-specific train-time correction 가설 실패다."
+          },
+          "selection": "Teacher는 train x와 learned D,m,a만 사용한다. Ground-truth support를 distillation target으로 쓰지 않는다. Native threshold remains .5.",
+          "risk": "동시 업데이트는 exact coordinate descent와 다르고, 잘못된 dictionary의 posterior optimum을 더 잘 흉내 낼 수 있다. 기존 P3/P3b의 높은 inference 비용과 작은 추가 이득이 재발할 수 있다.",
+          "estimate_gpu_hours": 1.4,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Compute Optimal Inference and Provable Amortisation Gap in Sparse Autoencoders",
+              "url": "https://proceedings.mlr.press/v267/o-neill25a.html",
+              "overlap": "An amortization gap and iterative sparse inference are known. Any new value must be the cost and effect of a specific VG update on learned feature identities."
+            },
+            {
+              "title": "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2404.16014",
+              "overlap": "Separating feature selection from amplitude estimation and reducing L1 shrinkage are established; use Gated as a required control."
+            }
+          ],
+          "so_what": "양성이면 analytic VG inference를 배포 가능한 encoder 학습으로 연결한다. 음성이면 gate amortization이 feature mixing의 주요 원인이 아니라는 근거로 solver 중심 개발을 중단할 수 있다.",
+          "novelty_boundary": "Coordinate inference/teacher 자체는 새롭지 않다. Full dictionary learning에서 발생하는 VG-specific feature recovery 이득과 비용이 핵심이다."
+        },
+        {
+          "id": "B08",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "잔차 기반 support teacher를 단일 forward VG에 학습하기",
+          "one_sentence_summary": "학습할 때만 conditional VG gate update를 teacher로 사용하고 배포 시에는 현재 gate head 한 번으로 그 선택을 근사한다.",
+          "what_we_build": [
+            "고정 decoder/amplitude에서 one- 또는 two-step conditional gate optimum을 계산하고 teacher target에는 stop-gradient를 건다.",
+            "현재 gate head에 작은 고정 가중치의 distillation loss를 추가하되 dictionary/amplitude는 기존 free energy로 학습한다.",
+            "같은 학습 compute의 nondistilled VG 및 amplitude-only refit teacher control과 비교하고 native inference 비용을 측정한다."
+          ],
+          "bold_falsifiable_hypothesis": "**Residual evidence에 대한 amortization gap을 학습 중 줄이면 expensive test-time correction 없이 correlated weak feature의 recall과 dictionary identity를 동시에 개선한다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4, 3 seeds, two gamma values, fixed-beta first. Use known-D support inference as an oracle feasibility control only, then learn D. Distill one fixed 2-step teacher; do not search many solver depths.",
+            "positive": "Learned-D native one-pass model gains >=.05 signed cosine and higher support F1 at comparable hard L0; generic amplitude refit does not explain the gain; inference latency stays <=1.2x native VG within timing uncertainty.",
+            "negative": "Teacher lowers free energy yet recovery does not improve, or only test-time iterative inference helps; the inference gap is not the sole barrier.",
+            "null": "Teacher does not improve even fixed-D support inference or the extra optimization budget is unmatched.",
+            "prior_evidence": "Previous correction pilots exceeded latency criteria and did not establish this training-only method. Their numbers are not evidence for the present hypothesis."
+          },
+          "scientific_value_even_if_negative": "Offers a route to use VG residual evidence while respecting deployability; a negative result distinguishes missing amortization from the dictionary objective problem.",
+          "risk": {
+            "level": "MEDIUM",
+            "named_failure": "A better approximation to the wrong free-energy optimum can strengthen mixed representations; distillation can add cost without feature gains."
+          },
+          "estimated_gpu_hours": 1.0,
+          "estimated_implementation_effort": "1–2 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Compute Optimal Inference and Provable Amortisation Gap",
+              "url": "https://proceedings.mlr.press/v267/o-neill25a.html",
+              "relation": "Direct warning that encoder amortization is a known bottleneck; training-only transfer and feature identity are the specific empirical questions."
+            },
+            {
+              "work": "Variational Sparse Coding with Learned Thresholding",
+              "url": "https://proceedings.mlr.press/v162/fallah22a.html",
+              "relation": "Learned inference/thresholding is prior art; do not present residual-based sparse inference as a new invention."
+            },
+            {
+              "work": "The Variational Garrote",
+              "url": "https://doi.org/10.1007/s10994-013-5427-7",
+              "relation": "Conditional gate update follows the existing objective; novelty must come from useful SAE behavior, not the sigmoid formula."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S06",
+      "title": "Joint/block support posterior",
+      "source_ids": [
+        "A06",
+        "B04"
+      ],
+      "variants": [
+        {
+          "id": "A06",
+          "title": "상관된 support posterior를 사용하는 block VG-SAE",
+          "build_target": "독립 Bernoulli posterior의 표현력 한계가 correlated firing을 decoder mixing으로 떠넘기는지 해결한다.",
+          "method_steps": [
+            "5-latent pilot에서는 32 support states를 열거하여 point amplitude를 조건으로 exact variational support distribution을 최적화한다. Product Bernoulli prior는 고정해 posterior-family 효과를 분리한다.",
+            "Expected risk를 full support covariance로 계산하고 independent-Bernoulli VG와 비교한다. Rich posterior에서도 amplitude는 x-dependent point estimate이므로 full generative ELBO라고 부르지 않는다.",
+            "양성이면 2–3개 latent block을 사용하는 amortized posterior로 줄인다. Block은 train-only gate/residual 통계로 정하고 oracle true-feature grouping은 별도 upper bound로만 쓴다."
+          ],
+          "hypothesis": "**독립 posterior를 exact 또는 작은 block posterior로 바꾸면 같은 prior와 amplitude architecture에서 correlated support의 오판과 decoder leakage가 함께 줄며, independent-firing 조건의 효과는 작다.**",
+          "minimal_pilot": {
+            "data": "5 features, d=20, width=5, latent C±.4/0, 3 worlds. All32 enumeration keeps costs tiny.",
+            "training": "Mean-field amortized VG / coordinate-refined mean-field control / exact32 support VG; same amplitude network, D init, beta policy and prior grid.",
+            "primary": "Signed decoder recovery, support F1/count MAE, posterior pair moments, covariance-dependent contribution to expected risk; runtime.",
+            "falsifier": "Exact32가 mean-field의 같은-compute/coordinate control보다 feature identity를 개선하지 못하거나 unrelated correlations를 만들어 MSE만 낮추면 posterior dependence 가설 실패다."
+          },
+          "selection": "Exact support energy uses observed x and learned parameters, never true states. Native marginal threshold>.5 is primary for comparability; joint MAP is a separately reported readout. Do not infer unknown L0 from a correct prior supplied by the generator.",
+          "risk": "Rich posterior may fit an already mixed dictionary better. Enumeration does not scale; block discovery can make correlated mistakes. Covariance terms can rotate decoder atoms but their direction need not favor true features.",
+          "estimate_gpu_hours": 1.8,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+              "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+              "overlap": "Analytic variational sparse coding, noise profiling, amortization and richer posterior families are known; do not claim these generic principles as new."
+            },
+            {
+              "title": "Bayesian Inference for Structured Spike and Slab Priors",
+              "url": "https://proceedings.neurips.cc/paper_files/paper/2014/hash/8927f9b43dbc13ddfa1edf2103f2191f-Abstract.html",
+              "overlap": "Structured support distributions are old. Sparse-but-wrong feature identity and a deployable amortized block-VG implementation would need separate evidence."
+            }
+          ],
+          "so_what": "양성이면 직접 correlated support를 다루는 VG 후속 방법의 근거가 된다. 음성이면 rich support posterior만으로 dictionary identifiability 문제를 해결하지 못함을 보여주어 구조 확장을 자제할 수 있다.",
+          "novelty_boundary": "Exact enumeration is a tiny-world mechanism pilot, not the scalable contribution. Correlated variational sparse coding already exists."
+        },
+        {
+          "id": "B04",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "평균장 가정을 완화한 joint-support VG",
+          "one_sentence_summary": "작은 문제에서 32개 support의 분포를 정확히 계산하여 support 간 의존성을 학습에 반영하고, factorized VG가 놓치는 dictionary 복원 신호를 되살린다.",
+          "what_we_build": [
+            "J=5에서 모든 s in {0,1}^5를 열거하고 현재 point amplitude에 조건부인 q(s|x) ∝ exp[-beta*||x-b-D(s*a)||²/2-gamma*|s|]를 계산한다.",
+            "Exact expected reconstruction, joint entropy, normalized independent prior로 decoder/amplitude를 학습하고 current amortized mean-field 및 수렴한 coordinate mean-field와 비교한다.",
+            "기존 random initialization과 작은 known mixed initialization을 모두 사용해 의존성을 허용한 학습이 혼합 방향을 벗어나는지 평가한다."
+          ],
+          "bold_falsifiable_hypothesis": "**Mean-field의 독립 gate 가정 때문에 잃는 support covariance를 복원하면, exact-joint VG는 최적화된 factorized VG보다 correlated toy의 mixed initialization에서 참 dictionary로 더 잘 돌아온다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4, 3 seeds, 2 gamma values, exact-joint vs converged mean-field vs current amortized mean-field; finite fixed beta first. J=5 enumeration is 32 states, not a scalable final solution.",
+            "positive": "At comparable hard L0 exact-joint gains >=.05 signed cosine and reduces hub leakage relative to converged factorized inference, not merely the one-pass encoder.",
+            "negative": "Exact joint inference preserves or prefers the mixed dictionary, or only beats the amortized head; joint covariance is then not the missing mechanism.",
+            "null": "Mean-field solver has not converged or the exact state objective disagrees with explicit enumeration checks.",
+            "hard_readout": "Use predeclared joint MAP support and report separate marginal >.5 readout; neither equals posterior-mean reconstruction. Costs are explicit.",
+            "mechanism_limit": "With orthogonal D and independent prior, this conditional exact posterior factorizes. A gain must arise along nonorthogonal learned-D trajectories, not an asserted covariance bonus at D*."
+          },
+          "scientific_value_even_if_negative": "Provides a sharp decision about whether structured VG inference is worth scaling. Even failure distinguishes mean-field/amortization limitations from the wrong-sparsity objective itself.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "The exact conditional objective may have the same incorrect dictionary optimum; exponential enumeration is only a mechanism pilot, with no scalable or semantic-posterior claim."
+          },
+          "estimated_gpu_hours": 1.4,
+          "estimated_implementation_effort": "2–3 days",
+          "closest_prior_annotations": [
+            {
+              "work": "The Variational Garrote",
+              "url": "https://doi.org/10.1007/s10994-013-5427-7",
+              "relation": "Direct variation of the mean-field approximation; exact inference is not by itself a new principle."
+            },
+            {
+              "work": "Variational Sparse Coding",
+              "url": "https://proceedings.mlr.press/v115/tonolini20a.html",
+              "relation": "Structured/spike-slab variational inference is a neighboring family; retain the explicit point-amplitude distinction."
+            },
+            {
+              "work": "Learning Sparse Codes with Entropy-Based ELBOs",
+              "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+              "relation": "Correlated variational approximations are prior art; incremental value would be measured support-covariance effects on learned feature identity."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested",
+          "high_upside_mechanistic_candidate": true,
+          "mechanism_equation": "E||r-Dz||²=||r-D E[z]||²+tr(D Cov(z) D^T). Off-diagonal Cov(z) gives cross-atom terms absent from factorized Bernoulli VG; their sign does not guarantee demixing."
+        }
+      ]
+    },
+    {
+      "id": "S07",
+      "title": "Amplitude stationarity training",
+      "source_ids": [
+        "A07"
+      ],
+      "variants": [
+        {
+          "id": "A07",
+          "title": "선택과 분리한 amplitude stationarity를 유지하는 VG-SAE",
+          "build_target": "L1을 제거해도 남는 point-amplitude의 미수렴과 gate-amplitude tradeoff를 줄인다.",
+          "method_steps": [
+            "고정 m,D에서 VG quadratic expected risk의 nonnegative amplitude coordinate optimum을 구현한다. m_j>0일 때 a_j=max(0,d_j^T r_-j/||d_j||²)이고 m_j=0에서는 식별되지 않음을 처리한다.",
+            "훈련 중 한 번의 amplitude correction을 detached target으로 amplitude head에 전달하거나 alternating amplitude step으로 사용한다. 먼저 한 선택만 고정해 public API를 유지한다.",
+            "Full VG 및 generic hard-support least-squares amplitude refit control과 비교하고 dictionary를 함께 학습한다. Test-time correction 없는 distillation 형태를 primary로 둔다."
+          ],
+          "hypothesis": "**입력별 amplitude stationarity를 개선하면 gate sparsity를 더 희생하지 않고 coefficient bias와 omission-induced decoder mixing을 함께 줄인다.**",
+          "minimal_pilot": {
+            "data": "Small±.4/0 toy; amplitude distributions rectified N(1,.15) and one skewed positive distribution; 3 paired worlds.",
+            "training": "Full VG / amplitude-distilled VG / hard-support refit teacher control; same updates and a compute-matched extension.",
+            "primary": "True-positive coefficient bias/MAE, signed dictionary leakage, support F1, hard-count error.",
+            "falsifier": "Coefficient bias/MSE만 개선되고 feature directions나 support가 개선되지 않으면 Sparse-but-Wrong 해결 기전으로 채택하지 않는다."
+          },
+          "selection": "Training correction uses only x,D,m. Oracle support refit can measure a ceiling but cannot be reported as deployable performance.",
+          "risk": "Small m may permit large amplitudes, and a_j update feeds back into m_j; 단일 sweep이 수렴을 보장하지 않는다. Generic amplitude refitting과 구분되는 효과가 작을 수 있다.",
+          "estimate_gpu_hours": 1.0,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2404.16014",
+              "overlap": "Separating feature selection from amplitude estimation and reducing L1 shrinkage are established; use Gated as a required control."
+            },
+            {
+              "title": "Compute Optimal Inference and Provable Amortisation Gap in Sparse Autoencoders",
+              "url": "https://proceedings.mlr.press/v267/o-neill25a.html",
+              "overlap": "An amortization gap and iterative sparse inference are known. Any new value must be the cost and effect of a specific VG update on learned feature identities."
+            }
+          ],
+          "so_what": "양성이면 기존 VG의 별도 amplitude head가 필요한 수치 조건을 명확히 한다. 음성이면 amplitude debiasing alone이 correlated feature identity 문제를 고치지 못한다는 근거를 얻는다.",
+          "novelty_boundary": "Amplitude least squares와 selection/shrinkage 분리는 선행이다. 학습된 VG decoder의 회복 개선이 없는 단순 refit을 새 방법의 핵심으로 주장하지 않는다."
+        }
+      ]
+    },
+    {
+      "id": "S08",
+      "title": "Explicit slab uncertainty",
+      "source_ids": [
+        "A08",
+        "B06"
+      ],
+      "variants": [
+        {
+          "id": "A08",
+          "title": "명시적인 slab prior와 불확실성을 갖춘 VG 확장",
+          "build_target": "현재 input-dependent point amplitude가 support probability와 임의로 상쇄되는 자유도를 줄이는 probabilistic amplitude extension.",
+          "method_steps": [
+            "활성 amplitude에 lognormal prior와 lognormal variational slab을 둔다. Bernoulli support와 analytic slab moments를 이용해 E[z]=m E[a], Var(z)=m Var(a)+m(1-m)E[a]²를 계산한다.",
+            "Gaussian expected reconstruction risk에 Bernoulli KL과 m·KL(q(a|s=1,x)||p(a|s=1))를 더한다. 모든 random variables와 normalizers를 적어 proper generative extension으로 정의한다; 현행 point VG를 소급해서 ELBO라 부르지 않는다.",
+            "Point VG, slab-prior MAP-amplitude control, probabilistic-slab VG를 비교한다. Learned scalar gamma를 함께 쓰는 경우 fixed gamma 실험을 먼저 두어 prior adaptation과 slab 효과를 분리한다."
+          ],
+          "hypothesis": "**명시적인 slab cost는 확률과 amplitude의 보상관계를 제한하여 learned-gamma VG의 density-collapse를 줄이고, amplitude-scale shift에서 feature recovery와 hard-count 정확도를 함께 높인다.**",
+          "minimal_pilot": {
+            "data": "5-feature±.4 toy; amplitude scale .5,1,2 and small observation-noise level; 3 worlds. Slab hyperparameters cannot use true support labels.",
+            "training": "Three amplitude models, fixed global gamma first; one learned-gamma follow-up only if fixed-mode numerics are stable. 2,000–3,000 updates.",
+            "primary": "Signed recovery, hard-count MAE, support F1, slab variance, gate-amplitude compensation statistics and conditional risk.",
+            "falsifier": "MAP-slab control이 모든 이득을 설명하거나 uncertainty가 rare features를 지워 recovery를 악화하면 probabilistic slab 채택 근거가 없다."
+          },
+          "selection": "Slab prior recipe is fixed on source training data. Full generative evidence-based selection is only claimed for the newly complete model, and its optimum is still not a semantic-truth guarantee.",
+          "risk": "현재 VG에서 더 큰 generative model로 이동한다. VSC/VAEase 계열과 가까워지고 추가 scale hyperparameters·posterior misspecification으로 단순성을 잃을 수 있다. Lognormal prior 자체가 rectified-normal toy truth를 안다고 가정하지 않는다.",
+          "estimate_gpu_hours": 1.8,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+              "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+              "overlap": "Analytic variational sparse coding, noise profiling, amortization and richer posterior families are known; do not claim these generic principles as new."
+            },
+            {
+              "title": "Variational Sparse Coding",
+              "url": "https://proceedings.mlr.press/v115/tonolini20a.html",
+              "overlap": "Probabilistic sparse latents and spike/slab-style generative sparse coding are established; a full variational model alone is not new."
+            },
+            {
+              "title": "Sparse Autoencoders, Again?",
+              "url": "https://proceedings.mlr.press/v267/lu25w.html",
+              "overlap": "VAEase/probabilistic SAE is a close prior; detailed formulation-level novelty must be audited before adoption."
+            }
+          ],
+          "so_what": "양성이면 현재 point-amplitude 조건부 위험에서 어떤 missing regularization이 support 선택을 불안정하게 만드는지 해결한다. 음성이면 더 큰 확률모형을 도입할 실용적 이유가 없으므로 단순 VG를 유지한다.",
+          "novelty_boundary": "Probabilistic SAE 또는 generative ELBO 최초 주장은 불가하다. VG point-amplitude limit와 비교한 identifiable failure correction이 있어야 한다."
+        },
+        {
+          "id": "B06",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "Amplitude 불확실성을 포함하는 spike-and-slab VG",
+          "one_sentence_summary": "Point amplitude 대신 nonnegative slab 분포를 사용해 작은 진폭과 부재의 혼동을 줄이는 VG 확장을 만든다.",
+          "what_we_build": [
+            "활성 상태 amplitude를 lognormal variational slab로 바꾸고 고정 lognormal prior에 대한 conditional slab KL을 추가한다; s=0 상태에 불필요한 slab KL을 부과하지 않는다.",
+            "E[z_j]=m_j E[a_j], Var(z_j)=m_j Var(a_j)+m_j(1-m_j)E[a_j]^2로 analytic reconstruction risk를 계산한다.",
+            "좁은 Normal amplitude와 넓은 positive amplitude 조건에서 point-VG 및 기존 baseline과 비교한다."
+          ],
+          "bold_falsifiable_hypothesis": "**Amplitude 분포가 넓고 약한 true activations가 많을 때 slab uncertainty를 표현한 VG는 point-VG보다 실제 support를 잘 분리하고, decoder가 약한 feature를 이웃에 섞는 현상을 줄인다.**",
+          "minimal_pilot": {
+            "design": "Common toy corr ±.4, 3 seeds, two amplitude regimes: rectified Normal(1,.15) versus mean-matched lognormal with preregistered dispersion. Two gamma values, fixed finite beta; prior parameters selected without truth and shared across worlds.",
+            "positive": "Broad-amplitude regime improves rare/weak activation recall plus signed dictionary cosine >=.05 at comparable hard L0 without merely adding extra false-positive support.",
+            "negative": "Only coefficient uncertainty improves while feature identity remains mixed, or the slab KL reintroduces harmful amplitude bias.",
+            "null": "Variational variance collapses against the precision floor or MC verification disagrees with analytic moments.",
+            "scope": "This is a different probabilistic model with an explicit amplitude prior; only after the complete likelihood/prior/KL derivation may this variant be called a full ELBO. Do not retroactively give that label to current VG."
+          },
+          "scientific_value_even_if_negative": "Tests whether VG point amplitudes are a beneficial simplicity choice or the barrier to reliable feature identity under realistic magnitude variation.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "This approaches established variational sparse coding; a more expensive posterior may not improve dictionary recovery and new slab-prior choices may dominate."
+          },
+          "estimated_gpu_hours": 1.4,
+          "estimated_implementation_effort": "2–4 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Variational Sparse Coding",
+              "url": "https://proceedings.mlr.press/v115/tonolini20a.html",
+              "relation": "Direct spike-and-slab prior; a generic variational slab is not novel."
+            },
+            {
+              "work": "VAEase",
+              "url": "https://proceedings.mlr.press/v267/lu25w.html",
+              "relation": "Gaussian uncertainty gates/noise learning are established alternatives; difference must be tied to Bernoulli inclusion and the stated recovery failure."
+            },
+            {
+              "work": "Learning Sparse Codes with Entropy-Based ELBOs",
+              "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+              "relation": "Analytic entropy-based sparse objectives and uncertainty learning are prior art, not a reason to discard the test."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S09",
+      "title": "Precision-timescale control",
+      "source_ids": [
+        "A09"
+      ],
+      "variants": [
+        {
+          "id": "A09",
+          "title": "전역 precision으로 support 비용을 일관되게 유지하는 VG 학습",
+          "build_target": "correlated active count가 minibatch-profiled beta를 바꾸어 support와 dictionary를 함께 왜곡하는지 확인하고 개선한다.",
+          "method_steps": [
+            "동일 VG network에 (a) current per-minibatch profiled beta, (b) global learned beta, (c) train-only running expected-risk로 갱신하는 detached global beta를 구현한다. 서로 다른 objective/estimator임을 명시한다.",
+            "각 batch의 support-count 편차, expected risk와 beta 변화를 기록한다. Batch size와 correlated-support 조건을 교차해 global beta의 효과를 확인한다.",
+            "선택한 global-beta recipe를 gamma grid 전체에 적용하고, 같은 achieved-L0에서 decoder recovery를 다시 비교한다. 단순 beta initialization 변화와 구별한다."
+          ],
+          "hypothesis": "**active-count 변동이 큰 correlated data에서 global precision은 minibatch profiling보다 support-count fluctuation과 signed feature leakage를 줄이며, 그 차이는 batch가 커질수록 작아진다.**",
+          "minimal_pilot": {
+            "data": "5-feature positive/negative correlation plus independent control; p=.4; 3 worlds, batch sizes64 and512.",
+            "training": "Three precision policies, same initialization and examples; limited gamma controls. Current P2 moment-initialization trials are not new evidence for this hypothesis.",
+            "primary": "Signed recovery, support F1/count MAE; beta/count covariance; boundary/floor hits; paired sample-budget and step-budget results.",
+            "falsifier": "Global precision reduces beta variance but feature recovery does not improve, or large-batch convergence contradicts the proposed coupling mechanism."
+          },
+          "selection": "Beta moments use training data only and no L0 labels. Gamma selection remains an independent issue; this route does not claim unknown-L0 identification.",
+          "risk": "Profiled vs global objectives differ inherently, not just numerical noise. Positive result may be optimization hygiene with limited scientific novelty; noiseless tiny-toy floors can dominate.",
+          "estimate_gpu_hours": 1.1,
+          "prior_work": [
+            {
+              "title": "The Variational Garrote",
+              "url": "https://arxiv.org/abs/1109.0486",
+              "overlap": "Bernoulli mean-field selection, point amplitude, analytic expected quadratic risk and coordinate updates are prior art; the candidate contribution must concern the learned SAE dictionary and feature recovery."
+            },
+            {
+              "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+              "url": "https://proceedings.mlr.press/v238/velychko24a.html",
+              "overlap": "Analytic variational sparse coding, noise profiling, amortization and richer posterior families are known; do not claim these generic principles as new."
+            }
+          ],
+          "so_what": "양성이면 VG support cost의 실제 의미를 안정화하는 저복잡도 recipe다. 음성이면 기존 beta 학습 구조를 유지하고 더 본질적인 support/identifiability 문제에 집중한다.",
+          "novelty_boundary": "Noise profiling/global precision은 선행이다. 새 contribution의 독립 핵심으로 과장하지 말고 VG feature recovery를 좌우하는 설계 요소로 취급한다."
+        }
+      ]
+    },
+    {
+      "id": "S10",
+      "title": "Cross-seed stability selector",
+      "source_ids": [
+        "A10",
+        "B10"
+      ],
+      "variants": [
+        {
+          "id": "A10",
+          "title": "feature 재현성으로 sparsity prior를 고르는 배포 가능한 VG 선택 규칙",
+          "build_target": "true L0와 feature labels가 없는 조건에서 VG operating point를 선택하는 training wrapper.",
+          "method_steps": [
+            "미리 고정한 작은 gamma grid에서 같은 VG를 두 독립 train resample 또는 initialization으로 학습한다. Each grid cell gets the same number of checkpoints.",
+            "Calibration x만 사용하여 decoder matching 안정성, gate co-firing agreement와 nontrivial coverage를 계산한다. Low-activity collapse를 막는 규칙과 fidelity admissibility floor를 source에서 고정한다.",
+            "해당 안정성 규칙으로 gamma/checkpoint를 골라 fresh test의 true recovery와 비교한다. c_dec selector, validation-MSE selector, oracle recovery ceiling을 동일 후보 집합에 적용한다."
+          ],
+          "hypothesis": "**레이블 없이 선택한 VG의 feature 안정성은 validation MSE 또는 c_dec 단독 선택보다 correlation/density shift에서 oracle feature-recovery 선택에 더 가까운 operating point를 고른다.**",
+          "minimal_pilot": {
+            "data": "5-feature±.4/0, p=.2,.4,.6의 일부 사전 지정 transfer cells, 3 worlds. Reuse A01/A02 checkpoints where seeds/splits fit; do not reuse test for selection.",
+            "training": "3–5 gamma values ×2 replicas; final checkpoint first to limit multiplicity. Freeze scalar combination/tie-break rules before seeing target labels.",
+            "primary": "Oracle regret in signed dictionary recovery and support F1; hard-count MAE; leakage of chosen model; collapse/overcomplete wrong-stability rate.",
+            "falsifier": "안정적인 mixed dictionary, identity rotation 또는 dead latents를 반복적으로 선호하거나 c_dec/MSE selection보다 oracle regret를 줄이지 못하면 selector를 기각한다."
+          },
+          "selection": "Deployable selection sees only train/calibration x and model states. Oracle regret and true L0 are evaluation-only. Fidelity floor is an admissibility rule, not the optimized success metric.",
+          "risk": "Stable wrong features are possible, especially under strong correlation or misspecified width. Ensemble cost grows with the grid; the rule adds a selection hyperparameter and does not prove identifiability.",
+          "estimate_gpu_hours": 1.6,
+          "prior_work": [
+            {
+              "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2508.16560v4",
+              "overlap": "Wrong sparsity can favor mixed dictionaries; c_dec selection and high-to-low sparsity scheduling are already discussed. The paper establishes neither general L1 failure nor VG correctness."
+            },
+            {
+              "title": "Toward Identifiable Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2605.31245",
+              "overlap": "SAE instability/identifiability is already studied; prior registry read level is abstract only, so method-level overlap needs follow-up."
+            },
+            {
+              "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2407.14435",
+              "overlap": "Learned thresholds and sparse nonshrinking activations are established. Sparse but Wrong uses an Anthropic-style tanh sparsity implementation; identify that implementation separately from a generic JumpReLU label."
+            }
+          ],
+          "so_what": "양성이면 synthetic oracle의 좋은 VG를 실제 labels 없는 사용으로 연결한다. 음성이면 안정성/c_dec 같은 unsupervised proxy의 한계를 인정하고 deployable selection 해결을 별도 미완료로 남긴다.",
+          "novelty_boundary": "Feature stability라는 일반 진단이 novelty가 아니다. 이 wrapper가 original VG-SAE deployment의 unknown-L0 문제를 실제로 줄이는지가 기여이며 별도 diagnostic-paper로 전환하지 않는다."
+        },
+        {
+          "id": "B10",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "독립 학습 간 feature 재현성으로 VG operating point 고르기",
+          "one_sentence_summary": "True features를 모르는 상황에서 서로 다른 training subsample과 initialization에 반복해서 나타나는 VG atom을 기준으로 gamma를 선택한다.",
+          "what_we_build": [
+            "각 gamma에 두 작은 bootstrap training runs를 학습하고 unit decoder와 held-out activation pattern을 unlabeled Hungarian matching으로 맞춘다.",
+            "사전 정한 reconstruction floor를 만족하는 후보에서 atom 방향과 firing-pattern 재현성을 결합한 고정 기준을 최대화한다; dead 또는 constant atoms는 matching에 따로 처리한다.",
+            "선택 후에만 hidden truth를 열어 feature identity와 signed mixing을 검증하고 c_dec selector 및 oracle upper bound와 비교한다."
+          ],
+          "bold_falsifiable_hypothesis": "**독립 데이터·초기화에서 반복되는 방향과 firing pattern은 VG의 낮은 loss 또는 낮은 c_dec보다 참 feature 복원을 잘 예측하여 unknown-L0 선택의 oracle gap을 줄인다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4, 3 outer paired worlds, 3 gamma values, 2 bootstrap fits each; use all runs for selection cost accounting. Fixed reconstruction floor comes from an unlabeled dense fit and is reported as a hyperparameter.",
+            "positive": "Frozen stability selector improves selected-test signed cosine >=.05 and lowers leakage versus fixed gamma/c_dec in >=2/3 worlds per sign, while retaining coverage; all stability-to-truth correlations are reported.",
+            "negative": "The same mixed dictionary is highly stable, stability favors too few common features, or selection loses rare features despite apparently good matching.",
+            "null": "Runs fail to converge or stable candidates all violate the fixed reconstruction floor; report no selection.",
+            "unlabeled_selection": "Cross-model matching uses no D*, support labels, or true L0. Ground-truth matching occurs only after the operating point is frozen."
+          },
+          "scientific_value_even_if_negative": "Supplies an implementable VG selection layer if it works and a precise stable-but-wrong failure boundary if it does not, without changing the central VG-SAE research into a diagnostic paper.",
+          "risk": {
+            "level": "MEDIUM",
+            "named_failure": "Optimization may consistently converge to the same wrong mixed dictionary; bootstrap agreement is not semantic identification."
+          },
+          "estimated_gpu_hours": 1.2,
+          "estimated_implementation_effort": "1–2 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Toward Identifiable Sparse Autoencoders",
+              "url": "https://arxiv.org/abs/2605.31245",
+              "relation": "Feature stability/identity is a direct neighboring target; only abstract-level scope is verified in supplied literature, so do not claim a stronger theorem comparison."
+            },
+            {
+              "work": "Sparse but Wrong",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "A stable low-MSE mixed dictionary is possible; tests whether a different unlabeled signal adds information."
+            },
+            {
+              "work": "MDL-SAEs",
+              "url": "https://arxiv.org/abs/2410.11179",
+              "relation": "Already frames sparsity as model selection; this is a specific stability criterion requiring later closest-prior checking."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S11",
+      "title": "Correlated support prior",
+      "source_ids": [
+        "B05"
+      ],
+      "variants": [
+        {
+          "id": "B05",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "발화 의존성을 prior에 담는 VG",
+          "one_sentence_summary": "현재 독립 Bernoulli prior를 작은 pairwise support prior로 교체하여 상관을 decoder 혼합으로 대신 설명해야 하는 압력을 줄인다.",
+          "what_we_build": [
+            "J=5의 support prior를 p(s) ∝ exp[-gamma*sum(s)+sum_{i<j} W_ij s_i s_j]로 바꾸고 32-state log partition을 정확히 계산한다.",
+            "Posterior와 amplitude head는 현재 mean-field VG 그대로 두고 W를 unlabeled training data에서 학습한다; true correlation graph는 제공하지 않는다.",
+            "Independent-prior와 pairwise-prior 조건을 같은 initialization에서 비교하고 learned support dependence와 decoder leakage를 따로 기록한다."
+          ],
+          "bold_falsifiable_hypothesis": "**True firing dependence를 support prior가 설명할 수 있으면 같은 hard L0에서 상관된 feature를 섞는 decoder가 덜 선호되어, independent-prior VG보다 signed feature recovery가 높아진다.**",
+          "minimal_pilot": {
+            "design": "Corr 0/±.4, 3 seeds, 2 fixed gamma values; scalar prior vs 10-parameter pairwise prior. One weak fixed W regularization level is preregistered; report that new hyperparameter and width limit.",
+            "positive": "Both correlation signs show reduced leakage with higher identity in >=2/3 seeds, while the independent condition does not lose >.03 signed cosine; comparison is density-matched.",
+            "negative": "W explains away the same mixed representation, reinforces false gate coactivation, or gain disappears after density matching.",
+            "null": "Log partition or W estimates are numerically unstable; explicit 32-state normalization/moment checks must pass before interpretation.",
+            "unlabeled_selection": "No true graph or support goes into W training; knowing the toy hub is for evaluation only. Oracle graph arm, if used, is labeled an oracle upper bound."
+          },
+          "scientific_value_even_if_negative": "Clarifies whether a factorized support prior is an essential mismatch for VG-SAE under correlated features and whether modeling firing dependence can preserve dictionary identity.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "Support correlation estimated from a wrong encoder can be self-confirming; learned correlations might reduce pressure to disentangle rather than increase it."
+          },
+          "estimated_gpu_hours": 1.2,
+          "estimated_implementation_effort": "2–3 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Sparse but Wrong",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "Motivates separating firing dependence from dictionary geometry, but does not establish a correlated-prior solution."
+            },
+            {
+              "work": "The Variational Garrote / structured sparse coding",
+              "url": "https://doi.org/10.1007/s10994-013-5427-7",
+              "relation": "A modification of the prior, not a claim that pairwise binary models or correlated sparse coding are new; specific nearest structured-prior studies need later novelty search."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S12",
+      "title": "Hard-code decoder training",
+      "source_ids": [
+        "B07"
+      ],
+      "variants": [
+        {
+          "id": "B07",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "Native hard code에 맞춰 decoder를 학습하는 VG",
+          "one_sentence_summary": "Gate와 amplitude는 VG free energy로 추정하되 decoder 업데이트는 실제 배포하는 hard code의 재구성 오차로 수행한다.",
+          "what_we_build": [
+            "매 minibatch에서 encoder/gate/amplitude step은 기존 full VG loss를 사용한다.",
+            "Decoder step은 detached native hard code 1[m>.5]*a를 고정하고 hard SSE로 업데이트한 뒤 unit norm을 유지한다.",
+            "원래 joint training과 같은 업데이트 수·비용으로 비교하고 soft-trained dictionary와 hard deployment 사이의 recovery 차이를 측정한다."
+          ],
+          "bold_falsifiable_hypothesis": "**Mean code와 hard code의 차이가 큰 VG 조건에서는 hard-readout에 맞춘 decoder 업데이트가 deployment support 누락을 보상하는 방향 혼합을 줄이고 true-feature identity를 개선한다.**",
+          "minimal_pilot": {
+            "design": "Corr ±.4, 3 seeds, two gamma values with appreciable gate uncertainty chosen from calibration entropy only; current training versus two-block training, plus near-binary gate control.",
+            "positive": "Hard-code decoder training improves signed cosine >=.05, leakage and hard support F1 at matched hard L0; the effect is strongest where mean-hard gap was large.",
+            "negative": "It increases mixing because hard omission strengthens missing-feature pressure, or gains arise only from more optimizer work.",
+            "null": "All gates saturate immediately, removing the proposed mismatch; test a documented uncertainty regime before interpretation.",
+            "objective_honesty": "The block updates use different objectives. Do not claim coordinate descent on the original VG free energy, an ELBO, or guaranteed monotonic descent."
+          },
+          "scientific_value_even_if_negative": "Determines whether the current training-to-inference mismatch is a correctable source of feature error, with a deployable method if positive and an explicit reason to keep expected-risk decoder training if negative.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "Hard omission can strengthen exactly the Sparse but Wrong pressure; separate block objectives can oscillate."
+          },
+          "estimated_gpu_hours": 0.7,
+          "estimated_implementation_effort": "1–2 days",
+          "closest_prior_annotations": [
+            {
+              "work": "Sparse but Wrong",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "Warns that hard omissions can create mixed dictionary optima; this is a falsifiable alternative update, not an assumed cure."
+            },
+            {
+              "work": "Gated SAE",
+              "url": "https://arxiv.org/abs/2404.16014",
+              "relation": "Separate support/amplitude training and auxiliary pathways are nearby; compare the concrete gradient routes."
+            },
+            {
+              "work": "JumpReLU",
+              "url": "https://arxiv.org/abs/2407.14435",
+              "relation": "Direct hard activation training competitor; hard decoding alone cannot be claimed as new."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    },
+    {
+      "id": "S13",
+      "title": "Gate-uncertainty prior selector",
+      "source_ids": [
+        "B09"
+      ],
+      "variants": [
+        {
+          "id": "B09",
+          "generator_model": "gpt-6-astra",
+          "effort": "ultra",
+          "title": "Gate 불확실성으로 prior 강도를 선택하는 VG",
+          "one_sentence_summary": "VG의 entropy와 support sensitivity를 gamma sweep에서 측정하고 feature 회복 구간을 예측하는 unlabeled operating-point 규칙으로 시험한다.",
+          "what_we_build": [
+            "같은 training budget의 짧은 gamma continuation에서 held-out unlabeled gate entropy와 gamma에 대한 gate-mass 변화를 저장한다.",
+            "사전 고정한 규칙으로 plateau 경계 또는 첫 stable low-uncertainty operating point를 고른다; label로 threshold를 조정하지 않는다.",
+            "동일 후보 집합의 c_dec 선택, fixed gamma, oracle-cal recovery와 별도 비교해 correlation/density transfer에서 일반화되는지 본다."
+          ],
+          "bold_falsifiable_hypothesis": "**VG의 support 전이 신호는 단순 c_dec minimum보다 feature recovery가 좋은 operating point를 일관되게 선택하며, 처음 보는 correlation과 density에서도 true L0 없이 작동한다.**",
+          "minimal_pilot": {
+            "design": "Reuse selected B01 checkpoints only if continuation protocol fits; otherwise 7 gamma values x 2 correlations x 3 seeds with a fixed total update budget. Pre-register a single rule before viewing recovery curves: choose the smallest gamma after the dominant decrease of mean gate mass where unlabeled entropy is below a fixed source-defined level and hard SSE remains within a fixed tolerance of the dense source fit.",
+            "positive": "Unlabeled choice stays within .05 signed cosine of oracle-cal selection in at least 2/3 seeds across both signs and outperforms fixed source gamma/c_dec selection without systematically missing true features.",
+            "negative": "The transition identifies confident but mixed/dead features, depends strongly on sweep direction, or does not transfer.",
+            "null": "No stable transition or acceptable-fidelity point exists; report selector abstention, do not silently use the oracle.",
+            "scope": "The fidelity tolerance and entropy threshold are still selection hyperparameters. This is not a hyperparameter-free automatic true-L0 theorem."
+          },
+          "scientific_value_even_if_negative": "Uses a distinctive accessible VG quantity to make the method operable without support labels, while a negative result reveals whether uncertainty is informative or simply confidence in the wrong code.",
+          "risk": {
+            "level": "HIGH",
+            "named_failure": "Low entropy can indicate confident wrong mixing; arbitrary transition rules can smuggle oracle tuning back into selection."
+          },
+          "estimated_gpu_hours": 0.6,
+          "estimated_implementation_effort": "1–2 days",
+          "closest_prior_annotations": [
+            {
+              "work": "VG for Statistical Physics-based Sparse and Robust Variable Selection",
+              "url": "https://arxiv.org/abs/2509.06383",
+              "relation": "Selection-uncertainty/transition signals already proposed for regression; extension to learned SAE dictionaries is the unresolved question."
+            },
+            {
+              "work": "Sparse but Wrong Appendix I",
+              "url": "https://arxiv.org/abs/2508.16560",
+              "relation": "Already investigates c_dec control. Compare selector generalization rather than claiming first sparsity controller."
+            },
+            {
+              "work": "AFA and MDL-SAEs",
+              "url": "https://arxiv.org/abs/2503.24277",
+              "relation": "Competing unlabeled selection philosophies; their remaining tuning choices should be described as fairly as VG thresholds."
+            }
+          ],
+          "contribution_type": "VG-SAE method development",
+          "status": "unranked; untested"
+        }
+      ]
+    }
+  ]
+}

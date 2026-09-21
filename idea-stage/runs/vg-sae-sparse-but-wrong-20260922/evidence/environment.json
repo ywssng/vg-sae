@@ -1,0 +1,22 @@
+{
+  "provider": "local",
+  "python": "3.14.0",
+  "torch": "2.13.0+cu126",
+  "sae_lens": "6.47.0",
+  "cuda_runtime": "12.6",
+  "device": "NVIDIA RTX A6000",
+  "dtype": "float32",
+  "threads": 2,
+  "source_env": "existing project .venv; reused, no dependency changes",
+  "seeded_kernel_witness": {
+    "seed": 19,
+    "shape": [
+      64,
+      32
+    ],
+    "finite": true,
+    "exact_repeat": true,
+    "trace": 2082.1923828125,
+    "physical_gpu": 1
+  }
+}

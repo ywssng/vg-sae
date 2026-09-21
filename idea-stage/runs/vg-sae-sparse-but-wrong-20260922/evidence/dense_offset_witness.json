@@ -1,0 +1,89 @@
+{
+  "status": "Deterministic constructed parameter family, not a fourth trained pilot or evidence that an SGD run used this path.",
+  "recipe": "x=Dz; orthonormal D, z>=0; b=-t D1; W_a=D^T,c_a=0; W_g=0,c_g=4t+4; a=softplus(z+t); m=sigmoid(4t+4).",
+  "ideal_limit": "As t grows, risk tends to0, hardL0 staysJ and supportKL tendsfinite Jsoftplus(gamma). Ideal unclipped profiled/global-optimized precision has no finite lower bound along this family. The implemented PROFILED branch applies loss_eps and stops this asymptote. The GLOBAL LEARNED branch does not clamp energy with loss_eps. Fixed finite beta removes this specific divergence but does not prove sparse recovery.",
+  "finite_check": "All listed points are above the explicit1e-12 numerical floor. Truth decoder stays identical; only bias/amplitude offset and gate confidence change.",
+  "rows": [
+    {
+      "shift": 0.0,
+      "profiled_loss": -6.496626619548036,
+      "fixed_beta10_loss": 22.228184461485906,
+      "mean_energy": 0.7594713125816569,
+      "prior_minus_entropy": 19.28055160151634,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 13.167054284127182,
+      "mean_gate": 0.9820137900379086,
+      "profiled_floor_ratio": 75947131258.16568,
+      "decoder_truth_error": 0.0
+    },
+    {
+      "shift": 1.0,
+      "profiled_loss": -21.867050010379437,
+      "fixed_beta10_loss": 16.9310567188049,
+      "mean_energy": 0.15091853847553183,
+      "prior_minus_entropy": 20.068951599896586,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 66.2609120192433,
+      "mean_gate": 0.9996646498695336,
+      "profiled_floor_ratio": 15091853847.553183,
+      "decoder_truth_error": 0.0
+    },
+    {
+      "shift": 2.0,
+      "profiled_loss": -40.13567570419289,
+      "fixed_beta10_loss": 15.685485533249437,
+      "mean_energy": 0.024233841444295856,
+      "prior_minus_entropy": 20.09022738465348,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 412.6460933973715,
+      "mean_gate": 0.9999938558253978,
+      "profiled_floor_ratio": 2423384144.429586,
+      "decoder_truth_error": 0.0
+    },
+    {
+      "shift": 4.0,
+      "profiled_loss": -79.14277065033889,
+      "fixed_beta10_loss": 15.448570773835652,
+      "mean_energy": 0.0004901657737818441,
+      "prior_minus_entropy": 20.090749381944836,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 20401.261236266273,
+      "mean_gate": 0.9999999979388464,
+      "profiled_floor_ratio": 49016577.378184415,
+      "decoder_truth_error": 0.0
+    },
+    {
+      "shift": 6.0,
+      "profiled_loss": -118.99760209704641,
+      "fixed_beta10_loss": 15.443760463407468,
+      "mean_energy": 9.10897760594421e-06,
+      "prior_minus_entropy": 20.09074963947841,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 1097818.0463935204,
+      "mean_gate": 0.9999999999993088,
+      "profiled_floor_ratio": 910897.7605944211,
+      "decoder_truth_error": 0.0
+    },
+    {
+      "shift": 8.0,
+      "profiled_loss": -158.97760224678112,
+      "fixed_beta10_loss": 15.4436710454495,
+      "mean_energy": 1.6717074935606684e-07,
+      "prior_minus_entropy": 20.09074963958901,
+      "hard_l0": 5.0,
+      "true_l0": 2.3125,
+      "beta_eff": 59819077.43142558,
+      "mean_gate": 0.9999999999999998,
+      "profiled_floor_ratio": 16717.074935606684,
+      "decoder_truth_error": 0.0
+    }
+  ],
+  "no_training": true,
+  "no_test_selection": true,
+  "gpu_hours": 0
+}

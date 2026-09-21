@@ -351,3 +351,68 @@ the paper leaves details open.
   than hardcoded dataset-specific column lists.
 - The paper reports large ensemble averages; this repository provides the core
   functions and small tests, not a full 20,000-ensemble reproduction run.
+
+
+## Sparse but Wrong anchored pilots (2026-09-22)
+
+The reference is Chanin and Garriga-Alonso, *Sparse but Wrong*, arXiv
+2508.16560v4 / ICML 2026. Its direct concern is incorrect L0 and feature
+identity; L1 amplitude shrinkage is a separate motivation supported by Gated
+SAE and related work. The primary reference baselines are BatchTopK and
+Anthropic-style JumpReLU, not an empirical refutation of every L1 method.
+
+The new small toy uses QR-orthonormal directions, five features in 20
+coordinates, independent train/cal/test RNGs, and a Gaussian-copula hub.
+The copula parameter is not the binary firing Pearson correlation. Existing
+Stage-1 dictionary coherence does not introduce correlated support. The
+finite dataset, current pinned SAELens, short budget, bias/normalization
+choices, and QR construction make these paper-inspired pilots rather than
+bitwise reproductions of the original online 15M-sample experiments.
+
+Positive coefficients make sign changes relevant. Primary Hungarian matching
+maximizes signed cosine; absolute matching is secondary. The frozen field
+`mixing_energy` measures energy outside that **signed assignment**, so it can
+include a nearly pure atom with the wrong sign or assignment. It must not be
+interpreted as literal multifeature mixing in every case. Full decoder/truth
+matrices and the separately labeled post-hoc dominant-component decomposition
+help distinguish these errors without changing primary selection or criteria.
+
+`c_dec` is the mean absolute off-diagonal cosine between normalized learned
+atoms. An orthogonal rotation can have c_dec zero without recovering the
+planted dictionary. Reconstruction, c_dec, native hard L0, expected support
+count, dictionary identity and support F1 are therefore reported separately.
+
+The run-local learned-prior subclass retains the prior normalizer; its gamma
+partial derivative is `sum_j mean(m_j) - J*sigmoid(-gamma)`. This is a
+self-consistency equation, not a true-density guarantee. The bounded pilot
+uses explicit gamma projection to [-8,8] and records boundary events. Large
+final gamma gradients mean its unsuccessful finite-budget recipe cannot be
+presented as convergence to an incorrect empirical-Bayes fixed point.
+
+The joint-support pilot freezes beta at 10 for every arm. It compares the
+amortized product family, a three-start coordinate product solver, and exact
+32-state enumeration. For nonconverged product samples, all data are retained
+and the detached terminal distribution supplies a fixed-q partial gradient;
+only converged cases receive the envelope-gradient interpretation. Joint MAP
+and marginal-threshold readouts are separated. Same-gamma total effects and
+L0-controlled comparisons answer different questions; matching mean L0 alone
+does not identify a unique direct covariance mechanism.
+
+The shared toy utilities and run-local losses have deterministic numerical
+checks under `tests/test_sbw_*.py`. Pilot protocols and reference/version
+limits are recorded in `idea-stage/runs/vg-sae-sparse-but-wrong-20260922/`.
+The core VG public API and configuration meanings are not changed by these
+experimental runners.
+
+
+A separate deterministic dense-offset witness keeps an orthonormal true D fixed
+while changing `b=-t D1`, `a=softplus(z+t)` and constant gates toward one. Risk
+vanishes and native hard L0 remains dense. Ideal unclipped profiled precision,
+or globally optimized unconstrained precision, can lower the loss without a
+finite bound along this family. Only the implemented **profiled** branch clamps
+its energy/log term with `loss_eps`; the global learned-beta branch does not
+use that energy floor. Fixed finite beta supplies a Gaussian-constant lower
+bound but does not remove the dense parameter family or guarantee recovery.
+This constructed check is not evidence that an SGD trajectory followed that
+path. Details and numerical checks are in the current run's dense-offset
+witness and `tests/test_sbw_dense_offset.py`.

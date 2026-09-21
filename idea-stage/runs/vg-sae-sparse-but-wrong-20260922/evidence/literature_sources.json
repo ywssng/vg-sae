@@ -1,0 +1,1596 @@
+{
+  "schema_version": "1.2",
+  "date": "2026-09-22",
+  "scope": "Sparse but Wrong anchored VG-SAE development: true-feature recovery and robustness to unknown/misspecified sparsity; literature update only, no novelty verdict.",
+  "inherited_from": "idea-stage/runs/vg-sae-development-20260921/evidence/literature_sources.json",
+  "inherited_source_count": 32,
+  "new_source_count": 3,
+  "source_count": 35,
+  "authors_verified_count": 34,
+  "dedup_policy": "Normalize DOI case/arXiv versions; mechanically union canonical IDs and aliases, then normalized titles; retain stable inherited canonical IDs. DOI publisher records are aliases to inherited arXiv entries.",
+  "dedup_audit": {
+    "input_entries": 35,
+    "output_entries": 35,
+    "merged": []
+  },
+  "primary_query_trace": "literature_queries.json",
+  "inherited_overlap_scope_note": "Historical overlap/reviewer records do not validate the new anchor. Per-source sparse_but_wrong_comparison_20260922 governs this run. No past review score reused.",
+  "recent_six_month_search": {
+    "from": "2026-03-22",
+    "through": "2026-09-22",
+    "engine": "arxiv_fetch.py plus primary-source web search",
+    "api_calls_succeeded": 2,
+    "scope_note": "VG inverse first posted March 13 is outside exact six-month window but retained as direct prior art."
+  },
+  "papers": [
+    {
+      "canonical_id": "arxiv:2509.06383",
+      "aliases": [
+        "arxiv:2509.06383"
+      ],
+      "title": "Variational Garrote for Statistical Physics-based Sparse and Robust Variable Selection",
+      "authors": [
+        "Soh, Hyungjoon",
+        "Lee, Dongha",
+        "Periwal, Vipul",
+        "Jo, Junghyo"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2509.06383 citation_author metadata on 2026-09-22",
+      "first_posted": "2025-09-08",
+      "year": 2025,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2509.06383"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "자동미분 VG와 sparsity 선택에서 generalization·selector uncertainty의 전이를 조사.",
+      "overlap": "entropy 전이로 올바른 변수 수를 찾는 일반 발상은 이미 제안됨.",
+      "query": "variational garrote sparse autoencoder",
+      "read_level": "primary arXiv HTML §II and abstract checked 2026-09-21",
+      "development_comparison_20260921": "Original regression VG mechanism is prior art; learned dictionary, per-example amplitudes and amortized gates are the SAE extension to validate.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "method_foundation",
+        "assessment": "Autodifferentiated VG and support-uncertainty transition in regression. Fixed gamma remains a selection prior; transfer of the transition to a learned overcomplete SAE is unverified.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Variational Garrote for Statistical Physics-based Sparse and Robust Variable Selection",
+      "latest_arxiv_date": "2025-09-08",
+      "verification_scope_20260922": "local PDF pages 1-3; official metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2603.12562",
+      "aliases": [
+        "arxiv:2603.12562",
+        "doi:10.1016/j.jocs.2026.102980"
+      ],
+      "title": "Variational Garrote for Sparse Inverse Problems",
+      "authors": [
+        "Lee, Kanghun",
+        "Soh, Hyungjoon",
+        "Jo, Junghyo"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2603.12562 citation_author metadata on 2026-09-22",
+      "first_posted": "2026-03-13",
+      "year": 2026,
+      "venue": "Journal of Computational Science 100, 102980; print issue dated October 2026",
+      "publication_status": "journal_record_verified_print_issue_future",
+      "urls": [
+        "https://arxiv.org/abs/2603.12562",
+        "https://doi.org/10.1016/j.jocs.2026.102980",
+        "https://api.crossref.org/works/10.1016/j.jocs.2026.102980"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "고정 inverse-problem transform에서 VG와 sparsity prior의 alignment를 비교.",
+      "overlap": "VG의 sparse recovery 및 shrinkage 관련 우위 자체는 새 주장이 아님.",
+      "query": "Variational Garrote Sparse Inverse Problems",
+      "read_level": "official abstract and HTML opened; exact optimization details not re-audited",
+      "development_comparison_20260921": "Fixed inverse-problem transform is distinct from learned SAE dictionary; sparse-prior alignment remains relevant.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "method_foundation",
+        "assessment": "VG on fixed transforms/forward operators; §2.4 and §3 explicitly sweep gamma and report minimum generalization error. Does not establish unknown-L0 learned-dictionary recovery.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Variational Garrote for Sparse Inverse Problems",
+      "latest_arxiv_date": "2026-03-13",
+      "verification_scope_20260922": "arXiv v1 HTML §2.4 and §3 including gamma sweeps; Crossref DOI metadata and publisher search extraction",
+      "evidence_status": "primary_verified_partial_method",
+      "doi": "10.1016/j.jocs.2026.102980",
+      "publication_date_note": "Crossref record created 2026-07-22; print date 2026-10; online publication date not supplied. Do not claim a verified online date."
+    },
+    {
+      "canonical_id": "arxiv:2508.16560",
+      "aliases": [
+        "arxiv:2508.16560"
+      ],
+      "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+      "authors": [
+        "Chanin, David",
+        "Garriga-Alonso, Adrià"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2508.16560 citation_author metadata on 2026-09-19",
+      "first_posted": "2025-08-22",
+      "year": 2026,
+      "venue": "ICML 2026; local v4 header says PMLR 306, proceedings index not independently available",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2508.16560",
+        "https://icml.cc/virtual/2026/poster/63049"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "잘못된 L0가 feature mixing을 유도하며 적정 L0 탐색용 proxy를 제안.",
+      "overlap": "자동 L0 선택·ground-truth 없는 sparsity 진단의 직접 경쟁자.",
+      "query": "Sparse but Wrong",
+      "read_level": "local PDF first page in prior shard; official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "problem_anchor",
+        "assessment": "Incorrect L0 can favor feature mixing in correlated/anticorrelated firing settings. This motivates recovery and sparsity-misspecification robustness; it does not prove that VG solves the issue. c_dec is pairwise decoder cosine, not an input projection.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "Current reference-paper shard: local v4 and official ICML poster; close reading is in separate REF_PAPER_SUMMARY.md.",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2602.14687",
+      "aliases": [
+        "arxiv:2602.14687"
+      ],
+      "title": "SynthSAEBench: Evaluating Sparse Autoencoders on Scalable Realistic Synthetic Data",
+      "authors": [
+        "Chanin, David",
+        "Garriga-Alonso, Adrià"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2602.14687 citation_author metadata on 2026-09-19",
+      "first_posted": "2026-02-16",
+      "year": 2026,
+      "venue": "ICML 2026 Mechanistic Interpretability Workshop (local PDF header)",
+      "publication_status": "workshop_paper",
+      "urls": [
+        "https://arxiv.org/abs/2602.14687"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "correlation·hierarchy·superposition과 ground-truth features/firings를 제공하는 synthetic SAE benchmark.",
+      "overlap": "재구성 개선과 feature 회복을 분리해야 하며 pursuit의 noise fitting도 이미 지적.",
+      "query": "SynthSAEBench",
+      "read_level": "local PDF first 3 pages in prior shard; official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "evaluation",
+        "assessment": "Synthetic ground truth with realistic properties is an evaluation resource; its chosen latent distribution is a modeled world, not ground truth for all LLM activations.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2505.11756",
+      "aliases": [
+        "arxiv:2505.11756"
+      ],
+      "title": "Feature Hedging: Correlated Features Break Narrow Sparse Autoencoders",
+      "authors": [
+        "Chanin, David",
+        "Dulka, Tomáš",
+        "Garriga-Alonso, Adrià"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2505.11756 citation_author metadata on 2026-09-22",
+      "first_posted": "2025-05-16",
+      "year": 2025,
+      "venue": "Mechanistic Interpretability Workshop at NeurIPS 2025",
+      "publication_status": "workshop_paper",
+      "urls": [
+        "https://arxiv.org/abs/2505.11756",
+        "https://openreview.net/pdf?id=wg0TxhOKLg"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "좁은 dictionary와 상관된 features에서 reconstruction loss가 feature mixing을 유도하는 hedging을 분석.",
+      "overlap": "폭에 따른 feature 오류·coherence 문제는 알려짐. Bernoulli prior-matched replication과는 다른 원인.",
+      "query": "Feature Hedging",
+      "read_level": "official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "failure_mechanism",
+        "assessment": "MSE can mix correlated features when dictionary width misses underlying features. L1 removal or support gating alone need not remove this reconstruction pressure.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Feature Hedging: Correlated Features Break Narrow Sparse Autoencoders",
+      "latest_arxiv_date": "2025-09-26",
+      "verification_scope_20260922": "arXiv v2 introduction, §3/5 and appendix; indexed author-named workshop PDF",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2509.22994",
+      "aliases": [
+        "arxiv:2509.22994"
+      ],
+      "title": "Analysis of Variational Sparse Autoencoders",
+      "authors": [
+        "Baker, Zachary",
+        "Li, Yuxiao"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2509.22994 citation_author metadata on 2026-09-19",
+      "first_posted": "2025-09-26",
+      "year": 2025,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2509.22994"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "Gaussian posterior·KL을 추가한 TopK vSAE가 주요 SAE 지표에서 baseline보다 낮다고 보고.",
+      "overlap": "variational SAE 최초·확률화가 자동으로 해석가능성을 높인다는 주장 배제.",
+      "query": "sparse autoencoder variational Bayesian Bernoulli",
+      "read_level": "full HTML §2.2 equations and §3 training settings checked 2026-09-21",
+      "development_comparison_20260921": "Gaussian unit-variance latent then TopK and Gaussian KL; not Bernoulli support with deterministic amplitude. Negative outcomes are not general VG-SAE failure evidence.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "Variational SAE analysis predates this implementation. Scope/assumptions must be checked before transferring any recovery or posterior claim to point-amplitude VG.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2602.02948",
+      "aliases": [
+        "arxiv:2602.02948"
+      ],
+      "title": "Variational Sparse Paired Autoencoders (vsPAIR) for Inverse Problems and Uncertainty Quantification",
+      "authors": [
+        "Solomon, Jack Michael",
+        "Leburu, Rishi",
+        "Chung, Matthias"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2602.02948 citation_author metadata on 2026-09-19",
+      "first_posted": "2026-02-03",
+      "year": 2026,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2602.02948"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "observation VAE와 sparse QoI VAE를 연결하여 inverse problem 및 uncertainty를 평가.",
+      "overlap": "sparse variational autoencoder와 uncertainty 자체는 알려짐. LLM support calibration은 다른 대상.",
+      "query": "variational sparse autoencoder uncertainty",
+      "read_level": "HTML §2.2 Eqs 5-11, §3.1, experimental overview and Appendix B checked 2026-09-21",
+      "development_comparison_20260921": "Bernoulli spike + Gaussian slab and weighted slab KL, hard-concrete and Beta hyperprior; paired nonlinear inverse problem architecture. Explicit point amplitude and exact linear expected risk differ.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "adjacent_inverse_problem",
+        "assessment": "Uncertainty for paired inverse-problem autoencoders is adjacent; it is not verified evidence for semantic feature recovery in a learned overcomplete SAE.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2605.18229",
+      "aliases": [
+        "arxiv:2605.18229"
+      ],
+      "title": "Are Sparse Autoencoder Benchmarks Reliable?",
+      "authors": [
+        "Chanin, David"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2605.18229 citation_author metadata on 2026-09-22",
+      "first_posted": "2026-05-18",
+      "year": 2026,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2605.18229"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "SAE benchmark의 재시드 잡음, synthetic ground-truth 정합성, training-trajectory 분별력을 감사.",
+      "overlap": "작은 실험 차이를 단일 실세계 점수로 확정할 수 없음; benchmark 비판 자체도 선행 존재.",
+      "query": "sparse autoencoder after:2026-03-19 before:2026-09-20",
+      "read_level": "official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "evaluation_caution",
+        "assessment": "Benchmark reliability is directly relevant to distinguishing true synthetic recovery from proxy scores; only previously recorded abstract-level coverage is reused.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Are Sparse Autoencoder Benchmarks Reliable?",
+      "latest_arxiv_date": "2026-05-18",
+      "verification_scope_20260922": "inherited primary-source record; current annotation only; current official arXiv metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "doi:10.52202/079017-0024",
+      "aliases": [
+        "arxiv:2404.16014",
+        "neurips:2024:01772a8b0420baec00c4d59fe2fbace6"
+      ],
+      "title": "Improving Sparse Decomposition of Language Model Activations with Gated Sparse Autoencoders",
+      "authors": [
+        "Rajamanoharan, Senthooran",
+        "Conmy, Arthur",
+        "Smith, Lewis",
+        "Lieberum, Tom",
+        "Varma, Vikrant",
+        "Kramár, János",
+        "Shah, Rohin",
+        "Nanda, Neel"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2404.16014 citation_author metadata on 2026-09-22",
+      "first_posted": "2024-04-24",
+      "year": 2024,
+      "venue": "NeurIPS 2024",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2404.16014",
+        "https://proceedings.neurips.cc/paper_files/paper/2024/hash/01772a8b0420baec00c4d59fe2fbace6-Abstract-Conference.html"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint",
+        "primary_proceedings"
+      ],
+      "contribution": "gate selection과 magnitude estimation을 분리하여 L1 shrinkage를 줄이는 Gated SAE.",
+      "overlap": "support/amplitude 분리·shrinkage 제거 최초 주장은 불가. 필수 deterministic baseline.",
+      "query": "Improving Dictionary Learning Gated Sparse Autoencoders",
+      "read_level": "HTML method, §4, Appendix D checked 2026-09-21",
+      "alias_titles": [
+        "Improving Dictionary Learning with Gated Sparse Autoencoders"
+      ],
+      "development_comparison_20260921": "Deterministic support/magnitude separation and shrinkage reduction already established; required baseline for a VG-specific benefit.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "direct_baseline",
+        "assessment": "Gated SAE already separates support decision from amplitude and mitigates L1 shrinkage. A fixed gate penalty still requires model selection; this separation alone is not a new VG contribution.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Improving Dictionary Learning with Gated Sparse Autoencoders",
+      "latest_arxiv_date": "2024-04-30",
+      "verification_scope_20260922": "inherited primary-source record; current annotation only; current official arXiv metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2407.14435",
+      "aliases": [
+        "arxiv:2407.14435"
+      ],
+      "title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+      "authors": [
+        "Rajamanoharan, Senthooran",
+        "Lieberum, Tom",
+        "Sonnerat, Nicolas",
+        "Conmy, Arthur",
+        "Varma, Vikrant",
+        "Kramár, János",
+        "Nanda, Neel"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2407.14435 citation_author metadata on 2026-09-22",
+      "first_posted": "2024-07-19",
+      "year": 2024,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2407.14435"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "JumpReLU와 straight-through estimators로 실제 L0와 reconstruction을 최적화.",
+      "overlap": "경성 sparse inference와 낮은 shrinkage의 직접 비교군.",
+      "query": "Jumping Ahead JumpReLU",
+      "read_level": "HTML method, §5 and selected training details checked 2026-09-21",
+      "development_comparison_20260921": "Direct hard L0 and learned thresholds with STE; required matched-hard-L0 baseline.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "direct_baseline",
+        "assessment": "JumpReLU with L0 loss avoids direct L1 amplitude penalty but still uses sparsity strength and learned thresholds. Anthropic tanh/pre-act variant is a separate source and objective.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Jumping Ahead: Improving Reconstruction Fidelity with JumpReLU Sparse Autoencoders",
+      "latest_arxiv_date": "2024-08-01",
+      "verification_scope_20260922": "inherited primary-source record; current annotation only; current official arXiv metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2406.04093",
+      "aliases": [
+        "arxiv:2406.04093"
+      ],
+      "title": "Scaling and evaluating sparse autoencoders",
+      "authors": [
+        "Gao, Leo",
+        "la Tour, Tom Dupré",
+        "Tillman, Henk",
+        "Goh, Gabriel",
+        "Troll, Rajan",
+        "Radford, Alec",
+        "Sutskever, Ilya",
+        "Leike, Jan",
+        "Wu, Jeffrey"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2406.04093 citation_author metadata on 2026-09-22",
+      "first_posted": "2024-06-06",
+      "year": 2025,
+      "venue": "ICLR 2025",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2406.04093",
+        "https://proceedings.iclr.cc/paper_files/paper/2025/hash/42ef3308c230942d223c411adf182c88-Abstract-Conference.html"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "TopK SAE로 sparsity를 직접 제어하고 규모와 feature-quality 평가를 확장.",
+      "overlap": "고정 K 및 sparsity-matched evaluation 기준선.",
+      "query": "Scaling and evaluating sparse autoencoders",
+      "read_level": "HTML method, introduction and Appendix B checked 2026-09-21",
+      "development_comparison_20260921": "Per-input TopK MSE with AuxK; exact sparsity budget and low shrinkage are prior art.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "direct_baseline",
+        "assessment": "TopK supplies a user-chosen per-input budget; reconstruction or auxiliary feature quality scores do not determine the true unknown count.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Scaling and evaluating sparse autoencoders",
+      "latest_arxiv_date": "2024-06-06",
+      "verification_scope_20260922": "ICLR 2025 official proceedings metadata/abstract; previous method read reused",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2412.06410",
+      "aliases": [
+        "arxiv:2412.06410"
+      ],
+      "title": "BatchTopK Sparse Autoencoders",
+      "authors": [
+        "Bussmann, Bart",
+        "Leask, Patrick",
+        "Nanda, Neel"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2412.06410 citation_author metadata on 2026-09-22",
+      "first_posted": "2024-12-09",
+      "year": 2024,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2412.06410"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "batch 수준 TopK budget으로 입력마다 다른 활성 수를 허용.",
+      "overlap": "입력별 adaptive sparsity나 평균 budget만으로는 신규성 부족.",
+      "query": "BatchTopK Sparse Autoencoders",
+      "read_level": "HTML full short paper including Eq 6-7 and training appendix checked 2026-09-21",
+      "development_comparison_20260921": "Batch Bk budget, threshold inference, MSE+AuxK; adaptive per-input L0 is not itself VG novelty.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "direct_baseline",
+        "assessment": "BatchTopK allows input-dependent counts under an average prescribed budget. Allocation flexibility does not identify the correct budget.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "BatchTopK Sparse Autoencoders",
+      "latest_arxiv_date": "2024-12-09",
+      "verification_scope_20260922": "inherited primary-source record; current annotation only; current official arXiv metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2411.13117",
+      "aliases": [
+        "arxiv:2411.13117"
+      ],
+      "title": "Compute Optimal Inference and Provable Amortisation Gap in Sparse Autoencoders",
+      "authors": [
+        "O'Neill, Charles",
+        "Gumran, Alim",
+        "Klindt, David"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2411.13117 citation_author metadata on 2026-09-19",
+      "first_posted": "2024-11-20",
+      "year": 2025,
+      "venue": "ICML 2025, PMLR 267:46877–46896",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2411.13117",
+        "https://proceedings.mlr.press/v267/o-neill25a.html"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_publisher_or_proceedings"
+      ],
+      "contribution": "SAE encoder의 sparse-inference 한계를 증명하고 fixed dictionary 및 inference-time optimization을 비교.",
+      "overlap": "B07의 일반적 amortization-gap 발견과 iterative rescue를 이미 다룸. VG의 fixed-objective gate-only direction test만 남음.",
+      "query": "sparse autoencoder amortization gap",
+      "read_level": "official abstract; conference page; searched paper introduction",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "inference_neighbor",
+        "assessment": "Amortization can change recovery at the same dictionary/objective. A gate correction must be distinguished from changes in the target objective and selection rule.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:1408.0464",
+      "aliases": [
+        "arxiv:1408.0464"
+      ],
+      "title": "Decoupling shrinkage and selection in Bayesian linear models: a posterior summary perspective",
+      "authors": [
+        "Hahn, P. Richard",
+        "Carvalho, Carlos M."
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/1408.0464 citation_author metadata on 2026-09-19",
+      "first_posted": "2014-08-03",
+      "year": 2014,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/1408.0464"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "posterior를 계산한 뒤 sparsity와 predictive loss를 별도의 decision 문제로 다루는 DSS.",
+      "overlap": "B02의 posterior mean sparse projection 또는 Bayes sparse action 원리 자체는 선행.",
+      "query": "Decoupling Shrinkage and Selection Bayesian Linear Models",
+      "read_level": "official full HTML sections 1–2",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "selection_background",
+        "assessment": "Bayesian shrinkage-selection separation is known; posterior summarization in regression does not establish recovery for an amortized learned dictionary.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:1807.08336",
+      "aliases": [
+        "arxiv:1807.08336"
+      ],
+      "title": "The Median Probability Model and Correlated Variables",
+      "authors": [
+        "Barbieri, Marilena",
+        "Berger, James O.",
+        "George, Edward I.",
+        "Rockova, Veronika"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/1807.08336 citation_author metadata on 2026-09-19",
+      "first_posted": "2018-07-22",
+      "year": 2021,
+      "venue": "Bayesian Analysis 16:1085–1112",
+      "publication_status": "peer_reviewed_journal",
+      "urls": [
+        "https://arxiv.org/abs/1807.08336",
+        "https://doi.org/10.1214/20-BA1249"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_publisher_or_proceedings"
+      ],
+      "contribution": "0.5 inclusion threshold의 예측 최적성이 성립하는 prior·correlation 조건을 분석.",
+      "overlap": "m>0.5가 일반 dictionary에서 squared-loss 최적 action이 아니라는 일반 원리는 알려짐.",
+      "query": "spike and slab posterior mean median probability model",
+      "read_level": "official arXiv abstract; author-hosted PDF search extraction",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "selection_background",
+        "assessment": "Correlated-variable model selection cautions against automatically treating marginal inclusion threshold 0.5 as a universally correct joint-support decision.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2605.06610",
+      "aliases": [
+        "arxiv:2605.06610"
+      ],
+      "title": "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders",
+      "authors": [
+        "Stępień, Jakub",
+        "Mazur, Marcin",
+        "Tabor, Jacek",
+        "Spurek, Przemysław"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2605.06610 citation_author metadata on 2026-09-22",
+      "first_posted": "2026-05-07",
+      "year": 2026,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2605.06610"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "differentiable Soft TopK와 input-dependent k를 학습하고 마지막 hard TopK 단계로 안정화.",
+      "overlap": "§3은 작은 비영 gate가 정보를 숨겨 sparsity 제약을 우회하는 현상을 명시. soft/hard gap 존재만으로 novelty 불가.",
+      "query": "SoftSAE; sparse autoencoder hardening probabilistic",
+      "read_level": "official HTML abstract, related work, full method §3",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "adaptive_baseline",
+        "assessment": "Input-dependent k predictor plus differentiable selection is direct prior art. §3 and Appendix E still specify target K, k_max=2k and k-loss, so it does not eliminate unknown overall sparsity selection.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "SoftSAE: Dynamic Top-K Selection for Adaptive Sparse Autoencoders",
+      "latest_arxiv_date": "2026-05-08",
+      "verification_scope_20260922": "arXiv v1 §3, limitations, Appendix E/F",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2609.10299",
+      "aliases": [
+        "arxiv:2609.10299"
+      ],
+      "title": "A Dominant Diffuse Phase in the Sparse Autoencoder Phase Diagram",
+      "authors": [
+        "Plascencia, Alexis D."
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2609.10299 citation_author metadata on 2026-09-22",
+      "first_posted": "2026-09-09",
+      "year": 2026,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2609.10299"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "vanilla ReLU+L1 synthetic protocol에서 높은 재구성·낮은 feature alignment·조밀한 codes의 diffuse regime를 보고.",
+      "overlap": "학습된 SAE와 objective minimizer의 phase 차이·diffuse representation 일반 발견은 이미 동시작업. VG mechanism은 다름.",
+      "query": "arXiv date-range search 20260319–20260919",
+      "read_level": "official HTML abstract, introduction, related work, protocol",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "optimization_caution",
+        "assessment": "Abstract reports diffuse trained SAE solutions despite good reconstruction. Distinguishes optimizer outcomes from objective minima; no independently reproduced results or VG-specific conclusion.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "A Dominant Diffuse Phase in the Sparse Autoencoder Phase Diagram",
+      "latest_arxiv_date": "2026-09-09",
+      "verification_scope_20260922": "official abstract only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2605.31245",
+      "aliases": [
+        "arxiv:2605.31245"
+      ],
+      "title": "Toward Identifiable Sparse Autoencoders",
+      "authors": [
+        "Nelson, Walter",
+        "Karaletsos, Theofanis",
+        "Locatello, Francesco"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2605.31245 citation_author metadata on 2026-09-22",
+      "first_posted": "2026-05-29",
+      "year": 2026,
+      "venue": "ICML 2026 per official arXiv author comment; independent venue page not retrieved",
+      "publication_status": "conference_claim_primary_author_metadata",
+      "urls": [
+        "https://arxiv.org/abs/2605.31245",
+        "https://openreview.net/forum?id=miLK9YcxtA"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "SAE 불안정성과 식별가능성을 분석하고 TopK architecture/training의 작은 수정으로 iSAE 제안.",
+      "overlap": "feature permutation·dictionary stability 문제는 독립 문헌이며 B05 group calibration과 구분해야 함.",
+      "query": "arXiv date-range search 20260319–20260919",
+      "read_level": "official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "recovery_neighbor",
+        "assessment": "Abstract reports more stable TopK dictionaries and approximate restricted-isometry/near-identifiable codes. Full assumptions and unknown-L0 scope remain unread; stability is not automatically true-feature correctness.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "Toward Identifiable Sparse Autoencoders",
+      "latest_arxiv_date": "2026-05-29",
+      "verification_scope_20260922": "official abstract and ICML author comment; full body not read",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2605.05341",
+      "aliases": [
+        "arxiv:2605.05341"
+      ],
+      "title": "Feature Starvation as Geometric Instability in Sparse Autoencoders",
+      "authors": [
+        "Chaudhry, Faris",
+        "Yano, Keisuke",
+        "Monod, Anthea"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2605.05341 citation_author metadata on 2026-09-19",
+      "first_posted": "2026-05-06",
+      "year": 2026,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2605.05341"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "L1 sparse map의 기하학적 불안정성을 지적하고 adaptive elastic-net SAE를 제안.",
+      "overlap": "amortized encoder의 instability·feature starvation·shrinkage 처방은 최근 직접 경쟁.",
+      "query": "arXiv date-range search 20260319–20260919",
+      "read_level": "official abstract",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "optimization_neighbor",
+        "assessment": "Geometric feature-starvation analysis is relevant to missed features and optimizer failure; no direct proof for fixed-gamma VG or unknown-L0 recovery was verified.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2604.14925",
+      "aliases": [
+        "arxiv:2604.14925"
+      ],
+      "title": "Improving Sparse Autoencoder with Dynamic Attention",
+      "authors": [
+        "Wang, Dongsheng",
+        "Zhang, Jinsen",
+        "Su, Dawei",
+        "Huang, Hui"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2604.14925 citation_author metadata on 2026-09-19",
+      "first_posted": "2026-04-16",
+      "year": 2026,
+      "venue": "CVPR 2026:41996–42006",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2604.14925",
+        "https://openaccess.thecvf.com/content/CVPR2026/html/Wang_Improving_Sparse_Autoencoder_with_Dynamic_Attention_CVPR_2026_paper.html"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_publisher_or_proceedings"
+      ],
+      "contribution": "sparsemax cross-attention으로 input-dependent activation 수를 결정.",
+      "overlap": "B10의 adaptive sparsity 효과는 BatchTopK·SoftSAE 외 이 계열과도 비교 필요.",
+      "query": "sparse autoencoder after:2026-03-19 before:2026-09-20 inference sparsity",
+      "read_level": "official arXiv abstract; official CVPR bibliographic search result",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "architecture_neighbor",
+        "assessment": "Dynamic attention is an alternative encoder/capacity mechanism, not evidence that fixed-gamma support selection recovers true features. Preserve as adjacent reference.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2606.14990",
+      "aliases": [
+        "arxiv:2606.14990"
+      ],
+      "title": "Rational Sparse Autoencoder",
+      "authors": [
+        "Yin, Naiyu",
+        "Yu, Yue"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2606.14990 citation_author metadata on 2026-09-19",
+      "first_posted": "2026-06-12",
+      "year": 2026,
+      "venue": "ICML 2026 Mechanistic Interpretability Workshop",
+      "publication_status": "workshop_paper",
+      "urls": [
+        "https://arxiv.org/abs/2606.14990"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "pretrained SAE의 fixed activation을 trainable rational function으로 바꾸어 fine-tune.",
+      "overlap": "일반 encoder expressivity 향상은 활발한 경쟁. VG probability 해석은 별도.",
+      "query": "sparse autoencoder after:2026-03-19 before:2026-09-20 inference sparsity",
+      "read_level": "official abstract and acceptance comment",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "architecture_neighbor",
+        "assessment": "Rational activation is a recent adaptive mechanism; abstract-only status remains. Do not infer that activation adaptivity supplies the true sparsity level.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2503.09532",
+      "aliases": [
+        "arxiv:2503.09532"
+      ],
+      "title": "SAEBench: A Comprehensive Benchmark for Sparse Autoencoders in Language Model Interpretability",
+      "authors": [
+        "Karvonen, Adam",
+        "Rager, Can",
+        "Lin, Johnny",
+        "Tigges, Curt",
+        "Bloom, Joseph",
+        "Chanin, David",
+        "Lau, Yeu-Tong",
+        "Farrell, Eoin",
+        "McDougall, Callum",
+        "Ayonrinde, Kola",
+        "Till, Demian",
+        "Wearden, Matthew",
+        "Conmy, Arthur",
+        "Marks, Samuel",
+        "Nanda, Neel"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2503.09532 citation_author metadata on 2026-09-19",
+      "first_posted": "2025-03-12",
+      "year": 2025,
+      "venue": "arXiv preprint; venue not independently verified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2503.09532"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_preprint"
+      ],
+      "contribution": "여러 SAE architecture를 다양한 interpretability·disentanglement·downstream 지표로 비교하는 평가 suite.",
+      "overlap": "reconstruction proxy와 실제 feature utility의 불일치를 이미 다룸.",
+      "query": "SAEBench A Comprehensive Benchmark arxiv",
+      "read_level": "official current abstract and citation-author metadata",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "evaluation",
+        "assessment": "Multiple feature utility metrics supplement reconstruction. None of the observed benchmark scores is assumed to be guaranteed latent ground truth.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2311.01888",
+      "aliases": [
+        "arxiv:2311.01888"
+      ],
+      "title": "Learning Sparse Codes with Entropy-Based ELBOs",
+      "authors": [
+        "Velychko, Dmytro",
+        "Damm, Simon",
+        "Fischer, Asja",
+        "Lücke, Jörg"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2311.01888 citation_author metadata on 2026-09-19",
+      "first_posted": "2023-11-03",
+      "year": 2024,
+      "venue": "AISTATS 2024, PMLR 238:2089–2097",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2311.01888",
+        "https://proceedings.mlr.press/v238/velychko24a.html"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_publisher_or_proceedings"
+      ],
+      "contribution": "sparse coding의 analytic entropy-based ELBO와 correlated/amortized posterior approximations를 분석.",
+      "overlap": "analytic variational sparse coding·correlated posterior·annealing 자체는 알려짐.",
+      "query": "sparse coding variational amortized 2024 2025 2026",
+      "read_level": "HTML §§1-4, Appendix B.2 and D.3 checked 2026-09-21",
+      "development_comparison_20260921": "Laplace prior + Gaussian posterior, analytic ELBO, noise profiling and amortization already known. VG Bernoulli support plus point amplitude is a narrower distinction.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "Analytic sparse-coding ELBO, entropy and noise optimization are prior art. Laplace/Gaussian posterior setup differs from VG Bernoulli support with input-dependent point amplitude.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "PMLR metadata refreshed; prior §1-4 and appendices read reused",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "doi:10.1007/s10994-013-5427-7",
+      "aliases": [
+        "arxiv:1109.0486"
+      ],
+      "title": "The Variational Garrote",
+      "authors": [
+        "Kappen, Hilbert J.",
+        "Gómez, Vicenç"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/1109.0486 citation_author metadata on 2026-09-22",
+      "first_posted": "2011-09-02",
+      "year": 2014,
+      "venue": "Machine Learning 96:269–294",
+      "publication_status": "peer_reviewed_journal",
+      "urls": [
+        "https://arxiv.org/abs/1109.0486",
+        "https://doi.org/10.1007/s10994-013-5427-7"
+      ],
+      "source_type": [
+        "primary_arxiv_metadata",
+        "primary_publisher_or_proceedings"
+      ],
+      "contribution": "Mean-field binary selection과 point-estimated coefficients를 결합한 원래 Variational Garrote.",
+      "overlap": "VG objective, coordinate inference, support/amplitude 분리의 직접 선행. 학습 dictionary SAE의 현상은 범위 밖.",
+      "query": "The variational garrote Kappen",
+      "read_level": "publisher abstract and selected body; arXiv metadata",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "method_foundation",
+        "assessment": "Original VG already uses variational binary support and point coefficients. Regression variable selection does not automatically transfer to identifying learned decoder features at unknown L0.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "metadata_verification_date": "2026-09-22",
+      "arxiv_title": "The Variational Garrote",
+      "latest_arxiv_date": "2012-11-12",
+      "verification_scope_20260922": "inherited primary-source record; current annotation only; current official arXiv metadata",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "pmlr:v84:cavazza18a",
+      "aliases": [
+        "arxiv:1710.05092"
+      ],
+      "title": "Dropout as a Low-Rank Regularizer for Matrix Factorization",
+      "authors": [
+        "Jacopo Cavazza",
+        "Pietro Morerio",
+        "Benjamin Haeffele",
+        "Connor Lane",
+        "Vittorio Murino",
+        "Rene Vidal"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "PMLR official metadata",
+      "year": 2018,
+      "venue": "AISTATS 2018, PMLR 84:435–444",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://proceedings.mlr.press/v84/cavazza18a.html",
+        "https://proceedings.mlr.press/v84/cavazza18a/cavazza18a.pdf"
+      ],
+      "source_type": [
+        "primary_proceedings",
+        "primary_pdf_body"
+      ],
+      "query": "dropout matrix factorization duplication columns regularization Cavazza 2018",
+      "read_level": "abstract; full §4 Eq13 and Proposition1; §5 Eq15",
+      "contribution": "Bernoulli dropout의 deterministic variance regularizer를 유도하고 열 복제에 따른 감소 및 width-dependent retain probability를 분석.",
+      "overlap": "B04의 1/r variance dilution, variable-width infimum zero, B08의 width-scaled retain-probability 처방에 직접 선행. 이 수학만은 새 결과가 아니다.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "objective_background",
+        "assessment": "Bernoulli variance dilution under duplicated factors is known. Preserve as objective sanity background; it is not the replacement research goal.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "openreview:zMIIHeKivz",
+      "aliases": [
+        "openreview_pdf_hash:4aa8500bc5bab9945032ad8bb18af908b414ad52"
+      ],
+      "title": "Probabilistic TopK Sparse Autoencoder for Interpreting the Activations of Large Language Models",
+      "authors": [],
+      "authors_checked": false,
+      "authors_check_source": "Available manuscript is anonymous; forum and API blocked by browser challenge/403",
+      "year": 2025,
+      "venue": "ICLR 2026 submission; final decision and authors unverified",
+      "publication_status": "anonymous_submission",
+      "urls": [
+        "https://openreview.net/forum?id=zMIIHeKivz",
+        "https://openreview.net/pdf?id=zMIIHeKivz"
+      ],
+      "source_type": [
+        "primary_pdf_search_extraction"
+      ],
+      "query": "Probabilistic TopK Sparse Autoencoder inference Equation 7 calibration site:openreview.net",
+      "read_level": "Primary PDF indexed extraction §3 Eq6-8 and Table1 read 2026-09-21; direct PDF blocked",
+      "contribution": "Binary Concrete gate와 magnitude를 TopK score로 결합하고 exact TopK mask로 MSE를 학습; inference에서 gate noise 제거.",
+      "overlap": "probabilistic gates/feature confidence SAE 최초 주장에는 직접 경쟁. VG의 analytic Bernoulli KL free energy와는 다른 objective. Proper-score calibration 부재는 이 접근 범위로 판정 불가.",
+      "development_comparison_20260921": "Binary Concrete sampled scores + magnitude score + exact TopK mask, ordinary MSE. Does not give current normalized Bernoulli-KL analytic expected risk; probabilistic gate/confidence claim already overlaps.",
+      "verification_date": "2026-09-21",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "unresolved_competitor",
+        "assessment": "Probabilistic gates with TopK are an overlap risk for first-probabilistic-SAE claims. Exact-K MSE differs from analytic VG risk; authors/final decision remain unverified.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_lead_authors_and_decision_unverified"
+    },
+    {
+      "canonical_id": "doi:10.1214/10-AOS792",
+      "aliases": [
+        "arxiv:1011.2333"
+      ],
+      "title": "Bayes and empirical-Bayes multiplicity adjustment in the variable-selection problem",
+      "authors": [
+        "James G. Scott",
+        "James O. Berger"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "author-hosted primary paper and arXiv metadata",
+      "year": 2010,
+      "venue": "Annals of Statistics 38(5):2587–2619",
+      "publication_status": "peer_reviewed_journal",
+      "urls": [
+        "https://arxiv.org/abs/1011.2333",
+        "https://www2.stat.duke.edu/~berger/papers/EB-multiplicity.pdf"
+      ],
+      "source_type": [
+        "primary_preprint",
+        "primary_author_pdf"
+      ],
+      "query": "Bayes and empirical-Bayes multiplicity adjustment Scott Berger",
+      "read_level": "abstract and bibliographic metadata",
+      "contribution": "Bayesian variable-selection prior의 multiplicity correction과 empirical/full Bayes 차이를 분석.",
+      "overlap": "B08/B09/B10의 prior를 변수 수·빈도에 맞추는 원리 자체는 신규성 근거가 아님.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "prior_background",
+        "assessment": "Empirical/hierarchical sparsity-prior adjustment is established variable-selection methodology. Learning a prior alone does not guarantee true L0 in a flexible dictionary.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "neurips:2014:8927f9b43dbc13ddfa1edf2103f2191f",
+      "aliases": [],
+      "title": "Bayesian Inference for Structured Spike and Slab Priors",
+      "authors": [
+        "Michael Riis Andersen",
+        "Ole Winther",
+        "Lars Kai Hansen"
+      ],
+      "authors_checked": true,
+      "authors_check_source": "NeurIPS official proceedings",
+      "year": 2014,
+      "venue": "NeurIPS 27 (2014)",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://proceedings.neurips.cc/paper_files/paper/2014/hash/8927f9b43dbc13ddfa1edf2103f2191f-Abstract.html"
+      ],
+      "source_type": [
+        "primary_proceedings"
+      ],
+      "query": "Bayesian Inference Structured Spike Slab Priors",
+      "read_level": "official abstract",
+      "contribution": "spike-and-slab probabilities에 Gaussian-process structure를 두고 expectation propagation으로 추론.",
+      "overlap": "상관 support를 모델링하는 넓은 발상은 선행. B06의 4-state posterior-only family와 동일하다고 단정하지 않음.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "prior_background",
+        "assessment": "Structured spike-and-slab priors predate this work. Correlated support modeling is not new in general; any SAE benefit requires data-specific verification.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "pmlr:v267:lu25w",
+      "aliases": [
+        "arxiv:2506.04859"
+      ],
+      "title": "Sparse Autoencoders, Again?",
+      "authors": [
+        "Yin Lu",
+        "Xuening Zhu",
+        "Tong He",
+        "David Wipf"
+      ],
+      "year": 2025,
+      "first_posted": "2025-06-05",
+      "venue": "ICML 2025, PMLR 267:40952–40976",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://proceedings.mlr.press/v267/lu25w.html",
+        "https://arxiv.org/html/2506.04859v2"
+      ],
+      "read_level": "primary proceedings metadata; arXiv HTML §3 Eq4, §5.2, Appendix B.3 and D.3",
+      "contribution": "VAEase: Gaussian latent standard deviation gates sampled codes as (1-sigma_z(x))*z; learned decoder variance, adaptive sparse estimation.",
+      "development_comparison_20260921": "Close neighbor for uncertainty-based gating, learned noise and LLM activations; no Bernoulli inclusion posterior or discrete KL. LLM experiment is d=512 and latent=300, so it does not establish overcomplete SAE feature recovery.",
+      "method_signature": {
+        "support": "continuous deterministic gate 1-sigma_z(x)",
+        "amplitude": "Gaussian latent with mean and diagonal variance",
+        "objective": "modified VAE reconstruction + Gaussian KL",
+        "training": "Gaussian reparameterization",
+        "precision": "trainable scalar decoder variance",
+        "inference": "feedforward; active dimensions evaluated through variance criterion",
+        "data": "Pythia activations from Pile-10k, images, synthetic manifolds, Yelp",
+        "budget_verified": "LLM: 2,098,176 samples; d=512; latent=300; 35 epochs; batch=2048"
+      },
+      "authors_checked": true,
+      "authors_check_source": "https://proceedings.mlr.press/v267/lu25w.html",
+      "source_type": [
+        "primary_proceedings_or_journal",
+        "primary_body"
+      ],
+      "verification_date": "2026-09-21",
+      "query": "backward citation chaining from nearest variational SAE papers",
+      "overlap": "Close neighbor for uncertainty-based gating, learned noise and LLM activations; no Bernoulli inclusion posterior or discrete KL. LLM experiment is d=512 and latent=300, so it does not establish overcomplete SAE feature recovery.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "VAEase is close prior art for uncertainty-based gating and learned decoder variance. Verified prior LLM experiment is undercomplete (d=512, latent=300); it is not overcomplete feature-recovery evidence.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "PMLR metadata refreshed; prior method/experiment read reused",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "pmlr:v115:tonolini20a",
+      "aliases": [],
+      "title": "Variational Sparse Coding",
+      "authors": [
+        "Francesco Tonolini",
+        "Bjørn Sand Jensen",
+        "Roderick Murray-Smith"
+      ],
+      "year": 2020,
+      "venue": "UAI 2019; proceedings published 2020, PMLR 115:690–700",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://proceedings.mlr.press/v115/tonolini20a.html",
+        "https://proceedings.mlr.press/v115/tonolini20a/tonolini20a.pdf"
+      ],
+      "read_level": "primary proceedings metadata and PDF introduction, method, Eq7 warm-up, experiment overview",
+      "contribution": "Amortized spike-and-slab sparse VAE with analytic KL, pseudo-input mixture prior and spike warm-up.",
+      "development_comparison_20260921": "Prior art for Bernoulli support plus continuous slab in amortized sparse coding. VG drops the stochastic Gaussian slab and its KL; fixed point amplitude is not the finite-KL zero-variance limit.",
+      "method_signature": {
+        "support": "Bernoulli spike, relaxation during training",
+        "amplitude": "Gaussian slab",
+        "objective": "ELBO; analytic spike-and-slab KL, sampled likelihood",
+        "training": "relaxed sampling and spike warm-up",
+        "precision": "not verified",
+        "inference": "neural recognition model",
+        "data": "synthetic, Fashion-MNIST, UCI HAR",
+        "budget_verified": null
+      },
+      "authors_checked": true,
+      "authors_check_source": "https://proceedings.mlr.press/v115/tonolini20a.html",
+      "source_type": [
+        "primary_proceedings_or_journal",
+        "primary_body"
+      ],
+      "verification_date": "2026-09-21",
+      "query": "backward citation chaining from nearest variational SAE papers",
+      "overlap": "Prior art for Bernoulli support plus continuous slab in amortized sparse coding. VG drops the stochastic Gaussian slab and its KL; fixed point amplitude is not the finite-KL zero-variance limit.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "Amortized spike-and-slab inference with Bernoulli support and Gaussian slab is prior art. VG point amplitude is not a zero-variance finite-KL Gaussian slab limit.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "PMLR metadata refreshed; prior method read reused",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "pmlr:v162:fallah22a",
+      "aliases": [
+        "arxiv:2205.03665"
+      ],
+      "title": "Variational Sparse Coding with Learned Thresholding",
+      "authors": [
+        "Kion Fallah",
+        "Christopher J. Rozell"
+      ],
+      "year": 2022,
+      "venue": "ICML 2022, PMLR 162:6034–6058",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://proceedings.mlr.press/v162/fallah22a.html",
+        "https://proceedings.mlr.press/v162/fallah22a/fallah22a.pdf"
+      ],
+      "read_level": "primary proceedings metadata; PDF introduction and methods §3.1-3.2, gradient-evaluation text",
+      "contribution": "Shifted thresholding of sampled Laplace/Gaussian codes creates sparse distributions, with STE and learned threshold distribution.",
+      "development_comparison_20260921": "Prior art for amortized hard sparse variational inference and gradient/statistical efficiency. Sampling/threshold approach differs from exact Bernoulli expectation plus point amplitude.",
+      "method_signature": {
+        "support": "shifted-thresholded samples",
+        "amplitude": "continuous stochastic latent",
+        "objective": "variational ELBO",
+        "training": "sampling with STE, optional learned threshold distribution",
+        "precision": "not verified",
+        "inference": "neural distribution parameter inference plus thresholding",
+        "data": "whitened image patches, Fashion-MNIST, CelebA",
+        "budget_verified": null
+      },
+      "authors_checked": true,
+      "authors_check_source": "https://proceedings.mlr.press/v162/fallah22a.html",
+      "source_type": [
+        "primary_proceedings_or_journal",
+        "primary_body"
+      ],
+      "verification_date": "2026-09-21",
+      "query": "backward citation chaining from nearest variational SAE papers",
+      "overlap": "Prior art for amortized hard sparse variational inference and gradient/statistical efficiency. Sampling/threshold approach differs from exact Bernoulli expectation plus point amplitude.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "Thresholded stochastic sparse codes, learned thresholds and STE are prior art. They differ from exact Bernoulli expected risk, but hard sparse amortization is not new.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "doi:10.1162/neco_a_01715",
+      "aliases": [
+        "pmc:PMC13377536"
+      ],
+      "title": "Sparse-Coding Variational Autoencoders",
+      "authors": [
+        "Victor Geadah",
+        "Gabriel Barello",
+        "Daniel Greenidge",
+        "Adam S. Charles",
+        "Jonathan W. Pillow"
+      ],
+      "year": 2024,
+      "venue": "Neural Computation 36(12):2571–2601",
+      "publication_status": "peer_reviewed_journal",
+      "urls": [
+        "https://doi.org/10.1162/neco_a_01715",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC13377536/"
+      ],
+      "read_level": "primary author manuscript in PMC; metadata, abstract, §2-3 and discussion extracted from official publisher search",
+      "contribution": "Feedforward Gaussian recognition model for overcomplete linear sparse coding with heavy-tailed prior.",
+      "development_comparison_20260921": "Variational feedforward learned linear dictionary is prior art. Gaussian posterior does not produce the present Bernoulli hard-support model; paper discusses future hard-sparse priors.",
+      "method_signature": {
+        "support": "heavy-tailed sparsity-promoting prior; no discrete inclusion variable in main model",
+        "amplitude": "Gaussian variational posterior",
+        "objective": "ELBO",
+        "training": "feedforward variational recognition",
+        "precision": "Gaussian observation noise parameter; exact learning setting not verified",
+        "inference": "deep feedforward recognition",
+        "data": "natural image patches",
+        "budget_verified": null
+      },
+      "authors_checked": true,
+      "authors_check_source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13377536/",
+      "source_type": [
+        "primary_proceedings_or_journal",
+        "primary_body"
+      ],
+      "verification_date": "2026-09-21",
+      "query": "backward citation chaining from nearest variational SAE papers",
+      "overlap": "Variational feedforward learned linear dictionary is prior art. Gaussian posterior does not produce the present Bernoulli hard-support model; paper discusses future hard-sparse priors.",
+      "inherited_from": "vg-sae-development-20260921",
+      "overlap_fields_scope": "overlap and development_comparison_20260921 are historical; use sparse_but_wrong_comparison_20260922 for this run.",
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "variational_neighbor",
+        "assessment": "Feedforward variational recognition for learned overcomplete linear dictionaries is prior art. Heavy-tailed prior/Gaussian posterior differs from Bernoulli hard support.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      },
+      "verification_scope_20260922": "inherited primary-source record; current annotation only",
+      "evidence_status": "primary_verified_partial_method"
+    },
+    {
+      "canonical_id": "arxiv:2503.24277",
+      "aliases": [
+        "openreview:XhdNFeMclS"
+      ],
+      "title": "Evaluating and Designing Sparse Autoencoders by Approximating Quasi-Orthogonality",
+      "authors": [
+        "Lee, Sewoong",
+        "Davies, Adam",
+        "Canby, Marc E.",
+        "Hockenmaier, Julia"
+      ],
+      "year": 2025,
+      "first_posted": "2025-03-31",
+      "venue": "COLM 2025",
+      "publication_status": "peer_reviewed_conference",
+      "urls": [
+        "https://arxiv.org/abs/2503.24277",
+        "https://arxiv.org/html/2503.24277v2",
+        "https://colmweb.org/2025/AcceptedPapers.html",
+        "https://openreview.net/forum?id=XhdNFeMclS",
+        "https://github.com/SewoongLee/top-afa-sae"
+      ],
+      "contribution": "AFA estimates activation magnitude through norm matching; top-AFA chooses input-specific active counts.",
+      "read_level": "arXiv v2 §4/7, Appendix A; official COLM accepted list; author repository",
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2503.24277",
+      "verification_date": "2026-09-22",
+      "evidence_status": "primary_verified_selected_body",
+      "source_type": [
+        "primary_source",
+        "primary_body"
+      ],
+      "inherited_from": null,
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "adaptive_baseline",
+        "assessment": "Direct unknown-k competitor, with remaining lambda_AFA and reported high L0. Norm agreement/epsilon lower-bound metric is not guaranteed feature identity or support recovery.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      }
+    },
+    {
+      "canonical_id": "arxiv:2410.11179",
+      "aliases": [
+        "openreview:OvmW8HnGzK"
+      ],
+      "title": "Interpretability as Compression: Reconsidering SAE Explanations of Neural Activations with MDL-SAEs",
+      "authors": [
+        "Ayonrinde, Kola",
+        "Pearce, Michael T.",
+        "Sharkey, Lee"
+      ],
+      "year": 2024,
+      "first_posted": "2024-10-15",
+      "venue": "arXiv preprint; final conference status unverified",
+      "publication_status": "preprint",
+      "urls": [
+        "https://arxiv.org/abs/2410.11179",
+        "https://arxiv.org/html/2410.11179v1",
+        "https://openreview.net/forum?id=OvmW8HnGzK"
+      ],
+      "contribution": "Description-length model selection across SAE width and L0; MNIST example and independent-additivity perspective.",
+      "read_level": "arXiv v1 §2/5 and Appendix A; direct OpenReview forum challenge-blocked",
+      "authors_checked": true,
+      "authors_check_source": "https://arxiv.org/abs/2410.11179",
+      "verification_date": "2026-09-22",
+      "evidence_status": "primary_verified_selected_body",
+      "source_type": [
+        "primary_source",
+        "primary_body"
+      ],
+      "inherited_from": null,
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "selection_baseline",
+        "assessment": "Direct prior art for choosing a model beyond reconstruction-sparsity frontier. Coding convention and reconstruction tolerance remain choices; paper explicitly does not guarantee true generating factors.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      }
+    },
+    {
+      "canonical_id": "url:transformer-circuits.pub/2025/january-update/index.html",
+      "aliases": [],
+      "title": "Dictionary Learning Optimization Techniques (Circuits Updates - January 2025)",
+      "authors": [
+        "Tom Conerly",
+        "Hoagy Cunningham",
+        "Adly Templeton",
+        "Jack Lindsey",
+        "Basil Hosmer",
+        "Adam Jermyn"
+      ],
+      "year": 2025,
+      "venue": "Anthropic Transformer Circuits official technical post; not a peer-reviewed paper",
+      "publication_status": "official_technical_post",
+      "urls": [
+        "https://transformer-circuits.pub/2025/january-update/index.html"
+      ],
+      "contribution": "JumpReLU recipe with decoder-norm-scaled tanh sparsity, pre-act loss and STE to all model parameters.",
+      "read_level": "Full official post, byline and displayed loss/gradient recipe",
+      "authors_checked": true,
+      "authors_check_source": "https://transformer-circuits.pub/2025/january-update/index.html",
+      "verification_date": "2026-09-22",
+      "evidence_status": "primary_verified_selected_body",
+      "source_type": [
+        "primary_source",
+        "primary_body"
+      ],
+      "inherited_from": null,
+      "sparse_but_wrong_comparison_20260922": {
+        "role": "direct_baseline_variant",
+        "assessment": "Implementation reference for the actual Anthropic JumpReLU variant, distinct from DeepMind L0-loss JumpReLU. Sparsity coefficient remains; no unknown-L0 recovery guarantee.",
+        "unknown_l0_success_verified": false,
+        "proxy_is_ground_truth": false
+      }
+    }
+  ],
+  "unresolved_primary_leads": [
+    {
+      "canonical_id": null,
+      "dedup_title": "the price of amortized inference in sparse autoencoders",
+      "title": "The Price of Amortized Inference in Sparse Autoencoders",
+      "author_lead": [
+        "Wenjie Sun",
+        "Di Wang",
+        "Lijie Hu"
+      ],
+      "authors_checked": false,
+      "venue": "ICLR 2026 claimed by author; forum decision not directly retrieved",
+      "urls": [
+        "https://github.com/wenjie1835/Local_Amotized_SAEs",
+        "https://openreview.net/pdf/a03613ad3a1c4ce9817a7d87c281b60f8cd699cd.pdf"
+      ],
+      "source_type": "official_author_repository and indexed primary anonymous PDF",
+      "contribution": "Local Amortized SAE와 semi/non-amortized inference가 feature pathologies에 미치는 영향을 분석.",
+      "overlap": "B07의 가까운 2026 경쟁. 정확한 VG gate-only fixed-objective diagnostic은 다름.",
+      "read_level": "author repository abstract, evaluated architectures, matching density procedure; indexed manuscript abstract"
+    },
+    {
+      "canonical_id": "arxiv:2507.04644",
+      "title": "SOSAE: Self-Organizing Sparse AutoEncoder",
+      "authors": [
+        "Modi, Sarthak Ketanbhai",
+        "Lim, Zi Pong",
+        "Cao, Yushi",
+        "Cheng, Yupeng",
+        "Teo, Yon Shin",
+        "Lin, Shang-Wei"
+      ],
+      "authors_checked": true,
+      "year": 2025,
+      "venue": "arXiv preprint",
+      "urls": [
+        "https://arxiv.org/abs/2507.04644"
+      ],
+      "verification_status": "metadata_only_lead",
+      "method_claims_verified": false,
+      "reason": "Adaptive/learned sparsity query hit; full method and relevance to true L0 not assessed in bounded update."
+    },
+    {
+      "canonical_id": "openreview:Hl3rEn7S4P",
+      "title": "Diagnosing and Fixing Latent Recovery in Sparse Autoencoders",
+      "authors": [],
+      "authors_checked": false,
+      "year": 2026,
+      "venue": "ICLR 2026 submission header in indexed primary PDF; decision unverified",
+      "urls": [
+        "https://openreview.net/pdf?id=Hl3rEn7S4P"
+      ],
+      "verification_status": "primary_pdf_search_lead",
+      "method_claims_verified": false,
+      "reason": "Indexed PDF mentions latent self-consistency regularizer; authors, final decision and exact assumptions not verified."
+    }
+  ],
+  "limitations": [
+    "Zotero and Obsidian unavailable in exposed tools; local refs and previous primary-source registry reused.",
+    "Several inherited sources remain abstract-only; exact read_level retained.",
+    "OpenReview direct pages for Probabilistic TopK, iSAE, AFA and MDL encountered challenge pages; AFA venue verified independently in official COLM list.",
+    "iSAE ICML status comes from author arXiv comment; independent venue decision was not retrieved.",
+    "VG inverse journal DOI/issue verified in Crossref and publisher indexed page; online publication date remains unknown and print issue is dated October 2026.",
+    "Adaptive activation counts, norm/MDL scores and fixed-gamma posterior masses are not assumed to be true sparsity or guaranteed feature recovery.",
+    "This bounded search is not an exhaustive review or novelty proof."
+  ]
+}

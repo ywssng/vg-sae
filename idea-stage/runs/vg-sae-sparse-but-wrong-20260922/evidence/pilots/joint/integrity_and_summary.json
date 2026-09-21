@@ -1,0 +1,75 @@
+{
+  "status": "complete; matched-L0 mechanism attribution unresolved",
+  "integrity_checks": {
+    "calibration_checkpoints": 162,
+    "unique_final_test_evaluations": 54,
+    "manifest_hash_matches": true,
+    "runner_and_protocol_hashes_match": true,
+    "all_checkpoint_hashes_match": true,
+    "paired_initialization_and_first_batch_hashes_match": true,
+    "all_updates_2000": true,
+    "no_samples_excluded": true
+  },
+  "target_coverage_exact_vs_optimized_mf": {
+    "1.8": 0,
+    "2.0": 2,
+    "2.2": 2
+  },
+  "joint_success_count": 0,
+  "worst_training_batch_convergence": 0.9915,
+  "failed_training_samples": 81,
+  "failed_training_batches": 81,
+  "training_mf_sample_presentations": 4608000,
+  "calibration_solver_failures": [
+    {
+      "candidate_id": "rho+0.4_world211_optimized_mf_g1_s2000",
+      "failed_samples": 2
+    },
+    {
+      "candidate_id": "rho+0.4_world211_optimized_mf_g2_s500",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world211_optimized_mf_g2_s1000",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world212_optimized_mf_g2_s500",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world212_optimized_mf_g2_s2000",
+      "failed_samples": 1
+    }
+  ],
+  "test_solver_failures": [
+    {
+      "candidate_id": "rho-0.4_world211_optimized_mf_g1_s2000",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world210_optimized_mf_g2_s2000",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world211_optimized_mf_g1_s2000",
+      "failed_samples": 1
+    },
+    {
+      "candidate_id": "rho+0.4_world212_optimized_mf_g2_s2000",
+      "failed_samples": 1
+    }
+  ],
+  "resource": {
+    "complete": true,
+    "primary_fits": 54,
+    "test_evaluations": 54,
+    "selection_manifest_sha256": "afd79c1b62ab8b2a5ab83ae78a208237149b67b9cf007f28a5d50c001c0d0e3e",
+    "elapsed_wall_seconds": 549.8344276780263,
+    "cpu_wall_hours": 0.1527317854661184,
+    "requested_thread_hours_upper_proxy": 0.3054635709322368,
+    "gpu_hours": 0.0,
+    "finished_at_utc": "2026-09-21T16:15:35.159332+00:00"
+  },
+  "numerical_tests": "8 passed"
+}

@@ -1,0 +1,125 @@
+[
+  {
+    "method": "vg",
+    "trainable_parameters": 330,
+    "parameters": {
+      "pre_bias": [
+        20
+      ],
+      "gate_encoder.weight": [
+        5,
+        20
+      ],
+      "gate_encoder.bias": [
+        5
+      ],
+      "amplitude_encoder.weight": [
+        5,
+        20
+      ],
+      "amplitude_encoder.bias": [
+        5
+      ],
+      "decoder.weight": [
+        20,
+        5
+      ]
+    },
+    "buffers": {}
+  },
+  {
+    "method": "l1",
+    "trainable_parameters": 225,
+    "parameters": {
+      "b_dec": [
+        20
+      ],
+      "W_dec": [
+        5,
+        20
+      ],
+      "W_enc": [
+        20,
+        5
+      ],
+      "b_enc": [
+        5
+      ]
+    },
+    "buffers": {}
+  },
+  {
+    "method": "gated",
+    "trainable_parameters": 235,
+    "parameters": {
+      "b_dec": [
+        20
+      ],
+      "W_dec": [
+        5,
+        20
+      ],
+      "W_enc": [
+        20,
+        5
+      ],
+      "b_gate": [
+        5
+      ],
+      "r_mag": [
+        5
+      ],
+      "b_mag": [
+        5
+      ]
+    },
+    "buffers": {}
+  },
+  {
+    "method": "jumprelu_anthropic",
+    "trainable_parameters": 230,
+    "parameters": {
+      "b_dec": [
+        20
+      ],
+      "W_dec": [
+        5,
+        20
+      ],
+      "W_enc": [
+        20,
+        5
+      ],
+      "b_enc": [
+        5
+      ],
+      "log_threshold": [
+        5
+      ]
+    },
+    "buffers": {}
+  },
+  {
+    "method": "batchtopk",
+    "trainable_parameters": 225,
+    "parameters": {
+      "b_dec": [
+        20
+      ],
+      "W_dec": [
+        5,
+        20
+      ],
+      "W_enc": [
+        20,
+        5
+      ],
+      "b_enc": [
+        5
+      ]
+    },
+    "buffers": {
+      "topk_threshold": []
+    }
+  }
+]

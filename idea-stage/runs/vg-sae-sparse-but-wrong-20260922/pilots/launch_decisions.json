@@ -1,0 +1,50 @@
+{
+  "run_id": "vg-sae-sparse-but-wrong-20260922",
+  "before_any_pilot_test_access": true,
+  "changes": [
+    {
+      "topic": "resource occupancy",
+      "decision": "GPU0/2/3 occupied by unrelated jobs. P1 exclusive GPU1; P2 CPU2threads per world; P3 CPU probe first. No unrelated job changed."
+    },
+    {
+      "topic": "P2 source reuse",
+      "decision": "Train all72 predefined arms on CPU, including six p=.4 fixed controls, instead of66new+6GPUreuse. Same conditions and no expanded hyperparameter search."
+    },
+    {
+      "topic": "batch sampling",
+      "decision": "Cycle shuffled epochs without replacement using existing shared provider, not replacement text in jury."
+    },
+    {
+      "topic": "baseline normalization",
+      "decision": "Preserve pinned official baseline decoder normalization/weighted penalty recipe; VG uses unit-column constraints. Fold baseline decoder norms for evaluation. Do not impose altered baseline optimizer projections merely to match architecture."
+    },
+    {
+      "topic": "P3 mixed initialization",
+      "decision": "Defer all18 optional oracle-mixed-init fits before test access. Run54 random-init primary fits unless uniform runtime reduction is required."
+    },
+    {
+      "topic": "P3 MF nonconvergence",
+      "decision": "Retain all samples and updates. Terminal nonconverged q gives fixed-q partial F gradient, not exact envelope gradient. Apply predeclared convergence limitation; no sample selection bias."
+    }
+  ],
+  "p2_cpu_timing_probe": "outputs/sbw_20260922/prior/timing_probe.json",
+  "shared_helper_tests_passed": 5,
+  "root_loss_tests_passed_initial": 2,
+  "launch_commands": [
+    {
+      "world": 210,
+      "command": ".venv/bin/python -B scripts/run_sbw_prior_pilot.py --phase train --world 210 --device cpu --retrain-fixed-source",
+      "log": "outputs/sbw_20260922/prior/world210_train.log"
+    },
+    {
+      "world": 211,
+      "command": ".venv/bin/python -B scripts/run_sbw_prior_pilot.py --phase train --world 211 --device cpu --retrain-fixed-source",
+      "log": "outputs/sbw_20260922/prior/world211_train.log"
+    },
+    {
+      "world": 212,
+      "command": ".venv/bin/python -B scripts/run_sbw_prior_pilot.py --phase train --world 212 --device cpu --retrain-fixed-source",
+      "log": "outputs/sbw_20260922/prior/world212_train.log"
+    }
+  ]
+}

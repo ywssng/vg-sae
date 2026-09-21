@@ -92,6 +92,42 @@
   test suite를 이 실행에서 다시 돌렸다고 기록하지 않는다. 작은 evidence는
   `idea-stage/runs/vg-sae-development-20260921/evidence/`에 있다.
 
+## 새 핵심 연구 동기 — 2026-09-22
+
+- 사용자는 ICML 2026의 Sparse but Wrong (Chanin & Garriga-Alonso)을 기준으로
+  idea-discovery를 다시 실행하도록 요청했다. L1 sparsification 외의 방법론으로
+  VG-SAE를 개발하는 것을 주목적으로 삼는다.
+- 논문의 직접 L0/feature-mixing 결론과 사용자의 VG 대안 가설을 구분한다.
+  주 연구는 여전히 VG-SAE 개발이며 별도 진단 주제로 변경하지 않는다.
+- 현재 run ID는 `vg-sae-sparse-but-wrong-20260922`다. 이전 09-21 계획은
+  해당 run의 `prior_development_snapshot/`에 보존했다. 기존 결과·review를
+  새 문제의 확증으로 재사용하지 않는다.
+- 사용자는 보고서를 별도 브라우저 없이 대화 안에서 읽는 방식을 선호한다.
+
+## Sparse but Wrong 기반 재실행 결과 — 2026-09-22
+
+- 참조 논문 v4/ICML2026의 직접 문제는 wrong L0와 feature identity이며, L1 대체는
+  사용자의 VG 개발 가설이다. 논문이 L1 전반을 기각하거나 VG를 제안한 것으로 쓰지 않는다.
+- 현재 보고서와 contract는 세 새 pilot을 통합했다: P1 225 fits, P2 72, P3 54.
+  합계351은 독립 seed 수가 아니다. 각 pilot은3 paired worlds의 짧은 toy 검증이다.
+- P1은 target2의7/9 covered cases에서 거의 완벽한 VG 복원을 보였고, simple L1
+  rescale 후에도4/5 matched pairs의 coefficient NMSE가 낮았다. Strong-baseline
+  joint 우위는 미확인이고 target1.8 및 Jump의 coverage가 부족했다.
+- P2는 finite-budget scalar-prior recipe 비지지다. 대부분 gamma gradient도 아직
+  크므로 잘못된 EB 정상점으로 수렴했다고 표현하지 않는다. P3의 한 total-effect
+  rescue는 보존하되 density/readout/부호 효과와 고유 covariance 효과를 구분한다.
+- Frozen mixing_energy는 signed-assignment leakage로 pure sign/mapping 오류도
+  포함한다. 실제 다중성분 혼합은 absolute cosine/전체 projection과 함께 해석한다.
+- Dense-offset 구성은 true decoder와 dense code로 profiled loss를 낮출 수 있는
+  parameter family다. Profiled branch만 epsilon floor를 사용한다. Global learned
+  branch에는 같은 energy clamp가 없다. 실제 SGD 원인이나 recovery 보장은 미입증이다.
+- 다음 개발은 같은 VG의 precision 정책 대조와 baseline/selector calibration이다.
+  Gamma 학습이나 exact32를 새 기본 구성으로 채택하지 않았다. 후속248-fit core
+  roadmap은 미실행이며 큰 source 확장은 조건부다.
+- Scientific continuation은 PROCEED WITH CAUTION, proposal은REVISE/7.85,
+  same-family provisional이다. 점수의 변화만으로 연구 목표를 바꾸지 않는다.
+  최종 실행 규칙과 남은 작업은 최신 refine-logs/EXPERIMENT_PLAN.md 및 tracker를 읽는다.
+
 ## 갱신 원칙
 
 - 다음 작업에 도움이 되는 확정된 결정·사용자 정정·재현성 맥락을 갱신한다.

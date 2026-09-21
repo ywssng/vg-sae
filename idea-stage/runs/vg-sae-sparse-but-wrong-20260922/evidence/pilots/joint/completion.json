@@ -1,0 +1,11 @@
+{
+  "complete": true,
+  "primary_fits": 54,
+  "test_evaluations": 54,
+  "selection_manifest_sha256": "afd79c1b62ab8b2a5ab83ae78a208237149b67b9cf007f28a5d50c001c0d0e3e",
+  "elapsed_wall_seconds": 549.8344276780263,
+  "cpu_wall_hours": 0.1527317854661184,
+  "requested_thread_hours_upper_proxy": 0.3054635709322368,
+  "gpu_hours": 0.0,
+  "finished_at_utc": "2026-09-21T16:15:35.159332+00:00"
+}

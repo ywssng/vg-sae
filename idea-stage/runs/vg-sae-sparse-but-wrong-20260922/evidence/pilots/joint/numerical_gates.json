@@ -1,0 +1,17 @@
+{
+  "command": ".venv/bin/python -m pytest tests/test_sbw_joint_pilot.py -q",
+  "result": "8 passed",
+  "test_file_sha256": "8ecd154df584477c9849009dcac7a584f109cd9e16e8c884ef88ff409b537f7f",
+  "numerical_gates": [
+    "enumerated risk and complete product free energy",
+    "orthogonal exact posterior factorization",
+    "exact log partition vs envelope gradient",
+    "coordinate descent monotonicity, stationarity, finite difference",
+    "resolved mean-field envelope finite difference",
+    "known-dictionary/code identity metrics",
+    "shared initialization, frozen precision, normalized core objective equality",
+    "all 32 state risks and MAP tie index order"
+  ],
+  "timing": "7 gates before scientific grid; explicit 32-state/tie-order eighth check during training before any test access",
+  "test_data_accessed": false
+}

@@ -1,0 +1,294 @@
+{
+  "review_date": "2026-09-22",
+  "title": "Sparse but Wrong: Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders",
+  "authors": [
+    "David Chanin",
+    "Adrià Garriga-Alonso"
+  ],
+  "arxiv": {
+    "id": "2508.16560",
+    "version": "v4",
+    "version_date": "2026-07-07",
+    "first_submission": "2025-08-22",
+    "abs_url": "https://arxiv.org/abs/2508.16560",
+    "version_url": "https://arxiv.org/abs/2508.16560v4",
+    "html_url": "https://arxiv.org/html/2508.16560v4",
+    "doi": "10.48550/arXiv.2508.16560"
+  },
+  "local_pdf": {
+    "path": "refs/Sparse but Wrong Incorrect L0 Leads to Incorrect Features in Sparse Autoencoders.pdf",
+    "sha256": "eb4679cfac515e06ec9be22e9198ef14b4bf00c179e3a059239a939604a79134",
+    "bytes": 1233856,
+    "pages": 27,
+    "version_printed": "arXiv:2508.16560v4 [cs.LG] 7 Jul 2026"
+  },
+  "venue": {
+    "name": "International Conference on Machine Learning",
+    "year": 2026,
+    "status": "verified_official_conference_listing_and_pdf_front_matter",
+    "official_url": "https://icml.cc/virtual/2026/poster/63049",
+    "official_download_index": "https://icml.cc/Downloads/2026",
+    "openreview_url": "https://openreview.net/forum?id=aYqF2Cv6Cr",
+    "openreview_verified_via": "link_from_official_icml_poster_page",
+    "openreview_direct_read": "browser_challenge_and_api_HTTP_403",
+    "pmlr_volume": 306,
+    "pmlr_volume_evidence": "local_pdf_page_1",
+    "pmlr_web_verification": "https://proceedings.mlr.press/v306/ returned HTTP_404",
+    "page_range": null
+  },
+  "author_code": {
+    "repository": "https://github.com/chanind/sparse-but-wrong-paper",
+    "commit": "d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585",
+    "default_branch": "main",
+    "last_push_api": "2025-11-16T17:06:22Z",
+    "license": "MIT",
+    "version_warning": "code predates arxiv v4; cannot assume all v4 experiments are represented",
+    "lock_versions": {
+      "sae-lens": "6.11.1",
+      "torch": "2.8.0",
+      "transformer-lens": "2.16.1",
+      "sae-probes": "0.1.4"
+    },
+    "read_files": [
+      {
+        "path": "README.md",
+        "git_blob_sha": "47f8f3d03db6c22a3d5562506c8b88419cf5bef1",
+        "sha256": "8cb80910019811a1340d7698df9af2c3e460bc55b55058d0acc8e6d6f1d64148",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/README.md",
+        "status": "read"
+      },
+      {
+        "path": "pyproject.toml",
+        "git_blob_sha": "708d8380bf1aa4ea340ed0f0df4bd8369b07d066",
+        "sha256": "24c24aa14cfcbc9ca36664bbd909b9d04f3f4f2679eb892931576f74cc162e39",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/pyproject.toml",
+        "status": "read"
+      },
+      {
+        "path": "uv.lock",
+        "git_blob_sha": "f61f1d8a285e9ab935ff1192832170f0ed2693f8",
+        "sha256": "4a5931b396c9e13aba3d07d544ef422a4d9eb6a23356ce27a3e582cfa2f43add",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/uv.lock",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/toy_model.py",
+        "git_blob_sha": "0e297c3ec7aef0238ebc44905241ccc84567d2f0",
+        "sha256": "9173b588d1e648b1fe90ac53bc1c1dcf181a4d1b6bf81abafe4c04d5e2ae57af",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/toy_model.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/get_training_batch.py",
+        "git_blob_sha": "c33d7fef90740b3d3f77127c5a5cfa4b17447247",
+        "sha256": "2673fcdfd76343e5f47559fa6e1fe0fc98d0fb2763872cca7f81fb6c59c8735a",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/get_training_batch.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/initialization.py",
+        "git_blob_sha": "ecbcd375eae4b655d0894fed81fa889856035a3c",
+        "sha256": "2427fc188771e0685d6d1312f0befb84fafcd9cbe517cfff0d79ac06ff6c82fd",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/initialization.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/orthogonalize.py",
+        "git_blob_sha": "ac6a5246bcdf2a1badcad69754ffc8dcac0662fd",
+        "sha256": "57d70ea5e1ce4a75d01268a76822cca0cbe6e8018e4a1db866d831b094055f79",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/orthogonalize.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/train_toy_sae.py",
+        "git_blob_sha": "c1c9982152ed78c46f1474e5f50133c31c7179b0",
+        "sha256": "36e03f4a00125a14f6a81e192bfa7694d72e067eac28aa0370791223cb722e6f",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/train_toy_sae.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/toy_models/eval_sae.py",
+        "git_blob_sha": "37779d82923c554736a50a332e417509fce92630",
+        "sha256": "cf613a801e29fa891b0d973683dc7db5b2511ce86f729a129ade8c5e1590c053",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/toy_models/eval_sae.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/nth_decoder_projection.py",
+        "git_blob_sha": "a19b334c983f1c27b2e7a75541dd0344d996134c",
+        "sha256": "10f472aceadbd2eae972d19e8bf95d619dd6fffd43c233dd83c55ca1df9ec20e",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/nth_decoder_projection.py",
+        "status": "read"
+      },
+      {
+        "path": "sparse_but_wrong/enchanced_batch_topk_sae.py",
+        "git_blob_sha": "80c1cd55d9b93bdd698940c96fafeeee4e3fa373",
+        "sha256": "cf7649e470d2aceea8c52855df95457f65189bd50b2202ffc7a5015cd2170bd3",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/sparse_but_wrong/enchanced_batch_topk_sae.py",
+        "status": "read"
+      },
+      {
+        "path": "notebooks/main_toy_model_experiments.ipynb",
+        "git_blob_sha": "5d08a1dc431ef2dc13db700485f648ba2985582a",
+        "sha256": "58644bf852a01af7d6872a08f2183ea4a2d58266a51c8abad06a97cabbc33e9e",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/notebooks/main_toy_model_experiments.ipynb",
+        "status": "read"
+      },
+      {
+        "path": "notebooks/small_toy_model_experiments.ipynb",
+        "git_blob_sha": "47194a4a4c4b6490cb40004e50814e14c6a5bbe6",
+        "sha256": "e9e3aeab7bc4a3329c94e29b632355773e165543afb94521632ce67fb7b909a8",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/notebooks/small_toy_model_experiments.ipynb",
+        "status": "read"
+      },
+      {
+        "path": "notebooks/toy_model_experiments_jumprelu.ipynb",
+        "git_blob_sha": "dd169a599e3d6336fa8d86555a9be08d9f05df8a",
+        "sha256": "1e9226dbdd0083d64456163367d45dc1632f8bb73aac7c6eb7a3e4948f58a780",
+        "url": "https://github.com/chanind/sparse-but-wrong-paper/blob/d5886b540dc5b9cac4f76e6db2b0cce1b0b7c585/notebooks/toy_model_experiments_jumprelu.ipynb",
+        "status": "read"
+      }
+    ]
+  },
+  "small_toy": {
+    "num_features": 5,
+    "sae_width": 5,
+    "input_dim": 20,
+    "marginal_support_probabilities": [
+      0.4,
+      0.4,
+      0.4,
+      0.4,
+      0.4
+    ],
+    "latent_gaussian_correlation": "diagonal 1; C[0,j]=C[j,0]=rho for j=1..4; other offdiagonal 0",
+    "rho_primary": [
+      -0.4,
+      0.4
+    ],
+    "rho_control": 0.0,
+    "amplitude_mean": 1.0,
+    "amplitude_std": 0.15,
+    "amplitude": "relu(normal(1,0.15)) multiplied by Bernoulli support",
+    "nominal_mean_l0": 2.0,
+    "batchtopk_k": [
+      1.8,
+      2.0
+    ],
+    "low_l0_init": "ground truth dictionary and encoder for pressure demonstration"
+  },
+  "large_toy": {
+    "num_features": 50,
+    "sae_width": 50,
+    "input_dim": 100,
+    "p_i_formula_zero_indexed": "0.345 * (49 - i) / 50 + 0.05",
+    "p_first": 0.3881,
+    "p_last": 0.05,
+    "nominal_mean_l0": 10.9525,
+    "random_correlation": {
+      "seed": 42,
+      "positive_ratio": 0.5,
+      "strength_range": [
+        0.3,
+        0.9
+      ],
+      "sparsity": 0.3,
+      "eigenvalue_floor": 1e-06,
+      "diagonal_renormalization": true
+    },
+    "representative_batchtopk_k": [
+      5,
+      11,
+      18
+    ],
+    "sweep_k": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25
+    ],
+    "seed_labels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "seed_warning": "notebook seed label loop does not reseed RNG inside loop",
+    "narrow_sae_width": 25,
+    "nominal_mean_l0_first_25": 7.6325,
+    "superposition_input_dim": 40
+  },
+  "training_code_defaults": {
+    "samples": 15000000,
+    "batch_size": 1024,
+    "lr": 0.0003,
+    "adam_betas": [
+      0.9,
+      0.999
+    ],
+    "lr_schedule": "constant",
+    "lr_warmup_steps": 0,
+    "lr_decay_steps": 0,
+    "dead_feature_window": 1000,
+    "feature_sampling_window": 2000,
+    "autocast": false
+  },
+  "paper_code_discrepancies": [
+    "Main text batch 500 vs appendix and code batch 1024",
+    "Main text p0=.345 to p49=.05 implies sum 9.875 vs code sum 10.9525",
+    "Transition prose 25k + 5k steps vs code default ~14.65k total and asymmetric schedules",
+    "Notebook variance_explained uses uncentered denominator; v4 Figure 4 is MSE",
+    "Code seed folders are not explicit RNG reseeding",
+    "Notebook l1 variable for JumpReLU is passed as l0_coefficient with tanh penalty"
+  ],
+  "claim_boundaries": {
+    "l1_failure_experiment_in_v4": false,
+    "l1_shrinkage_snapping_rescaling_claims_in_v4": false,
+    "jumprelu_l0_plateau_reported": true,
+    "vg_sae_tested": false,
+    "main_metric": "mean absolute offdiagonal pairwise decoder cosine c_dec",
+    "input_projection_histogram": "separate exploratory diagnostic in section 4.2",
+    "theorem_F2_scope": "orthonormal ground-truth atoms; tied bias-free SAE; per-sample TopK; omitted-active-feature event; atomless active magnitudes used in proof",
+    "per_sample_topk_condition_is_not_mean_l0_equality": true
+  },
+  "version_check": {
+    "v1_html_checked": true,
+    "v3_html_checked": true,
+    "shrinkage_snapping_rescaling_discussion_found": false,
+    "v3_nth_projection_appendix": "A.9-A.10",
+    "v4_nth_projection_appendix_removed": true
+  },
+  "supplementary_primary_sources": [
+    {
+      "url": "https://arxiv.org/abs/2404.16014v2",
+      "purpose": "L1 shrinkage and existing support/amplitude separation motivation"
+    },
+    {
+      "url": "https://transformer-circuits.pub/2025/january-update/index.html",
+      "purpose": "Conerly JumpReLU tanh sparsity penalty and normalization reference"
+    }
+  ],
+  "artifact_scope": "reference reading and metadata only; no experiments executed; no canonical files modified by this subtask"
+}

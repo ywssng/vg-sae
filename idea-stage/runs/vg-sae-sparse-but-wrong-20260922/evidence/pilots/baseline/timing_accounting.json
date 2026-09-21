@@ -1,0 +1,7 @@
+{
+  "science_run_wall_seconds": 2796.9324221564457,
+  "science_training_plus_snapshots_seconds": 2788.817573459819,
+  "engineering_throughput_wall_seconds": 4.4598074182868,
+  "measured_science_plus_throughput_wall_seconds": 2801.3922295747325,
+  "scope": "Science wall includes in-run setup, model construction, training, calibration metrics, rescaling fits, checkpoint/JSON I/O, frozen selection, test evaluation and CSV export. Training-plus-snapshots excludes model/trainer construction and final test. Both timers start after Python imports; separate engineering evaluator plumbing and tests are not included in these timers. Allocated-GPU wall is a conservative compute measure, not GPU-kernel active time. No failed/restarted scientific runs."
+}

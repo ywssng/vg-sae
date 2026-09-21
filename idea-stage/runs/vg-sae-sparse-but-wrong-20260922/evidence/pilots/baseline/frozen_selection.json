@@ -1,0 +1,3249 @@
+{
+  "phase": "calibration_frozen_before_test_generation",
+  "selections": [
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c4_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world210_vg_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c3_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c2_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world210_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world210_gated_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world210_gated_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world210_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world210_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world210_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world210_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world210_batchtopk_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world210_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world210_batchtopk_c4_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world210_batchtopk_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world211_vg_c4_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world211_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world211_vg_c4_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world211_vg_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world211_l1_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world211_l1_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world211_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world211_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world211_gated_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world211_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world211_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world211_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world211_jumprelu_anthropic_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world211_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world211_batchtopk_c2_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world211_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world211_batchtopk_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world211_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world211_batchtopk_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world212_vg_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world212_vg_c4_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world212_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world212_vg_c4_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr-0.4_world212_vg_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world212_l1_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world212_l1_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world212_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr-0.4_world212_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c4_step1500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c4_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr-0.4_world212_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world212_jumprelu_anthropic_c0_step500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world212_jumprelu_anthropic_c0_step500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world212_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr-0.4_world212_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world212_batchtopk_c2_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world212_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world212_batchtopk_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world212_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": -0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr-0.4_world212_batchtopk_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c4_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world210_vg_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world210_l1_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world210_l1_c3_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world210_l1_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world210_l1_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world210_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world210_gated_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world210_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world210_gated_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world210_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world210_jumprelu_anthropic_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world210_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world210_batchtopk_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world210_batchtopk_c2_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world210_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world210_batchtopk_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world210_batchtopk_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world211_vg_c4_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world211_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world211_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world211_vg_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world211_l1_c1_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world211_l1_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world211_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world211_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c4_step3000",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c4_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c1_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world211_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world211_jumprelu_anthropic_c4_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world211_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c2_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world211_batchtopk_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world212_vg_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world212_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world212_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.0_world212_vg_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world212_l1_c1_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world212_l1_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world212_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.0_world212_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c4_step3000",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c4_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c1_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.0_world212_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world212_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.0_world212_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world212_batchtopk_c2_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world212_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world212_batchtopk_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world212_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.0,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.0_world212_batchtopk_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world210_vg_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world210_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world210_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world210_vg_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world210_l1_c3_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world210_l1_c3_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world210_l1_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world210_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c3_step3000",
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world210_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world210_jumprelu_anthropic_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world210_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c2_step500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 210,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world210_batchtopk_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world211_vg_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world211_vg_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world211_vg_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world211_vg_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world211_l1_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world211_l1_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world211_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world211_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world211_gated_c4_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world211_gated_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world211_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world211_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world211_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world211_jumprelu_anthropic_c0_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world211_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world211_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c2_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 211,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world211_batchtopk_c4_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world212_vg_c3_step1500",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world212_vg_c4_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world212_vg_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "vg",
+      "candidate_id": "corr+0.4_world212_vg_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world212_l1_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world212_l1_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world212_l1_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "l1",
+      "candidate_id": "corr+0.4_world212_l1_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world212_gated_c4_step500",
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world212_gated_c1_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world212_gated_c1_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world212_gated_c1_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "gated",
+      "candidate_id": "corr+0.4_world212_gated_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world212_jumprelu_anthropic_c3_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "jumprelu_anthropic",
+      "candidate_id": "corr+0.4_world212_jumprelu_anthropic_c0_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "oracle_recovery",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": null,
+      "selector": "matched_l0",
+      "target": 1.8,
+      "status": "coverage_failure"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c2_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c2_step3000",
+      "selector": "matched_l0",
+      "target": 2.0,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c3_step3000",
+      "selector": "oracle_recovery",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c3_step3000",
+      "selector": "matched_l0",
+      "target": 2.2,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c2_step3000",
+      "selector": "deployment_c_dec",
+      "target": null,
+      "status": "selected"
+    },
+    {
+      "correlation": 0.4,
+      "world": 212,
+      "method": "batchtopk",
+      "candidate_id": "corr+0.4_world212_batchtopk_c3_step3000",
+      "selector": "deployment_mse",
+      "target": null,
+      "status": "selected"
+    }
+  ],
+  "calibration_sha256": "a3febd7036ab76bf8cbdbf095f419258a24495ef1dc1bc370c5b9473762149d2",
+  "config_sha256": "ee8e2aa604593714d570ab8951ff3eae5fc32142278fcb119423629ef8885ec1",
+  "test_generation_started": false,
+  "elapsed_seconds_at_freeze": 2793.60790668102
+}

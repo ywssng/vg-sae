@@ -1,0 +1,2349 @@
+{
+  "created_at": "2026-09-21T16:15:08.388155+00:00",
+  "models": 72,
+  "worlds": [
+    210,
+    211,
+    212
+  ],
+  "device": "cpu",
+  "new_training_models": 72,
+  "gpu_hours": 0,
+  "training_process_wall_seconds_sum": 800.5419483692385,
+  "max_training_process_wall_seconds": 269.85394322592765,
+  "test_process_wall_seconds_sum": 1.7760972823016346,
+  "timing_probe_seconds": 0.9404445611871779,
+  "paired_cells": [
+    {
+      "world": 210,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.002494002293027875,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.004980397742377173,
+        "negative_mixing_energy": 0.0009444368674055761,
+        "support_f1": -0.5816084146499634,
+        "support_f1_macro": -0.6024368107318878,
+        "hard_l0": 3.81378173828125,
+        "l0_absolute_sample_error": 3.81378173828125,
+        "hard_latent_relative_error": 2.809294708073139,
+        "hard_ev": 0.00362551212310791,
+        "gamma_final": -2.320207953453064,
+        "prior_probability": 0.46017199009656906
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.046588372144070966,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.025423646635412578,
+        "negative_mixing_energy": 0.010571245306176452,
+        "support_f1": -0.22164219617843628,
+        "support_f1_macro": -0.3994312286376953,
+        "hard_l0": 2.39794921875,
+        "l0_absolute_sample_error": 2.39794921875,
+        "hard_latent_relative_error": 0.5203337669372559,
+        "hard_ev": -6.633996963500977e-05,
+        "gamma_final": -2.321327567100525,
+        "prior_probability": 0.4604448601603508
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.0026523798054416403,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.005239062211958134,
+        "negative_mixing_energy": 0.005061375234013917,
+        "support_f1": -0.14704585075378418,
+        "support_f1_macro": -0.12143975496292114,
+        "hard_l0": 0.343505859375,
+        "l0_absolute_sample_error": 0.3433837890625,
+        "hard_latent_relative_error": 0.07560841366648674,
+        "hard_ev": -0.006322979927062988,
+        "gamma_final": -1.238613486289978,
+        "prior_probability": 0.19914238899946213
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.0007926539288929391,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.0015694321393474597,
+        "negative_mixing_energy": 0.0015398535209211305,
+        "support_f1": -0.38561105728149414,
+        "support_f1_macro": -0.2707147002220154,
+        "hard_l0": 1.2509765625,
+        "l0_absolute_sample_error": 1.2509765625,
+        "hard_latent_relative_error": 0.1435222402215004,
+        "hard_ev": -0.011032164096832275,
+        "gamma_final": -2.0431318692862988,
+        "prior_probability": 0.3915783688426018
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -1.854244859123e-05,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 1.362559445092782e-05,
+        "negative_mixing_energy": 2.2970958247912123e-06,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.0181795135140419,
+        "hard_ev": -0.0019046664237976074,
+        "gamma_final": -0.8043636083602905,
+        "prior_probability": 0.1130494698882103
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.0008825875766530489,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.0017479477731207505,
+        "negative_mixing_energy": 0.0017310419238026644,
+        "support_f1": -0.11242371797561646,
+        "support_f1_macro": -0.08520448207855225,
+        "hard_l0": 0.25445556640625,
+        "l0_absolute_sample_error": 0.25433349609375,
+        "hard_latent_relative_error": 0.05496338754892349,
+        "hard_ev": -0.006756842136383057,
+        "gamma_final": -1.2305487990379333,
+        "prior_probability": 0.1973949298262596
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.03571250390490488,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.056823397082486043,
+        "negative_mixing_energy": 0.030734689226971756,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.14540886878967285,
+        "hard_ev": 9.08970832824707e-05,
+        "gamma_final": -1.9303974583745003,
+        "prior_probability": 0.36340346187353134
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": 0.02635363392926182,
+        "recovered_fraction_cosine_095": -0.20000000000000007,
+        "mixing_energy": 0.4007590685254343,
+        "negative_mixing_energy": 0.20417991121375406,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.45523858070373535,
+        "hard_ev": 0.00019800662994384766,
+        "gamma_final": -1.9299437999725342,
+        "prior_probability": 0.3632902130484581
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.006063770497589216,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.010450978879299577,
+        "negative_mixing_energy": 0.021270161633767853,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.5070366859436035,
+        "hard_ev": -0.00010502338409423828,
+        "gamma_final": -1.7895806729793549,
+        "prior_probability": 0.32838549464941025
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.00033939929271342706,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.0006890354965460421,
+        "negative_mixing_energy": 0.000385968153536164,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.057625412940979004,
+        "hard_ev": 1.8894672393798828e-05,
+        "gamma_final": -1.9803540855646133,
+        "prior_probability": 0.3758857473731041
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.0011245760991364095,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.0022524820478132313,
+        "negative_mixing_energy": 0.002114129174187225,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.16049599647521973,
+        "hard_ev": 0.00012564659118652344,
+        "gamma_final": -2.0008232332766056,
+        "prior_probability": 0.38100289553403854
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.074878488838101,
+        "recovered_fraction_cosine_095": -0.8,
+        "mixing_energy": 0.14288641248028805,
+        "negative_mixing_energy": 0.13107801644118597,
+        "support_f1": -0.05411660671234131,
+        "support_f1_macro": -0.08678168058395386,
+        "hard_l0": 0.6053466796875,
+        "l0_absolute_sample_error": 0.605224609375,
+        "hard_latent_relative_error": 1.3792802095413208,
+        "hard_ev": -7.981061935424805e-05,
+        "gamma_final": -1.9240416586399078,
+        "prior_probability": 0.3618166372179985
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": 0.02413343175777055,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": -0.0379434578113349,
+        "negative_mixing_energy": 0.013782545633942211,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.0719456672668457,
+        "hard_ev": 3.784894943237305e-05,
+        "gamma_final": -1.6415744423866272,
+        "prior_probability": 0.2921377941966057
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": 0.004768542206809834,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.016232710929713567,
+        "negative_mixing_energy": 0.009404507017824248,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.19573187828063965,
+        "hard_ev": 2.0444393157958984e-05,
+        "gamma_final": -1.7066434621810913,
+        "prior_probability": 0.30797939747571945
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": 0.042465095936909114,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.02973662336777616,
+        "negative_mixing_energy": -0.058392003938498305,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.3876316547393799,
+        "hard_ev": -1.8358230590820312e-05,
+        "gamma_final": -1.611073523759842,
+        "prior_probability": 0.2847728356719017
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.03794435346438163,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.05152396540838833,
+        "negative_mixing_energy": 0.014167857928636007,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.07655501365661621,
+        "hard_ev": 0.0001404881477355957,
+        "gamma_final": -1.5360423922538757,
+        "prior_probability": 0.2668445035815239
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": -0.11806286715580305,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.15627315489131438,
+        "negative_mixing_energy": 0.06937574448534395,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": 0.28420543670654297,
+        "hard_ev": 6.80088996887207e-05,
+        "gamma_final": -1.7623037248849869,
+        "prior_probability": 0.32165124267339706
+      },
+      "joint_pilot_criterion_passed": false
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "deltas_learned_init2_minus_fixed2": {
+        "matched_positive_cosine": 0.019237885247913034,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": -0.039523538181959916,
+        "negative_mixing_energy": -0.06909425674084624,
+        "support_f1": 0.0,
+        "support_f1_macro": 0.0,
+        "hard_l0": 0.0,
+        "l0_absolute_sample_error": 0.0,
+        "hard_latent_relative_error": -0.1362321376800537,
+        "hard_ev": 0.0002116560935974121,
+        "gamma_final": -1.7326006591320038,
+        "prior_probability": 0.31434278935194016
+      },
+      "joint_pilot_criterion_passed": false
+    }
+  ],
+  "group_summary": [
+    {
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9092816592229758,
+        "recovered_fraction_cosine_095": 0.8666666666666667,
+        "mixing_energy": 0.12051329277902821,
+        "negative_mixing_energy": 0.06092269238957504,
+        "support_f1": 0.8231485287348429,
+        "support_f1_macro": 0.8893517851829529,
+        "hard_l0": 1.5946858723958333,
+        "l0_absolute_sample_error": 0.5966389973958334,
+        "hard_latent_relative_error": 0.9132260270416737,
+        "hard_ev": 0.9976455370585123,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.7297051713845655,
+          0.9999626872840892
+        ],
+        "recovered_fraction_cosine_095": [
+          0.6,
+          1.0
+        ],
+        "mixing_energy": [
+          4.1969761848870134e-05,
+          0.3579331537675701
+        ],
+        "negative_mixing_energy": [
+          2.850137708889792e-05,
+          0.1791805343176987
+        ],
+        "support_f1": [
+          0.5543819069862366,
+          0.9999693632125854
+        ],
+        "support_f1_macro": [
+          0.7321681976318359,
+          0.9999696612358093
+        ],
+        "hard_l0": [
+          0.99578857421875,
+          2.60205078125
+        ],
+        "l0_absolute_sample_error": [
+          6.103515625e-05,
+          1.60418701171875
+        ],
+        "hard_latent_relative_error": [
+          0.03805441036820412,
+          2.6139557361602783
+        ],
+        "hard_ev": [
+          0.9959079623222351,
+          0.9988248944282532
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.7537556391408141,
+        "recovered_fraction_cosine_095": 0.33333333333333337,
+        "mixing_energy": 0.377365338426945,
+        "negative_mixing_energy": 0.20337171893025446,
+        "support_f1": 0.332801749308904,
+        "support_f1_macro": 0.332796186208725,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 4.001912434895833,
+        "hard_latent_relative_error": 4.520704746246338,
+        "hard_ev": 0.9996220270792643,
+        "gamma_final": -1.6627631187438965,
+        "prior_probability": 0.8406007488568624
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.7130700745075417,
+          0.7939844416487011
+        ],
+        "recovered_fraction_cosine_095": [
+          0.2,
+          0.4
+        ],
+        "mixing_energy": [
+          0.3178377942901996,
+          0.4515247360789127
+        ],
+        "negative_mixing_energy": [
+          0.173149070037988,
+          0.24735283430850336
+        ],
+        "support_f1": [
+          0.33217963576316833,
+          0.3334859013557434
+        ],
+        "support_f1_macro": [
+          0.33217090368270874,
+          0.33348068594932556
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          3.99945068359375,
+          4.004150390625
+        ],
+        "hard_latent_relative_error": [
+          4.29926061630249,
+          4.962930202484131
+        ],
+        "hard_ev": [
+          0.9995529055595398,
+          0.9997149705886841
+        ],
+        "gamma_final": [
+          -1.6785632371902466,
+          -1.646493673324585
+        ],
+        "prior_probability": [
+          0.8384166359901428,
+          0.8427141904830933
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.8920367411421289,
+        "recovered_fraction_cosine_095": 0.8666666666666667,
+        "mixing_energy": 0.13239432830894418,
+        "negative_mixing_energy": 0.06644837819210703,
+        "support_f1": 0.5063830415407816,
+        "support_f1_macro": 0.5149158537387848,
+        "hard_l0": 3.7797648111979165,
+        "l0_absolute_sample_error": 2.78167724609375,
+        "hard_latent_relative_error": 2.0483049899339676,
+        "hard_ev": 0.996724267800649,
+        "gamma_final": 0.03995033105214437,
+        "prior_probability": 0.49245599905649823
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.6831167992404945,
+          0.9973103074786476
+        ],
+        "recovered_fraction_cosine_095": [
+          0.6,
+          1.0
+        ],
+        "mixing_energy": [
+          0.005281031973807004,
+          0.3833568004029827
+        ],
+        "negative_mixing_energy": [
+          0.0045034783413430935,
+          0.18975177962387516
+        ],
+        "support_f1": [
+          0.3327397108078003,
+          0.8529235124588013
+        ],
+        "support_f1_macro": [
+          0.3327369689941406,
+          0.8785299062728882
+        ],
+        "hard_l0": [
+          1.33929443359375,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          0.34344482421875,
+          4.00213623046875
+        ],
+        "hard_latent_relative_error": [
+          0.11366282403469086,
+          3.134289503097534
+        ],
+        "hard_ev": [
+          0.9918807744979858,
+          0.999533474445343
+        ],
+        "gamma_final": [
+          -0.3213275671005249,
+          0.761386513710022
+        ],
+        "prior_probability": [
+          0.318345308303833,
+          0.5796477794647217
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9987035186179833,
+        "recovered_fraction_cosine_095": 1.0,
+        "mixing_energy": 0.0025509110438104296,
+        "negative_mixing_energy": 0.0025452130983807447,
+        "support_f1": 0.9750933448473612,
+        "support_f1_macro": 0.9806421597798666,
+        "hard_l0": 1.0516560872395833,
+        "l0_absolute_sample_error": 0.053568522135416664,
+        "hard_latent_relative_error": 0.0513078048825264,
+        "hard_ev": 0.9986570080121359,
+        "gamma_final": 1.8210663398106892,
+        "prior_probability": 0.13939154148101807
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9961576830685483,
+          0.999989203955099
+        ],
+        "recovered_fraction_cosine_095": [
+          1.0,
+          1.0
+        ],
+        "mixing_energy": [
+          1.3637942479594044e-05,
+          0.00759711718312861
+        ],
+        "negative_mixing_energy": [
+          1.2542719118326426e-05,
+          0.0075885655464804965
+        ],
+        "support_f1": [
+          0.9252800345420837,
+          1.0
+        ],
+        "support_f1_macro": [
+          0.9419264793395996,
+          1.0
+        ],
+        "hard_l0": [
+          0.99786376953125,
+          1.15655517578125
+        ],
+        "l0_absolute_sample_error": [
+          0.0,
+          0.16070556640625
+        ],
+        "hard_latent_relative_error": [
+          0.023487791419029236,
+          0.09882521629333496
+        ],
+        "hard_ev": [
+          0.9979677200317383,
+          0.9993080496788025
+        ],
+        "gamma_final": [
+          1.7623841762542725,
+          1.8699108362197876
+        ],
+        "prior_probability": [
+          0.13355202972888947,
+          0.14649198949337006
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9999773585275246,
+        "recovered_fraction_cosine_095": 1.0,
+        "mixing_energy": 2.980846697756926e-05,
+        "negative_mixing_energy": 2.036074465186786e-05,
+        "support_f1": 0.9999898672103882,
+        "support_f1_macro": 0.9999895691871643,
+        "hard_l0": 0.9956258138020834,
+        "l0_absolute_sample_error": 2.0345052083333332e-05,
+        "hard_latent_relative_error": 0.038311136265595756,
+        "hard_ev": 0.9981025656064352,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9999724079463805,
+          0.9999805056662854
+        ],
+        "recovered_fraction_cosine_095": [
+          1.0,
+          1.0
+        ],
+        "mixing_energy": [
+          2.6410322311587463e-05,
+          3.5846959884189286e-05
+        ],
+        "negative_mixing_energy": [
+          1.2980147355376935e-05,
+          3.2117089327567246e-05
+        ],
+        "support_f1": [
+          0.9999696016311646,
+          1.0
+        ],
+        "support_f1_macro": [
+          0.9999687075614929,
+          1.0
+        ],
+        "hard_l0": [
+          0.9864501953125,
+          1.00384521484375
+        ],
+        "l0_absolute_sample_error": [
+          0.0,
+          6.103515625e-05
+        ],
+        "hard_latent_relative_error": [
+          0.03238716721534729,
+          0.045597322285175323
+        ],
+        "hard_ev": [
+          0.9973686337471008,
+          0.9986652135848999
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.8213641929739566,
+        "recovered_fraction_cosine_095": 0.4666666666666667,
+        "mixing_energy": 0.2949971160812516,
+        "negative_mixing_energy": 0.17767531230301148,
+        "support_f1": 0.332120676835378,
+        "support_f1_macro": 0.3321131765842438,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 4.004353841145833,
+        "hard_latent_relative_error": 4.701038360595703,
+        "hard_ev": 0.999528706073761,
+        "gamma_final": -1.662253737449646,
+        "prior_probability": 0.8405294617017111
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.6946391803980629,
+          0.9731642283336865
+        ],
+        "recovered_fraction_cosine_095": [
+          0.2,
+          1.0
+        ],
+        "mixing_energy": [
+          0.05271724423843416,
+          0.4843171822012152
+        ],
+        "negative_mixing_energy": [
+          0.04258210683113213,
+          0.2769068062489726
+        ],
+        "support_f1": [
+          0.3295609652996063,
+          0.3344177007675171
+        ],
+        "support_f1_macro": [
+          0.32955706119537354,
+          0.3344065845012665
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          3.99609375,
+          4.0135498046875
+        ],
+        "hard_latent_relative_error": [
+          3.769456386566162,
+          5.252262115478516
+        ],
+        "hard_ev": [
+          0.9994075298309326,
+          0.9996578097343445
+        ],
+        "gamma_final": [
+          -1.674009919166565,
+          -1.6404699087142944
+        ],
+        "prior_probability": [
+          0.8375988602638245,
+          0.842109739780426
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9994127638761455,
+        "recovered_fraction_cosine_095": 1.0,
+        "mixing_energy": 0.0011401436359506152,
+        "negative_mixing_energy": 0.0011114249248347298,
+        "support_f1": 0.833978275458018,
+        "support_f1_macro": 0.8813498417536417,
+        "hard_l0": 1.4974365234375,
+        "l0_absolute_sample_error": 0.5017903645833334,
+        "hard_latent_relative_error": 0.11053285002708435,
+        "hard_ev": 0.9915380080540975,
+        "gamma_final": 0.6406519077718258,
+        "prior_probability": 0.3532105088233948
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9990979180896323,
+          0.9999538654977893
+        ],
+        "recovered_fraction_cosine_095": [
+          1.0,
+          1.0
+        ],
+        "mixing_energy": [
+          4.9472554335117105e-05,
+          0.001774358095432338
+        ],
+        "negative_mixing_energy": [
+          3.441418515235846e-05,
+          0.0017470269210753237
+        ],
+        "support_f1": [
+          0.6143889427185059,
+          1.0
+        ],
+        "support_f1_macro": [
+          0.7292852997779846,
+          1.0
+        ],
+        "hard_l0": [
+          0.9864501953125,
+          2.24755859375
+        ],
+        "l0_absolute_sample_error": [
+          0.0,
+          1.2509765625
+        ],
+        "hard_latent_relative_error": [
+          0.05056668072938919,
+          0.18911956250667572
+        ],
+        "hard_ev": [
+          0.9863364696502686,
+          0.9967605471611023
+        ],
+        "gamma_final": [
+          -0.04313186928629875,
+          1.1956363916397095
+        ],
+        "prior_probability": [
+          0.23225238919258118,
+          0.5107812881469727
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9984578624448119,
+        "recovered_fraction_cosine_095": 1.0,
+        "mixing_energy": 0.0030597420452286453,
+        "negative_mixing_energy": 0.00305220665418238,
+        "support_f1": 0.9477445284525553,
+        "support_f1_macro": 0.9608997901280721,
+        "hard_l0": 1.10888671875,
+        "l0_absolute_sample_error": 0.11324055989583333,
+        "hard_latent_relative_error": 0.074466356386741,
+        "hard_ev": 0.9973488648732504,
+        "gamma_final": 1.6403255065282185,
+        "prior_probability": 0.16392534474531809
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9976840774131714,
+          0.9999862778804222
+        ],
+        "recovered_fraction_cosine_095": [
+          1.0,
+          1.0
+        ],
+        "mixing_energy": [
+          2.1238010816593266e-05,
+          0.004594158156744399
+        ],
+        "negative_mixing_energy": [
+          1.1989893205582226e-05,
+          0.00458617410096792
+        ],
+        "support_f1": [
+          0.9019224643707275,
+          1.0
+        ],
+        "support_f1_macro": [
+          0.9301816821098328,
+          1.0
+        ],
+        "hard_l0": [
+          0.99658203125,
+          1.20098876953125
+        ],
+        "l0_absolute_sample_error": [
+          0.0,
+          0.21453857421875
+        ],
+        "hard_latent_relative_error": [
+          0.03448975458741188,
+          0.10071495920419693
+        ],
+        "hard_ev": [
+          0.9962210655212402,
+          0.998498260974884
+        ],
+        "gamma_final": [
+          1.395747184753418,
+          1.8262474536895752
+        ],
+        "prior_probability": [
+          0.1386859118938446,
+          0.19849184155464172
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.7860938896496356,
+        "recovered_fraction_cosine_095": 0.4666666666666667,
+        "mixing_energy": 0.14295651963247658,
+        "negative_mixing_energy": 0.10435647869431897,
+        "support_f1": 0.5707804560661316,
+        "support_f1_macro": 0.5707712372144064,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 3.003173828125,
+        "hard_latent_relative_error": 2.5999976793924966,
+        "hard_ev": 0.99931401014328,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.5990901443371632,
+          0.9213338438292518
+        ],
+        "recovered_fraction_cosine_095": [
+          0.2,
+          0.8
+        ],
+        "mixing_energy": [
+          0.005017424474628896,
+          0.27660250939106357
+        ],
+        "negative_mixing_energy": [
+          0.0050174244746288964,
+          0.19353358310530375
+        ],
+        "support_f1": [
+          0.5703814625740051,
+          0.5712167620658875
+        ],
+        "support_f1_macro": [
+          0.5703750848770142,
+          0.5712067484855652
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          3.00103759765625,
+          3.005126953125
+        ],
+        "hard_latent_relative_error": [
+          2.2120635509490967,
+          2.8300836086273193
+        ],
+        "hard_ev": [
+          0.9992074370384216,
+          0.9993972778320312
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.7098834994400752,
+        "recovered_fraction_cosine_095": 0.06666666666666667,
+        "mixing_energy": 0.47412576183536703,
+        "negative_mixing_energy": 0.3146322338573601,
+        "support_f1": 0.5707804560661316,
+        "support_f1_macro": 0.5707712372144064,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 3.003173828125,
+        "hard_latent_relative_error": 4.471609274546306,
+        "hard_ev": 0.9996799031893412,
+        "gamma_final": -1.7081152995427449,
+        "prior_probability": 0.8465913136800131
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.615172933780807,
+          0.842200905900949
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.2
+        ],
+        "mixing_energy": [
+          0.28032555250754004,
+          0.6172884470162079
+        ],
+        "negative_mixing_energy": [
+          0.20398725618306393,
+          0.40566746649542296
+        ],
+        "support_f1": [
+          0.5703814625740051,
+          0.5712167620658875
+        ],
+        "support_f1_macro": [
+          0.5703750848770142,
+          0.5712067484855652
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          3.00103759765625,
+          3.005126953125
+        ],
+        "hard_latent_relative_error": [
+          4.111685276031494,
+          4.771390438079834
+        ],
+        "hard_ev": [
+          0.9996641874313354,
+          0.99969083070755
+        ],
+        "gamma_final": [
+          -1.7114008665084839,
+          -1.7043359279632568
+        ],
+        "prior_probability": [
+          0.8461002111434937,
+          0.8470179438591003
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.7809530094918915,
+        "recovered_fraction_cosine_095": 0.4,
+        "mixing_energy": 0.2989676677948832,
+        "negative_mixing_energy": 0.18975139938581687,
+        "support_f1": 0.5707804560661316,
+        "support_f1_macro": 0.5707712372144064,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 3.003173828125,
+        "hard_latent_relative_error": 2.9692257245381675,
+        "hard_ev": 0.9993753035863241,
+        "gamma_final": 0.11669268955787022,
+        "prior_probability": 0.4708959758281708
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.625443778266425,
+          0.8856213399243469
+        ],
+        "recovered_fraction_cosine_095": [
+          0.2,
+          0.6
+        ],
+        "mixing_energy": [
+          0.20407302211422335,
+          0.4057764930000632
+        ],
+        "negative_mixing_energy": [
+          0.14525311772999602,
+          0.2148037447390716
+        ],
+        "support_f1": [
+          0.5703814625740051,
+          0.5712167620658875
+        ],
+        "support_f1_macro": [
+          0.5703750848770142,
+          0.5712067484855652
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          3.00103759765625,
+          3.005126953125
+        ],
+        "hard_latent_relative_error": [
+          2.667302131652832,
+          3.337120294570923
+        ],
+        "hard_ev": [
+          0.999292254447937,
+          0.9994282126426697
+        ],
+        "gamma_final": [
+          0.06960254162549973,
+          0.21041932702064514
+        ],
+        "prior_probability": [
+          0.44758841395378113,
+          0.4826063811779022
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9903699874252015,
+        "recovered_fraction_cosine_095": 0.8666666666666667,
+        "mixing_energy": 0.018760270684671343,
+        "negative_mixing_energy": 0.01857852569033634,
+        "support_f1": 0.8497850298881531,
+        "support_f1_macro": 0.877901554107666,
+        "hard_l0": 2.7969970703125,
+        "l0_absolute_sample_error": 0.8002115885416666,
+        "hard_latent_relative_error": 0.7029835134744644,
+        "hard_ev": 0.999258279800415,
+        "gamma_final": 1.3920366764068604,
+        "prior_probability": 0.21065224210421243
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9871627908046584,
+          0.9947338293265107
+        ],
+        "recovered_fraction_cosine_095": [
+          0.8,
+          1.0
+        ],
+        "mixing_energy": [
+          0.01045011740447901,
+          0.024844307484477614
+        ],
+        "negative_mixing_energy": [
+          0.009904903775448804,
+          0.02484430169258519
+        ],
+        "support_f1": [
+          0.6893405318260193,
+          0.9301995038986206
+        ],
+        "support_f1_macro": [
+          0.7429245114326477,
+          0.9454757571220398
+        ],
+        "hard_l0": [
+          2.2958984375,
+          3.7962646484375
+        ],
+        "l0_absolute_sample_error": [
+          0.29998779296875,
+          1.79962158203125
+        ],
+        "hard_latent_relative_error": [
+          0.15894152224063873,
+          1.7766213417053223
+        ],
+        "hard_ev": [
+          0.9991076588630676,
+          0.9995104670524597
+        ],
+        "gamma_final": [
+          1.009097695350647,
+          2.0971157550811768
+        ],
+        "prior_probability": [
+          0.10937747359275818,
+          0.2671564817428589
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9993466753796726,
+        "recovered_fraction_cosine_095": 1.0,
+        "mixing_energy": 0.001286132799956611,
+        "negative_mixing_energy": 0.0011338265348829408,
+        "support_f1": 0.5891672372817993,
+        "support_f1_macro": 0.6000489592552185,
+        "hard_l0": 4.7982177734375,
+        "l0_absolute_sample_error": 2.7997233072916665,
+        "hard_latent_relative_error": 1.8173729181289673,
+        "hard_ev": 0.9994638164838155,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9990390742191282,
+          0.9997189002010428
+        ],
+        "recovered_fraction_cosine_095": [
+          1.0,
+          1.0
+        ],
+        "mixing_energy": [
+          0.0005446139500354885,
+          0.0018973730055621863
+        ],
+        "negative_mixing_energy": [
+          0.0005444874317986849,
+          0.0014405807285780025
+        ],
+        "support_f1": [
+          0.5692954063415527,
+          0.6263294816017151
+        ],
+        "support_f1_macro": [
+          0.5692908763885498,
+          0.6589826941490173
+        ],
+        "hard_l0": [
+          4.3946533203125,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          2.39093017578125,
+          3.01043701171875
+        ],
+        "hard_latent_relative_error": [
+          1.738552212715149,
+          1.88057541847229
+        ],
+        "hard_ev": [
+          0.9994182586669922,
+          0.9995387196540833
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.7989333577191023,
+        "recovered_fraction_cosine_095": 0.13333333333333333,
+        "mixing_energy": 0.344338990592246,
+        "negative_mixing_energy": 0.24283070640041168,
+        "support_f1": 0.5711283683776855,
+        "support_f1_macro": 0.5711217323939005,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 3.00146484375,
+        "hard_latent_relative_error": 4.13629166285197,
+        "hard_ev": 0.9995239774386088,
+        "gamma_final": -1.700527548789978,
+        "prior_probability": 0.8455975453058878
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.7150006079611864,
+          0.8761935438323022
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.4
+        ],
+        "mixing_energy": [
+          0.22495411221877976,
+          0.47151568924728765
+        ],
+        "negative_mixing_energy": [
+          0.18303953404275441,
+          0.3255861048376719
+        ],
+        "support_f1": [
+          0.5692954063415527,
+          0.5722128748893738
+        ],
+        "support_f1_macro": [
+          0.5692908763885498,
+          0.5722010135650635
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          2.99615478515625,
+          3.01043701171875
+        ],
+        "hard_latent_relative_error": [
+          3.885369300842285,
+          4.396395206451416
+        ],
+        "hard_ev": [
+          0.9994585514068604,
+          0.999559760093689
+        ],
+        "gamma_final": [
+          -1.7106853723526,
+          -1.6843175888061523
+        ],
+        "prior_probability": [
+          0.843475341796875,
+          0.8469251394271851
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9738991873030223,
+        "recovered_fraction_cosine_095": 0.7333333333333334,
+        "mixing_energy": 0.04989544280817239,
+        "negative_mixing_energy": 0.04565986445785273,
+        "support_f1": 0.5711283683776855,
+        "support_f1_macro": 0.5711217323939005,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 3.00146484375,
+        "hard_latent_relative_error": 2.3498401244481406,
+        "hard_ev": 0.9994853933652242,
+        "gamma_final": 0.03159367417295774,
+        "prior_probability": 0.4921046793460846
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9248404113629418,
+          0.9986996749264148
+        ],
+        "recovered_fraction_cosine_095": [
+          0.2,
+          1.0
+        ],
+        "mixing_energy": [
+          0.0025864085021082284,
+          0.14343102643032354
+        ],
+        "negative_mixing_energy": [
+          0.0018265488821141665,
+          0.13162250387298466
+        ],
+        "support_f1": [
+          0.5692954063415527,
+          0.5722128748893738
+        ],
+        "support_f1_macro": [
+          0.5692908763885498,
+          0.5722010135650635
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          2.99615478515625,
+          3.01043701171875
+        ],
+        "hard_latent_relative_error": [
+          1.938200831413269,
+          3.1178324222564697
+        ],
+        "hard_ev": [
+          0.999437153339386,
+          0.9995601177215576
+        ],
+        "gamma_final": [
+          -0.0008232332766056061,
+          0.07595834136009216
+        ],
+        "prior_probability": [
+          0.4810195565223694,
+          0.5002058148384094
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.9925933307215771,
+        "recovered_fraction_cosine_095": 0.9333333333333333,
+        "mixing_energy": 0.014393722272416146,
+        "negative_mixing_energy": 0.014390961518306562,
+        "support_f1": 0.9716175397237142,
+        "support_f1_macro": 0.975827693939209,
+        "hard_l0": 2.11688232421875,
+        "l0_absolute_sample_error": 0.11838785807291667,
+        "hard_latent_relative_error": 0.11126676977922519,
+        "hard_ev": 0.9991392294565836,
+        "gamma_final": 1.167176365852356,
+        "prior_probability": 0.2378948579231898
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.9877540238132895,
+          0.9999903527137299
+        ],
+        "recovered_fraction_cosine_095": [
+          0.8,
+          1.0
+        ],
+        "mixing_energy": [
+          1.5120895492715114e-05,
+          0.023738430986548265
+        ],
+        "negative_mixing_energy": [
+          1.4979825135241353e-05,
+          0.023731825818805438
+        ],
+        "support_f1": [
+          0.9568499326705933,
+          1.0
+        ],
+        "support_f1_macro": [
+          0.9631457328796387,
+          1.0
+        ],
+        "hard_l0": [
+          2.002197265625,
+          2.1844482421875
+        ],
+        "l0_absolute_sample_error": [
+          0.0,
+          0.18072509765625
+        ],
+        "hard_latent_relative_error": [
+          0.01323626283556223,
+          0.16554054617881775
+        ],
+        "hard_ev": [
+          0.9987685680389404,
+          0.9996877908706665
+        ],
+        "gamma_final": [
+          1.0465271472930908,
+          1.303545594215393
+        ],
+        "prior_probability": [
+          0.21356889605522156,
+          0.2598925232887268
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.4339456807156749,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.7230488422130071,
+        "negative_mixing_energy": 0.5453201105323312,
+        "support_f1": 0.7503809531529745,
+        "support_f1_macro": 0.7503755887349447,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.99755859375,
+        "hard_latent_relative_error": 3.3067148526509604,
+        "hard_ev": 0.9993609388669332,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.40371710789567655,
+          0.4740022446652855
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.6495445916255697,
+          0.7933239896823582
+        ],
+        "negative_mixing_energy": [
+          0.4926605456394042,
+          0.6031858559054794
+        ],
+        "support_f1": [
+          0.7495134472846985,
+          0.751257598400116
+        ],
+        "support_f1_macro": [
+          0.7495080828666687,
+          0.7512547373771667
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.991943359375,
+          2.00311279296875
+        ],
+        "hard_latent_relative_error": [
+          3.140047788619995,
+          3.498018980026245
+        ],
+        "hard_ev": [
+          0.9993282556533813,
+          0.9994055032730103
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.6427777842973524,
+        "recovered_fraction_cosine_095": 0.06666666666666667,
+        "mixing_energy": 0.5622977381652784,
+        "negative_mixing_energy": 0.3835628908740515,
+        "support_f1": 0.7503809531529745,
+        "support_f1_macro": 0.7503755887349447,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.99755859375,
+        "hard_latent_relative_error": 3.7142622470855713,
+        "hard_ev": 0.9995898207028707,
+        "gamma_final": -1.7554583152135212,
+        "prior_probability": 0.852619489034017
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.4845870504701241,
+          0.7539189919438686
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.2
+        ],
+        "mixing_energy": [
+          0.41469814294421437,
+          0.7578213279078152
+        ],
+        "negative_mixing_energy": [
+          0.2675886614708958,
+          0.5437780686521081
+        ],
+        "support_f1": [
+          0.7495134472846985,
+          0.751257598400116
+        ],
+        "support_f1_macro": [
+          0.7495080828666687,
+          0.7512547373771667
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.991943359375,
+          2.00311279296875
+        ],
+        "hard_latent_relative_error": [
+          3.6018919944763184,
+          3.8445844650268555
+        ],
+        "hard_ev": [
+          0.9995371699333191,
+          0.9996574521064758
+        ],
+        "gamma_final": [
+          -1.7791956663131714,
+          -1.7271931171417236
+        ],
+        "prior_probability": [
+          0.8490530252456665,
+          0.8555974960327148
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.4577347040161714,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.7257241343750588,
+        "negative_mixing_energy": 0.5335851267700872,
+        "support_f1": 0.7503809531529745,
+        "support_f1_macro": 0.7503755887349447,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.99755859375,
+        "hard_latent_relative_error": 3.525151252746582,
+        "hard_ev": 0.999374250570933,
+        "gamma_final": 0.34690285722414654,
+        "prior_probability": 0.4141662617524465
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.4288862317928725,
+          0.49813567642305606
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.6116011338142348,
+          0.8095567006120717
+        ],
+        "negative_mixing_energy": [
+          0.5064430912733464,
+          0.5495184370699342
+        ],
+        "support_f1": [
+          0.7495134472846985,
+          0.751257598400116
+        ],
+        "support_f1_macro": [
+          0.7495080828666687,
+          0.7512547373771667
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.991943359375,
+          2.00311279296875
+        ],
+        "hard_latent_relative_error": [
+          3.211993455886841,
+          3.6937508583068848
+        ],
+        "hard_ev": [
+          0.9993098974227905,
+          0.9994259476661682
+        ],
+        "gamma_final": [
+          0.2933565378189087,
+          0.3889264762401581
+        ],
+        "prior_probability": [
+          0.4039757549762726,
+          0.42718231678009033
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.30413262408071473,
+        "recovered_fraction_cosine_095": 0.06666666666666667,
+        "mixing_energy": 0.8071603145897218,
+        "negative_mixing_energy": 0.7449565028229008,
+        "support_f1": 0.7503809531529745,
+        "support_f1_macro": 0.7503755887349447,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.99755859375,
+        "hard_latent_relative_error": 2.5527913173039756,
+        "hard_ev": 0.9989959796269735,
+        "gamma_final": 2.401127020517985,
+        "prior_probability": 0.08389195303122203
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.24699260860277922,
+          0.4163023250898064
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.2
+        ],
+        "mixing_energy": [
+          0.7288457973880862,
+          0.894514894873064
+        ],
+        "negative_mixing_energy": [
+          0.6612399070926875,
+          0.790376767553217
+        ],
+        "support_f1": [
+          0.7495134472846985,
+          0.751257598400116
+        ],
+        "support_f1_macro": [
+          0.7495080828666687,
+          0.7512547373771667
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.991943359375,
+          2.00311279296875
+        ],
+        "hard_latent_relative_error": [
+          1.8294466733932495,
+          3.051166296005249
+        ],
+        "hard_ev": [
+          0.9989176392555237,
+          0.9990456700325012
+        ],
+        "gamma_final": [
+          2.208439826965332,
+          2.5986008644104004
+        ],
+        "prior_probability": [
+          0.06922852247953415,
+          0.0989951491355896
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "prior_kind": "fixed",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.6903671188827364,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.50708444118034,
+        "negative_mixing_energy": 0.35509276186174826,
+        "support_f1": 0.7505282958348592,
+        "support_f1_macro": 0.750523308912913,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.9966023763020833,
+        "hard_latent_relative_error": 3.5240275065104165,
+        "hard_ev": 0.9992683927218119,
+        "gamma_final": 2.0,
+        "prior_probability": 0.11920291930437088
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.6652176549778577,
+          0.7354821927300925
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.45742709682984567,
+          0.5482914914740121
+        ],
+        "negative_mixing_energy": [
+          0.30368923227852357,
+          0.39185517337349
+        ],
+        "support_f1": [
+          0.7481949329376221,
+          0.7522656321525574
+        ],
+        "support_f1_macro": [
+          0.7481914758682251,
+          0.7522596120834351
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.9854736328125,
+          2.01153564453125
+        ],
+        "hard_latent_relative_error": [
+          3.335973024368286,
+          3.7395236492156982
+        ],
+        "hard_ev": [
+          0.9991881251335144,
+          0.9993622303009033
+        ],
+        "gamma_final": [
+          2.0,
+          2.0
+        ],
+        "prior_probability": [
+          0.11920291930437088,
+          0.11920291930437088
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": -2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.6553385786357346,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.5428703371576538,
+        "negative_mixing_energy": 0.3535994160250127,
+        "support_f1": 0.7505282958348592,
+        "support_f1_macro": 0.750523308912913,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.9966023763020833,
+        "hard_latent_relative_error": 3.717644214630127,
+        "hard_ev": 0.9996385176976522,
+        "gamma_final": -1.7516876459121704,
+        "prior_probability": 0.8521589636802673
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.5423369389603009,
+          0.7904050650961201
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.3597008989789767,
+          0.6917325019033734
+        ],
+        "negative_mixing_energy": [
+          0.25962294538393793,
+          0.4461526547217122
+        ],
+        "support_f1": [
+          0.7481949329376221,
+          0.7522656321525574
+        ],
+        "support_f1_macro": [
+          0.7481914758682251,
+          0.7522596120834351
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.9854736328125,
+          2.01153564453125
+        ],
+        "hard_latent_relative_error": [
+          3.5085127353668213,
+          3.9249918460845947
+        ],
+        "hard_ev": [
+          0.9995976090431213,
+          0.9996722936630249
+        ],
+        "gamma_final": [
+          -1.761919617652893,
+          -1.734576940536499
+        ],
+        "prior_probability": [
+          0.8499969244003296,
+          0.8534499406814575
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 2,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.6447773404253124,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.5631756352195876,
+        "negative_mixing_energy": 0.3599092104194595,
+        "support_f1": 0.7505282958348592,
+        "support_f1_macro": 0.750523308912913,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.9966023763020833,
+        "hard_latent_relative_error": 3.598870277404785,
+        "hard_ev": 0.9994084437688192,
+        "gamma_final": 0.32301774124304455,
+        "prior_probability": 0.42014909783999127
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.6174193255742895,
+          0.6896393941881719
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.4760111970552023,
+          0.61370025172116
+        ],
+        "negative_mixing_energy": [
+          0.3227609166326438,
+          0.38390173786186715
+        ],
+        "support_f1": [
+          0.7481949329376221,
+          0.7522656321525574
+        ],
+        "support_f1_macro": [
+          0.7481914758682251,
+          0.7522596120834351
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.9854736328125,
+          2.01153564453125
+        ],
+        "hard_latent_relative_error": [
+          3.360353708267212,
+          3.8160786628723145
+        ],
+        "hard_ev": [
+          0.99932861328125,
+          0.9994664788246155
+        ],
+        "gamma_final": [
+          0.23769627511501312,
+          0.46395760774612427
+        ],
+        "prior_probability": [
+          0.3860474228858948,
+          0.44085416197776794
+        ]
+      }
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "prior_kind": "learned",
+      "gamma_initial": 6,
+      "n_worlds": 3,
+      "means": {
+        "matched_positive_cosine": 0.32606455167722936,
+        "recovered_fraction_cosine_095": 0.0,
+        "mixing_energy": 0.7778862706100103,
+        "negative_mixing_energy": 0.7188318271778886,
+        "support_f1": 0.7505282958348592,
+        "support_f1_macro": 0.750523308912913,
+        "hard_l0": 5.0,
+        "l0_absolute_sample_error": 1.9966023763020833,
+        "hard_latent_relative_error": 2.4735822677612305,
+        "hard_ev": 0.9988523920377096,
+        "gamma_final": 2.417416493097941,
+        "prior_probability": 0.08204416433970134
+      },
+      "ranges": {
+        "matched_positive_cosine": [
+          0.23217129018542731,
+          0.48355908312490625
+        ],
+        "recovered_fraction_cosine_095": [
+          0.0,
+          0.0
+        ],
+        "mixing_energy": [
+          0.6567073121042675,
+          0.8538460865349402
+        ],
+        "negative_mixing_energy": [
+          0.5427632441272088,
+          0.8421496902215564
+        ],
+        "support_f1": [
+          0.7481949329376221,
+          0.7522656321525574
+        ],
+        "support_f1_macro": [
+          0.7481914758682251,
+          0.7522596120834351
+        ],
+        "hard_l0": [
+          5.0,
+          5.0
+        ],
+        "l0_absolute_sample_error": [
+          1.9854736328125,
+          2.01153564453125
+        ],
+        "hard_latent_relative_error": [
+          2.136387348175049,
+          2.7617971897125244
+        ],
+        "hard_ev": [
+          0.9987693428993225,
+          0.9989719390869141
+        ],
+        "gamma_final": [
+          2.3081281185150146,
+          2.4732534885406494
+        ],
+        "prior_probability": [
+          0.07775460928678513,
+          0.09045203030109406
+        ]
+      }
+    }
+  ],
+  "cell_pass_counts": [
+    {
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "passed_worlds": 0
+    },
+    {
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "passed_worlds": 0
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "passed_worlds": 0
+    },
+    {
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "passed_worlds": 0
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "passed_worlds": 0
+    },
+    {
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "passed_worlds": 0
+    }
+  ],
+  "initialization_sensitivity": [
+    {
+      "world": 210,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.20597922718160155,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.31687240471460454,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.2,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.2842402329711059,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.026822049546735616,
+      "robust_le_005": true,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.20366469530766906,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.2,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.3044587376915694,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.14496188490370943,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.3795608955457037,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.4,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.3169366835059658,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.12379680888142774,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.19255155425589177,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.4,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.2727534158521031,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.33761666685406216,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.23548411192056562,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.6,
+      "correlation": -0.4,
+      "signed_cosine_range": 0.44283470187528545,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 210,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.5279417833747656,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 211,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.38524803538886215,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "world": 212,
+      "firing_probability": 0.6,
+      "correlation": 0.4,
+      "signed_cosine_range": 0.20608031106326563,
+      "robust_le_005": false,
+      "boundary_update_fractions": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "overall_pilot_signal": "UNSUPPORTED in this finite-budget training recipe; many gamma gradients remain nonstationary. Neither true-L0 discovery nor a converged wrong-density EB point is established.",
+  "interpretation": "Recipe/operating-point total effect; no target-density matched-L0 fixed-gamma grid. No post-test initializer selection.",
+  "limitations": [
+    "Finite noiseless5-feature toy,3pairedworlds.",
+    "Hyperparameter/density transfer uses target retraining, not zero-shot weights.",
+    "No full training per-update beta-floor log; evaluated checkpoint diagnostics only.",
+    "Point amplitude conditional objective, no generative ELBO guarantee."
+  ],
+  "posthoc_stationarity": {
+    "scope": "Full train-set diagnostic on frozen final models; no optimization or selection changes.",
+    "primary_cells_abs_train_residual_gt_2": 14,
+    "primary_cells": 18,
+    "conclusion": "Finite-budget recipe failure, not evidence of convergence to a wrong empirical-Bayes stationary point."
+  },
+  "metric_interpretation": "mixing_energy is signed-Hungarian assignment leakage and may include pure sign/mapping errors. Inspect absolute cosine and posthoc sign-invariant multicomponent energy before calling a change geometric demixing."
+}

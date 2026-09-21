@@ -1,0 +1,606 @@
+{
+  "schema_version": 1,
+  "run_id": "vg-sae-sparse-but-wrong-20260922",
+  "reviewer_role": "fresh pilot-allocation jury",
+  "review_model": "gpt-6-astra",
+  "reasoning_effort": "ultra",
+  "review_independence": "Fresh context; same-family provisional. Not cross-model independent confirmation.",
+  "status": "decision_before_pilot_results",
+  "executed_experiments": false,
+  "immutable_anchor": "Develop the original Variational Garrote SAE as an alternative to L1 sparsification, evaluating true feature recovery and wrong-sparsity sensitivity. Diagnostics support method development and do not replace the research goal.",
+  "decision": "Select exactly3 routes: S01 direct method comparison, S02 minimal learned global prior, and S06 joint-support mechanism pilot. Allocate one high-upside slot to S06. Preserve all20 raw variants in13 families; no scientific-quality deletion or paper-kill based solely on nearby prior art.",
+  "ranking_policy": "Order is qualitative expected information plus scientific upside under this budget; component1–5 scores expose judgment and are not measured evidence or a weighted numerical ranking. Diversify the three questions; do not choose three easy variations of the same diagnosis.",
+  "ranking": [
+    {
+      "rank": 1,
+      "family_id": "S01",
+      "title": "Original VG feature-identity comparison",
+      "retained_variants": [
+        "A01",
+        "B01"
+      ],
+      "information_value_1_to_5": 5,
+      "scientific_upside_1_to_5": 4,
+      "feasibility_1_to_5": 5,
+      "decision": "select:P1",
+      "strongest_case_for": "현재 VG가 L1 대안으로 실제 dictionary/support 복원에 주는 가치와 강한 non-L1 baseline 대비 위치를 가장 직접적으로 판별한다. 기존 코드 재사용성이 높다.",
+      "strongest_objection": "L1 대비 coefficient bias 개선은 이미 알려진 selection/amplitude 분리로 설명될 수 있고 full VG에는 unit-D tangent 방향의 직접 variance 반혼합 힘이 없다.",
+      "most_informative_failure": "Native L0를 맞추면 이득이 사라지거나 Gated/Anthropic Jump가 같은 회복을 더 잘 달성한다.",
+      "defer_or_followup_condition": "이 경우 VG 자체를 폐기하지 않고 어느 component/학습 경로가 필요한지 P2/P3로 한정한다."
+    },
+    {
+      "rank": 2,
+      "family_id": "S06",
+      "title": "Joint/block support posterior",
+      "retained_variants": [
+        "A06",
+        "B04"
+      ],
+      "information_value_1_to_5": 5,
+      "scientific_upside_1_to_5": 5,
+      "feasibility_1_to_5": 3,
+      "decision": "select:P3",
+      "strongest_case_for": "32개 support를 정확히 열거하는 작은 실험으로 mean-field 표현력 한계와 단순 amortization gap을 분리할 수 있다. 양성이면 block posterior를 설계할 구체적 근거가 생긴다.",
+      "strongest_objection": "Orthogonal D와 independent prior에서는 exact conditional posterior도 factorize한다. 더 풍부한 posterior가 mixed dictionary를 더 잘 설명할 가능성이 있다.",
+      "most_informative_failure": "Exact joint가 수렴한 mean-field보다 identity를 개선하지 못하거나 one-pass head에만 이긴다.",
+      "defer_or_followup_condition": "확장 가능한 block/amortized 구현은 dictionary 이득, density-matched 결과, 비용이 확인된 후에만 후속 연구로 둔다."
+    },
+    {
+      "rank": 3,
+      "family_id": "S02",
+      "title": "Learned global normalized support prior",
+      "retained_variants": [
+        "A02",
+        "B03"
+      ],
+      "information_value_1_to_5": 5,
+      "scientific_upside_1_to_5": 4,
+      "feasibility_1_to_5": 4,
+      "decision": "select:P2",
+      "strongest_case_for": "추가 head 없이 scalar gamma만 적응시켜 unknown-L0와 density transfer의 핵심 문제를 직접 시험한다. 성공/실패 원인이 추적 가능하다.",
+      "strongest_objection": "pi=mean(m)는 잘못된 dictionary에서도 성립하는 자기 일관성이다. Learned gamma의 scale, 초기화, precision coupling은 남는다.",
+      "most_informative_failure": "초기 gamma에 따라 다른 mixed/dense/collapsed 해에 정착하거나 낮은 loss와 달리 true support를 놓친다.",
+      "defer_or_followup_condition": "실패를 gamma gradient 구현 실패와 과학적 자기확증 실패로 나눠 기록한다. 바로 feature별/graph prior를 추가하지 않는다."
+    },
+    {
+      "rank": 4,
+      "family_id": "S04",
+      "title": "Sparsity continuation",
+      "retained_variants": [
+        "A04",
+        "B02"
+      ],
+      "information_value_1_to_5": 4,
+      "scientific_upside_1_to_5": 3,
+      "feasibility_1_to_5": 5,
+      "decision": "reserve:first",
+      "strongest_case_for": "최종 objective를 유지하며 초기 omission의 영향을 바꾸는 가장 저렴한 training intervention이다.",
+      "strongest_objection": "Sparse but Wrong 자체가 continuation을 다루고, 최종 objective가 잘못되면 안정적 해법이 아니라 mixing의 지연일 수 있다.",
+      "most_informative_failure": "공통 final-objective tail 또는 matched L0에서 이득이 사라진다.",
+      "defer_or_followup_condition": "P1 trajectory에서 초기 recovery 후 악화가 반복되거나 P3가 계산 상한에 막힐 때 다음 사전등록 후보로 승격한다. 근접 선행만으로 제외하지 않는다."
+    },
+    {
+      "rank": 5,
+      "family_id": "S05",
+      "title": "Residual support teacher amortization",
+      "retained_variants": [
+        "A05",
+        "B08"
+      ],
+      "information_value_1_to_5": 4,
+      "scientific_upside_1_to_5": 4,
+      "feasibility_1_to_5": 3,
+      "decision": "defer",
+      "strongest_case_for": "Residual-evidence teacher를 train-time으로 옮기면 one-pass native inference를 유지하면서 amortization 문제를 고칠 수 있다.",
+      "strongest_objection": "현재 evidence로는 objective 자체가 맞는지 불분명하다. 잘못된 optimum의 teacher를 잘 흉내 낼 수 있다.",
+      "most_informative_failure": "Fixed-D support만 좋아지고 learned-D identity는 개선되지 않거나 generic amplitude/extra-compute control로 설명된다.",
+      "defer_or_followup_condition": "P3에서 converged MF가 현재 amortized head보다 좋고 exact joint의 추가 이득은 작을 때 우선한다."
+    },
+    {
+      "rank": 6,
+      "family_id": "S09",
+      "title": "Precision-timescale control",
+      "retained_variants": [
+        "A09"
+      ],
+      "information_value_1_to_5": 4,
+      "scientific_upside_1_to_5": 2,
+      "feasibility_1_to_5": 5,
+      "decision": "defer",
+      "strongest_case_for": "Minibatch precision과 active-count 변동이 만든 불안정을 싸게 분리할 수 있다.",
+      "strongest_objection": "Global versus profiled objective는 동일하지 않고, 낮은 beta variance만으로 feature identity를 설명하지 못한다.",
+      "most_informative_failure": "큰 batch나 안정된 beta에서도 mixing은 그대로이며 recovery 차이가 없다.",
+      "defer_or_followup_condition": "P1/P2 로그에서 beta floor, 큰 count-beta 상관, 반복적인 collapse가 보일 때 먼저 수행한다. 단순 hygiene를 새 주요 기여로 부풀리지 않는다."
+    },
+    {
+      "rank": 7,
+      "family_id": "S11",
+      "title": "Correlated support prior",
+      "retained_variants": [
+        "B05"
+      ],
+      "information_value_1_to_5": 4,
+      "scientific_upside_1_to_5": 5,
+      "feasibility_1_to_5": 2,
+      "decision": "defer:high_upside_preserved",
+      "strongest_case_for": "Wrong dictionary가 coactivation을 대신 설명한다는 가설을 support prior 수준에서 바꾸는 직접 방법 후보다.",
+      "strongest_objection": "Wrong gate에서 추정한 pairwise prior도 자기확증적이며 posterior와 prior를 동시에 바꾸면 원인이 분리되지 않는다.",
+      "most_informative_failure": "Learned W가 같은 혼합을 합리화하거나 attained L0 보정 후 이득이 없다.",
+      "defer_or_followup_condition": "P3 exact-independent posterior가 충분한데 prior mismatch가 남는 증거가 생길 때 선택한다. Tiny exact partition만으로 확장 가능성을 주장하지 않는다."
+    },
+    {
+      "rank": 8,
+      "family_id": "S07",
+      "title": "Amplitude stationarity training",
+      "retained_variants": [
+        "A07"
+      ],
+      "information_value_1_to_5": 3,
+      "scientific_upside_1_to_5": 3,
+      "feasibility_1_to_5": 4,
+      "decision": "defer",
+      "strongest_case_for": "L1 없는 VG에서도 남는 amplitude stationarity 문제를 겨냥하며 broad-amplitude 후속에 유용하다.",
+      "strongest_objection": "Generic rescaling/refitting으로 거의 설명될 가능성이 높고 identity 문제와 분리해야 한다.",
+      "most_informative_failure": "MSE/계수 오차만 개선되고 signed dictionary/support 회복은 그대로다.",
+      "defer_or_followup_condition": "P1의 calibration-only L1 rescaling 및 coefficient error가 유력 병목을 보일 때 선택한다."
+    },
+    {
+      "rank": 9,
+      "family_id": "S03",
+      "title": "Feature-frequency prior with shared shrinkage",
+      "retained_variants": [
+        "A03"
+      ],
+      "information_value_1_to_5": 3,
+      "scientific_upside_1_to_5": 3,
+      "feasibility_1_to_5": 4,
+      "decision": "defer",
+      "strongest_case_for": "희귀 feature와 불균등 firing에 맞춘 prior는 global scalar의 확장으로 해석하기 쉽다.",
+      "strongest_objection": "이번 첫 toy의 marginal p는 동일하다. 아직 찾지 못한 feature의 낮은 posterior count를 prior가 더 억제할 수 있다.",
+      "most_informative_failure": "Rare recall이 떨어지거나 빈도 증가로만 이득을 얻는다.",
+      "defer_or_followup_condition": "S02의 global adaptation 가능성을 확인하고, unequal-frequency 평가를 사전등록한 뒤 수행한다."
+    },
+    {
+      "rank": 10,
+      "family_id": "S10",
+      "title": "Cross-seed stability selector",
+      "retained_variants": [
+        "A10",
+        "B10"
+      ],
+      "information_value_1_to_5": 3,
+      "scientific_upside_1_to_5": 4,
+      "feasibility_1_to_5": 3,
+      "decision": "defer",
+      "strongest_case_for": "True labels 없이 operating point를 고르는 구체적 wrapper이며 현재 체크포인트를 재사용할 수 있다.",
+      "strongest_objection": "동일 wrong dictionary의 재현성도 높을 수 있다. 여러 replica는 현재 3개 파일럿의 자원을 분산한다.",
+      "most_informative_failure": "Stability가 dead/common/mixed atom만 선호하거나 c_dec보다 oracle regret가 크다.",
+      "defer_or_followup_condition": "P1에서 넓고 실제로 좋은 VG operating region이 있고 단일 unlabeled selector만 실패할 때 선택한다."
+    },
+    {
+      "rank": 11,
+      "family_id": "S08",
+      "title": "Explicit slab uncertainty",
+      "retained_variants": [
+        "A08",
+        "B06"
+      ],
+      "information_value_1_to_5": 3,
+      "scientific_upside_1_to_5": 5,
+      "feasibility_1_to_5": 2,
+      "decision": "defer:high_upside_preserved",
+      "strongest_case_for": "명시적 amplitude uncertainty는 weak activation과 absence의 혼동에 구조적 해법을 줄 수 있다.",
+      "strongest_objection": "모델 변화와 slab hyperparameter가 크며 VSC/VAEase에 더 가까워진다. 현 narrow-normal toy만으로 판단하기 어렵다.",
+      "most_informative_failure": "Slab KL이 amplitude bias를 재도입하거나 coefficient uncertainty만 좋아지고 identity는 그대로다.",
+      "defer_or_followup_condition": "Point amplitude 보상관계가 P2 실패 원인이고 broad-amplitude shift에서 재현될 때 별도 완전한 likelihood/prior 유도와 함께 수행한다."
+    },
+    {
+      "rank": 12,
+      "family_id": "S12",
+      "title": "Hard-code decoder training",
+      "retained_variants": [
+        "B07"
+      ],
+      "information_value_1_to_5": 3,
+      "scientific_upside_1_to_5": 3,
+      "feasibility_1_to_5": 3,
+      "decision": "defer",
+      "strongest_case_for": "Mean-versus-hard deployment mismatch가 dictionary 학습에 미치는 영향을 직접 바꾼다.",
+      "strongest_objection": "Hard omission은 Sparse but Wrong 압력을 오히려 키울 수 있으며 block objective가 달라진다.",
+      "most_informative_failure": "Mixing/oscillation이 커지거나 더 많은 optimizer work가 전부 설명한다.",
+      "defer_or_followup_condition": "P1에서 큰 mean-hard gap과 gate uncertainty가 동시 반복되고 그 gap이 recovery 실패에 선행할 때만 선택한다."
+    },
+    {
+      "rank": 13,
+      "family_id": "S13",
+      "title": "Gate-uncertainty prior selector",
+      "retained_variants": [
+        "B09"
+      ],
+      "information_value_1_to_5": 2,
+      "scientific_upside_1_to_5": 3,
+      "feasibility_1_to_5": 4,
+      "decision": "defer",
+      "strongest_case_for": "VG entropy/sensitivity를 이용해 sweep 내 선택 비용을 낮출 수 있다.",
+      "strongest_objection": "Confident wrong mixing이 가능하며 임의 entropy/transition threshold가 oracle tuning을 숨길 위험이 있다.",
+      "most_informative_failure": "전이가 mixed/dead 상태를 가리키거나 sweep 방향과 source threshold에 민감하다.",
+      "defer_or_followup_condition": "P1 sweep에 truth-free로 반복되는 전이가 있는지 탐색 기록만 남긴다. 테스트 결과를 본 뒤 selector 규칙을 만들지 않는다."
+    }
+  ],
+  "common_protocol": {
+    "dataset": {
+      "input_dim": 20,
+      "true_width": 5,
+      "sae_width": 5,
+      "dictionary": "QR-orthonormal, different fixed world dictionary per paired seed; shared across methods and splits within world",
+      "support": "Gaussian copula hub; latent C_0j=C_j0=rho, all other off-diagonal 0; measure realized Bernoulli support correlation separately",
+      "amplitude": "max(0, Normal(1, .15)) primary; RMS-matched exponential preserved for a preregistered later transfer, not added after seeing primary test results",
+      "observation_noise_std": 0.0,
+      "train_count": 32768,
+      "calibration_count": 8192,
+      "test_count": 16384,
+      "finite_data_note": "Minibatch sampling with replacement from finite train set. This is paper-inspired screening; original code uses online fresh examples and 15M samples. QR is also a deliberate difference from original optimized orthogonalization."
+    },
+    "seeds": {
+      "outer_world_ids": [
+        210,
+        211,
+        212
+      ],
+      "dictionary_seed_rule": "world_id",
+      "train_seed_rule": "10000 + world_id",
+      "calibration_seed_rule": "20000 + world_id",
+      "test_seed_rule": "30000 + world_id",
+      "model_init_seed_rule": "world_id",
+      "minibatch_seed_rule": "40000 + world_id",
+      "condition_index": "Within one world, density/correlation arms share the same underlying RNG seeds for common-random-number pairing; split seeds remain independent. Actual tensors differ by rho/p; save hashes. P2 p=.4 +/- .4 uses exact P1 tensors/checkpoints. No condition-index offset in this authoritative root contract."
+    },
+    "optimization": {
+      "optimizer": "Adam",
+      "learning_rate": 0.003,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "weight_decay": 0.0,
+      "precision": "float32; deterministic numerical checks in float64",
+      "normalization": "Unit decoder columns after each optimizer step and remove radial decoder gradient consistently; common unnormalized x (no per-input norm). If baseline trainer normalization is unavoidable, use one common train-fitted scalar for all methods and unscale evaluation; log the change before runs.",
+      "bias": "Trainable decoder bias initialized to0 for all comparable arms; VG pre_bias=0 and gate_bias_init=-2 explicitly. Architecture-specific remaining defaults are logged. This matches the root/P1 launch contract.",
+      "fairness": "Share D initialization wherever API permits, training indices, examples, updates and checkpoint opportunities. Architecture-specific optimizer/loss schedules must be explicit. Do not compare core AdamW VG to Adam baselines accidentally."
+    },
+    "readout": {
+      "vg": "a(x) * 1[m(x) > .5]; never tune threshold on test",
+      "l1": "raw native ReLU, exact positive values counted; no train-GMM threshold in primary",
+      "gated": "native exported Gated encode",
+      "anthropic_jumprelu": "native learned threshold at inference; training MUST explicitly select tanh sparsity plus documented pre-act/STE variant. Project default step-loss JumpReLU is a different optional baseline, not a replacement.",
+      "batchtopk": "native exported inference threshold learned/estimated by its training recipe. Do not use batch TopK at evaluation. k is a batch mean budget, not the true count of every sample.",
+      "p3_exact_joint": "joint MAP state (argmin state energy, ascending binary-index tie-break) times a; also report common marginal >.5 readout as a separate prespecified control.",
+      "p3_optimized_mean_field": "a * 1[m_optimized > .5]; iterative cost explicit"
+    },
+    "metrics": {
+      "primary": [
+        "matched_positive_cosine",
+        "recovered_fraction_cosine_095",
+        "mixing_energy",
+        "signed_hub_leakage",
+        "support_f1"
+      ],
+      "required_additional": [
+        "per-feature and macro support F1/recall",
+        "negative_mixing_energy",
+        "off_manifold_energy",
+        "hard_l0",
+        "expected_l0 where defined",
+        "l0_absolute_sample_error",
+        "hard_latent_relative_error",
+        "hard_mse",
+        "hard_ev",
+        "mean_mse",
+        "Bernoulli/joint expected reconstruction risk",
+        "c_dec",
+        "active_latent_fraction",
+        "beta and floor/boundary hits",
+        "all failed seeds"
+      ],
+      "matching": "Signed Hungarian one-to-one mapping using learned D and D_star; freeze per checkpoint before support evaluation. No sign flips for positive codes. Absolute matching is secondary. Helper needs macro/per-feature F1 and logging extensions; four helper tests were reported by the root, not rerun by this jury."
+    },
+    "selection": {
+      "freeze": "Write protocol/config/seeds, dataset hashes, checkpoint IDs, calibration metrics and chosen IDs to selection_manifest.json BEFORE loading test tensors/evaluating any test metrics. All grids and checkpoints retained; do not silently discard failed models.",
+      "primary_checkpoint": "Final common step. Intermediate checkpoints only for prespecified oracle-cal and trajectory reports, with equal candidate counts; never training-loss-best as cross-method quality selection.",
+      "matched_l0": "At each target 1.8,2.0,2.2 choose final-step control minimizing abs(calibration native hard L0 - target), tie by lower calibration hard MSE, then ascending control index. Require target distance <=.15 and compared method-pair L0 difference <=.10; otherwise label unmatched and do not assert matched-L0 advantage. Targets use known synthetic mean L0 only for a diagnostic comparison; not a deployment rule.",
+      "oracle_cal": "Separate ceiling: among candidate checkpoints and controls satisfying target tolerance choose maximum signed cosine, tie lower mixing, then higher support F1, then later checkpoint and ascending control index. Clearly labeled ground-truth-assisted and never called automatic unknown-L0 selection.",
+      "truth_free": "Report native fixed recipe/final checkpoint as main transfer arm; optional c_dec-min selector across final controls, ties calibration hard MSE then control index. c_dec choice is a fallible comparator, never truth.",
+      "rescaled_l1": "Fit one positive scalar per nondead latent on calibration x to minimize reconstruction with support and decoder direction fixed (bounded nonnegative LS); freeze coefficients, then evaluate test. Treat dead/zero-scale case explicitly and preserve original support for support metrics. Report as coefficient-bias control, not an additional dictionary method."
+    },
+    "decision_thresholds": {
+      "unit": "Paired training worlds, not individual test examples, are replication units; n=3 is screening only. Show all seed outcomes and paired differences, no decisive significance claim.",
+      "p1_primary_target": 1.8,
+      "pilot_worth_following": "At matched L0, at least 2/3 worlds for EACH rho sign satisfy signed-cosine improvement >=.05 OR recovered-fraction improvement >=.20, plus support F1 improvement >=.03 and mixing-energy reduction >=.01. Compare VG to L1 and separately each strong baseline; do not choose the winning comparator after test.",
+      "strong_baseline_interpretation": "VG-versus-L1 only supports an L1-alternative result. Gated/Anthropic Jump/BatchTopK parity or dominance rules out a broad superiority claim but does not invalidate continued VG method development.",
+      "broad_wrong_sparsity": "Requires the prespecified joint criterion at BOTH wrong-L0 targets 1.8 and 2.2, both correlation signs; a peak near 2.0 or a post-test selected region is insufficient.",
+      "fidelity_tradeoff": "Hard EV drop >.02 versus comparator is reported as feature-fidelity tradeoff even if recovery thresholds pass; do not describe it as overall dominance.",
+      "underpowered_or_unresolved": [
+        "Fewer than three paired training worlds completed",
+        "No method at correct region reaches mean signed cosine >=.90 and F1 >=.80; known-D control or longer convergence check missing",
+        "L0 grids fail tolerance or native-code budget is unmatchable",
+        "Training loss still improves >5% relative from step1500 to3000 with nonstationary recovery; no stability/convergence evidence",
+        "Variant recipe absent (e.g. default step Jump used in place of Anthropic tanh/pre-act)",
+        "Precision floor/clamp or numerical error dominates",
+        "MF solver fails convergence in P3; cannot treat a solver failure as evidence for covariance benefit"
+      ],
+      "negative": "A mechanism is unsupported only in this finite tested regime when implementation checks, controls and coverage succeed and the stated effect is absent. Missing convergence or coverage is not an idea-kill."
+    },
+    "budget": {
+      "gpu0": "Never touch; occupied by unrelated work",
+      "devices": "Recheck physical1/2/3 immediately before launch. Record CUDA_VISIBLE_DEVICES to physical-device map.",
+      "per_pilot_hard_gpu_hours": 2.0,
+      "total_hard_gpu_hours": 8.0,
+      "estimates_are": "Ex ante planning estimates, not measured promises. Include scouts, restarts, failed jobs and solver steps in consumed GPUh.",
+      "runtime_probe": "Time 100 optimizer updates for the most expensive arm at intended batch size before full grid. If forecast exceeds cap, retain 3 worlds and final step at minimum2000; uniformly reduce controls or mixed-init secondary arms before any test access, version and freeze manifest. Do not run a cap-breaking job or keep easiest seeds only.",
+      "schedule": "After numerical gates and runtime probe, independent P1/P2/P3 training may proceed on physical1/2/3 with shared read-only data. P2/P3 do not require seeing P1 test results."
+    }
+  },
+  "selected_pilots": [
+    {
+      "pilot_id": "P1",
+      "family_ids": [
+        "S01"
+      ],
+      "title": "Current VG versus L1 and strong non-L1 methods under wrong sparsity",
+      "question": "Does existing VG learn more faithful features, beyond shrinkage mitigation and density changes?",
+      "estimated_gpu_hours": 1.7,
+      "conditions": {
+        "rho": [
+          -0.4,
+          0,
+          0.4
+        ],
+        "firing_probability": [
+          0.4
+        ],
+        "worlds": [
+          210,
+          211,
+          212
+        ]
+      },
+      "grid": {
+        "VG_gamma": [
+          -2,
+          0,
+          2,
+          4,
+          6
+        ],
+        "L1_coefficient": [
+          0,
+          0.03,
+          0.1,
+          0.3,
+          1.0
+        ],
+        "Gated_coefficient": [
+          0,
+          0.03,
+          0.1,
+          0.3,
+          1.0
+        ],
+        "AnthropicJump_tanh_coefficient": [
+          0.03,
+          0.1,
+          0.3,
+          1.0,
+          3.0
+        ],
+        "BatchTopK_k": [
+          1,
+          1.5,
+          2,
+          2.5,
+          3
+        ]
+      },
+      "training": {
+        "updates": 3000,
+        "batch_size": 256,
+        "checkpoints": [
+          500,
+          1500,
+          3000
+        ],
+        "vg_beta": "Current profiled policy, entropy_weight=1, variance on; log beta/floor",
+        "core_grid_fits": 225,
+        "examples_seen_per_fit": 768000,
+        "jump_recipe": "bandwidth=2, initial threshold=.1, tanh sparsity, pre-act recipe enabled/documented; scale l0 warmup to first1000 of3000 updates and record this shortened pilot deviation. BatchTopK constant k, no k schedule."
+      },
+      "bounded_scout": {
+        "optional_before_freeze": false,
+        "conditions": "One separate scout world id99, rho0,p.4; 1000 updates, cal L0 only; no truth-based recovery inspection",
+        "max_fits": 35,
+        "rule": "Start with the listed5 controls/method. If an endpoint fails to bracket [1.5,2.5], add at most2 endpoint controls: VG low=-6/high=10; positive coefficients low=initial min/10 and high=initial max*10. BatchTopK unchanged. Freeze5 controls as ordered endpoints plus3 equally spaced in gamma or log-positive-coefficient interval spanning closest bracketing scout controls, retaining coefficient0 when needed. If still no bracket, preserve original grid and label coverage unresolved; no endless tuning. Record actual controls before main grid.",
+        "launch_status": "Disabled for current launch to preserve fixed grids and gamma2 checkpoint reuse. Retained as a pre-test future protocol option only; initial listed grids are final for launch. Failed L0 coverage is unresolved, not permission for post-test grid tuning."
+      },
+      "positive_controls": "Pure ground-truth code/dictionary must score cosine1,mixing0,F1=1 by deterministic evaluator check. Known-D initialized BatchTopK K1.8/K2 training controls would be12 fits (2 K x2 signs x3 worlds); these are optional future preregistered diagnostics and are not required new launch arms. Failure to reproduce paper drift at the short budget is not a paper refutation.",
+      "acceptance": "Use common joint dictionary/support/leakage criterion at target1.8. Report L1, rescaled-L1, Gated, AnthropicJump, BatchTopK separately. Wrong-sparsity robustness requires prespecified1.8 AND2.2. Corr0 sanity is not a proof of no mixing.",
+      "negative_route": "If VG beats L1 coefficient metrics but not strong controls in dictionary/support, retain it as feasible L1 alternative and use P2/P3 to test added value; do not claim unique anti-mixing mechanism.",
+      "reuse": "P2 p.4 fixed-gamma2 and all common data; P1 intermediate/final checkpoints can support future preregistered analyses. Do not add no-variance/no-entropy module grid within this pilot; those are a focused later ablation after a promising full-VG regime exists."
+    },
+    {
+      "pilot_id": "P2",
+      "family_ids": [
+        "S02"
+      ],
+      "title": "Minimal normalized scalar-prior adaptation without true L0",
+      "question": "Can the same VG automatically reach a useful operating region across densities without truth-based selection?",
+      "estimated_gpu_hours": 1.2,
+      "conditions": {
+        "rho": [
+          -0.4,
+          0.4
+        ],
+        "firing_probability": [
+          0.2,
+          0.4,
+          0.6
+        ],
+        "worlds": [
+          210,
+          211,
+          212
+        ]
+      },
+      "arms": {
+        "fixed_source_recipe": "gamma=2 chosen a priori, same profiled beta and native .5 readout",
+        "learned_gamma_initializations": [
+          -2,
+          2,
+          6
+        ],
+        "primary_comparison": "learned gamma initialized2 versus fixed gamma2; other initializations are mandatory sensitivity checks, not best-of-three selection"
+      },
+      "training": {
+        "updates": 3000,
+        "batch_size": 256,
+        "checkpoints": [
+          500,
+          1500,
+          3000
+        ],
+        "network_optimizer": "Common Adam lr.003, matching root/P1 launch contract",
+        "gamma_optimizer": "Separate Adam parameter group lr3e-3, same betas, initialized to stated gamma; clamp[-8,8] after update and log frequency. One fixed recipe, no post-test choice between gradient and alternating updates.",
+        "objective": "Implement differentiable gamma*sum(m)+J*softplus(-gamma) in run-local loss; all other core terms and sample normalization unchanged. Do not pass tensor gamma through core float() conversion.",
+        "fits_total": 72,
+        "reusable_P1_fits": 6,
+        "new_fits_if_reused": 66
+      },
+      "numerical_gates": [
+        "Fixed-gamma local loss and network gradients equal current objective within float64 tolerance",
+        "dF/dgamma equals sum_j mean(m_j)-J*sigmoid(-gamma)",
+        "Finite-difference gamma gradient at positive and negative gamma",
+        "No support, dictionary truth or true L0 enters gamma update or stopping"
+      ],
+      "selection": "Final checkpoint of fixed init2 is main deployment arm. Report init-2 and init6 without selecting among them. P1 p.4 oracle-cal ceiling is an explicitly labeled reference only; no oracle ceiling is invented for untrained p.2/.6 grids.",
+      "acceptance": "At both target densities p.2 and p.6 and both rho signs, at least2/3 worlds show signed-cosine gain>=.05 OR recovered fraction>=.20, F1 gain>=.03 and mixing decrease>=.01 versus fixed gamma2; no source p.4 signed-cosine drop>.03. Across3 initializations signed-cosine range<=.05 and no substantial endpoint occupancy (>1% updates). These are demanding follow-up signals, not statistical proof.",
+      "density_interpretation": "Changing achieved L0 is the intended total effect of adaptation. Call a recovery gain operating-point selection benefit. Claim intrinsic lower mixing at matched L0 only where an independent fixed-gamma calibration grid supplies a pair within.10; p.2/.6 do not have that control in this bounded plan. Closeness of pi or expected L0 to true mean alone never passes.",
+      "failure": "Stable incorrect/mixed prior, strong initialization dependence, worse true support or dense/collapse endpoint is an informative failure. Clamp/precision-floor domination is numerical unresolved. Do not add per-feature or pairwise prior before recording this result."
+    },
+    {
+      "pilot_id": "P3",
+      "family_ids": [
+        "S06"
+      ],
+      "title": "Exact32 joint support as a high-upside mechanism test",
+      "question": "Does removing the mean-field family restriction improve learned dictionary identity beyond removing amortization error?",
+      "estimated_gpu_hours": 1.8,
+      "conditions": {
+        "rho": [
+          -0.4,
+          0.4
+        ],
+        "firing_probability": [
+          0.4
+        ],
+        "worlds": [
+          210,
+          211,
+          212
+        ],
+        "gamma": [
+          0,
+          4,
+          8
+        ],
+        "beta": 10.0
+      },
+      "arms": [
+        "Current amortized mean-field VG at fixed beta10",
+        "Optimized product-Bernoulli mean-field VG at fixed beta10",
+        "Exact32 conditional-support VG at fixed beta10"
+      ],
+      "training": {
+        "updates": 2000,
+        "batch_size": 128,
+        "checkpoints": [
+          500,
+          1000,
+          2000
+        ],
+        "primary_fits": 54,
+        "decoder_init": "Same random D per world/arm, same point-amplitude head initialization and minibatches; decoder bias shared recipe",
+        "beta_note": "Fixed finite beta10 is a run-local controlled objective. Freeze beta explicitly; core only offers profiled/learned modes, so do not label a still-trained log_beta parameter fixed. This is not a direct causal comparison against P1 profiled runs.",
+        "objective": "For each input and support s, E_s=beta/2*||x-b-D(s*a)||²+gamma*|s|. q_exact=softmax(-E_s); F_exact=-logsumexp(-E_s)+J*softplus(-gamma), up to common Gaussian normalizer. Keep point amplitude conditional; no full generative ELBO claim.",
+        "optimized_mean_field": "Cyclic coordinate minimization from3 fixed starts(.1,.5,.9), choose lowest variational F; at most50 full sweeps, convergence max|delta m|<1e-5, check stationarity residual. Detach converged q for envelope-gradient training; report all failed batches and training cost. Where <95% batches meet tolerance, covariance conclusion is unresolved. A single local product optimum is not a global-MF certificate; report the3-start limitation.",
+        "exact_gradients": "Use differentiable -logsumexp or mathematically equal envelope gradient. Verify equality numerically. Exact family retains covariance terms in risk; mean-field diagonal variance gradient alone is radial at fixed codes.",
+        "optimized_mean_field_detail": {
+          "initializations": [
+            0.1,
+            0.5,
+            0.9
+          ],
+          "initialization_semantics": "For each sample/minibatch solve3 separate product posteriors with all5 initial probabilities set to the stated constant. No ground-truth support, test tuning or amortized-head-only initialization.",
+          "coordinate_order": [
+            0,
+            1,
+            2,
+            3,
+            4
+          ],
+          "coordinate_update": "r_minus_j=x-b-sum_{k!=j} m_k*a_k*d_k; logit_j=beta*a_j*(d_j dot r_minus_j)-0.5*beta*a_j^2*||d_j||^2-gamma; m_j=sigmoid(logit_j). Use the newest coordinates in cyclic Gauss-Seidel order.",
+          "maximum_full_sweeps": 50,
+          "iterate_tolerance": 1e-05,
+          "stationarity_tolerance": 5e-05,
+          "convergence": "Require max across samples/latents |m_after_sweep-m_before_sweep|<1e-5 AND max|m-sigmoid(current coordinate logit)|<5e-5; log both residuals and per-start convergence. Strong beta saturation is not itself proof of stationarity.",
+          "winner": "For each sample choose the lowest independently evaluated complete mean-field variational free energy among the3 terminal starts, ties by start index. Record winning start and whether it converged. This is a3-start local-MF control, not a globally certified optimum.",
+          "gradient": "Detach selected solved m and differentiate complete expected quadratic risk plus Bernoulli entropy/prior with respect to D,a,b; use envelope interpretation only when converged. Amortized gate head route uses ordinary full backprop.",
+          "evaluation": "Use the same3 starts/order/50-sweep cap/tolerances for calibration and test. No larger solver allowance only on the model that performs poorly.",
+          "numerical_unresolved": "If fewer than95% training batches meet the chosen-convergence criteria or evaluation residuals fail, report exact-versus-MF attribution unresolved. Include all sample/seed solver-failure rates."
+        }
+      },
+      "secondary_mixed_init": {
+        "fits": 18,
+        "updates": 1000,
+        "gamma": 4,
+        "initialization": "Oracle mechanism-only D_j=normalize(f_j+sign(rho)*.3*f_0) for j>0 and D_0=f_0. Shared amplitude initialization; label access to true D. Same3 arms x2 signs x3 worlds.",
+        "purpose": "Test return from a prespecified mixed dictionary. Never replace random-init evidence or claim deployability. Drop entire secondary block before test access if runtime probe forecasts cap breach."
+      },
+      "numerical_gates": [
+        "Enumerated32 risk equals explicit state-weighted residual risk",
+        "For product q, exact moments agree with mean-risk+Bernoulli-variance formula",
+        "At orthogonal D with independent support prior, exact support posterior factorizes to numerical precision",
+        "Analytic coordinate stationary update and finite differences agree",
+        "Envelope gradients for exact and converged MF verified on tiny float64 example"
+      ],
+      "readout_and_selection": "Native joint MAP primary for exact model; native optimized marginal>.5 for MF. Also evaluate exact marginal>.5 to expose readout effects. Final checkpoint primary; calibration-only target selection and pair-L0 tolerance apply within this fixed-beta grid. If the3-point grid cannot match L0, report same-gamma total effects and mark density-matched mechanism claim unresolved.",
+      "acceptance": "Exact joint must beat OPTIMIZED MF, not merely current head, by cosine>=.05 OR recovered fraction>=.20 plus F1>=.03 and mixing decrease>=.01 in>=2/3 worlds for each sign. Main evidence comes from random starts, with paired L0 difference<=.10. Dictionary improvement should persist under prespecified common marginal readout control; MAP-only support gains do not establish better training covariance mechanism. Mixed-init success is corroboration only.",
+      "failure_and_routing": "Exact joint equals/loses to converged MF: independent family is not shown to be limiting here. Optimized MF beats head while exact adds little: prioritize S05 amortized residual teacher. Only mixed-init gains: optimization feasibility, not robust end-to-end success. Exact gains without matched L0 or adequate MF convergence: unresolved attribution.",
+      "scale_boundary": "32-state cost is exponential in width. Positive result authorizes a later bounded block posterior proposal and equal-compute controls; it does not itself supply a scalable SAE, semantic posterior or publication-level superiority claim."
+    }
+  ],
+  "resource_summary": {
+    "planned_gpu_hours": 4.7,
+    "per_pilot_estimates": [
+      1.7,
+      1.2,
+      1.8
+    ],
+    "sum_of_per_pilot_hard_caps": 6.0,
+    "overall_authorized_cap": 8.0,
+    "unused_margin_note": "Remaining margin is not permission for a fourth pilot or silent post-test expansion. Record all actual use, stop at route caps."
+  },
+  "nonselection_is_not_rejection": "Continuation, train-time teacher, precision control, feature-specific priors and explicit slabs remain bounded follow-up options under the stated evidence conditions. Do not add modules merely to answer reviewer objections.",
+  "implementation_handoff": "Root owns integration and preregistration. Independent agents may implement P2/P3 run-local runners after this allocation. This jury edits only its evidence/trace outputs, runs no experiments and changes no canonical proposal/source.",
+  "sources_read": [
+    "AGENTS.md",
+    ".agents/project-memory.md",
+    "RESEARCH_BRIEF.md",
+    "idea-stage/REF_PAPER_SUMMARY.md",
+    "idea-stage/runs/vg-sae-sparse-but-wrong-20260922/evidence/candidate_pool.json",
+    "idea-stage/runs/vg-sae-sparse-but-wrong-20260922/evidence/literature_update.md",
+    "idea-stage/runs/vg-sae-sparse-but-wrong-20260922/evidence/paper_pipeline_audit.md",
+    "idea-stage/runs/vg-sae-sparse-but-wrong-20260922/evidence/ref_paper_analysis.md",
+    "scripts/sbw_pilot_utils.py",
+    "src/sae_model.py"
+  ],
+  "launch_contract_update": "Root integration contract received after initial jury write: worlds210/211/212; Dseed=world, train10000+world, cal20000+world, test30000+world, initialization=torch.manual_seed(world), minibatch40000+world; VG gate bias=-2/prebias=0; learning rate=.003. These launch settings override initial planning defaults and keep exact P1/P2 reuse possible."
+}

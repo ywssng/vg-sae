@@ -1,0 +1,95 @@
+{
+  "world_seeds": [
+    210,
+    211,
+    212
+  ],
+  "correlations": [
+    -0.4,
+    0.0,
+    0.4
+  ],
+  "controls": {
+    "vg": [
+      -2.0,
+      0.0,
+      2.0,
+      4.0,
+      6.0
+    ],
+    "l1": [
+      0.0,
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "gated": [
+      0.0,
+      0.03,
+      0.1,
+      0.3,
+      1.0
+    ],
+    "jumprelu_anthropic": [
+      0.03,
+      0.1,
+      0.3,
+      1.0,
+      3.0
+    ],
+    "batchtopk": [
+      1.0,
+      1.5,
+      2.0,
+      2.5,
+      3.0
+    ]
+  },
+  "targets": [
+    1.8,
+    2.0,
+    2.2
+  ],
+  "tolerance": 0.15,
+  "checkpoints": [
+    500,
+    1500,
+    3000
+  ],
+  "steps": 3000,
+  "lr": 0.003,
+  "batch_size": 256,
+  "counts": {
+    "train": 32768,
+    "calibration": 8192,
+    "test": 16384
+  },
+  "seed_contract": {
+    "dictionary_and_init": "world",
+    "train": "10000+world",
+    "calibration": "20000+world",
+    "test": "30000+world",
+    "batches": "40000+world"
+  },
+  "protocol_sha256": "b05c740c3b225c6213d54b1c786e4fd1fa521e94d6be7641987c6c98fd60fffb",
+  "jury_sha256": "50c5c4fbbfcad18f03079858d7cf20c404fa8a61e9be4003b8fd01df5704a410",
+  "source_sha256": {
+    "scripts/run_sbw_baseline_pilot.py": "f22d1c7611234da96dedb57ea5a58eb936669c5ef6d98df82b15891544b1c9c8",
+    "scripts/sbw_pilot_utils.py": "3633fe8091f303e8b4e837a489fa995c68a34a489fd5e589478146644837d1e3",
+    "src/sae_model.py": "486c25102692866f327ba83204cd48e2720162f190991bcee3bfc5aad665ccd5",
+    "src/sae_baselines.py": "96f1732ee371026c53f62fbbba0494be481fc9dd237852ac46c3410037be19ae"
+  },
+  "environment": {
+    "python": "3.14.0",
+    "torch": "2.13.0+cu126",
+    "sae_lens": "6.47.0",
+    "numpy": "2.5.1",
+    "gpu": "NVIDIA RTX A6000",
+    "physical_gpu": 1,
+    "threads": 2,
+    "CUDA_VISIBLE_DEVICES": "1",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "deterministic_algorithms": true
+  }
+}

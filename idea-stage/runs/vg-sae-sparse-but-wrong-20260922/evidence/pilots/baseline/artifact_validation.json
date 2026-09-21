@@ -1,0 +1,21 @@
+{
+  "complete_225_models": true,
+  "complete_675_calibration_checkpoints": true,
+  "all_checkpoints_hash_match": true,
+  "frozen_receipt_hash_unchanged": true,
+  "calibration_hash_unchanged_after_freeze": true,
+  "config_hash_unchanged_after_freeze": true,
+  "source_snapshots_match_executed_hashes": true,
+  "preregistration_snapshot_hash_matches": true,
+  "jury_snapshot_hash_matches": true,
+  "each_test_checkpoint_evaluated_once": true,
+  "entire_final_grid_evaluated": true,
+  "all_selected_checkpoints_evaluated": true,
+  "paired_first_batches": true,
+  "shared_budget": true,
+  "distinct_train_calibration_test_stream_hashes": true,
+  "fixed_dictionary_across_splits": true,
+  "rescaling_preserves_dictionary_and_support_metrics": true,
+  "rescaling_uses_exact_frozen_calibration_gains": true,
+  "all_checks_pass": true
+}

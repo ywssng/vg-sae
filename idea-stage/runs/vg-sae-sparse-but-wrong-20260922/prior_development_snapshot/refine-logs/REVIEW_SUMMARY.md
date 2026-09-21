@@ -1,0 +1,35 @@
+# VG-SAE 방법 개발 — Review Summary
+
+실행 `vg-sae-development-20260921` · 2026-09-21.
+Reviewer `/root/vg_pipeline_review`, GPT-6 Astra ultra.
+Same-family provisional, CALIBRATION:none.
+
+## Problem Anchor
+
+현재 구현된 Variational Garrote 기반 SAE를 출발점으로, VG의 확률적 support
+선택과 amplitude 추정이 SAE 학습에 제공하는 이점을 명료화하고 필요한 방법·학습·
+추론·평가 절차를 개선한다. 합성 ground truth, 현실적인 synthetic benchmark,
+실제 모델 activation의 단계적 검증으로 새로운 SAE 방법으로서의 기여를 평가한다.
+주 연구 목표는 VG-SAE 개발이며, 진단 실험은 그 방법을 개선하고 검증하기 위한 도구다.
+
+## 판정의 대상
+
+Novelty/과학적 계속 여부와 proposal readiness를 분리한다. 신규성은 6/10의
+PROCEED WITH CAUTION이고, 과학적 비판 검토도 PROCEED WITH CAUTION이다.
+Readiness 점수는 방법·실험 계획의 명료성과 구현 인계 준비에 대한 판단이며
+C1/C2 확증, empirical superiority, 채택 확률 또는 cross-family 승인이 아니다.
+
+## 검토와 반영
+
+| 단계 | 지적 | 반영 | 남은 연구 |
+| --- | --- | --- | --- |
+| Scientific review | Checkpoint 선택, no-variance compensation, baseline/readout 불명확 | Cal recovery/L0 선택, coupling으로 C2 축소, native L1와 GMM 구분 | 새 training worlds, objective ablation |
+| Readiness 1 | 9.05지만 C2가 entropy와 learned recipe까지 과잉 승인 가능 | Profiled 범위, term별 판정, collapse/유보 구분을 full revision 2에 반영 | Term별 실제 결과 |
+| Readiness 2 | 9.05, READY: 이전 blocker 해소 | Profiled 범위와 term별 판정 일치; 새 실험·module·grid 없음 | B1/B2/B3는 아직 계획 |
+
+원래 VG-SAE anchor는 각 full proposal에 동일하게 보존했다. 범용 확률 방법 우위나
+새 solver를 강제하는 방향으로 바꾸지 않았다. Method specificity를 높이기 위한
+공정한 선택과 지표 정의를 추가했으며, 많은 모듈을 새 기여로 나열하지 않았다.
+
+**최종 판정: READY, 9.05/10, 2 rounds.** 원래 anchor를 보존했고 proposal blocker는 없다. 점수 표는 [score-history](score-history.md), clean 제안은
+[FINAL_PROPOSAL](FINAL_PROPOSAL.md), 전체 변경 경위는 [REFINEMENT_REPORT](REFINEMENT_REPORT.md)에 있다.
