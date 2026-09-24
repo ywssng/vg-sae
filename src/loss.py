@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 import torch
 
-from .model import VariationalGarrote
+from .model import VariationalGarrote, _bernoulli_entropy_from_logits
 
 
 @dataclass
@@ -86,9 +86,7 @@ def vg_loss_terms(
 
     energy, reconstruction_sum, variance_sum = energy_components(m=m, w=w, x=x, y=y)
     safe_energy = energy.clamp_min(eps)
-    m_safe = m.clamp(eps, 1.0 - eps)
-
-    entropy = (-m_safe * torch.log(m_safe) - (1.0 - m_safe) * torch.log1p(-m_safe)).sum()
+    entropy = _bernoulli_entropy_from_logits(model.mask_logits).sum()
     sparsity_penalty = gamma_value * m.sum()
     free_energy = 0.5 * x.shape[0] * torch.log(safe_energy) - entropy + sparsity_penalty
     beta_estimate = x.new_tensor(x.shape[0] / (2.0 * float(safe_energy.detach().cpu())))

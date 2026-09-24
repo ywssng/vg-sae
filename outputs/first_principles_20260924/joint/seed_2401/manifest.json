@@ -1,0 +1,150 @@
+{
+  "seed": 2401,
+  "seed_roles": {
+    "dictionary": 2401,
+    "train": 240121,
+    "calibration": 240122,
+    "test": 240123,
+    "initialization": 12401,
+    "batches": 22401
+  },
+  "jobs": [
+    {
+      "method": "vg_learned",
+      "control": 0.0,
+      "index": 0
+    },
+    {
+      "method": "vg_learned",
+      "control": 2.0,
+      "index": 1
+    },
+    {
+      "method": "vg_learned",
+      "control": 4.0,
+      "index": 2
+    },
+    {
+      "method": "vg_profiled",
+      "control": 0.0,
+      "index": 0
+    },
+    {
+      "method": "vg_profiled",
+      "control": 2.0,
+      "index": 1
+    },
+    {
+      "method": "vg_profiled",
+      "control": 4.0,
+      "index": 2
+    },
+    {
+      "method": "vg_no_entropy",
+      "control": 0.0,
+      "index": 0
+    },
+    {
+      "method": "vg_no_entropy",
+      "control": 2.0,
+      "index": 1
+    },
+    {
+      "method": "vg_no_entropy",
+      "control": 4.0,
+      "index": 2
+    },
+    {
+      "method": "vg_no_variance",
+      "control": 0.0,
+      "index": 0
+    },
+    {
+      "method": "vg_no_variance",
+      "control": 2.0,
+      "index": 1
+    },
+    {
+      "method": "vg_no_variance",
+      "control": 4.0,
+      "index": 2
+    },
+    {
+      "method": "l1",
+      "control": 0.001,
+      "index": 0
+    },
+    {
+      "method": "l1",
+      "control": 0.01,
+      "index": 1
+    },
+    {
+      "method": "l1",
+      "control": 0.1,
+      "index": 2
+    },
+    {
+      "method": "topk",
+      "control": 1,
+      "index": 0
+    },
+    {
+      "method": "topk",
+      "control": 2,
+      "index": 1
+    },
+    {
+      "method": "topk",
+      "control": 4,
+      "index": 2
+    }
+  ],
+  "config": {
+    "input_dim": 8,
+    "width": 16,
+    "probability": 0.125,
+    "amplitude_scale": 0.7071067811865476,
+    "noise_std": 0.1,
+    "train_samples": 8192,
+    "calibration_samples": 2048,
+    "test_samples": 4096,
+    "steps": 2000,
+    "batch_size": 256,
+    "lr": 0.003,
+    "initial_beta": 100.0,
+    "checkpoints": [
+      500,
+      1000,
+      2000
+    ],
+    "methods": [
+      "vg_learned",
+      "vg_profiled",
+      "vg_no_entropy",
+      "vg_no_variance",
+      "l1",
+      "topk"
+    ],
+    "gammas": [
+      0.0,
+      2.0,
+      4.0
+    ],
+    "l1_coefficients": [
+      0.001,
+      0.01,
+      0.1
+    ],
+    "topk_values": [
+      1,
+      2,
+      4
+    ],
+    "profile_batch_sizes": [
+      16,
+      256
+    ],
+    "effective_code_threshold": 1e-06
+  }
+}

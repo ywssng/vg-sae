@@ -96,3 +96,31 @@ def test_beta_mode_override_and_loss_epsilon_are_validated() -> None:
     for loss_eps in (float("nan"), float("inf")):
         with pytest.raises(ValueError, match="finite"):
             _constant_energy_model(loss_eps=loss_eps)
+
+
+@pytest.mark.parametrize("value", [0.0, 1e-5, 2e-4])
+def test_profiled_floor_and_precision_are_invariant_to_batch_replication(value: float) -> None:
+    model = _constant_energy_model(beta_mode="profiled", dtype="float64")
+    x = torch.full((1, 2), value, dtype=torch.float64)
+    reference = model.free_energy(x)
+    expected_beta = 1.0 / max(value**2, model.config.loss_eps)
+    assert reference["beta_eff"].item() == pytest.approx(expected_beta)
+    for repeats in (4, 16):
+        output = model.free_energy(x.repeat(repeats, 1))
+        assert output["loss"].item() == pytest.approx(reference["loss"].item(), abs=1e-12)
+        assert output["beta_eff"].item() == pytest.approx(expected_beta)
+
+
+@pytest.mark.parametrize("value", [1e-5, 0.9e-4, 1.1e-4, 2e-4])
+def test_profiled_floor_gradient_matches_finite_difference(value: float) -> None:
+    model = _constant_energy_model(beta_mode="profiled", dtype="float64")
+    x = torch.full((3, 2), value, dtype=torch.float64, requires_grad=True)
+    (gradient,) = torch.autograd.grad(model.free_energy(x)["loss"], x)
+    delta = 1e-8
+    plus, minus = x.detach().clone(), x.detach().clone()
+    plus[0, 0] += delta
+    minus[0, 0] -= delta
+    finite_difference = (model.free_energy(plus)["loss"] - model.free_energy(minus)["loss"]) / (2 * delta)
+    assert gradient[0, 0].item() == pytest.approx(finite_difference.item(), rel=1e-6, abs=1e-8)
+    if value**2 < model.config.loss_eps:
+        assert torch.equal(gradient, torch.zeros_like(gradient))

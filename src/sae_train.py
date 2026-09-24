@@ -55,6 +55,19 @@ def _cpu_state_dict(model: torch.nn.Module) -> dict[str, Any]:
     }
 
 
+@torch.no_grad()
+def _fold_activation_norm_scaling_factor(
+    model: TrainingSAE[Any], scaling_factor: float
+) -> None:
+    """Return a trained model and its inference threshold to input units."""
+
+    model.fold_activation_norm_scaling_factor(scaling_factor)
+    if isinstance(model, BatchTopKTrainingSAE) and model.cfg.rescale_acts_by_decoder_norm:
+        # Its EMA threshold is in decoder-norm-weighted activation units.
+        # Folding divides decoder norms (and these activations) by the scale.
+        model.topk_threshold.div_(scaling_factor)
+
+
 class _CyclingTensorBatches:
     """Deterministic fixed-size provider matching ``SAETrainer``'s contract."""
 
@@ -319,10 +332,10 @@ def _fit_saelens_sae(
         last_state_dict = _cpu_state_dict(model)
         if best_state_dict is not None:
             model.load_state_dict(best_state_dict)
-            model.fold_activation_norm_scaling_factor(scaling_factor)
+            _fold_activation_norm_scaling_factor(model, scaling_factor)
             best_state_dict = _cpu_state_dict(model)
         model.load_state_dict(last_state_dict)
-        model.fold_activation_norm_scaling_factor(scaling_factor)
+        _fold_activation_norm_scaling_factor(model, scaling_factor)
         trainer.activation_scaler.scaling_factor = None
     trainer.set_final_sae_metadata()
     model.eval()

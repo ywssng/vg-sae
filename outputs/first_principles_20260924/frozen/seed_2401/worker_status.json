@@ -1,0 +1,7 @@
+{
+  "status": "completed",
+  "block": "frozen",
+  "seed": 2401,
+  "device": "cuda:0",
+  "elapsed_seconds": 23.802478978410363
+}

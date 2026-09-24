@@ -1,0 +1,110 @@
+[
+  {
+    "method": "vg_learned",
+    "control": 0.0,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "vg_learned",
+    "control": 2.0,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "vg_learned",
+    "control": 4.0,
+    "index": 2,
+    "status": "completed"
+  },
+  {
+    "method": "vg_profiled",
+    "control": 0.0,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "vg_profiled",
+    "control": 2.0,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "vg_profiled",
+    "control": 4.0,
+    "index": 2,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_entropy",
+    "control": 0.0,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_entropy",
+    "control": 2.0,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_entropy",
+    "control": 4.0,
+    "index": 2,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_variance",
+    "control": 0.0,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_variance",
+    "control": 2.0,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "vg_no_variance",
+    "control": 4.0,
+    "index": 2,
+    "status": "completed"
+  },
+  {
+    "method": "l1",
+    "control": 0.001,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "l1",
+    "control": 0.01,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "l1",
+    "control": 0.1,
+    "index": 2,
+    "status": "completed"
+  },
+  {
+    "method": "topk",
+    "control": 1,
+    "index": 0,
+    "status": "completed"
+  },
+  {
+    "method": "topk",
+    "control": 2,
+    "index": 1,
+    "status": "completed"
+  },
+  {
+    "method": "topk",
+    "control": 4,
+    "index": 2,
+    "status": "completed"
+  }
+]

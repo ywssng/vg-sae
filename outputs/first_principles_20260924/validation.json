@@ -1,0 +1,14 @@
+{
+  "tests_before_changes": 342,
+  "tests_after_changes": 378,
+  "pytest_exit_code": 0,
+  "pytest_warning": "Existing TransformerLens utils deprecation",
+  "compileall_exit_code": 0,
+  "diff_check_exit_code": 0,
+  "commands": [
+    ".venv/bin/python -m pytest tests -q",
+    ".venv/bin/python -B -m compileall -q src tests scripts/run_first_principles.py scripts/plot_first_principles.py",
+    "git diff --check"
+  ],
+  "peer_review": "same-family provisional; code and results roles described in run reports"
+}

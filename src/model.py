@@ -6,6 +6,7 @@ from dataclasses import dataclass
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 def _dtype_from_value(value: torch.dtype | str) -> torch.dtype:
@@ -17,6 +18,15 @@ def _dtype_from_value(value: torch.dtype | str) -> torch.dtype:
     if normalized == "float64":
         return torch.float64
     raise ValueError(f"Unsupported dtype {value!r}; expected 'float32' or 'float64'.")
+
+
+def _bernoulli_entropy_from_logits(logits: torch.Tensor) -> torch.Tensor:
+    """Bernoulli entropy without probability clamps or cancellation in the tails."""
+    if logits.dtype in {torch.float16, torch.bfloat16}:
+        logits = logits.float()
+    # Choose the positive branch at zero so higher derivatives remain defined.
+    magnitude = torch.where(logits >= 0, logits, -logits)
+    return F.softplus(-magnitude) + magnitude * torch.sigmoid(-magnitude)
 
 
 @dataclass

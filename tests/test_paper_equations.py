@@ -72,6 +72,18 @@ def test_sigmoid_mask_init_has_nonzero_gradient() -> None:
     assert torch.all(model.mask_logits.grad > 0.0)
 
 
+def test_scalar_entropy_gradient_survives_probability_clamp_boundary() -> None:
+    model = VariationalGarrote(VGConfig(n_features=2, gamma=0.0))
+    with torch.no_grad():
+        model.mask_logits.copy_(torch.tensor([-16.0, 16.0]))
+        model.weight.zero_()
+    terms = vg_loss_terms(model, torch.zeros(1, 2), torch.ones(1))
+    (gradient,) = torch.autograd.grad(terms.free_energy, model.mask_logits)
+    assert gradient[0] < 0 < gradient[1]
+    # With no data or prior dependence on the masks, entropy drives both inward.
+    assert torch.allclose(gradient, torch.tensor([-1.80056e-6, 1.80056e-6]), rtol=1e-5)
+
+
 def test_spike_and_slab_active_weights_have_exact_count_and_paper_support() -> None:
     rng = np.random.default_rng(0)
     n_features = 256

@@ -1,5 +1,6 @@
 import csv
 import itertools
+import math
 import subprocess
 import sys
 
@@ -59,6 +60,72 @@ def test_vg_sae_expected_reconstruction_variance_matches_enumeration() -> None:
     brute_force_tensor = torch.stack(brute_force)
 
     assert torch.allclose(formula, brute_force_tensor, atol=1.0e-6)
+
+
+@pytest.mark.parametrize("gamma", [-0.7, 1.3])
+def test_vg_full_free_energy_and_all_gradients_match_exact_support_sum(gamma: float) -> None:
+    torch.manual_seed(19)
+    model = VariationalGarroteSAE(
+        VGSAEConfig(
+            input_dim=2, n_latents=3, beta=1.7, beta_mode="learned",
+            lambda_sparsity=gamma, normalize_decoder=False, dtype="float64",
+        )
+    )
+    x = torch.randn(4, 2, dtype=torch.float64)
+    output = model.free_energy(x)
+    states = torch.tensor(list(itertools.product([0.0, 1.0], repeat=3)), dtype=x.dtype)
+    q = torch.where(states[None] > 0, output["m"][:, None], 1 - output["m"][:, None]).prod(-1)
+    pi = torch.sigmoid(x.new_tensor(-gamma))
+    prior = torch.where(states > 0, pi, 1 - pi).prod(-1)
+    reconstruction = model.decode(states[None] * output["a"][:, None])
+    distribution = torch.distributions.Normal(reconstruction, output["beta_eff"].rsqrt())
+    nll = -distribution.log_prob(x[:, None]).sum(-1)
+    enumerated = (q * (nll + q.log() - prior.log())).sum(-1).mean()
+
+    assert torch.allclose(output["loss"], enumerated, atol=1e-12, rtol=1e-12)
+    actual = torch.autograd.grad(output["loss"], tuple(model.parameters()), retain_graph=True)
+    expected = torch.autograd.grad(enumerated, tuple(model.parameters()))
+    for actual_gradient, expected_gradient in zip(actual, expected, strict=True):
+        assert torch.allclose(actual_gradient, expected_gradient, atol=1e-12, rtol=1e-12)
+
+
+@pytest.mark.parametrize("dtype", [torch.float16, torch.bfloat16, torch.float32, torch.float64])
+def test_logit_entropy_retains_tail_values_and_gradients(dtype: torch.dtype) -> None:
+    values = [-20.0, -16.0, -7.0, -6.0, 0.0, 6.0, 7.0, 16.0, 20.0]
+    logits = torch.tensor(values, dtype=dtype, requires_grad=True)
+    entropy = VariationalGarroteSAE.bernoulli_entropy_from_logits(logits, logits.sigmoid())
+    (gradient,) = torch.autograd.grad(entropy.sum(), logits)
+
+    def reference(value: float) -> float:
+        # Enumerate both Bernoulli outcomes with double-precision probabilities.
+        p = 1.0 / (1.0 + math.exp(abs(value)))
+        return -p * math.log(p) - (1.0 - p) * math.log1p(-p)
+
+    expected = torch.tensor([reference(v) for v in values], dtype=torch.float64)
+    delta = 1e-3
+    expected_gradient = torch.tensor(
+        [(reference(v + delta) - reference(v - delta)) / (2 * delta) for v in values],
+        dtype=torch.float64,
+    )
+    assert torch.allclose(entropy.double(), expected, atol=1e-12, rtol=2e-6)
+    # Parameter gradients return in the parameter dtype after accurate evaluation.
+    assert torch.allclose(gradient.double(), expected_gradient.to(dtype).double(), atol=1e-10, rtol=2e-3)
+
+
+def test_bfloat16_autocast_preserves_bernoulli_variance_and_entropy() -> None:
+    model = VariationalGarroteSAE(VGSAEConfig(2, 1, beta_mode="learned"))
+    with torch.no_grad():
+        model.gate_encoder.weight.zero_()
+        model.gate_encoder.bias.fill_(7.0)
+    x = torch.zeros(3, 2)
+    with torch.autocast("cpu", dtype=torch.bfloat16):
+        output = model.free_energy(x)
+    assert output["m"].dtype == torch.float32
+    assert bool((output["m"] < 1.0).all())
+    assert output["variance"] > 0.0
+    assert output["entropy"].item() == pytest.approx(0.007288824, rel=2e-5)
+    (gradient,) = torch.autograd.grad(output["entropy"], model.gate_encoder.bias)
+    assert gradient.item() == pytest.approx(-0.006371548, rel=5e-3)
 
 
 def test_bernoulli_kl_lambda_sign_penalizes_dense_support() -> None:

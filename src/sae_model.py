@@ -10,7 +10,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .model import _dtype_from_value
+from .model import _bernoulli_entropy_from_logits, _dtype_from_value
 from .sae_baselines import (
     BatchTopKSAE,
     BatchTopKSAEConfig,
@@ -182,6 +182,9 @@ class VariationalGarroteSAE(nn.Module):
         self, x_centered: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         gate_logits = self.gate_encoder(x_centered)
+        # Keep posterior moments out of reduced-precision sigmoid saturation.
+        if gate_logits.dtype in {torch.float16, torch.bfloat16}:
+            gate_logits = gate_logits.float()
         m = torch.sigmoid(gate_logits)
 
         amp_pre = self.amplitude_encoder(x_centered)
@@ -195,7 +198,7 @@ class VariationalGarroteSAE(nn.Module):
         return m, a, h
 
     def decode_centered(self, h: torch.Tensor) -> torch.Tensor:
-        return self.decoder(h)
+        return self.decoder(h.to(self.decoder.weight.dtype))
 
     def decode(self, h: torch.Tensor) -> torch.Tensor:
         return self._uncenter(self.decode_centered(h))
@@ -209,11 +212,12 @@ class VariationalGarroteSAE(nn.Module):
     def bernoulli_entropy_from_logits(logits: torch.Tensor, probs: torch.Tensor) -> torch.Tensor:
         """Stable Bernoulli entropy H(sigmoid(logits)) per latent.
 
-        H = softplus(logit) - sigmoid(logit) * logit.
-        This avoids the float32 bug where ``clamp(max=1-1e-8)`` fails because
-        1 - 1e-8 rounds to 1.0.
+        ``probs`` is retained for API compatibility. Evaluating both tails from
+        logits avoids cancellation and preserves entropy gradients after the
+        positive-tail probability has rounded to one.
         """
-        return F.softplus(logits) - probs * logits
+        del probs
+        return _bernoulli_entropy_from_logits(logits)
 
     def free_energy(
         self,
@@ -243,7 +247,7 @@ class VariationalGarroteSAE(nn.Module):
         if not entropy_on:
             entropy_coeff = 0.0
 
-        B, d = x.shape
+        _, d = x.shape
         x_centered = self._center(x)
         gate_logits, m, a, h = self._encode_centered(x_centered)
         x_hat_centered = self.decode_centered(h)
@@ -267,12 +271,13 @@ class VariationalGarroteSAE(nn.Module):
         if mode == "profiled":
             # Gaussian NLL: beta * E_tot - (M/2) log beta.  beta* = M/(2E_tot).
             # Constants independent of parameters are intentionally omitted.
-            E_tot = energy.sum().clamp_min(self._positive_eps(energy))
-            M = B * d
-            scaled_E = (2.0 * E_tot / float(M)).clamp_min(self._positive_eps(energy))
-            loss_total = 0.5 * M * scaled_E.log() + prior.sum() - entropy_coeff * entropy.sum()
-            loss = loss_total / B
-            beta_eff = torch.as_tensor(0.5 * M, device=x.device, dtype=x.dtype) / E_tot.detach()
+            mean_squared_energy = 2.0 * energy.mean() / float(d)
+            scaled_E = mean_squared_energy.clamp_min(self._positive_eps(energy))
+            loss = 0.5 * d * scaled_E.log() + prior.mean() - entropy_coeff * entropy.mean()
+            # Use the same per-coordinate floor for the loss and reported beta.
+            # Below the floor the log-risk is flat; this is numerical clipping,
+            # not a constrained-precision likelihood with a linear tail.
+            beta_eff = scaled_E.detach().reciprocal()
         else:
             if self.log_beta is None:
                 raise ValueError(

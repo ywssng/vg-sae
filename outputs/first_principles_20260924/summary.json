@@ -1,0 +1,16 @@
+{
+  "exact_workers": 3,
+  "exact_cells": 135,
+  "exact_controls_valid": true,
+  "frozen_fits": 9,
+  "joint_fits": 54,
+  "training_device_hours": 0.14754142502478013,
+  "assigned_gpu_wall_hours": 0.1492544024098768,
+  "failed_workers": [],
+  "min_profile_jensen_gap": 0.0035152435302734375,
+  "limitations": [
+    "Initial three-world campaign; no SOTA or calibrated semantic-posterior claim.",
+    "Numerical exact identities are validation, not new theory.",
+    "Best-found mean field has no global certificate; optimization residuals are reported."
+  ]
+}

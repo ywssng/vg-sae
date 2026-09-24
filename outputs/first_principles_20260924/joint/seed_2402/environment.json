@@ -1,0 +1,13 @@
+{
+  "python": "3.14.0",
+  "torch": "2.13.0+cu126",
+  "numpy": "2.5.1",
+  "cuda": "12.6",
+  "sae_lens": "6.47.0",
+  "sae_lens_revision": "8be14080485952f729ed58d674bcddf9778e0aa4",
+  "git_revision": "8243256717e2c20087c3864c40bc8cc56dc5fc4d",
+  "git_dirty": true,
+  "worker_time_limit_seconds": 1440.0,
+  "cuda_visible_devices": "2",
+  "gpu": "NVIDIA RTX A6000"
+}

@@ -19,17 +19,20 @@ export are not locally reimplemented. The project's `StandardSAE` name aliases
 upstream `StandardTrainingSAE`; `to_inference_sae` returns the corresponding
 upstream inference architecture.
 
-The research objective is to develop a new SAE based on Variational Garrote.
-The current research motivation is the feature-identity problem in
-[**Sparse but Wrong**](idea-stage/REF_PAPER_SUMMARY.md), evaluated separately
-from reconstruction quality and the choice of sparsity level.
-The [research brief](RESEARCH_BRIEF.md) fixes that objective, and the current
-[development report](idea-stage/IDEA_REPORT.md),
-[method proposal](refine-logs/FINAL_PROPOSAL.md), and
-[experiment roadmap](refine-logs/EXPERIMENT_PLAN.md) refine the existing method
-and validation pipeline. The report includes independently selected holdout
-evaluations and bounded training/inference pilots; it distinguishes completed
-evidence from planned confirmation runs.
+The research objective is to develop and understand VG-SAE from explicit
+statistical-physics modeling assumptions and variational principles. The
+feature-identity problem in **Sparse but Wrong** motivates examining what SAE
+objectives and selection constraints actually favor. Derivation and explanation
+are research contributions in their own right; SOTA is not the sole criterion.
+The [research brief](RESEARCH_BRIEF.md), [method proposal](refine-logs/FINAL_PROPOSAL.md),
+and [experiment plan](refine-logs/EXPERIMENT_PLAN.md) describe the current scope.
+
+The [first-principles campaign results](refine-logs/EXPERIMENT_RESULTS.md) cover
+135 exact-inference cells, 9 frozen-encoder fits, and 54 joint fits across three
+worlds. See the [reproduction commands](refine-logs/runs/vg-sae-first-principles-20260924/REPRODUCE.md)
+and [paper/GitHub implementation audit](refine-logs/runs/vg-sae-first-principles-20260924/IMPLEMENTATION_AUDIT.md).
+Pinned official library variants are distinguished from original-paper recipes.
+The project corrects BatchTopK threshold units when folding activation scaling.
 
 ## Quick Start
 

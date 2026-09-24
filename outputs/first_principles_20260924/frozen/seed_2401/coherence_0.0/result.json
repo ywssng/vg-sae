@@ -1,0 +1,73 @@
+{
+  "block": "frozen",
+  "seed": 2401,
+  "coherence": 0.0,
+  "rows": [
+    {
+      "seed": 2401,
+      "coherence": 0.0,
+      "method": "exact",
+      "brier": 0.048440455383021365,
+      "marginal_nll": 0.1624892998577656,
+      "support_f1": 0.8627981543540955,
+      "reverse_kl": 0.0,
+      "free_energy": 4.660933624890075,
+      "marginal_mse_to_exact": 0.0,
+      "expected_l0": 1.4682387604887372
+    },
+    {
+      "seed": 2401,
+      "coherence": 0.0,
+      "method": "mean_field",
+      "brier": 0.048440455383021365,
+      "marginal_nll": 0.16248929985776558,
+      "support_f1": 0.8627981543540955,
+      "reverse_kl": 1.6241348543832856e-16,
+      "free_energy": 4.660933624890075,
+      "marginal_mse_to_exact": 2.8770269919546635e-32,
+      "expected_l0": 1.4682387604887372
+    },
+    {
+      "seed": 2401,
+      "coherence": 0.0,
+      "method": "encoder",
+      "brier": 0.055399872717087496,
+      "marginal_nll": 0.19840504308366613,
+      "support_f1": 0.8459063172340393,
+      "reverse_kl": 0.3550638701610941,
+      "free_energy": 5.0159974950511685,
+      "marginal_mse_to_exact": 0.0068169789487737996,
+      "expected_l0": 1.4603198474686536
+    }
+  ],
+  "timing": {
+    "completed_updates": 2000,
+    "sample_presentations": 512000,
+    "first_batch_sha256": "066aa9a539384bf69edee09c9b9d297eb39986567e215d793ee645290914a597",
+    "training_and_snapshot_seconds": 7.959810451604426
+  },
+  "frozen_checks": {
+    "decoder_max_error": 0.0,
+    "amplitude_weight_max": 0.0,
+    "amplitude_max_error": 0.0,
+    "beta_error": 0.0
+  },
+  "mean_refinement_drop": 0.35506387016109386,
+  "min_refinement_drop": 0.08186030329247895,
+  "mf_converged_fraction": 1.0,
+  "encoder_mean_residual": 0.1397804802076566,
+  "encoder_max_residual": 0.23210383106799493,
+  "mf_max_residual": 1.942890293094024e-16,
+  "history": [
+    {
+      "step": 1000,
+      "calibration_free_energy": 5.758715629577637,
+      "expected_l0": 1.4328079223632812
+    },
+    {
+      "step": 2000,
+      "calibration_free_energy": 5.00422477722168,
+      "expected_l0": 1.4730949401855469
+    }
+  ]
+}

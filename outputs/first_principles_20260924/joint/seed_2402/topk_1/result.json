@@ -1,0 +1,98 @@
+{
+  "block": "joint",
+  "seed": 2402,
+  "method": "topk",
+  "control": 2,
+  "index": 1,
+  "metrics": {
+    "hard_mse": 0.027577310800552368,
+    "clean_signal_mse": 0.026945587247610092,
+    "hard_l0": 2.0,
+    "true_l0": 2.020263671875,
+    "signed_dictionary_cosine": 0.8290697336196899,
+    "recovered_fraction_095": 0.6875,
+    "support_f1": 0.45059818029403687,
+    "coefficient_nmse": 0.5477842092514038
+  },
+  "history": [
+    {
+      "step": 500,
+      "hard_mse": 0.032367855310440063,
+      "clean_signal_mse": 0.031031494960188866,
+      "hard_l0": 2.0,
+      "true_l0": 2.01611328125,
+      "signed_dictionary_cosine": 0.8062509298324585,
+      "recovered_fraction_095": 0.5,
+      "support_f1": 0.43161094188690186,
+      "coefficient_nmse": 0.6329070329666138
+    },
+    {
+      "step": 1000,
+      "hard_mse": 0.029398402199149132,
+      "clean_signal_mse": 0.02864411473274231,
+      "hard_l0": 2.0,
+      "true_l0": 2.01611328125,
+      "signed_dictionary_cosine": 0.8250913023948669,
+      "recovered_fraction_095": 0.75,
+      "support_f1": 0.4464437663555145,
+      "coefficient_nmse": 0.5390735864639282
+    },
+    {
+      "step": 2000,
+      "hard_mse": 0.0290211234241724,
+      "clean_signal_mse": 0.028229691088199615,
+      "hard_l0": 1.99951171875,
+      "true_l0": 2.01611328125,
+      "signed_dictionary_cosine": 0.8290697336196899,
+      "recovered_fraction_095": 0.6875,
+      "support_f1": 0.44868677854537964,
+      "coefficient_nmse": 0.5131831765174866
+    }
+  ],
+  "profile_diagnostics": [],
+  "timing": {
+    "completed_updates": 2000,
+    "sample_presentations": 512000,
+    "first_batch_sha256": "c44e1ec918ed22483e47f876563a81181ff53f1da7944e5ef0410be64f8a0504",
+    "training_and_snapshot_seconds": 11.099651926197112
+  },
+  "trainer": {
+    "optimizer": "Adam",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "weight_decay": 0.0,
+    "gradient_clip": 1.0,
+    "lr_schedule": "constant",
+    "dead_feature_window": 1000,
+    "normalize_activations": "none"
+  },
+  "config": {
+    "d_in": 8,
+    "d_sae": 16,
+    "dtype": "float32",
+    "device": "cuda:0",
+    "apply_b_dec_to_input": true,
+    "normalize_activations": "none",
+    "reshape_activations": "none",
+    "metadata": {
+      "sae_lens_version": "6.47.0",
+      "sae_lens_training_version": "6.47.0",
+      "training_architecture": "topk",
+      "training_architecture_details": {
+        "decoder_init_norm": 0.1,
+        "use_sparse_activations": false,
+        "aux_loss_coefficient": 1.0
+      },
+      "l0": 2.0,
+      "num_dead_features": 0
+    },
+    "decoder_init_norm": 0.1,
+    "k": 2,
+    "use_sparse_activations": false,
+    "aux_loss_coefficient": 1.0,
+    "rescale_acts_by_decoder_norm": true,
+    "architecture": "topk"
+  }
+}

@@ -4,6 +4,32 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## 실험 설계·실행 승인과 첫 캠페인 — 2026-09-24
+
+- 사용자는 first-principles 연구 의도에 맞춘 experiment-plan/bridge 실행과,
+  기존 SAE 코드의 원 논문·공식 GitHub 대조를 명시적으로 요청했다. 아래09-23의
+  문헌평가 전용 범위는 그때의 요청이며 이번 구현·실험을 금지하지 않는다.
+- 새 계획과 감사·결과는
+  `refine-logs/runs/vg-sae-first-principles-20260924/`에 있다. 기존 계획은 참고만
+  했고, canonical proposal/plan/contract를 새 설명 중심 목표로 갱신했다.
+- VG entropy tail/BF16 posterior, profiled risk floor와 beta 일치, BatchTopK
+  activation-scale folding threshold를 수정했다. Gated는 published RI-L1 변형,
+  JumpReLU는 upstream pre-ReLU/STE 편차가 있어 paper-exact로 부르지 않는다.
+- 정확열거135 cells, frozen encoder9 fits, joint54 fits를3 seeds로 완료했다.
+  결과는 `outputs/first_principles_20260924/`에 있다. 실제 assigned GPU wall
+  합계약.15GPUh,2GPUh 상한 이내. 최종 tests378개와 compileall 통과.
+- Orthogonal conditional posterior는 MF와 일치했고 overlap.95의 matched모형은
+  평균MF reverse-KL약.141nats였다. Frozen encoder의 orthogonal 잔여KL약.36은
+  표현 가능한 gate의 유한 최적화 오차를 포함하며 구조적 한계로 부르지 않는다.
+- Frozen overlap.95의 gate refinement는 reverse-KL을 낮추지만3 seeds 모두
+  Brier/marginal NLL/marginal error를 악화했다. Variational objective 개선과
+  marginal posterior 확률 정확도 개선을 같은 주장으로 합치지 않는다.
+  Brier/NLL을 calibration만 측정하는 지표로 표현하지 않는다.
+- Joint gamma2에서 variance 삭제는 mean MSE를 낮췄지만 full stochastic/hard
+  risk를 크게 높였다. 이는 profiled beta까지 반응한 objective 삭제의 total effect다.
+  Semantic calibration, 자동 true-L0, SOTA, thermodynamic phase transition은
+  주장하지 않는다. 이전 toy 결과와 합쳐 독립 seed 수를 늘리지 않는다.
+
 ## 연구 기여의 명확화 — 2026-09-23
 
 - 사용자가 밝힌 중심 의도는 **통계물리학 기반 first principles에서 SAE를

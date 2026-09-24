@@ -1,0 +1,110 @@
+{
+  "config": {
+    "run_id": "vg-sae-first-principles-20260924",
+    "seeds": [
+      2401,
+      2402,
+      2403
+    ],
+    "gpu_hour_limit": 2.0,
+    "gpu_budget_fractions": {
+      "smoke": 0.1,
+      "frozen": 0.3,
+      "joint": 0.6
+    },
+    "exact": {
+      "width": 6,
+      "samples": 128,
+      "coherences": [
+        0.0,
+        0.7,
+        0.95
+      ],
+      "betas": [
+        2.0,
+        8.0,
+        32.0
+      ],
+      "gammas": [
+        -2.0,
+        0.0,
+        1.0986122886681098,
+        2.0,
+        4.0
+      ],
+      "data_probability": 0.25,
+      "data_beta": 8.0,
+      "max_sweeps": 100,
+      "tolerance": 1e-09,
+      "field_difference_step": 0.0001
+    },
+    "frozen": {
+      "width": 6,
+      "coherences": [
+        0.0,
+        0.7,
+        0.95
+      ],
+      "probability": 0.25,
+      "beta": 8.0,
+      "train_samples": 8192,
+      "calibration_samples": 2048,
+      "test_samples": 2048,
+      "steps": 2000,
+      "batch_size": 256,
+      "lr": 0.003,
+      "max_sweeps": 100
+    },
+    "joint": {
+      "input_dim": 8,
+      "width": 16,
+      "probability": 0.125,
+      "amplitude_scale": 0.7071067811865476,
+      "noise_std": 0.1,
+      "train_samples": 8192,
+      "calibration_samples": 2048,
+      "test_samples": 4096,
+      "steps": 2000,
+      "batch_size": 256,
+      "lr": 0.003,
+      "initial_beta": 100.0,
+      "checkpoints": [
+        500,
+        1000,
+        2000
+      ],
+      "methods": [
+        "vg_learned",
+        "vg_profiled",
+        "vg_no_entropy",
+        "vg_no_variance",
+        "l1",
+        "topk"
+      ],
+      "gammas": [
+        0.0,
+        2.0,
+        4.0
+      ],
+      "l1_coefficients": [
+        0.001,
+        0.01,
+        0.1
+      ],
+      "topk_values": [
+        1,
+        2,
+        4
+      ],
+      "profile_batch_sizes": [
+        16,
+        256
+      ],
+      "effective_code_threshold": 1e-06
+    }
+  },
+  "block": "frozen",
+  "seed": 2403,
+  "device": "cuda:0",
+  "smoke": false
+}

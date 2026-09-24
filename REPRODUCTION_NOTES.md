@@ -416,3 +416,45 @@ bound but does not remove the dense parameter family or guarantee recovery.
 This constructed check is not evidence that an SGD trajectory followed that
 path. Details and numerical checks are in the current run's dense-offset
 witness and `tests/test_sbw_dense_offset.py`.
+
+## First-principles campaign and implementation audit — 2026-09-24
+
+The new campaign is specified in `configs/first_principles_20260924.json` and
+`refine-logs/runs/vg-sae-first-principles-20260924/EXPERIMENT_PLAN.md`.
+Prior plans are reference material; this campaign tests conditional support
+inference and objective behavior, not an assumed recovery/SOTA advantage.
+The detailed paper/GitHub comparison is in that run's `IMPLEMENTATION_AUDIT.md`.
+
+Bernoulli entropy is now evaluated from logits with a cancellation-free tail
+formula, without probability clamps. FP16/BF16 gate logits are promoted before
+sigmoid to preserve posterior variance and entropy gradients. This repairs
+actual mixed-precision saturation and scalar entropy-tail behavior. It does
+not change the mathematical objective in the ordinary numerical range.
+
+Profiled SAE loss and reported beta now use the same floored per-coordinate
+mean squared risk. The reported beta is the reciprocal of that quantity and
+is invariant to replication of a batch. Below the floor the log-risk is flat;
+this remains a numerical clipping policy, not the linear low-energy branch
+of a bounded-precision likelihood. Previous near-floor beta diagnostics need
+to be interpreted using their original implementation.
+
+When activation normalization is folded out of norm-weighted BatchTopK, its
+EMA inference threshold is now divided by the same scaling factor as decoder
+norms. Both best and final checkpoint paths preserve raw-unit inference.
+Gated's auxiliary decoder gradient is retained: the pinned library implements
+the published RI-L1 variant, not the original frozen-auxiliary-decoder recipe.
+JumpReLU's pinned upstream path omits the paper's pre-ReLU before the STE;
+the low-threshold window therefore differs. It is not labeled paper-exact.
+
+The campaign's L1 baseline is SAELens RI-L1 and its TopK is the norm-weighted
+pinned recipe (aux coefficient 1, unconstrained decoder). Native inference
+codes define both sparsity and reconstruction. No GMM support threshold is
+used. The overcomplete planted dictionary is matched with signed Hungarian
+cosine; nonnegative coefficient sign flips are not treated as equivalent.
+
+`src/sae_inference.py` generalizes the older unit-amplitude pilot math into a
+tiny conditional exact oracle and best-found coordinate mean field. Only the
+matched amplitude-one generative setting supports posterior calibration
+against actual support labels. Other fields/noise precisions are explicitly
+misspecified conditional-response experiments. Joint SAE point amplitudes do
+not define a normalized full generative posterior.

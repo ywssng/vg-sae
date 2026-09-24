@@ -1,0 +1,7 @@
+{
+  "status": "completed",
+  "block": "joint",
+  "seed": 2401,
+  "device": "cuda:0",
+  "elapsed_seconds": 144.97561406251043
+}
