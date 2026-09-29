@@ -29,6 +29,10 @@ analysis to Phase 2's proposed density estimator and feature-recovery validation
 Phase 2 is planned and has not been run. The [research brief](RESEARCH_BRIEF.md),
 [method proposal](refine-logs/FINAL_PROPOSAL.md), and
 [experiment plan](refine-logs/EXPERIMENT_PLAN.md) define the current scope.
+The [physics literature review and scientist discussion](refine-logs/runs/vg-sae-physics-literature-20260930/PI_SYNTHESIS.md)
+now separate conditional posterior response from optimizer and data variability.
+Phase 2 starts with a planned 238–350-fit ensemble/readout bridge before the
+conditional larger campaign; this bridge has not been run.
 
 The existing Phase 1 [first-principles campaign results](refine-logs/EXPERIMENT_RESULTS.md) cover
 135 exact-inference cells, 9 frozen-encoder fits, and 54 joint fits across three

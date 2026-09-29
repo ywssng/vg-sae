@@ -1,0 +1,69 @@
+{
+  "sources": [
+    {
+      "local_cache": "sources/2503.01824.html",
+      "url": "https://arxiv.org/html/2503.01824",
+      "version": "2503.01824v1",
+      "access_date": "2026-09-30",
+      "reading_depth": "author preprint; main text and targeted sections 4\u20135.3",
+      "sha256": "42ca59cd4a6e9d64b8d6c291879feee56b74e4eca7f8a180c61643cf1ae8f9e3",
+      "bytes": 316457
+    },
+    {
+      "local_cache": "sources/1611.06759.html",
+      "url": "https://arxiv.org/html/1611.06759",
+      "version": "1611.06759v2",
+      "access_date": "2026-09-30",
+      "reading_depth": "author preprint full main text",
+      "sha256": "728fd9739dae5d3f64190d8ae99de9020b5b15e29cd4215a15234ecd50da872e",
+      "bytes": 138928
+    },
+    {
+      "local_cache": "sources/1911.02344.html",
+      "url": "https://arxiv.org/html/1911.02344",
+      "version": "1911.02344v2",
+      "access_date": "2026-09-30",
+      "reading_depth": "author manuscript main text; supplement A/D/E selectively",
+      "sha256": "9fc7e9d2c3d5aa0015a043715b7279f36f547dec499cd838be4f8a43a8893b99",
+      "bytes": 502170
+    },
+    {
+      "local_cache": "sources/nature2026.html",
+      "url": "https://www.nature.com/articles/s42256-026-01259-z",
+      "version": "published 2026-07-14",
+      "access_date": "2026-09-30",
+      "reading_depth": "publisher subscription preview; metadata, abstract, references only",
+      "sha256": "b437cff0a417257da839953656f6641290e24841122a3709b2e348046d8a3522",
+      "bytes": 448838
+    },
+    {
+      "local_cache": "sources/1611.06759-supplement.pdf",
+      "url": "https://www.phys.ens.fr/~monasson/Articles/a105-si.pdf",
+      "version": "author-hosted PRL2017 supplement",
+      "access_date": "2026-09-30",
+      "reading_depth": "section III A\u2013B, equations 7\u20138; section structure inspected",
+      "sha256": "93af0cdc09c2216bd5a0f745d557b22f03f030f6339c7f96396f8f3d66f8d65a",
+      "bytes": 798254
+    },
+    {
+      "local_cache": "sources/2503.01824.overview",
+      "url": "https://alphaxiv.org/overview/2503.01824.md",
+      "version": "retrieved 2026-09-30",
+      "access_date": "2026-09-30",
+      "reading_depth": "secondary generated overview; not used as primary evidence",
+      "sha256": "85ec82819a895bc9919b64a8415dd338ddac3885bf8bc567c118a225aae1d90c",
+      "bytes": 8670
+    }
+  ],
+  "failed_access": [
+    {
+      "url": "https://alphaxiv.org/overview/1611.06759.md",
+      "status": 404
+    },
+    {
+      "url": "https://alphaxiv.org/overview/1911.02344.md",
+      "status": 404
+    }
+  ],
+  "note": "Caches are local-only; hashes record retrieved content, not scientific validation."
+}

@@ -4,6 +4,33 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## 물리 문헌과 두 과학자 토론 — 2026-09-30
+
+- 사용자는 Klindt et al.의 Nature2026 Perspective, Tubiana–Monasson PRL2017,
+  Hou–Huang PRL2020 및 기존 문헌을 바탕으로 전체 논문과 Phase 1·2를 검토하고,
+  ARIS agent와 scientific-skills agent가 토론하며 PI가 감독하도록 요청했다.
+- 독립 입장, 실제 교차 반론, 공동 권고·동의, PI 초안 재검토는
+  `refine-logs/runs/vg-sae-physics-literature-20260930/`에 있다. 핵심 판단은
+  `PI_SYNTHESIS.md`, 수식·재평가 계획은 `PHASE1_PHYSICS_BRIDGE.md`다.
+  Nature 세부 가정은 공개 저자본을 읽었으며 출판본 전체와의 일치는 미확인이다.
+- Phase 1에 conditional Gram interaction, exact covariance 대 stable MF response,
+  amplitude 고정/encoder 변환을 포함한 ambient rotation 대조를 반영했다.
+  기존 exact response 결과는 재사용하며 새 실험이나 정리로 세지 않는다.
+- Phase 2의 현재 primary는 fixed-data optimizer ensemble의 hard-between이다.
+  원 VG의 soft-total/data-realization과 다른 두 전이를 별도로 검증한다.
+  Stable-correct hard code도 flat U를 만들 수 있고, 같은 soft m에는 within
+  uncertainty가 남을 수 있다. 어떤 ensemble/readout이 실제 유익한지는 미확인이다.
+- 최초 계획은 두 teacher와 공유 reference의 E_opt136–200 fits 및 E_joint
+  추가102–150 fits, 총238–350 fits를8k까지 학습하는 bridge다. 모든2k/4k/8k
+  곡선을 보존하고, adaptive controls는4k hard coverage로만 고른다.
+  Teacher/dataset/optimizer를 구분하고 E_joint를 순수 data variance라 하지 않는다.
+- 기존7k–10k fits를 처음부터 필수 실행하지 않는다. 큰 본검증은 bridge·개발·
+  lock 뒤 조건부이며, same-bank/L1 비교는 main 결과와 무관하게 보고한다.
+  Primary/horizon/grid 변경은 새 version과 untouched confirmation을 요구한다.
+- 이번에는 문헌·계획만 갱신했으며 학습·GPU·모델 코드 변경은 없다. 두 agent의
+  operational 합의는 성능/신규성 확정이 아니다. 9월29일READY9.27 점수는 해당
+  과거 설계에만 적용한다. Canonical PAPER_PLAN/EXPERIMENT_PLAN은 현재 갱신본이다.
+
 ## Phase 1–2 통합 논문 계획 — 2026-09-29
 
 - 사용자는 최근의 모형·추론 검증을 Phase 1, 원래의 밀도 추정을 Phase 2로

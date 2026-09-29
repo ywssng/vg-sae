@@ -9,3 +9,7 @@
 | 3 | 9.8 | 9.4 | 9.0 | 9.3 | 8.8 | 9.4 | 9.1 | 9.27 | READY |
 
 Weights: .15/.25/.25/.15/.10/.05/.05. Threshold9, max5rounds. Round3에서READY/no-blocker로 종료했다.
+
+## 2026-09-30 문헌·토론 개정
+
+위 점수는9월29일 통합계획의 당시검토다. 최신물리문헌 검토는 ARIS/scientific 두agent의실제토론과 PI의질적판정으로수행했으며 새점수를부여하지않았다. 과거9.27을새ensemble 설계의실증·신규성 인증으로재사용하지않는다. 기록은 `refine-logs/runs/vg-sae-physics-literature-20260930/PI_SYNTHESIS.md`를따른다.

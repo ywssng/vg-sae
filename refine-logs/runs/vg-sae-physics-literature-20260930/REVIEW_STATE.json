@@ -1,0 +1,23 @@
+{
+  "run_id": "vg-sae-physics-literature-20260930",
+  "status": "completed",
+  "phase": "pi_integration_complete",
+  "scope": "literature_and_planning_only",
+  "scientists": [
+    "/root/aris_physicist",
+    "/root/scientific_physicist"
+  ],
+  "pi": "/root",
+  "experiments_started": false,
+  "prior_plan": "refine-logs/runs/vg-sae-unified-paper-20260929/",
+  "independence": "two_workflows_same_family_possible",
+  "timestamp": "2026-09-29T16:45:10.257680+00:00",
+  "debate_status": "operational_consensus",
+  "empirical_status": "phase2_not_run",
+  "remaining": "Which ensemble/readout predicts generating density and recovery remains empirical.",
+  "final_reviews": [
+    "aris/04_pi_draft_review.md",
+    "scientific/04_pi_draft_review.md"
+  ],
+  "minor_fixes_applied": true
+}
