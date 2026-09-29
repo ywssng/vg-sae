@@ -1,3 +1,28 @@
+# Round 1 Refinement
+
+## Anchor Check
+
+원래 VG-SAE 개발·원리 이해·밀도 추정 목표를 모두 유지한다. Phase 1을 전체 연구로 대체하지 않는다. SOTA나 별도 진단 논문으로 바꾸라는 요구는 채택하지 않는다.
+
+## Simplicity Check
+
+새 network 없이 기존 SAE bank와 단일template를 사용한다. NNLS mixture는 부록으로, 큰benchmark는 conditional로 둔다. Main bank의 일부를 ablation reference로 재사용해 불필요한 재학습을 줄였다.
+
+## Review Response
+
+| Round1 issue | 조치 |
+|---|---|
+| B1 primary curve 미정 | Native density matching을 primary로 고정, tolerance/추가control/독립 reference 및 distinct points 정의 |
+| B2 template 전이 가정 | pooled support 충분조건과 heterogeneity correction 명시 |
+| B3 식별성·보류 미정 | q grid, signal/residual/profile-width/reference/bootstrap gates 수치화 |
+| B4 selective recovery | 보류를 C2a 실패로 유지, C2b all-world reconstruction fallback·정확한 NMSE/oracle·paired 판정 |
+| B5 TopK resolution | recovery comparator로 한정, template ineligibility를 우위로 세지 않음 |
+| B6 예산 | block별 fit 산술·timing gate·제안cap·retry 계약 추가 |
+
+아래는 전체 수정 제안이며 구체 프로토콜과 논문 outline도 함께 검토한다.
+
+## Revised Proposal
+
 # VG-SAE: 선택 자유에너지에서 밀도 추정까지
 
 2026-09-29. Phase 1의 실제 초기 결과와 Phase 2의 후속 가설을 묶는 통합 방법 제안. **계획 작성이며 새 실험을 실행하지 않았다.**
@@ -55,7 +80,7 @@ Under-selection의 no-FP와 active exchangeability, 또는 over-selection의 no-
 
 Truth metadata는 마지막 evaluator에만 들어간다. 개발 world는 protocol calibration 전용이다. World는 dictionary와 data의 독립 단위이며 repeat는 같은 world의 optimization 변화다. Controls나 inputs를 독립world로 세지 않는다.
 
-출력은 q_hat, K*q_hat, shape profile, bootstrap sensitivity, coverage/alignment diagnostics, status/reason이다. 보류 시 추정값을 성공으로 채우지 않는다. 별도의 operational policy는 estimate abstention 또는 deployment coverage 부족 시 reconstruction selector로 fallback하고, 이유별 비율을 공개한다. Estimate validity와 bank quantization에 따른 deployment validity는 별도 status로 저장한다.
+출력은 q_hat, K*q_hat, shape profile, bootstrap sensitivity, coverage/alignment diagnostics, status/reason이다. 보류 시 추정값을 성공으로 채우지 않는다. 별도의 operational policy는 reconstruction selector로 fallback하고, 그 비율을 공개한다.
 
 ### 학습·선택 절차
 
@@ -98,7 +123,7 @@ C2a는 충분한 report rate와 낮은 error가 함께 필요하다. C2b는 all-
 
 ## Novelty와 문헌 위치
 
-출발점은 Soh의 VG/selection curve와 Sparse but Wrong의 density/feature identity 문제다. Variational sparse coding, entropy-based objectives, cross-seed Hungarian alignment와 stability 선행을 인정한다. 후보 차별점은 VG의 conditional-support 구조를 명시한 뒤 **학습된 SAE 좌표에서 native density를 맞추어 곡선 추정이 어디까지 성립하는지 실제 recovery와 연결하는 것**이다. 모형 이름·metric·matching 자체의 신규성은 주장하지 않는다. Primary-source 근거와 metadata는 저장소의 `refine-logs/runs/vg-sae-unified-paper-20260929/LITERATURE_GROUNDING.md`에 기록한다.
+출발점은 Soh의 VG/selection curve와 Sparse but Wrong의 density/feature identity 문제다. Variational sparse coding, entropy-based objectives, cross-seed Hungarian alignment와 stability 선행을 인정한다. 후보 차별점은 VG의 conditional-support 구조를 명시한 뒤 **학습된 SAE 좌표에서 native density를 맞추어 곡선 추정이 어디까지 성립하는지 실제 recovery와 연결하는 것**이다. 모형 이름·metric·matching 자체의 신규성은 주장하지 않는다. Primary-source 근거와 metadata는 `LITERATURE_GROUNDING.md`에 기록한다.
 
 ## Complexity·Compute·논문 인계
 
@@ -106,4 +131,4 @@ C2a는 충분한 report rate와 낮은 error가 함께 필요하다. C2b는 all-
 
 Core base7240/max10376 small fits, budget sensitivity의 추가24구간 포함7264/10400 step-equivalents. Measured throughput 이전 가정으로25–145GPUh이며160GPUh의 제안 cap을 둔다. 이전2GPUh 승인에서 자동 확장한 실행이 아니며 이번에는 학습하지 않는다. Conditional SynthSAEBench/LM은 별도 timing/budget를 요구한다. 이것은 계획상 견적이지 사용자 확정 예산이 아니다.
 
-논문은7절/내부10쪽으로 구성하며 C1을 앞부분, C2의 density/recovery 검증을 중심 결과로 둔다. 본문·그림·citation·결과별 주장표는 저장소 루트의 `PAPER_PLAN.md`, exact protocol은 `refine-logs/EXPERIMENT_PLAN.md`, 실행 상태는 `refine-logs/EXPERIMENT_TRACKER.md`를 따른다. 이 run 폴더에도 동일 사본을 보존한다. 원래 밀도 추정 질문을 paper title/intro에서 빼지 않고 아직 미검증임을 명시한다.
+논문은7절/내부10쪽으로 구성하며 C1을 앞부분, C2의 density/recovery 검증을 중심 결과로 둔다. 본문·그림·citation·결과별 주장표는 `PAPER_PLAN.md`, exact protocol은 `EXPERIMENT_PLAN.md`, 실행 상태는 `EXPERIMENT_TRACKER.md`를 따른다. 원래 밀도 추정 질문을 paper title/intro에서 빼지 않고 아직 미검증임을 명시한다.

@@ -4,6 +4,28 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## Phase 1–2 통합 논문 계획 — 2026-09-29
+
+- 사용자는 최근의 모형·추론 검증을 Phase 1, 원래의 밀도 추정을 Phase 2로
+  구분하고, 후속 Phase 2를 refine하여 하나의 논문 계획으로 작성하도록 요청했다.
+  이번 작업은 계획·검토이며 새 학습 실험을 실행하지 않았다.
+- 통합 논문 계획은 `PAPER_PLAN.md`, 현재 방법·실행 계획은
+  `refine-logs/FINAL_PROPOSAL.md`와 `refine-logs/EXPERIMENT_PLAN.md`다.
+  전체 이력은 `refine-logs/runs/vg-sae-unified-paper-20260929/`에 있다.
+- Phase 1 원본은 `refine-logs/runs/vg-sae-first-principles-20260924/`에
+  보존했다. 이전 메모리의 canonical 경로는 당시 범위를 가리키므로, 과거 계획은
+  해당 run 경로에서 읽는다. `EXPERIMENT_RESULTS.md`는 Phase 1 결과만 담는다.
+- Phase 2 제안은 truth-free feature 정렬, native hard-density matching,
+  cross-run uncertainty의 단일 template fit과 추정 보류다. 생성 밀도 오차와
+  recovery 선택 효용, estimate 상태와 deployment 상태를 각각 구분한다.
+  이 알고리즘·threshold·예산은 작성된 제안이며 실증적 지지가 아니다.
+- 기존 `paper_style_sigma_sel`은 input 축의 평균으로, 새 cross-run 지표를
+  대신하지 못한다. 기존 NNLS의 normalized weights도 Bayesian posterior나
+  confidence interval로 재사용하지 않는다.
+- 같은 GPT-6 Astra reviewer와 3라운드 검토 후 계획 준비도 READY/9.27을
+  기록했다. Same-family provisional 판단이며 신규성·실험 성공의 확정이나
+  새 compute 실행 승인이 아니다. Phase 2 tracker는 미실행 상태다.
+
 ## 실험 설계·실행 승인과 첫 캠페인 — 2026-09-24
 
 - 사용자는 first-principles 연구 의도에 맞춘 experiment-plan/bridge 실행과,

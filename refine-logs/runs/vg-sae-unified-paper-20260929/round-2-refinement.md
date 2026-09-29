@@ -1,3 +1,25 @@
+# Round 2 Refinement
+
+## Anchor Check
+
+Problem Anchor는 round0와 동일하다. Density 추정과 recovery selection을 분리한다는 원래 목적을 deployment quantization에서도 지킨다.
+
+## Simplicity Check
+
+새 component나 실험을 추가하지 않는다. Estimate/deployment status를 분리하고 기존 algorithm의 종료·tie·빈 입력 규칙만 명확히 한다.
+
+## Changes Made
+
+- Round2 blocker: A5 estimate_status와 A6 deployment_status를 분리. 유효한 q_hat를 bank coverage 실패 때문에 지우지 않는다.
+- C2a report rate는 추정 status만, C2b policy는 estimate/deployment 사유별 fallback을 반영.
+- 추가control이 없는 pass에서 deterministic stop. 중간값/assignment tie 규칙 명시.
+- Empty-target raw-U/Vpost comparator는 MSE fallback.
+- Decoder zero/near-zero normalization과 native mask/effective coefficient의 차이를 명시.
+- Select density drift는 reference와 각repeat별로 검사하여 평균 상쇄를 막음.
+- Canonical 문헌·tracker 경로와 개발 world numbering을 정리.
+
+## Revised Proposal
+
 # VG-SAE: 선택 자유에너지에서 밀도 추정까지
 
 2026-09-29. Phase 1의 실제 초기 결과와 Phase 2의 후속 가설을 묶는 통합 방법 제안. **계획 작성이며 새 실험을 실행하지 않았다.**
