@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "tasks": [
+    {"id": "seed-0", "argv": ["python", "scripts/colab_smoke.py", "--seed", "0"]},
+    {"id": "seed-1", "argv": ["python", "scripts/colab_smoke.py", "--seed", "1"]}
+  ]
+}

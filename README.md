@@ -1,5 +1,8 @@
 # Variational Garrote Sparse Regression and VG-SAE
 
+For small experiments on Google Colab instead of this server, see the
+[project-local Colab CLI setup and recovery guide](docs/colab.md).
+
 `vg-sae` is a cleaned-up implementation that combines the strongest parts of
 `vg-sae-x` and `vg-sae-e`.
 

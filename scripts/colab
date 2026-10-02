@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# Project-local official Colab CLI; never install into the system environment.
+set -euo pipefail
+ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+umask 077
+export TMPDIR="$ROOT/.colab/tmp"
+export UV_CACHE_DIR="$ROOT/.colab/cache"
+export UV_PYTHON_INSTALL_DIR="$ROOT/.colab/python"
+export XDG_CACHE_HOME="$ROOT/.colab/cache"
+export PYTHONDONTWRITEBYTECODE=1
+mkdir -p "$TMPDIR" "$UV_CACHE_DIR" "$ROOT/.colab/config"
+if [[ "${1:-}" == setup ]]; then
+    if [[ ! -x "$ROOT/.colab/venv/bin/python" ]]; then
+        uv venv --python 3.14 "$ROOT/.colab/venv"
+    fi
+    uv pip install --python "$ROOT/.colab/venv/bin/python" 'google-colab-cli==0.7.4'
+    exit
+fi
+if [[ ! -x "$ROOT/.colab/venv/bin/python" ]]; then
+    echo 'First run: bash scripts/colab setup' >&2
+    exit 1
+fi
+exec "$ROOT/.colab/venv/bin/python" scripts/colab_cli_local.py "$@"

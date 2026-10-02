@@ -4,6 +4,24 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## Colab CLI 실험 실행 준비 — 2026-10-02
+
+- 사용자는 이 서버에서 학습하는 대신 자신의 Colab Pro를 CLI로 이용하고,
+  중단 시 작업을 보존·재개할 수 있게 설정하도록 요청했다.
+- 공식 CLI 0.7.4를 Git 제외 경로 `.colab/`에 설치했다. `scripts/colab`과
+  `scripts/colab_cli_local.py`가 token·세션·로그·캐시 저장 위치를 격리한다.
+  설치·로그인·실행·복구 안내는 `docs/colab.md`다.
+- `scripts/colab_experiment.py`와 `scripts/colab_worker.py`는 소스/계획 해시를
+  확인하고 Drive에 작업별 상태·로그·결과를 저장한다. 완료 작업은 건너뛰지만
+  미완료 작업은 처음부터 재실행한다. step 단위 optimizer/RNG 복구와 자동
+  런타임 재할당은 미구현이다. 기존 런타임 생존 여부가 불명확하면 재실행하지 않는다.
+- `configs/colab_smoke.json`은 VG regression의 작은 2-seed 인프라 검증용이다.
+  전체 SAE/SAELens 환경이나 논문 실험 결과를 검증한 것으로 해석하지 않는다.
+- 관련 오케스트레이션·복구 테스트 15개와 shell 문법·CLI 버전 확인을 통과했다.
+  이 작업에서 로컬 학습은 실행하지 않았다. 사용자 Google 로그인이 아직
+  확인되지 않아 실제 Colab 할당·Drive 마운트·원격 smoke 실행은 미검증이다.
+  다음 단계는 `bash scripts/colab login` 후 런타임·Drive 연결 검증이다.
+
 ## 물리 문헌과 두 과학자 토론 — 2026-09-30
 
 - 사용자는 Klindt et al.의 Nature2026 Perspective, Tubiana–Monasson PRL2017,

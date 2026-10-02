@@ -13,6 +13,7 @@ wheels/
 
 # Virtual environments
 .venv/
+.colab/
 venv/
 env/
 
