@@ -1,5 +1,7 @@
 # VG-SAE 통합 논문 계획: Phase 1에서 Phase 2까지
 
+**2026-10-03 현재 상태.** Dot-cloud 이관본의 10월1–2일 최종 결과를 반영한 [연구 상태 감사](refine-logs/runs/vg-sae-colab-continuation-20261003/RESEARCH_STATE_AUDIT.md)가 아래 과거 실행 상태보다 우선한다. BR5는 `measurement_unresolved`, W2는 gated, C2a/C2b는 unentered다. 실제 LLM activation은 사용자가 직접 진행할 후속 범위로 남긴다. 기존 음성 학습 분기를 반복하지 않고, [새 CPU 검증 계획](refine-logs/runs/vg-sae-colab-continuation-20261003/EXECUTION_PROTOCOL.md)에 따라 이론·수치 증거의 열린 항목을 진행한다.
+
 2026-09-30 문헌·토론 반영판. 상태: **Phase 1 초기 근거 보유 / Phase 2 계획·미실행**. 사용자가 요청한 원래 density-estimation 목표와 최근 first-principles 검증을 한 논문으로 연결한다.
 
 **작업 제목:** *Variational Garrote Sparse Autoencoders: From Selection Free Energy to Density Inference*.

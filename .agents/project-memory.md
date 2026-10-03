@@ -4,6 +4,35 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## Dot-cloud 이관 연구 재개 — 2026-10-03
+
+- 사용자는 `research-import-20261002T131813Z/START_HERE_KO.md`와 기존 계획에
+  따라 연구를 이어가되, 실험·수치 검증은 Colab CLI CPU에서 수행하고 실제
+  LLM activation은 직접 진행하겠다고 지정했다. 로컬은 파일·코드·전송·Git
+  작업에만 사용한다. GPU는 필요성이 입증될 때만 최소 사용량 종류를 고려한다.
+- 이관본 `project/`가 base/delta를 합친 작업 복사본이다. 보존본은 수정하지
+  않는다. 상세 최신 보고서가 root의 9월30일 계획과 이관 요약보다 우선한다.
+  현재 상태표와 후속 계획은
+  `refine-logs/runs/vg-sae-colab-continuation-20261003/RESEARCH_STATE_AUDIT.md`에 있다.
+- W1 350 fits/1,050 snapshots와 21-fit·9-fit 개발 진단, fresh precision-reset,
+  G1/G2와 후속 수리 진단이 이관되었다. BR5는 measurement_unresolved,
+  W2는 gated, C2a/C2b는 unentered다. 완료된 음성 분기를 자동 반복하지 않는다.
+- G1의 detailed protocol/result는 orthogonality·unit amplitude 구조를 주고
+  D/q/v를 학습한다. START_HERE의 known-dictionary 요약은 이와 충돌한다.
+  Known-D exact-mixture control과 G1을 구분한다. G2는 짧은 native retention에서
+  mask가 변하지 않았고 복구 방법으로 입증되지 않았다.
+- Known two-atom population proof는 joint scalar variance 아래 fixed finite
+  crossover의 limiting activity bracket과 eventual prelimit transfer를 다룬다.
+  Native VG, finite sample 또는 실용 추정기의 성공으로 해석하지 않는다.
+  기존 20-cell 표의 primary image-unresolved 12개와 replay-unresolved 17개는
+  서로 다른 판정이다. 새 terminal audit와 explicit finite-noise bound는 별도
+  version으로 진행 중이며 완료 결과가 아니다.
+- Colab Standard CPU의 실제 연결과 torch CPU-only를 확인했다. Drive 마운트는
+  `mount failed`로 종료되어 짧은 작업은 explicit runtime storage와 즉시 fetch를
+  사용한다. 새 source manifest/CPU guard/runtime storage 검증 47개가 Colab에서
+  통과했다(Python 3.13.15, torch 2.11.0+cpu). 전체 프로젝트의 Python 3.14 및
+  SAE 검증과는 다르다. 원격 결과는 `.colab/runs/`에 회수했다.
+
 ## Colab CLI 실험 실행 준비 — 2026-10-02
 
 - 사용자는 이 서버에서 학습하는 대신 자신의 Colab Pro를 CLI로 이용하고,
@@ -18,9 +47,8 @@
 - `configs/colab_smoke.json`은 VG regression의 작은 2-seed 인프라 검증용이다.
   전체 SAE/SAELens 환경이나 논문 실험 결과를 검증한 것으로 해석하지 않는다.
 - 관련 오케스트레이션·복구 테스트 15개와 shell 문법·CLI 버전 확인을 통과했다.
-  이 작업에서 로컬 학습은 실행하지 않았다. 사용자 Google 로그인이 아직
-  확인되지 않아 실제 Colab 할당·Drive 마운트·원격 smoke 실행은 미검증이다.
-  다음 단계는 `bash scripts/colab login` 후 런타임·Drive 연결 검증이다.
+  이 작업에서 로컬 학습은 실행하지 않았다. 10월2일에는 사용자 Google 로그인과
+  실제 Colab 실행이 미검증이었다. 이후의 연결·실행 검증은 위 10월3일 기록을 따른다.
 
 ## 물리 문헌과 두 과학자 토론 — 2026-09-30
 

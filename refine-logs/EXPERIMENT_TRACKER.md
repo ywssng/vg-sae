@@ -1,5 +1,7 @@
 # Phase 1–2 문헌 반영 실행 추적
 
+**2026-10-03 현재 상태.** 이관된 W1 및 후속 진단·증명·음성 결과의 전체 목록은 [연구 상태 감사](runs/vg-sae-colab-continuation-20261003/RESEARCH_STATE_AUDIT.md)에 있다. Colab CPU에서 controller 47개와 새 수리/provenance 테스트 51개가 통과했고 결과를 회수했다. 새 terminal audit와 finite-noise 계산은 진행 중이다. BR5 `measurement_unresolved`, W2 gated, C2a/C2b unentered를 유지한다. 아래 표는 이전 실행 이력으로 보존한다.
+
 2026-09-30. 문헌·토론과 계획 개정만 완료했다. 아래 신규 실험은 전부 미실행이다. `EXISTING_DONE`은9월24일 근거이며 이번에 다시 실행했다는 뜻이 아니다.
 
 | ID | 목적 | 새 학습 크기 | 우선순위/상태 | 근거·조건 |

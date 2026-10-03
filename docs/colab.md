@@ -38,13 +38,16 @@ Drive 연결에서 추가 동의가 나오면 표시된 절차를 따른다. 이
 ## 작은 실험 실행·확인
 
 ```bash
-python scripts/colab_experiment.py run --session vg-sae --run-id colab-smoke-v1
-python scripts/colab_experiment.py status --session vg-sae --run-id colab-smoke-v1
-python scripts/colab_experiment.py fetch --session vg-sae --run-id colab-smoke-v1
+python scripts/colab_experiment.py run --session vg-sae --run-id colab-smoke-cpu-v1 --cpu-only
+python scripts/colab_experiment.py status --session vg-sae --run-id colab-smoke-cpu-v1
+python scripts/colab_experiment.py fetch --session vg-sae --run-id colab-smoke-cpu-v1
 ```
 
 예제는 VG sparse regression을 seed 0·1에서 각각 100 step 실행하는 인프라
-검증이다. 논문 결과나 VG-SAE baseline 비교가 아니다. Colab에 GPU가 있으면 사용한다.
+검증이다. 논문 결과나 VG-SAE baseline 비교가 아니다. `--cpu-only`는 실행 전에
+torch와 사용 가능한 `nvidia-smi`로 GPU를 확인하고, GPU가 있거나 장치를 숨긴
+환경이면 작업을 시작하지 않는다. GPU를 할당하지 않은 CPU 세션에서 사용한다.
+이 옵션 없이 실행하는 기존 smoke 경로는 GPU가 있으면 사용한다.
 Colab 기본 Python과 torch/numpy/PyYAML을 이용하는 제한된 실행 경로이며, 프로젝트의
 전체 Python 3.14/SAELens 환경과 동일하다고 가정하지 않는다. 전체 SAE 실험은
 별도 의존성 준비·검증이 필요하다. 환경 버전은 `environment.json`에 기록한다.
@@ -60,6 +63,45 @@ Colab 기본 Python과 torch/numpy/PyYAML을 이용하는 제한된 실행 경�
 현재 체크아웃의 미커밋 코드도 포함되며 실제 파일 내용의 해시로 식별한다.
 소스나 계획이 달라지면 새 run-id를 써야 한다. 기존 실행 파일은 보존한다.
 
+## 연구 스크립트와 테스트를 추가로 전송하기
+
+`--source-manifest`는 저장소 안의 JSON 파일을 읽어 명시한 파일을 기본 묶음에
+추가한다. 예를 들어 `configs/colab_research_sources.json`의 내용은 다음과 같다.
+
+```json
+[
+  "scripts/run_phase2_bridge.py",
+  "tests/test_phase2_bridge.py",
+  "tests/test_phase2_density.py"
+]
+```
+
+```bash
+python scripts/colab_experiment.py bundle --run-id research-cpu-v1 \
+  --plan configs/colab_research_plan.json \
+  --source-manifest configs/colab_research_sources.json --cpu-only
+python scripts/colab_experiment.py run --session vg-sae --run-id research-cpu-v1 \
+  --plan configs/colab_research_plan.json \
+  --source-manifest configs/colab_research_sources.json --cpu-only
+```
+
+이 예제의 계획 파일은 수행할 작업에 맞게 별도로 작성한다. 목록에는 저장소
+기준의 파일 경로만 넣는다. 경로 이탈, 디렉터리 재귀 포함, symlink,
+인증 정보 및 캐시 경로는 거부한다. 파일 순서와 중복은 소스 해시에 영향을
+주지 않으며, 실제 포함된 파일의 경로나 bytes가 바뀌면 새 run-id가 필요하다.
+manifest를 생략하면 기존 기본 묶음과 해시를 유지한다.
+
+`--cpu-only`는 저장되는 계획에 `"colab_cpu_only": true`를 기록한다.
+따라서 기존 GPU 허용 계획을 같은 run-id의 CPU 실행으로 재해석할 수 없다.
+이 필드가 이미 true인 계획도 CPU 검증을 수행한다. 실제 Python과 기본 패키지
+버전, CPU 전용 여부는 완료 후 `environment.json`에 남는다.
+
+추가 파일을 전송해도 의존성을 자동으로 확대 설치하지 않는다. 필요한 SciPy,
+pytest 등은 Colab에서 확인·준비하고, 학습과 수치 검증은 그 런타임에서 실행한다.
+작업 스크립트는 결과를 `COLAB_TASK_OUTPUT`에 기록해야 Drive 결과 묶음에
+포함된다. 소스 디렉터리의 고정 `outputs/`에만 쓰는 과거 스크립트는 별도
+출력 연결 없이 영구 저장되었다고 해석하지 않는다.
+
 CLI 기본 30초 제한 대신 기본 6시간(`--timeout 21600`)을 사용한다. 이는 CLI가
 결과를 기다리는 시간이며 런타임 수명이나 학습 시간 제한을 늘리는 옵션이 아니다.
 CLI가 성공 코드를 반환해도 완료 상태와 plan/source 해시를 추가 확인한다.
@@ -72,9 +114,9 @@ CLI가 성공 코드를 반환해도 완료 상태와 plan/source 해시를 추�
 
 ```bash
 bash scripts/colab sessions
-python scripts/colab_experiment.py status --run-id colab-smoke-v1
+python scripts/colab_experiment.py status --run-id colab-smoke-cpu-v1
 bash scripts/colab download -s vg-sae \
-  /content/drive/MyDrive/vg-sae-colab/colab-smoke-v1/tasks/seed-0/stdout.log \
+  /content/drive/MyDrive/vg-sae-colab/colab-smoke-cpu-v1/tasks/seed-0/stdout.log \
   .colab/seed-0.log
 ```
 
@@ -98,6 +140,29 @@ Drive는 영구 저장 위치이지만 FUSE flush가 Google 서버까지 즉시 
 ```bash
 bash scripts/colab stop -s vg-sae
 ```
+
+## Drive 마운트가 실패했을 때의 짧은 CPU 작업
+
+`--storage runtime`은 상태와 결과를 Colab VM의
+`/content/vg-sae-runs/<run-id>/`에 저장하며 Drive 마운트를 요구하지 않는다.
+완료 뒤 즉시 `fetch`로 받아야 한다. 가져오기 전에는 영구 보존되지 않으며,
+VM이 사라지면 해당 상태로 작업을 복구할 수 없다.
+
+```bash
+python scripts/colab_experiment.py run --session vg-sae \
+  --run-id research-cpu-runtime-v1 --plan configs/colab_research_plan.json \
+  --source-manifest configs/colab_research_sources.json --cpu-only --storage runtime
+python scripts/colab_experiment.py status --session vg-sae \
+  --run-id research-cpu-runtime-v1 --storage runtime
+python scripts/colab_experiment.py fetch --session vg-sae \
+  --run-id research-cpu-runtime-v1 --storage runtime
+```
+
+상태 확인과 다운로드에도 같은 `--storage runtime`을 지정한다. 결과는 로컬
+`.colab/runs/<run-id>/results.zip`에 보존된다. 저장소 선택은 계획 해시에
+포함하므로 기존 Drive 실행과 다른 run-id를 사용한다. 기본 저장소는 계속
+Drive이며, 이 옵션도 런타임 자동 할당이나 불확실한 작업의 자동 재실행을
+수행하지 않는다.
 
 ## 세션 유지의 실제 범위
 

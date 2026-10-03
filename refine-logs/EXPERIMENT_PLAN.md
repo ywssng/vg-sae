@@ -1,5 +1,7 @@
 # Phase 1–2 통합 실험 계획
 
+**2026-10-03 재개 지침.** 최신 [상태·완료조건 감사](runs/vg-sae-colab-continuation-20261003/RESEARCH_STATE_AUDIT.md)와 [Colab CPU 후속 protocol](runs/vg-sae-colab-continuation-20261003/EXECUTION_PROTOCOL.md)을 먼저 읽는다. 아래 W1 이후의 오래된 next-step 문구는 이관본에서 이미 끝난 작업을 다시 승인하는 지시가 아니다. 새 20-cell terminal 검증·finite-noise bound와 별도 native finite-beta witness는 사전 고정한 저비용 CPU 작업이며 BR5/W2/C2를 대신하지 않는다. 실제 LLM activation은 실행하지 않는다.
+
 2026-09-30 문헌·토론 반영판. **계획만 작성. Phase 2 학습·평가 결과는 없다.** 아래 수치 기준은 제안된 실행 프로토콜이며, 관측된 성능이나 power 계산이 아니다. Phase 1 원본 계획·결과는 `refine-logs/runs/vg-sae-first-principles-20260924/`에 보존한다.
 
 ## 이번 개정의 우선순위
