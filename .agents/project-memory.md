@@ -4,6 +4,15 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## 로컬 창구 재개와 certificate 예산 검토 — 2026-10-13
+
+- 출처: 현재 사용자 연구 재개·결과별 Astra xhigh/Opus 5.5 xhigh/Gemini 3.1 Pro high 검토 요청. 로컬은 관리 창구, 연구 파일과 Git은 deepstat이며 계산은 Colab CPU 원칙을 유지한다. 최신 작업은 `refine-logs/runs/vg-sae-cross-model-continuation-20261013/`.
+- Astra가 finite-bank SURE/MOM 신뢰상한과 local-flip 기하 정리를 유도했다. 기존 zero-pattern 조건이 배제하던 p=.125/.25에 적용 가능한 충분조건 초안이며, square/orthogonal binary/known noise-origin 계약과 gamma12 population witness에 한정된다. optimizer 성공이나 C2 contrast, hard-between q 식별이 아니다.
+- primary agent가 generic global-envelope certificate는 고정 witness에서 n<=8192일 때 모든 표본에 대해 C_U>19/25인 반면 기하조건은 C_U<67/(16*10^12)이 필요함을 증명했다. Astra 독립 검토 승인. 해당 방식의 fresh audit은 실행하지 않는다. 다른 confidence bound, 실제 variance, VG 회복의 불가능성은 아니다. 정확한 증명/필요·충분 표본수 구분은 FINITE_SAMPLE_BUDGET_OBSTRUCTION.md 및 ASTRA_AUDIT_DESIGN.md.
+- native Opus/Gemini subagent 암호화 전달 오류로 collective-inference의 기존 OpenCodex plaintext API 방식으로 전환했다. 사용자 지시로 Gemini 3.1 Pro를 유지하며 Flash 대체하지 않는다. 제공자 주소 차이를 찾아 404 경로를 수정했으나 현재 생성429; Gemini 검토 미완료. Opus xhigh는 focused budget/cumulant 두 주장 최종검토 완료, 전체 local-flip 및 기존 matched-amplitude 검토는 미완료로 구분한다. 각 review receipt로 실제 완료 여부를 구분한다.
+- 후속 후보 THIRD_CUMULANT_GEOMETRY_CANDIDATE.md: square orthogonal homogeneous binary 계약에서 third cumulant로 positive-permutation 기하를 상한하는 수식을 primary agent/Astra가 유도했다. Opus xhigh도 해당 기하식을 검토해 blocking defect 없음. Gemini와 유한표본 예산 미완료; 새로운 q estimator 성공으로 해석하지 않는다.
+- 이번에 Colab 세션/학습/수치 실행/confirmation/LLM activation을 시작하지 않았다. BR5 unresolved, W2 gated, C2a/C2b unentered 유지. 다음은 지정 모델 검토 완료 및 예산상 가능한 더 날카로운 confidence/geometry bridge 확정이다.
+
 ## 연구 재개와 지정 모델 검토 — 2026-10-13
 
 - 사용자가 연구 재개와 결과별 GPT-6 Astra extra high, Opus 5.5 extra high,

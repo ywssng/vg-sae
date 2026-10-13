@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-13",
+  "native_agent_error": "unreadable_encrypted_agent_task",
+  "fallback_pattern_source": "collective-inference/tmp/codex/20261007_implicit_v2/external_review.py",
+  "requested_models": {
+    "astra": [
+      "gpt-6-astra",
+      "xhigh"
+    ],
+    "opus": [
+      "anthropic/claude-opus-5-5",
+      "xhigh"
+    ],
+    "gemini": [
+      "google-antigravity/gemini-3.1-pro",
+      "high"
+    ]
+  },
+  "gemini": {
+    "old_provider_base": "https://daily-cloudcode-pa.googleapis.com",
+    "new_provider_base": "https://cloudcode-pa.googleapis.com",
+    "change_authority": "Current user explicitly required connecting Gemini 3.1 Pro using OpenCodex; Flash replacement rejected.",
+    "old_route_status": 404,
+    "new_route_status": 429,
+    "new_catalog_display_name": "Gemini 3.1 Pro (High)",
+    "new_catalog_wire_id": "gemini-pro-agent",
+    "observed_remaining_fraction": 0.9610509,
+    "interpretation": "Model endpoint mismatch repaired; inference still returns RESOURCE_EXHAUSTED. Remaining quota does not guarantee generation capacity. No completed Gemini review.",
+    "bounded_retry_status": 429,
+    "review_status": "not_completed",
+    "final_frozen_packet_status": 429
+  },
+  "opus": {
+    "first_request": "HTTP200 but final content absent; not a completed review",
+    "second_request": "502/503 upstream failure; not a completed review",
+    "current_request": "completed focused budget review and final two-claim review (stop)",
+    "third_request": "streamed xhigh 16000-token request ended length with no final review",
+    "fourth_request": "streamed whole-report xhigh 64000-token request ended length; no completed review",
+    "completed_receipts": [
+      "OPUS_BUDGET_THEOREM_REVIEW_RECEIPT.json",
+      "OPUS_FINAL_THEOREM_REVIEW_RECEIPT.json"
+    ]
+  },
+  "secrets_stored": false
+}

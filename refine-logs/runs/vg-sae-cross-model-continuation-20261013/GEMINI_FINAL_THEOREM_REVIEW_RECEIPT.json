@@ -1,0 +1,12 @@
+{
+  "requested_model": "google-antigravity/gemini-3.1-pro",
+  "requested_effort": "high",
+  "source": "refine-logs/runs/vg-sae-cross-model-continuation-20261013/FINAL_REVIEW_PACKET.md",
+  "sha256": "dc92e12d7bc9d96934c52f46c56fc24d176914643753818e3d42b781ed85d86f",
+  "transport": "OpenCodex streamed Chat Completions",
+  "started_utc": "2026-10-13T06:05:32.022484+00:00",
+  "status": "error",
+  "http_status": 429,
+  "error": "{\"error\":{\"message\":\"Provider error 429: Antigravity rate limit exceeded: Resource has been exhausted (e.g. check quota).\",\"type\":\"rate_limit_error\",\"param\":null,\"code\":\"rate_limit_exceeded\"}}",
+  "ended_utc": "2026-10-13T06:05:33.449317+00:00"
+}

@@ -1,0 +1,23 @@
+{
+  "requested_model": "anthropic/claude-opus-5-5",
+  "requested_effort": "xhigh",
+  "source": "refine-logs/runs/vg-sae-cross-model-continuation-20261013/FINITE_SAMPLE_BUDGET_OBSTRUCTION.md",
+  "sha256": "69aed128493da795b9a3754a8d08bcf601bca2b814ce52a63ab8c92344a80c83",
+  "transport": "OpenCodex streamed Chat Completions",
+  "started_utc": "2026-10-13T06:01:42.878281+00:00",
+  "response_model": "anthropic/claude-opus-5-5",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 1310,
+    "completion_tokens": 6464,
+    "total_tokens": 7774,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "status": "completed",
+  "ended_utc": "2026-10-13T06:02:46.970839+00:00"
+}

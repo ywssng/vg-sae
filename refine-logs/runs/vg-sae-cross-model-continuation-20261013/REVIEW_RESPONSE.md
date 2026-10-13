@@ -1,0 +1,11 @@
+# Disposition of independent reviews — 2026-10-13
+
+Astra xhigh proposed the local-flip result and approved the primary-agent deterministic budget obstruction. Astra also independently strengthened the primary-agent cumulant geometry proposal using the doubly stochastic/permutation argument.
+
+Opus 5.5 xhigh completed two focused reviews through OpenCodex. The first conditionally accepted the budget contradiction and requested explicit imported definitions; these were added. The final review of FINAL_REVIEW_PACKET.md found both the amended budget obstruction and cumulant geometry algebra correct with no blocking defect. The final packet is preserved unchanged; minimum legal block size and the permutation-distance identity were clarified in the standalone documents. Its exact tensor-confidence-floor inequality was added as a necessary condition for this bound to be useful.
+
+Do not adopt every reviewer suggestion mechanically. The first Opus review's proposed population-median asymptotic targets the wrong statistic: a median of growing block means targets the mean. Opus agreed with that correction in its final response. The final review's optional high-probability sample-count and RMS tensor estimates are not proved finite-sample guarantees and were not adopted or computed. They do not replace a confidence-radius derivation. The fixed full-rank square decoder contract is retained even though an orthogonal completion can broaden the isolated geometry identity; downstream risk conditioning still requires explicit handling.
+
+The exact pre-amendment obstruction source is archived under review-sources and its SHA-256 matches OPUS_BUDGET_THEOREM_REVIEW_RECEIPT.json. FINAL_REVIEW_PACKET.md is the frozen source for the last Opus and Gemini requests. Receipt model/effort fields distinguish requested and returned model identity. Length-terminated whole-report Opus requests are incomplete and not counted as reviews.
+
+Gemini 3.1 Pro high requests reached the corrected provider endpoint but returned 429, including the final frozen-packet attempt. There is no Gemini endorsement or three-model consensus. No substitution was made. The full local-flip theorem and prior matched-amplitude source freeze still need their missing full Opus/Gemini reviews; acceptance of these two focused claims is not acceptance of all surrounding research.
