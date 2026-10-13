@@ -1,0 +1,23 @@
+{
+  "requested_model": "anthropic/claude-opus-5-5",
+  "requested_effort": "xhigh",
+  "source": "refine-logs/runs/vg-sae-cross-model-continuation-20261013/review-sources/TENSOR_BUDGET_FOCUSED.v1.md",
+  "sha256": "cc90dbfd7e85f93a666e98e969cf133b71eca83f0e971ce367c93612aea9ee54",
+  "transport": "OpenCodex streamed Chat Completions",
+  "started_utc": "2026-10-13T07:02:59.090176+00:00",
+  "response_model": "anthropic/claude-opus-5-5",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 3491,
+    "completion_tokens": 11680,
+    "total_tokens": 15171,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "status": "completed",
+  "ended_utc": "2026-10-13T07:04:45.639760+00:00"
+}

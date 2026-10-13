@@ -4,6 +4,13 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## 지정 검토 및 tensor confidence 후속 — 2026-10-13
+
+- 출처: 현재 사용자 Gemini429 해결·세 모델 검토·연구계속 지시 및 공식앱 screenshot. 같은 production API의 Antigravity quota 5시간97.09%/주간85.08%가 남아 있고, 공식앱은3.1Pro 미표시, 공식문서/metadata는표시, 최소생성429이다. 원인 미확정, Gemini검토 미완료, Flash대체없음. 상세 GEMINI_QUOTA_DIAGNOSIS_20261013.json.
+- Opus5.5 xhigh의 focused localflip/hard-code proof, matched-amplitude(A)-(C) algebra, 신규tensor budget proof가 stop 응답으로 완료됐다. 원문/해시receipt/대응은 기존 cross-model run. 이 완료는 전체 구현·수치archive 감사나 세 모델 합의가 아니다.
+- Astra가 independent-triple unbiased third-moment estimator 및 confidence 초안을 작성했다. Primary/Opus가 mixed-entry variance lower bound와 Chebyshev radius의 (epsilon/kappa3)^2>=1800/637 (K16,p∈[1/16,1/4],alpha.05,3<=n<=8192)를 검토했다. 이 특정 confidence 방식은rho.1 목표 예산에 부적합. Full variance/MOM 부분과Gemini는provisional. 다른추정법/정보론불가능성 아님. 다음은 직교기하에 필요한 방향의 confidence 검토.
+- 새 Colab/수치실행/학습/confirmation/LLM activation 없음. BR5/W2/C2 상태 유지. 후속요약 FOLLOWUP_20261013_KO.md.
+
 ## 로컬 창구 재개와 certificate 예산 검토 — 2026-10-13
 
 - 출처: 현재 사용자 연구 재개·결과별 Astra xhigh/Opus 5.5 xhigh/Gemini 3.1 Pro high 검토 요청. 로컬은 관리 창구, 연구 파일과 Git은 deepstat이며 계산은 Colab CPU 원칙을 유지한다. 최신 작업은 `refine-logs/runs/vg-sae-cross-model-continuation-20261013/`.

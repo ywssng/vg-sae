@@ -1,0 +1,36 @@
+{
+  "observed_utc": "2026-10-13T06:52:51Z",
+  "user_usage_page": "https://gemini.google.com/usage",
+  "official_product_limits_source": "https://support.google.com/googleone/answer/16286513?hl=en",
+  "provider_base": "https://cloudcode-pa.googleapis.com",
+  "quota_source": "retrieveUserQuotaSummary; fetchAvailableModels",
+  "remaining_fraction": {
+    "five_hour": 0.9709028,
+    "weekly": 0.85076505
+  },
+  "catalog_model": "gemini-pro-agent",
+  "catalog_display_name": "Gemini 3.1 Pro (High)",
+  "minimal_generation": {
+    "method": "generateContent",
+    "model": "gemini-pro-agent",
+    "thinking_level": "HIGH",
+    "prompt": "Reply READY.",
+    "status": 429,
+    "error_status": "RESOURCE_EXHAUSTED",
+    "message": "Resource has been exhausted (e.g. check quota).",
+    "retry_after_present": false,
+    "error_details_present": false
+  },
+  "interpretation": "Remaining Antigravity quota independently confirmed at generation endpoint. Cause unresolved; no claim of exhausted user quota or successful Gemini review.",
+  "secrets_stored": false,
+  "user_screenshot": {
+    "time_local": "2026-10-13T15:57:39+09:00",
+    "visible_gemini_model": "Gemini 3.8 Flash High",
+    "gemini_3_1_pro_visible": false,
+    "five_hour_remaining_percent": 97,
+    "weekly_remaining_percent": 85
+  },
+  "official_models_document": "https://www.antigravity.google/docs/models",
+  "official_document_still_lists_3_1_pro": true,
+  "conclusion": "User UI lacks 3.1 Pro despite remaining quota; official documentation and production metadata still list it. Model availability mismatch remains unresolved, not proven general quota exhaustion. No alternative Gemini provider is configured."
+}

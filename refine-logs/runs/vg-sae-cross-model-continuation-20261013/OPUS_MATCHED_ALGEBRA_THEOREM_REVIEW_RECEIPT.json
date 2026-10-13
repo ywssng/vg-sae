@@ -1,0 +1,23 @@
+{
+  "requested_model": "anthropic/claude-opus-5-5",
+  "requested_effort": "xhigh",
+  "source": "refine-logs/runs/vg-sae-cross-model-continuation-20261013/review-sources/MATCHED_AMPLITUDE_ALGEBRA.v1.md",
+  "sha256": "73e3822aedf6d0c658f45d42d814108dff9118feaf0c0db6a80ca9db77f900c8",
+  "transport": "OpenCodex streamed Chat Completions",
+  "started_utc": "2026-10-13T07:00:17.414898+00:00",
+  "response_model": "anthropic/claude-opus-5-5",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 3034,
+    "completion_tokens": 12474,
+    "total_tokens": 15508,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "status": "completed",
+  "ended_utc": "2026-10-13T07:02:10.023206+00:00"
+}

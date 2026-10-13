@@ -1,0 +1,23 @@
+{
+  "requested_model": "anthropic/claude-opus-5-5",
+  "requested_effort": "xhigh",
+  "source": "refine-logs/runs/vg-sae-cross-model-continuation-20261013/review-sources/LOCAL_FLIP_FOCUSED.v1.md",
+  "sha256": "5df6da02ffb5559a000cd2a9a7de59c8b17b07cbbecce98895e2dd8a90caaf3b",
+  "transport": "OpenCodex streamed Chat Completions",
+  "started_utc": "2026-10-13T06:55:50.616154+00:00",
+  "response_model": "anthropic/claude-opus-5-5",
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 3563,
+    "completion_tokens": 15419,
+    "total_tokens": 18982,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    }
+  },
+  "status": "completed",
+  "ended_utc": "2026-10-13T06:58:17.273699+00:00"
+}

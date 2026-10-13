@@ -28,7 +28,8 @@
     "interpretation": "Model endpoint mismatch repaired; inference still returns RESOURCE_EXHAUSTED. Remaining quota does not guarantee generation capacity. No completed Gemini review.",
     "bounded_retry_status": 429,
     "review_status": "not_completed",
-    "final_frozen_packet_status": 429
+    "final_frozen_packet_status": 429,
+    "latest_diagnosis": "GEMINI_QUOTA_DIAGNOSIS_20261013.json"
   },
   "opus": {
     "first_request": "HTTP200 but final content absent; not a completed review",
@@ -38,7 +39,10 @@
     "fourth_request": "streamed whole-report xhigh 64000-token request ended length; no completed review",
     "completed_receipts": [
       "OPUS_BUDGET_THEOREM_REVIEW_RECEIPT.json",
-      "OPUS_FINAL_THEOREM_REVIEW_RECEIPT.json"
+      "OPUS_FINAL_THEOREM_REVIEW_RECEIPT.json",
+      "OPUS_LOCAL_FLIP_THEOREM_REVIEW_RECEIPT.json",
+      "OPUS_MATCHED_ALGEBRA_THEOREM_REVIEW_RECEIPT.json",
+      "OPUS_TENSOR_BUDGET_THEOREM_REVIEW_RECEIPT.json"
     ]
   },
   "secrets_stored": false
