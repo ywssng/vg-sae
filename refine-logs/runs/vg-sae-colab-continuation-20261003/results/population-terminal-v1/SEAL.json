@@ -1,0 +1,8 @@
+{
+  "files": {
+    "START.json": "4b2b4ecf015699b295a7dd95a1a882da8121c4e057daefc7b8a66efa86fadafb",
+    "TERMINAL_AUDIT.json": "a8726c9314e553e20647d3289cdd835d97c28143f2060a40a4dc4a207560c15a",
+    "VERIFIED_PREFIX.jsonl": "aa0fcf56a1456950f6c769a0a304db009f2053af95f906e47c78b8c602c04121"
+  },
+  "version": "terminal-partition-v1"
+}

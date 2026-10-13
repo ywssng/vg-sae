@@ -1,0 +1,56 @@
+{
+  "artifacts": [
+    {
+      "run_id": "colab-controller-cpu-20261003-v1",
+      "bytes": 101837,
+      "sha256": "a8eca88a52bb16c9f70c099b05fb518db3995a796512d91e915a84b826916f2e",
+      "local_location": ".colab/runs/colab-controller-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "population-preflight-cpu-20261003-v1",
+      "bytes": 119734,
+      "sha256": "9b551fc2c653d13d67efa67251a21913c66616b5857f980ab7ca4e1fd81eb5e5",
+      "local_location": ".colab/runs/population-preflight-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "population-terminal-cpu-20261003-v1",
+      "bytes": 2172752,
+      "sha256": "1a842c939f9fd72a940cb83ae62040a8366db8ed9b0b01478a77bfe342efa9ef",
+      "local_location": ".colab/runs/population-terminal-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "finite-noise-cpu-20261003-v1",
+      "bytes": 312048,
+      "sha256": "7f92b7735a961aefcb5ef8c81743bcdd07ab402b92f81b4ec91a90c5fd2e969b",
+      "local_location": ".colab/runs/finite-noise-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "native-bias-preflight-cpu-20261003-v1",
+      "bytes": 111615,
+      "sha256": "8b151635830fdaf89fd73a2a1a696a38dce83e82c87534509088368417f3d6f0",
+      "local_location": ".colab/runs/native-bias-preflight-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "native-bias-cpu-20261003-v1",
+      "bytes": 215520,
+      "sha256": "1ac403c32ad68ce7718dede992bb0927cd5335ee717344bbf90181d414e582b2",
+      "local_location": ".colab/runs/native-bias-cpu-20261003-v1/results.zip"
+    }
+  ],
+  "all_six_completed_result_archives_fetched": true,
+  "initial_balance": 399.91,
+  "last_observed_balance_before_release": 399.84,
+  "last_observed_usage_units_per_hour": 0.08,
+  "allocation": "Colab CPU / Standard / DEFAULT",
+  "gpu_allocations": 0,
+  "local_scientific_execution": false,
+  "drive_mount": "failed; completed short jobs used runtime storage and immediate fetch",
+  "failed_large_upload": "HTTP 500 on 101728057-byte archive; no scientific process started; 13 hash-bound parts succeeded",
+  "archival_inputs_unchanged": true,
+  "after_release": {
+    "balance": 399.84,
+    "usage_units_per_hour": 0.0,
+    "active_assignments": 0,
+    "session_terminated": true
+  }
+}

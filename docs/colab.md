@@ -98,6 +98,11 @@ manifest를 생략하면 기존 기본 묶음과 해시를 유지한다.
 
 추가 파일을 전송해도 의존성을 자동으로 확대 설치하지 않는다. 필요한 SciPy,
 pytest 등은 Colab에서 확인·준비하고, 학습과 수치 검증은 그 런타임에서 실행한다.
+이번 deterministic certificate 작업의 선택적 의존성은
+`requirements-certificates.txt`의 `python-flint==0.8.0`이다. 로컬에 설치하지
+않고 CPU 세션에서 `bash scripts/colab install -s vg-sae python-flint==0.8.0`로
+준비한다. 해당 라이브러리가 없는 기본 환경에서는 certificate 전용 테스트를
+건너뛰며, core VG 의존성을 추가하지 않는다.
 작업 스크립트는 결과를 `COLAB_TASK_OUTPUT`에 기록해야 Drive 결과 묶음에
 포함된다. 소스 디렉터리의 고정 `outputs/`에만 쓰는 과거 스크립트는 별도
 출력 연결 없이 영구 저장되었다고 해석하지 않는다.

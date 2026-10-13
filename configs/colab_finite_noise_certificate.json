@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "colab_cpu_only": true,
+  "colab_storage": "runtime",
+  "tasks": [
+    {
+      "id": "finite-noise-certificate",
+      "argv": [
+        "python", "scripts/certify_finite_noise.py",
+        "--terminal-audit", "/content/vg-sae-runs/population-terminal-cpu-20261003-v1/tasks/terminal-certificate-audit/output/terminal/TERMINAL_AUDIT.json",
+        "--terminal-audit-seal", "/content/vg-sae-runs/population-terminal-cpu-20261003-v1/tasks/terminal-certificate-audit/output/terminal/SEAL.json",
+        "--terminal-verifier-sha256", "2c861c08db79123247fe7ec5ee72e31773846d4b8ac044d600e86b2fd3e5024a"
+      ]
+    }
+  ]
+}

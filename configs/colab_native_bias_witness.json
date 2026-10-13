@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "colab_cpu_only": true,
+  "colab_storage": "runtime",
+  "tasks": [
+    {
+      "id": "native-bias-witness",
+      "argv": ["python", "-m", "scripts.check_native_bias_witness"]
+    }
+  ]
+}

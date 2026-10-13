@@ -1,0 +1,19 @@
+{
+  "version": "native-noise-v1",
+  "files": {
+    "scripts/certify_native_noise_obstruction.py": "30d75112ee17dfc8e912939331ccbb44ccc70572c07f3fc7f2d205f71ec28768",
+    "tests/test_native_noise_obstruction.py": "dde4cd24e832a3972015445376963bfbdb71929fff65b002eee7665f61f3af93",
+    "tests/test_native_optional_imports.py": "87db73772441ca5623c622f3761f593aff1f9c0f7e35766e38a5f6637d877a47",
+    "src/__init__.py": "326cbd6c53c894d637aa8661b45fc0e0bd33650e6536417efb1ab0c1c25023bd",
+    "src/sae_model.py": "f88524123b3d278b6dd0b6200a0058595d113f0d6fbe7eb2fdceb9b930821f3f",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_NOISE_OBSTRUCTION_PROTOCOL.md": "7abe387aa021103fce26b645da16d213a66503f6fe0ab2f3352bc9897ea975c7",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_NOISE_OBSTRUCTION_REVIEW.md": "56540a80db6d53b77b9d77e8a4c98a7cd5b2a811a9dc3ff17fcfdbf87e9c26e6",
+    "configs/colab_native_noise_sources.json": "ba6e929ed0e808985d156c0f088df0be9029381ea0787b8db3a7728db9972d41",
+    "configs/colab_native_noise_preflight.json": "dfba979074e5ec3c69cc90bd868d24b346aa55cec12b42ed27bd75a1c7cfca05",
+    "configs/colab_native_noise_obstruction.json": "615ddaaddfdf96cf89fe929a80ca4508e77f1b7c7e79e20294c92bcb3810dace"
+  },
+  "scientific_execution_started": false,
+  "cpu_limit": 60,
+  "wall_limit": 120,
+  "fixed_cases": 12
+}

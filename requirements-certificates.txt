@@ -1,0 +1,2 @@
+# Optional deterministic certificate backend; install only in the Colab runtime.
+python-flint==0.8.0

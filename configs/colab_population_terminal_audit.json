@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "colab_cpu_only": true,
+  "colab_storage": "runtime",
+  "tasks": [
+    {
+      "id": "verify-input-transfer",
+      "argv": [
+        "python", "scripts/stage_colab_population_input.py",
+        "--receipt", "refine-logs/runs/vg-sae-colab-continuation-20261003/POPULATION_INPUT_RECEIPT.json",
+        "--parts-manifest", "configs/colab_population_input_parts.json",
+        "--destination", "/content/vg-sae-population-input-20261003-v1"
+      ]
+    },
+    {
+      "id": "terminal-certificate-audit",
+      "argv": [
+        "python", "-c",
+        "import os, subprocess, sys; sys.exit(subprocess.run([sys.executable, 'scripts/verify_population_terminal.py', '--input-dir', '/content/vg-sae-population-input-20261003-v1', '--output-dir', os.environ['COLAB_TASK_OUTPUT'] + '/terminal', '--cpu-seconds', '600', '--wall-seconds', '900'], timeout=920).returncode)"
+      ]
+    }
+  ]
+}

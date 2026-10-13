@@ -1,6 +1,6 @@
 # Phase 1–2 문헌 반영 실행 추적
 
-**2026-10-03 현재 상태.** 이관된 W1 및 후속 진단·증명·음성 결과의 전체 목록은 [연구 상태 감사](runs/vg-sae-colab-continuation-20261003/RESEARCH_STATE_AUDIT.md)에 있다. Colab CPU에서 controller 47개와 새 수리/provenance 테스트 51개가 통과했고 결과를 회수했다. 새 terminal audit와 finite-noise 계산은 진행 중이다. BR5 `measurement_unresolved`, W2 gated, C2a/C2b unentered를 유지한다. 아래 표는 이전 실행 이력으로 보존한다.
+**2026-10-03 현재 상태.** 이관 연구와 새 4개 Colab CPU 검증은 [통합 결과 보고서](runs/vg-sae-colab-continuation-20261003/CONTINUATION_REPORT_KO.md)를 따른다. 새 terminal audit 20/20, positive-crossover strict finite-noise bracket 10/16, noiseless native witness 10/16 수치 감소(6개 미해결), finite-beta noisy obstruction 6/12 인증(6개 미분리)을 각각의 가정 아래 완료했다. 원격 테스트 묶음 47/51/10/28개를 통과했고 모든 결과 회수·세션 종료를 확인했다. BR5 `measurement_unresolved`, W2 gated, C2a/C2b unentered를 유지하며 [후속 계획](runs/vg-sae-colab-continuation-20261003/NEXT_RESEARCH_PLAN.md)으로 이어간다. 아래 표는 이전 실행 이력으로 보존한다.
 
 2026-09-30. 문헌·토론과 계획 개정만 완료했다. 아래 신규 실험은 전부 미실행이다. `EXISTING_DONE`은9월24일 근거이며 이번에 다시 실행했다는 뜻이 아니다.
 

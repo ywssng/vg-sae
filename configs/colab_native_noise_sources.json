@@ -1,0 +1,9 @@
+[
+  "scripts/certify_native_noise_obstruction.py",
+  "scripts/certify_finite_noise.py",
+  "tests/test_native_noise_obstruction.py",
+  "tests/test_native_optional_imports.py",
+  "tests/test_finite_noise_certificate.py",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_NOISE_OBSTRUCTION_PROTOCOL.md",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_NOISE_OBSTRUCTION_REVIEW.md"
+]

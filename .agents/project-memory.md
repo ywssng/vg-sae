@@ -39,13 +39,38 @@
   crossover의 limiting activity bracket과 eventual prelimit transfer를 다룬다.
   Native VG, finite sample 또는 실용 추정기의 성공으로 해석하지 않는다.
   기존 20-cell 표의 primary image-unresolved 12개와 replay-unresolved 17개는
-  서로 다른 판정이다. 새 terminal audit와 explicit finite-noise bound는 별도
-  version으로 진행 중이며 완료 결과가 아니다.
+  서로 다른 판정이다. 별도 terminal audit는 20/20을 독립 검증했고 원본
+  optimizer 재실행 없이 남은 연결성분별 이미지 폭 기준을 충족했다. 전체
+  합집합 폭·optimizer 유일성 주장은 아니다. Explicit finite-noise bound는
+  양의 crossover 16개 중 10개에서 strict bracket을 인증했지만 sigma=.05에서는
+  모두 불충분했다. 원래 native q 추정 결과가 아니다.
+- Noiseless finite-beta native witness는 16개 고정 사례 중 10개에서 float64
+  objective 감소를 확인했고 6개는 수치 해상도 미해결로 보존했다. Decoder는
+  teacher 그대로라 dictionary-gap 반증이 아니다. 관련 native test 10개도
+  Colab에서 통과했다. 완료 결과와 남은 범위는 같은 run의
+  `CONTINUATION_REPORT_KO.md`에 통합한다.
+- Positive-noise native 후속은 sigma=.05, q=.1/.3, beta=400/1600/25600,
+  gamma=1/16의 고정 12개 bound 중 6개에서, 유한 noise-copying 모델이 모든
+  clean stochastic risk<=1/20000 모델보다 낮은 objective를 가질 수 있음을
+  인증했다. 비교집합은 유한 native encoder로 비어 있지 않음을 보였다.
+  모두 overprecision 사례이며 beta400 matched regime는 미분리다. Dictionary나
+  q 추정 실패의 증명이 아니다. Code/protocol·한계는 같은 run의
+  `NATIVE_NOISE_OBSTRUCTION_PROTOCOL.md`에 있다. 관련 신규·유지보수·import
+  검증 28개도 Colab CPU에서 통과했다. 핵심 모형의 학습 기본값은 바꾸지 않았다.
 - Colab Standard CPU의 실제 연결과 torch CPU-only를 확인했다. Drive 마운트는
   `mount failed`로 종료되어 짧은 작업은 explicit runtime storage와 즉시 fetch를
   사용한다. 새 source manifest/CPU guard/runtime storage 검증 47개가 Colab에서
   통과했다(Python 3.13.15, torch 2.11.0+cpu). 전체 프로젝트의 Python 3.14 및
-  SAE 검증과는 다르다. 원격 결과는 `.colab/runs/`에 회수했다.
+  SAE 검증과는 다르다. 수리/provenance tests 51개도 원격에서 통과했다.
+  여섯 완료 결과 묶음을 회수한 뒤 CPU 세션을 해제했다. 관측 잔액 변화는
+  399.91→399.84 units, 해제 후 assignments/rate는 0이었다. 이 기록은 당시
+  관측치이며 고정 과금 약속이 아니다.
+- 두 번째 CPU 세션에서 새 obstruction과 선택적 import 경로까지 검증·회수한
+  뒤 종료했다. 두 세션 후 잔액은 399.83 units였고 active assignments/rate는
+  0이었다. 이관본과 동일한 `src/__init__.py`, `src/sae_model.py`의 lazy import를
+  검토·테스트 후 Git에 통합해 작은 native 경로의 SAELens 의존성을 분리한다.
+  그 외 이전 변경은 보존한다. 다음 목표와 pre-LLM 완료조건은 같은 run의
+  `NEXT_RESEARCH_PLAN.md`를 따른다. 현재 전체 연구 goal은 아직 미완료다.
 
 ## Colab CLI 실험 실행 준비 — 2026-10-02
 

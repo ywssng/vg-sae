@@ -1,0 +1,28 @@
+{
+  "artifacts": [
+    {
+      "run_id": "native-noise-preflight-cpu-20261003-v1",
+      "bytes": 121819,
+      "sha256": "e0d03c45058457e45398982451a1ecf6459ce3f57d383791acba56e46af67b07",
+      "local_location": ".colab/runs/native-noise-preflight-cpu-20261003-v1/results.zip"
+    },
+    {
+      "run_id": "native-noise-cpu-20261003-v1",
+      "bytes": 138674,
+      "sha256": "78d541ee2b205d29abd61dae0f002cf7521b29c1187ad4c5896e2ece0b29b4db",
+      "local_location": ".colab/runs/native-noise-cpu-20261003-v1/results.zip"
+    }
+  ],
+  "completed_archives_fetched_before_shutdown": true,
+  "allocation": "Colab CPU / Standard / DEFAULT",
+  "gpu_allocations": 0,
+  "local_scientific_execution": false,
+  "previous_observed_balance": 399.84,
+  "after_release": {
+    "balance": 399.83,
+    "usage_units_per_hour": 0.0,
+    "active_assignments": 0,
+    "session_terminated": true
+  },
+  "observed_balance_change_across_both_sessions": "399.91 -> 399.83 compute units (rounded account display)"
+}

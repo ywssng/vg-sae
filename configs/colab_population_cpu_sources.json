@@ -1,0 +1,11 @@
+[
+  "scripts/verify_population_terminal.py",
+  "scripts/certify_finite_noise.py",
+  "scripts/stage_colab_population_input.py",
+  "configs/colab_population_input_parts.json",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/POPULATION_INPUT_RECEIPT.json",
+  "tests/test_population_terminal.py",
+  "tests/test_finite_noise_certificate.py",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/FINITE_NOISE_DERIVATION.md",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/EXECUTION_PROTOCOL.md"
+]

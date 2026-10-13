@@ -1,0 +1,12 @@
+{
+  "cpu_limit_seconds": 60,
+  "cpu_scope": "whole_process_including_imports",
+  "excludes_receipt_own_serialization": true,
+  "execution_status": "completed",
+  "includes_principal_output_serialization": true,
+  "process_cpu_seconds": 0.150671795,
+  "process_wall_seconds": 0.215966754999954,
+  "sources_unchanged": true,
+  "wall_limit_seconds": 120,
+  "wall_scope": "linux_process_age_with_0.05s_guard"
+}

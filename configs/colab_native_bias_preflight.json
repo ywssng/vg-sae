@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "colab_cpu_only": true,
+  "colab_storage": "runtime",
+  "tasks": [
+    {
+      "id": "native-witness-tests",
+      "argv": [
+        "python", "-c",
+        "import os, subprocess, sys; sys.exit(subprocess.run([sys.executable, '-m', 'pytest', 'tests/test_native_bias_witness.py', '-q', '--junitxml=' + os.environ['COLAB_TASK_OUTPUT'] + '/junit.xml'], timeout=120).returncode)"
+      ]
+    }
+  ]
+}

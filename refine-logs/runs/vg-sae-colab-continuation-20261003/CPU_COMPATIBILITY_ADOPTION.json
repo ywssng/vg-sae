@@ -1,0 +1,21 @@
+{
+  "purpose": "Adopt imported lazy optional-dependency handling so new native Colab scripts reproduce from Git without SAELens",
+  "files": [
+    {
+      "path": "src/__init__.py",
+      "sha256": "326cbd6c53c894d637aa8661b45fc0e0bd33650e6536417efb1ab0c1c25023bd",
+      "byte_identical_to_import": true,
+      "source": "research-import-20261002T131813Z/project/src/__init__.py"
+    },
+    {
+      "path": "src/sae_model.py",
+      "sha256": "f88524123b3d278b6dd0b6200a0058595d113f0d6fbe7eb2fdceb9b930821f3f",
+      "byte_identical_to_import": true,
+      "source": "research-import-20261002T131813Z/project/src/sae_model.py"
+    }
+  ],
+  "model_equations_changed": false,
+  "unrelated_existing_changes_preserved": true,
+  "new_focused_test": "tests/test_native_optional_imports.py",
+  "validation_status": "passed in Colab CPU native-noise-preflight-cpu-20261003-v1"
+}

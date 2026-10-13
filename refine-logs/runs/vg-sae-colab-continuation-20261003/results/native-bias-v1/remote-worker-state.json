@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "plan_sha256": "d1604e45a79eb94573dd1a6e5d9bbda04b223190a4ae455fed59a53bced2062a",
+  "source_sha256": "60fe150e1306a6f3fb7dda3c7ea9c080dd76681e12d2038dc647bb64e181e392",
+  "created_at": "2026-10-03T10:48:48.895138+00:00",
+  "tasks": {
+    "native-bias-witness": {
+      "status": "completed",
+      "attempt": 1,
+      "started_at": "2026-10-03T10:48:48.904145+00:00",
+      "returncode": 0,
+      "finished_at": "2026-10-03T10:48:53.831669+00:00"
+    }
+  },
+  "status": "completed",
+  "updated_at": "2026-10-03T10:48:53.838969+00:00"
+}

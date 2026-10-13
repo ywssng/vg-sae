@@ -29,13 +29,18 @@ objectives and selection constraints actually favor. Derivation and explanation
 are research contributions in their own right; SOTA is not the sole criterion.
 The [integrated paper plan](PAPER_PLAN.md) connects Phase 1's model and inference
 analysis to Phase 2's proposed density estimator and feature-recovery validation.
-Phase 2 is planned and has not been run. The [research brief](RESEARCH_BRIEF.md),
+The Phase 2 development bridge completed 350 fits, but its native-density
+coverage gate did not pass. The original generating-density estimator remains
+unvalidated; fresh C2 confirmation and actual LLM activation experiments remain
+unentered. The [2026-10-03 continuation report](refine-logs/runs/vg-sae-colab-continuation-20261003/CONTINUATION_REPORT_KO.md)
+reconciles the imported dot-cloud record and new Colab CPU checks. The [research brief](RESEARCH_BRIEF.md),
 [method proposal](refine-logs/FINAL_PROPOSAL.md), and
 [experiment plan](refine-logs/EXPERIMENT_PLAN.md) define the current scope.
 The [physics literature review and scientist discussion](refine-logs/runs/vg-sae-physics-literature-20260930/PI_SYNTHESIS.md)
 now separate conditional posterior response from optimizer and data variability.
-Phase 2 starts with a planned 238–350-fit ensemble/readout bridge before the
-conditional larger campaign; this bridge has not been run.
+The completed ensemble/readout bridge and its negative follow-up diagnostics
+remain distinct from the conditional larger campaign. Supplied-model theory
+and certificate success do not clear the native estimator's scientific gates.
 
 The existing Phase 1 [first-principles campaign results](refine-logs/EXPERIMENT_RESULTS.md) cover
 135 exact-inference cells, 9 frozen-encoder fits, and 54 joint fits across three

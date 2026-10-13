@@ -11,20 +11,21 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from .model import _bernoulli_entropy_from_logits, _dtype_from_value
-from .sae_baselines import (
-    BatchTopKSAE,
-    BatchTopKSAEConfig,
-    GatedSAE,
-    GatedSAEConfig,
-    JumpReLU,
-    JumpReLUSAE,
-    JumpReLUSAEConfig,
-    Step,
-    StandardSAE,
-    StandardSAEConfig,
-    TopKSAE,
-    TopKSAEConfig,
-)
+# Preserve public aliases without importing the optional SAELens stack for VG.
+_BASELINE_EXPORTS = frozenset(('BatchTopKSAE', 'BatchTopKSAEConfig', 'GatedSAE', 'GatedSAEConfig', 'JumpReLU', 'JumpReLUSAE', 'JumpReLUSAEConfig', 'Step', 'StandardSAE', 'StandardSAEConfig', 'TopKSAE', 'TopKSAEConfig'))
+
+
+def __getattr__(name):
+    if name not in _BASELINE_EXPORTS:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    from . import sae_baselines
+    value = getattr(sae_baselines, name)
+    globals()[name] = value
+    return value
+
+
+def __dir__():
+    return sorted(set(globals()) | _BASELINE_EXPORTS)
 
 
 BetaMode = Literal["profiled", "learned"]

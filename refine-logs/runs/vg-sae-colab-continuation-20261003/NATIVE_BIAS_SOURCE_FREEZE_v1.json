@@ -1,0 +1,15 @@
+{
+  "version": "native-bias-v1",
+  "files": {
+    "scripts/check_native_bias_witness.py": "ecdf3cb82c0d3334a9878b08babde97a983c9e50e853e6e149171c9961a9a157",
+    "tests/test_native_bias_witness.py": "dc6ccc22ed016ecad2ebe1c67101ed346249813a1626cbff32d1736d22cfa9c8",
+    "src/sae_model.py": "f88524123b3d278b6dd0b6200a0058595d113f0d6fbe7eb2fdceb9b930821f3f",
+    "src/model.py": "a5c9ee7ff56a4b1d7391f3ee6f7fab00c5b75dbb83f738ee141011fd44d44836",
+    "src/__init__.py": "326cbd6c53c894d637aa8661b45fc0e0bd33650e6536417efb1ab0c1c25023bd",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_DERIVATION.md": "9abb0f1dd823cb6142bf4ee5084ea347f6d3c76155ffef9608d4e3331f1feff7",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_INDEPENDENT_REVIEW.md": "d773aab8a48ff4d24fa4fbb082775abd45a101bff1cdfc94b5b046af1d3a4b68"
+  },
+  "case_count": 16,
+  "compute": "Colab Standard CPU only",
+  "scientific_execution_started": false
+}

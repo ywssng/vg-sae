@@ -1,0 +1,11 @@
+{
+  "cpu_cores": 1,
+  "cpu_limit_seconds": 600,
+  "memory_limit_bytes": 536870912,
+  "required_historical_run_seal_sha256": "e14c41e4cba0dacd63607550d51eec53f5edd117224af1f797568f854beb4fcb",
+  "required_source_manifest_sha256": "f042e708377505e907b9ddc183dfb0a1b9bb15050b9ccc7e1e5f26f7a17967b8",
+  "samples": 0,
+  "source_sha256": "2c861c08db79123247fe7ec5ee72e31773846d4b8ac044d600e86b2fd3e5024a",
+  "version": "terminal-partition-v1",
+  "wall_limit_seconds": 900
+}

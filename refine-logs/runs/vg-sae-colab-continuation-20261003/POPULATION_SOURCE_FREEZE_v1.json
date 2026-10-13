@@ -1,0 +1,23 @@
+{
+  "version": "population-terminal-v1",
+  "preflight": "population-preflight-cpu-20261003-v1: 51 passed in 0.18 seconds on Colab CPU",
+  "files": {
+    "scripts/verify_population_terminal.py": "2c861c08db79123247fe7ec5ee72e31773846d4b8ac044d600e86b2fd3e5024a",
+    "scripts/certify_finite_noise.py": "27dbbd74a0e9bdd76c583c1ed6c570847017b478fa5da4f2c93b965835174fcb",
+    "tests/test_population_terminal.py": "c5210c39b05994e6b476fc80146b520e984d5d97ed2db36a1315bc0a085fb0bd",
+    "tests/test_finite_noise_certificate.py": "38abef31ec0c047ce8ed07828ce987a3e6686bb5bd85ce71fb625e2621e30e48",
+    "scripts/stage_colab_population_input.py": "4d1bc0ebc995a9916544e36712ac78544089adbc3fe0485ab607925a4f9e950e",
+    "configs/colab_population_terminal_audit.json": "1db89fa1d3caee812d5b25e117bc6393360621522528935cbcf5b194dc9078c6",
+    "configs/colab_population_cpu_sources.json": "64cd67ea9d244cb1ad12cf5722f334fb3280a9788589abbef5f7c1d8a1ccbf9b",
+    "configs/colab_population_input_parts.json": "c38924c775c4cfaaf87b296e3aa328bdd48d0f6c24475744d59ed5f87ea56132",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/FINITE_NOISE_DERIVATION.md": "a9148f5c376d3282a6c4287bffb32de9be9880f647b55241d654910b8afaa77b",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/FINITE_NOISE_INDEPENDENT_REVIEW.md": "59d1a351aaec85f3e79e836d3f88403e8c85d7f4801fc8a310f55a61b5043e9d",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/EXECUTION_PROTOCOL.md": "a12172334907578a7fb65b8f3cb2cd8bc2bc0a42cfdf02ff2b00639eee4f078b",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/POPULATION_INPUT_RECEIPT.json": "d4158a89ce845f9c90ab9a65d76577b78c4f0cb255c196c681a3e646c41413ac",
+    "refine-logs/runs/vg-sae-colab-continuation-20261003/PHYSICS_AUDIT.md": "9cd3c1099c377924d1ec9d8e213b3f088d676e36e9b8d23cda59ae66060eab02"
+  },
+  "raw_source_preserved": true,
+  "compute": "Colab Standard CPU only",
+  "backend": "python-flint==0.8.0",
+  "numerical_run_started": false
+}

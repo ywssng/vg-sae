@@ -458,3 +458,30 @@ matched amplitude-one generative setting supports posterior calibration
 against actual support labels. Other fields/noise precisions are explicitly
 misspecified conditional-response experiments. Joint SAE point amplitudes do
 not define a normalized full generative posterior.
+
+## Colab CPU continuation and certificate scope (2026-10-03)
+
+The imported dot-cloud record and new CPU evidence are reconciled in
+`refine-logs/runs/vg-sae-colab-continuation-20261003/CONTINUATION_REPORT_KO.md`.
+The new population terminal verifier checks the final partition, including
+historical rejected leaves and full certificate-field bindings; it does not
+replay every intermediate arithmetic operation. Its 20-row completion and
+per-component image targets do not imply uniqueness or a small total hull.
+
+The explicit finite-noise bounds concern a supplied two-atom normalized
+population model along the exact path h=(lambda*sigma/2)^2 with joint scalar
+variance. They do not certify native VG recovery or finite-sample estimation,
+and the sufficient inequalities remain inconclusive at sigma=.05.
+
+The separate noiseless native witness freezes beta in the normalized learned
+branch, uses the standard variance/entropy terms, and evaluates exact population
+weights through the existing free_energy method. All model tensors are finite.
+Ideal real-parameter descent, saved-float Decimal evaluation, and native float64
+resolution are separate fields; six unresolved differences remain unresolved.
+Decoder identity is unchanged, so this is not a dictionary-recovery comparison.
+
+All new numerical checks run on Colab CPU. Source/plan hashes, dependency versions,
+fixed protocols, resource limits and fetched artifacts distinguish these jobs
+from the historical runs. Optional directed arithmetic uses python-flint 0.8.0;
+the recorded Colab Python 3.13 environment is a scoped CPU path, not a claim that
+the entire Python 3.14/SAELens environment has been reproduced.

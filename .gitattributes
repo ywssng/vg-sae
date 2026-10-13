@@ -1,1 +1,5 @@
 *.csv text eol=lf
+
+# Preserve the exact bytes of downloaded certificate evidence.
+refine-logs/runs/vg-sae-colab-continuation-20261003/results/native-bias-v1/native_bias_witness_summary.csv -text !eol
+refine-logs/runs/vg-sae-colab-continuation-20261003/results/native-noise-v1/native_noise_obstruction_summary.csv -text !eol

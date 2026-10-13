@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "colab_cpu_only": true,
+  "colab_storage": "runtime",
+  "tasks": [
+    {
+      "id": "population-contract-tests",
+      "argv": [
+        "python", "-c",
+        "import os, subprocess, sys; sys.exit(subprocess.run([sys.executable, '-m', 'pytest', 'tests/test_population_terminal.py', 'tests/test_finite_noise_certificate.py', '-q', '--junitxml=' + os.environ['COLAB_TASK_OUTPUT'] + '/junit.xml'], timeout=120).returncode)"
+      ]
+    }
+  ]
+}

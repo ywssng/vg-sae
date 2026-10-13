@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "plan_sha256": "043fe11b6f65a35760610ca31ab1553990ada77f6dbb96b687a789199624e36f",
+  "source_sha256": "176318dc8b47d0dff6e8a214a38da97e87aee960d66ec022e1d52fb6b1eb44c5",
+  "created_at": "2026-10-03T11:11:17.193918+00:00",
+  "tasks": {
+    "native-noise-obstruction": {
+      "status": "completed",
+      "attempt": 1,
+      "started_at": "2026-10-03T11:11:17.206806+00:00",
+      "returncode": 0,
+      "finished_at": "2026-10-03T11:11:17.395964+00:00"
+    }
+  },
+  "status": "completed",
+  "updated_at": "2026-10-03T11:11:17.408431+00:00"
+}

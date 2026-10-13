@@ -1,0 +1,6 @@
+[
+  "scripts/check_native_bias_witness.py",
+  "tests/test_native_bias_witness.py",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_DERIVATION.md",
+  "refine-logs/runs/vg-sae-colab-continuation-20261003/NATIVE_FINITE_BETA_INDEPENDENT_REVIEW.md"
+]
