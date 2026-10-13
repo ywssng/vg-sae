@@ -1,0 +1,8 @@
+[
+  "scripts/certify_matched_amplitude.py",
+  "scripts/certify_native_noise_obstruction.py",
+  "tests/test_matched_amplitude.py",
+  "configs/colab_matched_amplitude.json",
+  "configs/colab_matched_amplitude_sources.json",
+  "refine-logs/runs/vg-sae-colab-continuation-20261013/MATCHED_AMPLITUDE_PROTOCOL.md"
+]

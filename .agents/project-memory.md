@@ -4,6 +4,26 @@
 [AGENTS.md](../AGENTS.md)에 두고, 여기에는 사실과 결정의 근거를 간결하게
 남긴다. 현재 코드와 사용자 정정으로 확인하면서 갱신한다.
 
+## 연구 재개와 지정 모델 검토 — 2026-10-13
+
+- 사용자가 연구 재개와 결과별 GPT-6 Astra extra high, Opus 5.5 extra high,
+  Gemini 3.1 Pro high 검토를 요청했다. ARIS/scientific/두 physics skill을
+  적절히 적용한다. 실제 지정 모델의 검토만 해당 모델의 검토로 기록한다.
+- 이전 네 CPU 검증 묶음은 원본 CSV 바이트 보존을 포함해 `4dd54d6`으로
+  커밋·푸시했다. 새 상태와 후속 계획은
+  `refine-logs/runs/vg-sae-colab-continuation-20261013/CONTINUATION_REPORT_KO.md`
+  및 같은 run의 `NEXT_RESEARCH_PLAN.md`를 따른다.
+- 새 두 고정 사례는 sigma=.05/beta400 및 공급한 정확한 prior에서 native
+  amplitude 변경이 objective를 낮추고 hard coefficient NMSE를 높임을
+  Colab CPU Arb로 인증했다. D와 hard support는 같다. 전 복원 집합의 gap이나
+  C2 실패가 아니다. 관련 테스트 3개 통과, 인증 CPU 약 .106초, 결과 회수와
+  세션 종료를 완료했다. 표시 잔액은 399.83, rate/assignments는 0이었다.
+- Astra xhigh 검토를 실행했다. Opus/Gemini는 당시 도구 roster 부재 및
+  별도 인증 미가용으로 미실행이다. 세 모델 합의로 해석하지 않는다. 연결
+  복구 후 같은 고정 evidence의 검토를 받아야 하며 현재 가용성은 재확인한다.
+- BR5 measurement_unresolved, W2 gated, C2a/C2b unentered를 유지한다.
+  실제 LLM activation과 confirmation worlds는 실행하지 않았다.
+
 ## 간단한 작업의 사후 검증 금지 — 2026-10-13
 
 - 사용자는 간단한 수정, 간단한 플롯 그리기 등 간단한 요청·작업은 코드

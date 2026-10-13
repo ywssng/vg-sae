@@ -1,0 +1,27 @@
+{
+  "cases": [
+    "1/10",
+    "3/10"
+  ],
+  "cpu_limit_seconds": 60,
+  "date": "2026-10-13",
+  "files": {
+    "configs/colab_matched_amplitude.json": "e215ef63a4b1d7e0fb5c93b66a1b87a80e0cb4240dfe340d9a14992bf9c97a76",
+    "configs/colab_matched_amplitude_sources.json": "2f3d5621fa8b508d8b9eb4aba3956ca7628cd046192aa7963ce62651fd2c1a0b",
+    "refine-logs/runs/vg-sae-colab-continuation-20261013/MATCHED_AMPLITUDE_PROTOCOL.md": "76a31ba69c6bbfcf055c3f0c569375c7a568766632fa3ef524f0bdb034477635",
+    "scripts/certify_matched_amplitude.py": "8e755a3265650520dd85ca03837e36d39b104f8e03cc10c4781d36a56b7b2c21",
+    "scripts/certify_native_noise_obstruction.py": "30d75112ee17dfc8e912939331ccbb44ccc70572c07f3fc7f2d205f71ec28768",
+    "src/__init__.py": "326cbd6c53c894d637aa8661b45fc0e0bd33650e6536417efb1ab0c1c25023bd",
+    "src/model.py": "a5c9ee7ff56a4b1d7391f3ee6f7fab00c5b75dbb83f738ee141011fd44d44836",
+    "src/sae_model.py": "f88524123b3d278b6dd0b6200a0058595d113f0d6fbe7eb2fdceb9b930821f3f",
+    "tests/test_matched_amplitude.py": "74cd9c331166ee58e16a2151ba33a4299fd1d3a3dc137cf76d4abfcd77c535e9"
+  },
+  "review": {
+    "astra": "xhigh static mathematical and source review completed; auxiliary scale label refinement incorporated",
+    "gemini_3_1_pro": "pending connection, stored OAuth grant rejected",
+    "opus_5_5": "pending connection, no usable Claude credential"
+  },
+  "scientific_execution_started": false,
+  "version": "matched-amplitude-v1",
+  "wall_limit_seconds": 120
+}

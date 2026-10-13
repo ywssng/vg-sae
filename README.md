@@ -33,7 +33,12 @@ The Phase 2 development bridge completed 350 fits, but its native-density
 coverage gate did not pass. The original generating-density estimator remains
 unvalidated; fresh C2 confirmation and actual LLM activation experiments remain
 unentered. The [2026-10-03 continuation report](refine-logs/runs/vg-sae-colab-continuation-20261003/CONTINUATION_REPORT_KO.md)
-reconciles the imported dot-cloud record and new Colab CPU checks. The [research brief](RESEARCH_BRIEF.md),
+reconciles the imported dot-cloud record and new Colab CPU checks.
+The [2026-10-13 continuation](refine-logs/runs/vg-sae-colab-continuation-20261013/CONTINUATION_REPORT_KO.md)
+adds a matched-precision native pair with lower objective and higher hard
+coefficient error, while preserving its dictionary and support; this does not
+resolve the Phase 2 gates.
+The [research brief](RESEARCH_BRIEF.md),
 [method proposal](refine-logs/FINAL_PROPOSAL.md), and
 [experiment plan](refine-logs/EXPERIMENT_PLAN.md) define the current scope.
 The [physics literature review and scientist discussion](refine-logs/runs/vg-sae-physics-literature-20260930/PI_SYNTHESIS.md)

@@ -1,0 +1,15 @@
+{
+  "archive_member_mapping": {
+    "environment.json": "remote-environment.json",
+    "plan.json": "remote-plan.json",
+    "state.json": "remote-worker-state.json",
+    "tasks/matched-amplitude-certificate/output/matched_amplitude_results.json": "matched_amplitude_results.json",
+    "tasks/matched-amplitude-certificate/output/runtime_receipt.json": "runtime_receipt.json",
+    "tasks/matched-amplitude-certificate/stdout.log": "certificate-stdout.log",
+    "tasks/matched-amplitude-tests/output/junit.xml": "tests.junit.xml",
+    "tasks/matched-amplitude-tests/stdout.log": "tests-stdout.log"
+  },
+  "results_zip_sha256": "50f1bf90c3672d4cf445f00c416f59fef95ac806ef4c32036183951880a04d9f",
+  "run_id": "matched-amplitude-cpu-20261013-v1",
+  "source_zip_sha256": "6f9fc4a941a31543a22814206a09f45c899d8f1e2dd5328e24a42d26fd0902a1"
+}

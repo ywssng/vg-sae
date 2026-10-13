@@ -1,0 +1,8 @@
+{
+  "cpu_limit_seconds": 60,
+  "excludes_receipt_own_serialization": true,
+  "includes_imports_and_principal_result_serialization": true,
+  "process_cpu_seconds": 0.105746705,
+  "process_wall_seconds": 0.15547782199996618,
+  "wall_limit_seconds": 120
+}

@@ -1,0 +1,21 @@
+{
+  "after": {
+    "active_assignments": 0,
+    "displayed_balance_compute_units": "399.83",
+    "server_sessions": "none",
+    "session_status": "terminated",
+    "usage_rate_per_hour": "0.00"
+  },
+  "allocation": "CPU Standard; no GPU requested",
+  "before": {
+    "active_assignments": 0,
+    "displayed_balance_compute_units": "399.83",
+    "usage_rate_per_hour": "0.00"
+  },
+  "billing_limit": "Displayed balance is rounded; an unchanged display is not a proof of exactly zero consumption.",
+  "date": "2026-10-13",
+  "local_work": "source and document editing, source/archive hashes, file transfer, remote LLM transport checks, Git",
+  "run_id": "matched-amplitude-cpu-20261013-v1",
+  "scientific_calculation_location": "Colab CPU only",
+  "session": "vg-sae-cpu-20261013"
+}
